@@ -253,6 +253,10 @@ export async function toggleUGCImageRecall(imageId: string, recallRequested: boo
     return updateUGCImageAction(imageId, recallRequested ? 'remove-request' : 'unrecall');
 }
 
+export async function recallUGCImage(imageId: string): Promise<UGCImageActionPatch> {
+    return updateUGCImageAction(imageId, 'recall');
+}
+
 async function updateUGCImageAction(imageId: string, action: string): Promise<UGCImageActionPatch> {
     const response = await fetch(`${UGC_API_BASE}/images/${encodeURIComponent(imageId)}/${action}`, {
         method: 'POST',
@@ -579,8 +583,12 @@ function normalizeUGCSubmissionImage(image: UGCSubmissionImage): UGCSubmissionIm
     return {
         ...image,
         filePath,
-        url: `${UGC_API_BASE}/public-file/${encodeObjectPath(filePath)}`,
+        url: `${UGC_API_BASE}/${isPendingUGCStatus(image.status) ? 'file' : 'public-file'}/${encodeObjectPath(filePath)}`,
     };
+}
+
+function isPendingUGCStatus(status: UGCSubmissionStatus | undefined): boolean {
+    return status === 'pending_openai' || status === 'pending_audit';
 }
 
 function extractObjectPathFromUrl(rawUrl: string): string | null {

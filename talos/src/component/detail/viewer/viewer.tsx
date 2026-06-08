@@ -58,6 +58,7 @@ interface ViewerProps {
     recallRequested?: boolean;
     canFlag?: boolean;
     canRecall?: boolean;
+    recallOnly?: boolean;
     actionPending?: boolean;
     shareCopied?: boolean;
     onToggleUpvote?: () => void;
@@ -83,6 +84,7 @@ const Viewer: React.FC<ViewerProps> = ({
     recallRequested = false,
     canFlag = true,
     canRecall = false,
+    recallOnly = false,
     actionPending = false,
     shareCopied = false,
     onToggleUpvote,
@@ -319,22 +321,26 @@ const Viewer: React.FC<ViewerProps> = ({
                         </div>
                     </div>
                     <div className={styles.viewerActions}>
-                        <PopoverTooltip content={tUI('detail.viewer.upvote')} placement="top" gap={4}>
-                            <button
-                                type="button"
-                                className={styles.viewerActionButton}
-                                data-active={currentUpvoted ? 'true' : 'false'}
-                                disabled={actionPending || !onToggleUpvote}
-                                onClick={onToggleUpvote}
-                                aria-pressed={currentUpvoted}
-                                aria-label='Upvote'
-                            >
-                                <UpvoteIcon />
-                                <span className={styles.viewerUpvoteCount}>{currentUpvoteCount}</span>
-                            </button>
-                        </PopoverTooltip>
-                        <span className={styles.viewerActionDivider} aria-hidden="true"></span>
-                        {canFlag && (
+                        {!recallOnly && (
+                            <>
+                                <PopoverTooltip content={tUI('detail.viewer.upvote')} placement="top" gap={4}>
+                                    <button
+                                        type="button"
+                                        className={styles.viewerActionButton}
+                                        data-active={currentUpvoted ? 'true' : 'false'}
+                                        disabled={actionPending || !onToggleUpvote}
+                                        onClick={onToggleUpvote}
+                                        aria-pressed={currentUpvoted}
+                                        aria-label='Upvote'
+                                    >
+                                        <UpvoteIcon />
+                                        <span className={styles.viewerUpvoteCount}>{currentUpvoteCount}</span>
+                                    </button>
+                                </PopoverTooltip>
+                                <span className={styles.viewerActionDivider} aria-hidden="true"></span>
+                            </>
+                        )}
+                        {!recallOnly && canFlag && (
                             <PopoverTooltip content={flagLabel} placement="top" gap={4}>
                                 <button
                                     type="button"
@@ -349,25 +355,27 @@ const Viewer: React.FC<ViewerProps> = ({
                                 </button>
                             </PopoverTooltip>
                         )}
-                        <PopoverTooltip
-                            content={shareCopied ? tUI('detail.copied') : tUI('detail.viewer.share')}
-                            placement="top"
-                            gap={4}
-                            visible={shareCopied ? true : undefined}
-                        >
-                            <button
-                                type="button"
-                                className={styles.viewerActionButton}
-                                disabled={!onShare}
-                                onClick={onShare}
-                                aria-label='Share'
+                        {!recallOnly && (
+                            <PopoverTooltip
+                                content={shareCopied ? tUI('detail.copied') : tUI('detail.viewer.share')}
+                                placement="top"
+                                gap={4}
+                                visible={shareCopied ? true : undefined}
                             >
-                                <ShareIcon />
-                            </button>
-                        </PopoverTooltip>
+                                <button
+                                    type="button"
+                                    className={styles.viewerActionButton}
+                                    disabled={!onShare}
+                                    onClick={onShare}
+                                    aria-label='Share'
+                                >
+                                    <ShareIcon />
+                                </button>
+                            </PopoverTooltip>
+                        )}
                         {canRecall && (
                             <>
-                                <span className={styles.viewerActionDivider} aria-hidden="true"></span>
+                                {!recallOnly && <span className={styles.viewerActionDivider} aria-hidden="true"></span>}
                                 <PopoverTooltip content={recallLabel} placement="top" gap={4}>
                                     <button
                                         type="button"

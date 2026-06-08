@@ -15,6 +15,7 @@ import Carousel from '@/component/carousel';
 import {
     listUGCImages,
     listUGCMyImages,
+    recallUGCImage,
     resolveUGCUploadTarget,
     toggleUGCImageFlag,
     toggleUGCImageRecall,
@@ -67,11 +68,15 @@ const getCarouselDirection = (
     return null;
 };
 
-const isPending = (image: UGCSubmissionImage): boolean => (
-    image.status === 'pending_openai' || image.status === 'pending_audit'
+const isPendingStatus = (status: UGCSubmissionImage['status'] | UGCImage['status']): boolean => (
+    status === 'pending_openai' || status === 'pending_audit'
 );
 
-const isPublic = (image: UGCSubmissionImage): boolean => (
+const isPending = (image: Pick<UGCSubmissionImage, 'status'> | Pick<UGCImage, 'status'>): boolean => (
+    isPendingStatus(image.status)
+);
+
+const isPublic = (image: Pick<UGCSubmissionImage, 'status'> | Pick<UGCImage, 'status'>): boolean => (
     image.status === 'active' || image.status === 'flagged' || image.status === 'remove_request'
 );
 
@@ -180,28 +185,40 @@ const useUpload = (point: IMarkerData) => {
         () => myImages.filter((image) => image.markerId === point.id),
         [myImages, point.id],
     );
-    const ownPublic = useMemo(
-        () => pointMyImages.find(isPublic) ?? null,
-        [pointMyImages],
-    );
     const activeImages = useMemo(() => {
-        const publicActiveImages = pointImages
-            .map((image) => {
-                const ownMatch = pointMyImages.find((myImage) => myImage.id === image.id);
-                return ownMatch
-                    ? {
+        const merged = new Map<string, UGCImage>();
+        pointImages.forEach((image) => {
+            const ownMatch = pointMyImages.find((myImage) => myImage.id === image.id);
+            merged.set(image.id, ownMatch
+                ? {
                     ...image,
                     ...ownMatch,
                     author: image.author ?? ownMatch.author,
                     url: image.url || ownMatch.url,
-                    }
-                    : image;
-            })
-            .sort((a, b) => getImageCreatedAtTime(a) - getImageCreatedAtTime(b));
+                }
+                : image);
+        });
 
-        if (publicActiveImages.length > 0) return publicActiveImages;
-        return ownPublic ? [ownPublic] : [];
-    }, [ownPublic, pointImages, pointMyImages]);
+        pointMyImages
+            .filter((image) => isPending(image) || isPublic(image))
+            .forEach((image) => {
+                const current = merged.get(image.id);
+                merged.set(image.id, current
+                    ? {
+                        ...current,
+                        ...image,
+                        author: current.author ?? image.author,
+                        url: current.url || image.url,
+                    }
+                    : image);
+            });
+
+        return [...merged.values()].sort((a, b) => {
+            const pendingDelta = Number(isPending(b)) - Number(isPending(a));
+            if (pendingDelta !== 0) return pendingDelta;
+            return getImageCreatedAtTime(b) - getImageCreatedAtTime(a);
+        });
+    }, [pointImages, pointMyImages]);
     const active = useMemo(() => {
         if (activeImages.length === 0) return null;
         return activeImages.find((image) => image.id === selectedImageId) ?? activeImages[0];
@@ -217,6 +234,7 @@ const useUpload = (point: IMarkerData) => {
     }, [activeImages, selectedImageId]);
 
     const isOwnActive = Boolean(active && pointMyImages.some((image) => image.id === active.id));
+    const isActivePending = Boolean(active && isPending(active));
     const pendingOwn = useMemo(
         () => pointMyImages.find(isPending) ?? null,
         [pointMyImages],
@@ -315,6 +333,7 @@ const useUpload = (point: IMarkerData) => {
         setActionPending,
         setImages,
         setMyImages,
+        isActivePending,
     };
 };
 
@@ -351,6 +370,7 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
         setActionPending,
         setImages,
         setMyImages,
+        isActivePending,
     } = useUpload(point);
     const { copiedPopupVisible, copyPointShareUrl } = usePointShareLink(point);
     const pendingUploadFileRef = useRef<File | null>(null);
@@ -627,6 +647,19 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
             openOemAuthModal('login');
             return;
         }
+        if (isActivePending) {
+            setActionPending(true);
+            try {
+                const serverImage = await recallUGCImage(active.id);
+                applyServerImage(serverImage);
+                setMyImages((current) => current.filter((image) => image.id !== active.id));
+                setImages((current) => current.filter((image) => image.id !== active.id));
+                setViewerOpen(false);
+            } finally {
+                setActionPending(false);
+            }
+            return;
+        }
         const nextRecallRequested = !active.recallRequested && active.status !== 'remove_request';
         patchActiveImage((image) => ({
             ...image,
@@ -653,7 +686,7 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
         } finally {
             setActionPending(false);
         }
-    }, [actionPending, active, applyServerImage, isAuthenticated, isOwnActive, patchActiveImage, setActionPending]);
+    }, [actionPending, active, applyServerImage, isActivePending, isAuthenticated, isOwnActive, patchActiveImage, setActionPending, setImages, setMyImages, setViewerOpen]);
 
     if (!show) return null;
 
@@ -678,7 +711,7 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
             >
-                {state === 'hasImage' && active ? (
+                {active ? (
                     <Carousel
                         items={activeImages}
                         selectedKey={selectedImageId}
@@ -701,6 +734,11 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
 	                                        onPointerLeave={handleCarouselLayerPointerLeave}
 	                                    />
 	                                )}
+                                    {state === 'pending' && (
+                                        <div className={styles.noImage}>
+                                            {tUI('detail.uploadPending')}
+                                        </div>
+                                    )}
 	                            </>
                         )}
                     </Carousel>
@@ -758,8 +796,9 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
                 upvoted={Boolean(active?.upvoted)}
                 flagged={Boolean(active?.flagged)}
                 recallRequested={Boolean(active?.recallRequested || active?.status === 'remove_request')}
-                canFlag={!isOwnActive}
+                canFlag={!isOwnActive && !isActivePending}
                 canRecall={isOwnActive}
+                recallOnly={isActivePending}
                 actionPending={actionPending}
                 shareCopied={copiedPopupVisible}
                 onToggleUpvote={() => void handleToggleUpvote()}

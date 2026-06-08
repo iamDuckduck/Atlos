@@ -120,6 +120,7 @@ const DEFAULT_LOCATOR_INTERVAL_MS = 1000;
 const LOCATOR_TARGET_ZOOM = 3;
 const LOCATOR_FOLLOW_CENTER_RATIO = 0.25;
 const LOCATOR_MOVE_ANIMATION_MS = 900;
+const LOCATOR_POSITION_EPSILON = 0.0001;
 const POSITION_UNAVAILABLE_RETRY_MS = 5000;
 const EXPIRED_CREDENTIAL_RETRY_MS = 1000;
 
@@ -167,6 +168,11 @@ const errKind = (error: EFBackendError): UpKind | null => {
     const code = errCode(error);
     return code === null ? null : UP_KIND[code] ?? null;
 };
+
+const hasLocatorPositionChanged = (from: L.LatLng, to: L.LatLng): boolean => (
+    Math.abs(from.lat - to.lat) > LOCATOR_POSITION_EPSILON
+    || Math.abs(from.lng - to.lng) > LOCATOR_POSITION_EPSILON
+);
 
 const showErr = (error: EFBackendError): void => {
     const code = errCode(error);
@@ -409,6 +415,12 @@ export function useLocator(map: L.Map | undefined): void {
             const keepCentered = Boolean(options?.keepCentered);
             const state = animationRef.current;
             const current = marker.getLatLng();
+            const positionChanged = hasLocatorPositionChanged(current, target);
+            if (!positionChanged) {
+                marker.setLatLng(target);
+                return;
+            }
+
             const bearing = calculateTrackerBearing(map, current, target);
             if (bearing !== null) {
                 setTrackerBearing(marker, bearing);
@@ -427,6 +439,13 @@ export function useLocator(map: L.Map | undefined): void {
                     releaseProgrammaticViewChange,
                     LOCATOR_MOVE_ANIMATION_MS + 300,
                 );
+                if (isLocatorRegionVisible()) {
+                    map.once('moveend', releaseProgrammaticViewChange);
+                    map.panTo(target, {
+                        animate: true,
+                        duration: LOCATOR_MOVE_ANIMATION_MS / 1000,
+                    });
+                }
             }
 
             if (state.running) return;
@@ -450,12 +469,9 @@ export function useLocator(map: L.Map | undefined): void {
                     lerp(anim.from.lng, anim.to.lng, eased),
                 );
                 marker.setLatLng(next);
-                if (anim.keepCentered && isLocatorRegionVisible()) {
-                    map.setView(next, map.getZoom(), { animate: false });
-                }
 
                 if (t >= 1) {
-                    if (anim.keepCentered) {
+                    if (anim.keepCentered && !isLocatorRegionVisible()) {
                         releaseProgrammaticViewChange();
                     }
                     anim.running = false;

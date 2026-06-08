@@ -3,11 +3,13 @@
 
 :root, :root[data-theme='light'] {
     --uploader-placeholder: #{$grey-1};
+    --uploader-pending-holder: #{$light-1};
     --uploader-image-border: #{$light-2};
 }
 
 :root[data-theme='dark'] {
     --uploader-placeholder: #{$grey-1};
+    --uploader-pending-holder: #{$light-1};
     --uploader-image-border: #{$light-2};
 }
 
@@ -164,7 +166,6 @@
     }
 
     .noImage {
-        position: relative;
         z-index: 2;
         color: var(--uploader-placeholder);
         font-family: 'Novecento Demibold','Novecento Vietnamese DemiBold', 'Novecento Cyrillic DemiBold', 'FedraSansPro Bold', 'UD_ShinGo DemiBold', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
@@ -173,6 +174,7 @@
         max-width: 92%;
         text-align: center;
         line-height: 1.25;
+        transition: color .2s ease;
 
         .uploadShortcutHint {
             display: inline-flex;
@@ -217,6 +219,13 @@
             }
         }
     }
+}
+
+.pointImage.pending > img + .noImage {
+    position: absolute;
+    color: var(--uploader-pending-holder);
+    mix-blend-mode: luminosity;
+    text-shadow: 0 0 3px $black-0;
 }
 
 .imageInput {

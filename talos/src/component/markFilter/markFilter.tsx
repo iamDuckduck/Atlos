@@ -17,7 +17,7 @@ interface MarkFilterProps {
     idKey: string;
     // optional data attribute for visual styling
     dataCategory?: string;
-    wide?: boolean;
+    columns?: 2 | 3 | 4;
     binderMode?: boolean;
     // Pre-computed from parent so initial render has the correct empty state (prevents CLS)
     initialEmpty?: boolean;
@@ -30,7 +30,7 @@ const MarkFilter = ({
     empty,
     idKey,
     dataCategory,
-    wide = false,
+    columns = 2,
     binderMode = false,
     initialEmpty = false,
 }: MarkFilterProps) => {
@@ -155,6 +155,9 @@ const MarkFilter = ({
     };
 
     const scale = isDragging && !isSelfDragging ? 0.98 : 1;
+    const contentColumnsStyle = binderMode
+        ? undefined
+        : { gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` };
 
     return (
     <MarkVisibilityContext.Provider value={contextValue}>
@@ -181,7 +184,7 @@ const MarkFilter = ({
                 y: { type: 'spring', stiffness: 700, damping: 40 },
             }}
         >
-            <div
+        <div
                 className={`${styles.filterHeader} ${effectiveExpanded ? styles.expanded : ''}`}
                 onClick={toggleExpand}
             >
@@ -219,7 +222,10 @@ const MarkFilter = ({
             </div>
 
             <div className={`${styles.filterContent} ${effectiveExpanded ? styles.expanded : ''}`}>
-                <div className={`${styles.contentInner} ${effectiveExpanded ? styles.visible : ''} ${wide && !binderMode ? styles.tripleColumn : ''} ${binderMode ? styles.binderLayout : ''}`}>
+                <div
+                    className={`${styles.contentInner} ${effectiveExpanded ? styles.visible : ''} ${binderMode ? styles.binderLayout : ''}`}
+                    style={contentColumnsStyle}
+                >
                     {shouldRenderChildren && (
                         <>
                             {children}

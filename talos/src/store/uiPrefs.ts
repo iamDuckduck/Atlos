@@ -1,16 +1,21 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { DESKTOPEST_BREAKPOINT } from '@/utils/device';
+import { DESKTOPER_BREAKPOINT, DESKTOPEST_BREAKPOINT } from '@/utils/device';
 
 type ThemeMode = 'light' | 'dark' | 'auto';
 
 export const SIDEBAR_MIN_WIDTH = 300;
 export const SIDEBAR_DEFAULT_WIDTH = 500;
-export const SIDEBAR_MAX_WIDTH = 500;
-export const SIDEBAR_DESKTOPEST_MAX_WIDTH = 700;
+export const SIDEBAR_DESKTOP_MAX_WIDTH = 500;
+export const SIDEBAR_DESKTOPER_MAX_WIDTH = 600;
+export const SIDEBAR_DESKTOPEST_MAX_WIDTH = 800;
 
 export const getSidebarMaxWidth = (viewportWidth: number = typeof window === 'undefined' ? 0 : window.innerWidth): number =>
-  viewportWidth > DESKTOPEST_BREAKPOINT ? SIDEBAR_DESKTOPEST_MAX_WIDTH : SIDEBAR_MAX_WIDTH;
+  viewportWidth >= DESKTOPEST_BREAKPOINT
+    ? SIDEBAR_DESKTOPEST_MAX_WIDTH
+    : viewportWidth >= DESKTOPER_BREAKPOINT
+      ? SIDEBAR_DESKTOPER_MAX_WIDTH
+      : SIDEBAR_DESKTOP_MAX_WIDTH;
 
 export const clampSidebarWidth = (value: number, maxWidth: number = getSidebarMaxWidth()): number =>
   Math.round(Math.max(SIDEBAR_MIN_WIDTH, Math.min(maxWidth, value)));

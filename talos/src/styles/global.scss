@@ -24,6 +24,12 @@
     }
 }
 
+@media only screen and (min-width: $desktopissimo-bp) {
+    html {
+        font-size: 22px;
+    }
+}
+
 /* Global theme transition variables (scoped) */
 :root {
     --theme-transition-duration: 350ms;  // use ONLY ms for control continuity

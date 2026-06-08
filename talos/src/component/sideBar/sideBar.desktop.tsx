@@ -86,6 +86,7 @@ interface SideBarProps {
 }
 
 const WIDE_THRESHOLD = 400;
+const FOUR_COLUMN_THRESHOLD = 700;
 
 const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProps) => {
     const t = useTranslateUI();
@@ -155,7 +156,10 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
         requestAnimationFrame(() => incrementLayoutVersion());
     }, [clampWidth, incrementLayoutVersion, isResizing, maxWidth, resizeStartW, resizeStartX, setSidebarWidth]);
 
-    const isWide = sidebarWidth >= WIDE_THRESHOLD;
+    const filterColumns: 2 | 3 | 4 =
+        sidebarWidth >= FOUR_COLUMN_THRESHOLD ? 4 :
+        sidebarWidth >= WIDE_THRESHOLD ? 3 :
+        2;
 
     const binderTypeKeys = useMemo(
         () => Object.values(BINDER_GROUPS_BY_SUB)
@@ -258,7 +262,7 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                                     const types: IMarkerType[] = MARKER_TYPE_TREE[subCategory] ?? [];
                                     const CategoryIcon = CATEGORY_ICON_MAP[subCategory];
                                     const binderData = BINDER_GROUPS_BY_SUB[subCategory];
-                                    const showBinder = isWide && binderData;
+                                    const showBinder = filterColumns >= 3 && Boolean(binderData);
                                     const binderColumns = binderData
                                         ? computeBinderColumns(
                                             binderData.groups,
@@ -273,7 +277,7 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                             icon={CategoryIcon}
                             dataCategory={subCategory}
                             key={subCategory}
-                            wide={isWide}
+                            columns={filterColumns}
                             binderMode={!!showBinder}
                             initialEmpty={emptyCategories.has(subCategory)}
                         >
@@ -292,7 +296,10 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                                                         </div>
                                                     </div>
                                                     {binderData.remaining.length > 0 && (
-                                                        <div className={styles.remainingSection}>
+                                                        <div
+                                                            className={styles.remainingSection}
+                                                            style={{ gridTemplateColumns: `repeat(${filterColumns}, minmax(0, 1fr))` }}
+                                                        >
                                                             {binderData.remaining.map((typeInfo) => (
                                                                 <MarkSelector key={typeInfo.key} typeInfo={typeInfo} />
                                                             ))}

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useId } from 'react';
 import styles from './popover.module.scss';
 
 interface PopoverTooltipProps {
@@ -14,6 +14,11 @@ interface PopoverTooltipProps {
 const hasRenderableContent = (content: React.ReactNode): boolean => {
     if (typeof content === 'string') return content.trim().length > 0;
     return content !== null && content !== undefined;
+};
+
+type PopoverElement = HTMLDivElement & {
+    showPopover?: () => void;
+    hidePopover?: () => void;
 };
 
 /**
@@ -32,11 +37,13 @@ const PopoverTooltip: React.FC<PopoverTooltipProps> = ({
     const controlledCloseTimeoutRef = useRef<number | undefined>(undefined);
     const wasControlledRef = useRef(visible !== undefined);
     const triggerRef = useRef<HTMLElement | null>(null);
-    const popoverIdRef = useRef<string>(`tooltip-${Math.random().toString(36).substr(2, 9)}`);
+    const popoverRef = useRef<PopoverElement | null>(null);
+    const popoverId = useId();
 
     // Cleanup function: ensure popover is closed
     useEffect(() => {
-        const popoverId = popoverIdRef.current;
+        const popover = popoverRef.current;
+
         return () => {
             // Clear timeout and popover on component unmount
             if (hoverTimeoutRef.current) {
@@ -45,7 +52,6 @@ const PopoverTooltip: React.FC<PopoverTooltipProps> = ({
             if (controlledCloseTimeoutRef.current) {
                 clearTimeout(controlledCloseTimeoutRef.current);
             }
-            const popover = document.getElementById(popoverId) as HTMLElement & { hidePopover?: () => void };
             if (popover?.hidePopover) {
                 try {
                     popover.hidePopover();
@@ -102,8 +108,8 @@ const PopoverTooltip: React.FC<PopoverTooltipProps> = ({
         }
 
         const target = event.currentTarget;
-        const popover = document.getElementById(popoverIdRef.current) as HTMLElement & { showPopover?: () => void };
-        
+        const popover = popoverRef.current;
+
         if (popover?.showPopover) {
             try {
                 popover.showPopover();
@@ -118,11 +124,11 @@ const PopoverTooltip: React.FC<PopoverTooltipProps> = ({
         if (visible !== undefined) return;
         if (disabled || !hasRenderableContent(content)) return;
 
-        const popover = document.getElementById(popoverIdRef.current) as HTMLElement & { hidePopover?: () => void };
+        const popover = popoverRef.current;
         if (popover) {
             // Add fade-out class to trigger transition
             popover.classList.add(styles.popoverClose);
-            
+
             hoverTimeoutRef.current = window.setTimeout(() => {
                 if (popover?.hidePopover) {
                     try {
@@ -138,10 +144,7 @@ const PopoverTooltip: React.FC<PopoverTooltipProps> = ({
     };
 
     useEffect(() => {
-        const popover = document.getElementById(popoverIdRef.current) as HTMLElement & {
-            showPopover?: () => void;
-            hidePopover?: () => void;
-        };
+        const popover = popoverRef.current;
         const trigger = triggerRef.current;
         if (!popover) return;
 
@@ -220,7 +223,8 @@ const PopoverTooltip: React.FC<PopoverTooltipProps> = ({
         <>
             {childWithHandlers}
             <div
-                id={popoverIdRef.current}
+                ref={popoverRef}
+                id={popoverId}
                 popover="manual"
                 className={`${styles.popoverTooltip} ${variant === 'image' ? styles.imgInner : styles.txtInner}`}
             >

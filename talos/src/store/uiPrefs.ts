@@ -1,14 +1,26 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { DESKTOPEST_BREAKPOINT } from '@/utils/device';
 
 type ThemeMode = 'light' | 'dark' | 'auto';
+
+export const SIDEBAR_MIN_WIDTH = 300;
+export const SIDEBAR_DEFAULT_WIDTH = 500;
+export const SIDEBAR_MAX_WIDTH = 500;
+export const SIDEBAR_DESKTOPEST_MAX_WIDTH = 700;
+
+export const getSidebarMaxWidth = (viewportWidth: number = typeof window === 'undefined' ? 0 : window.innerWidth): number =>
+  viewportWidth > DESKTOPEST_BREAKPOINT ? SIDEBAR_DESKTOPEST_MAX_WIDTH : SIDEBAR_MAX_WIDTH;
+
+export const clampSidebarWidth = (value: number, maxWidth: number = getSidebarMaxWidth()): number =>
+  Math.round(Math.max(SIDEBAR_MIN_WIDTH, Math.min(maxWidth, value)));
 
 interface IUiPrefsStore {
   sidebarOpen: boolean;
   setSidebarOpen: (value: boolean) => void;
 
   sidebarWidth: number;
-  setSidebarWidth: (value: number) => void;
+  setSidebarWidth: (value: number, maxWidth?: number) => void;
 
   layoutVersion: number;
   incrementLayoutVersion: () => void;
@@ -85,8 +97,8 @@ export const useUiPrefsStore = create<IUiPrefsStore>()(
       sidebarOpen: false,
       setSidebarOpen: (value) => set({ sidebarOpen: value }),
 
-      sidebarWidth: 300,
-      setSidebarWidth: (value) => set({ sidebarWidth: Math.round(Math.max(300, Math.min(500, value))) }),
+      sidebarWidth: SIDEBAR_DEFAULT_WIDTH,
+      setSidebarWidth: (value, maxWidth) => set({ sidebarWidth: clampSidebarWidth(value, maxWidth) }),
 
       layoutVersion: 0,
       incrementLayoutVersion: () => set((s) => ({ layoutVersion: s.layoutVersion + 1 })),
@@ -204,7 +216,7 @@ export const useUiPrefsStore = create<IUiPrefsStore>()(
           merged.sidebarOpen = persisted.sidebarOpen;
         }
         if (persisted.prefsSidebarEnabled && persisted.sidebarWidth !== undefined) {
-          merged.sidebarWidth = persisted.sidebarWidth;
+          merged.sidebarWidth = clampSidebarWidth(persisted.sidebarWidth);
         }
         if (persisted.prefsSidebarEnabled && persisted.markFilterExpanded !== undefined) {
           merged.markFilterExpanded = persisted.markFilterExpanded;

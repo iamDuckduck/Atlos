@@ -6,8 +6,8 @@
 }
 
 :root[data-pip-window='true']:not([data-pip-mobile='true']) [class*='uiOverlay'][class*='sidebarOpen'] {
-    left: var(--sidebar-width, 300px);
-    width: calc(100% - var(--sidebar-width, 300px));
+    left: var(--sidebar-width, 500px);
+    width: calc(100% - var(--sidebar-width, 500px));
 }
 
 :root[data-pip-window='true']:not([data-pip-mobile='true']) [class*='switchArea'] {

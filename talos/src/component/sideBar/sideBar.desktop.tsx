@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useCallback, useMemo, useRef as useReactRef, useState } from 'react';
+import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef as useReactRef, useState } from 'react';
 import styles from './sideBar.module.scss';
 import drawerStyles from './triggerDrawer.module.scss';
 
@@ -37,10 +37,27 @@ import useRegion from '@/store/region';
 import { BINDER_GROUPS_BY_SUB } from '@/data/marker/binder';
 import MarkBinder from '../markBinder/markBinder';
 import { useTranslateGame, useTranslateUI } from '@/locale';
-import { useSetSidebarOpen, useSidebarOpen, useSidebarWidth, useSetSidebarWidth, useIncrementLayoutVersion, useTriggerCluster, useTriggerBoundary, useTriggerlabelName, useSetTriggerCluster, useSetTriggerBoundary, useSetTriggerlabelName, useDesktopDrawerSnapIndex } from '@/store/uiPrefs';
+import {
+    SIDEBAR_MIN_WIDTH,
+    clampSidebarWidth,
+    getSidebarMaxWidth,
+    useDesktopDrawerSnapIndex,
+    useIncrementLayoutVersion,
+    useSetSidebarOpen,
+    useSetSidebarWidth,
+    useSetTriggerBoundary,
+    useSetTriggerCluster,
+    useSetTriggerlabelName,
+    useSidebarOpen,
+    useSidebarWidth,
+    useTriggerBoundary,
+    useTriggerCluster,
+    useTriggerlabelName,
+} from '@/store/uiPrefs';
 import { useMultiRegionMarkerCount, useSearchString } from '@/store/marker';
 import { SelectionLayer } from './selectionLayer';
 import { computeBinderColumns } from './binderMasonry';
+import { useDevice } from '@/utils/device';
 
 //console.log('[MARKER]', MARKER_TYPE_TREE);
 
@@ -68,8 +85,6 @@ interface SideBarProps {
     visible?: boolean;
 }
 
-const MIN_WIDTH = 300;
-const MAX_WIDTH = 500;
 const WIDE_THRESHOLD = 400;
 
 const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProps) => {
@@ -81,6 +96,8 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
     const sidebarWidth = useSidebarWidth();
     const setSidebarWidth = useSetSidebarWidth();
     const incrementLayoutVersion = useIncrementLayoutVersion();
+    const { width: viewportWidth } = useDevice();
+    const maxWidth = getSidebarMaxWidth(viewportWidth);
     // Persistent trigger states
     const trigCluster = useTriggerCluster();
     const trigBoundary = useTriggerBoundary();
@@ -95,16 +112,23 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
 
     const sidebarRef = React.useRef<HTMLDivElement>(null);
     const resizeStartX = useReactRef(0);
-    const resizeStartW = useReactRef(MIN_WIDTH);
+    const resizeStartW = useReactRef(SIDEBAR_MIN_WIDTH);
 
-    const clampWidth = (startW: number, dx: number) =>
-        Math.round(Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, startW + dx)));
+    const clampWidth = useCallback((startW: number, dx: number) =>
+        clampSidebarWidth(startW + dx, maxWidth), [maxWidth]);
 
     const setAppCssVar = (w: number, source?: HTMLElement | null) => {
         const ownerDocument = source?.ownerDocument ?? document;
         const el = ownerDocument.querySelector<HTMLElement>('.app');
         el?.style.setProperty('--sidebar-width', `${w}px`);
     };
+
+    useEffect(() => {
+        const clampedWidth = clampSidebarWidth(sidebarWidth, maxWidth);
+        if (clampedWidth !== sidebarWidth) {
+            setSidebarWidth(clampedWidth, maxWidth);
+        }
+    }, [maxWidth, setSidebarWidth, sidebarWidth]);
 
     const onResizeStart = useCallback((e: React.PointerEvent) => {
         if (!isOpen) return;
@@ -114,25 +138,22 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
         resizeStartX.current = e.clientX;
         resizeStartW.current = sidebarWidth;
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen, sidebarWidth]);
+    }, [isOpen, resizeStartW, resizeStartX, sidebarWidth]);
 
     const onResizeMove = useCallback((e: React.PointerEvent) => {
         if (!isResizing) return;
         const newW = clampWidth(resizeStartW.current, e.clientX - resizeStartX.current);
         setAppCssVar(newW, e.currentTarget as HTMLElement);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isResizing]);
+    }, [clampWidth, isResizing, resizeStartW, resizeStartX]);
 
     const onResizeEnd = useCallback((e: React.PointerEvent) => {
         if (!isResizing) return;
         setIsResizing(false);
         (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
         const newW = clampWidth(resizeStartW.current, e.clientX - resizeStartX.current);
-        setSidebarWidth(newW);
+        setSidebarWidth(newW, maxWidth);
         requestAnimationFrame(() => incrementLayoutVersion());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isResizing, setSidebarWidth, incrementLayoutVersion]);
+    }, [clampWidth, incrementLayoutVersion, isResizing, maxWidth, resizeStartW, resizeStartX, setSidebarWidth]);
 
     const isWide = sidebarWidth >= WIDE_THRESHOLD;
 

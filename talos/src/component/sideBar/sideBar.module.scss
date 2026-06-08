@@ -49,7 +49,7 @@ $transition-speed: 0.3s;
     top: 0;
     left: 0;
     height: 100%;
-    width: var(--sidebar-width, 300px);
+    width: var(--sidebar-width, 500px);
     z-index: 1000;
     pointer-events: none;
     opacity: 1;
@@ -57,12 +57,12 @@ $transition-speed: 0.3s;
         transform $transition-speed ease-in-out,
         opacity 0.2s ease-out;
 
-    transform: translateX(calc(-1 * var(--sidebar-width, 300px)));
+    transform: translateX(calc(-1 * var(--sidebar-width, 500px)));
 
     &.open {
         transform: translateX(0);
         > .sidebarToggle {
-            right: calc(var(--sidebar-width, 300px) - 75px);
+            right: calc(var(--sidebar-width, 500px) - 5rem);
             transition: 0.3s ease-in-out;
         }
     }
@@ -356,7 +356,7 @@ $transition-speed: 0.3s;
     .sidebarToggle {
         position: absolute;
         top: 0;
-        right: -$toggle-btn-size; /* Position button outside sidebar area */
+        right: -5.375rem; /* Position button outside sidebar area */
         width: $toggle-btn-size;
         height: $toggle-btn-size;
         background-color: transparent;

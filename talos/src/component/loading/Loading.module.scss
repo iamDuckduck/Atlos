@@ -53,7 +53,7 @@
 .loadingText {
   position: absolute;
   color: rgb(255, 250, 0);
-  font-size: 14px;
+  font-size: .875rem;
   white-space: nowrap;
 
   .loadingBar:not(.mobile) & {

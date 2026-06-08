@@ -42,11 +42,11 @@ span.keyboard {
     cursor: pointer;
     transition: all 0.2s ease;
     font-family: 'Novecento Medium', sans-serif;
-    font-size: 14px;
+    font-size: .875rem;
     color: $white-1;
     margin: 0 4.5px;
     &.sym {
-        font-size: 18px;
+        font-size: 1.125rem;
     }
     &::before {
         content: '';

@@ -30,7 +30,7 @@ ol.bindStep {
     font-family: 'FedraSansPro Normal', 'UD_Shingo Medium', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
     font-weight: 500;
     text-decoration: none;
-    font-size: 15px;
+    font-size: 0.9375rem;
     text-transform: none;
     padding-inline-start: 1.25rem;
     margin-block-start: 0;
@@ -175,7 +175,7 @@ ol.bindStep {
     color: var(--auth-text);
     padding: 0.65rem 0.75rem;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 14px;
+    font-size: .875rem;
     font-weight: 600;
     line-height: 1.35;
     outline: none;
@@ -356,7 +356,7 @@ ol.bindStep {
             min-width: 0;
             color: var(--locator-card-text);
             font-family: 'Novecento DemiBold', 'Novecento Cyrillic DemiBold', 'Novecento Vietnamese DemiBold','HMSans_EN', 'UD_ShinGo DemiBold', sans-serif;
-            font-size: 27px;
+            font-size: 1.6875rem;
             font-weight: 900;
             line-height: 1;
             letter-spacing: -1px;
@@ -368,7 +368,7 @@ ol.bindStep {
             gap: 0 4px;
             color: var(--locator-card-text);
             font-family: 'Novecento Normal','HMSans_EN', HMSans, 'UD_ShinGo Regular', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
-            font-size: 13px;
+            font-size: 0.8125rem;
             font-weight: 400;
             line-height: 1.2;
             .roleServer {
@@ -392,7 +392,7 @@ ol.bindStep {
 .configHint {
     color: var(--auth-text);
     font-family: 'HMSans_EN', 'UD_ShinGo Regular', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 600;
     line-height: 1.25;
     padding: 0 0.3rem;
@@ -480,7 +480,7 @@ ol.bindStep {
 
 .scopeDesc {
     font-family: 'HMSans_EN', HMSans, 'UD_ShinGo Regular', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
-    font-size: 14px;
+    font-size: .875rem;
     font-weight: 600;
     line-height: 1.2;
     overflow-wrap: break-word;
@@ -502,7 +502,7 @@ ol.bindStep {
 .featureNote {
     color: var(--auth-text);
     font-family: 'HMSans_EN', HMSans, 'UD_ShinGo Regular', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
-    font-size: 14px;
+    font-size: .875rem;
     letter-spacing: -0.2px;
     font-weight: 600;
     line-height: 1.25;

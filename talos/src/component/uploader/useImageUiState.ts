@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { useAuthStore } from '@/store/auth';
 import { useLocale } from '@/locale';
 import { getAnnouncementLocaleKey } from '@/utils/announcement';
-import type { UGCImage } from '@/utils/ugcClient';
 import { getUpvoteCount, type PointImagesState } from './useUGCPointImages';
 import type { UploadState } from './useUGCUpload';
 
@@ -31,9 +30,9 @@ const useImageUiState = (imageState: PointImagesState, uploadState: UploadState)
     const user = useAuthStore((state) => state.sessionUser);
 
     const { active, isOwnActive, isActivePending, pendingOwn } = imageState;
-    const { canUpload, lastSubmission } = uploadState;
+    const { canUpload, lastSubmission, uploadSent } = uploadState;
 
-    const state: ImageState = pendingOwn || lastSubmission?.status === 'pending_openai' || lastSubmission?.status === 'pending_audit'
+    const state: ImageState = pendingOwn || uploadSent || lastSubmission?.status === 'pending_openai' || lastSubmission?.status === 'pending_audit'
         ? 'pending'
         : active
             ? 'hasImage'

@@ -206,6 +206,7 @@ export async function uploadUGCImage(
     point: UGCUploadTarget,
     file: File,
     onProgress?: (progress: number) => void,
+    onUploadSent?: () => void,
 ): Promise<UGCUploadSubmission> {
     validateUploadImage(file);
     const preparedFile = await prepareClientUploadImage(file, onProgress);
@@ -219,6 +220,9 @@ export async function uploadUGCImage(
         submission?: UGCUploadSubmission;
     }>(`${UGC_API_BASE}/images`, formData, (progress) => {
         onProgress?.(0.35 + progress * 0.65);
+    }, () => {
+        onProgress?.(1);
+        onUploadSent?.();
     });
     if (!payload.submission) {
         throw new UGCClientError('Upload response missing submission.', 'uploadInvalidResponse');
@@ -644,6 +648,7 @@ function uploadFormData<T>(
     url: string,
     formData: FormData,
     onProgress?: (progress: number) => void,
+    onUploadSent?: () => void,
 ): Promise<T> {
     return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -653,6 +658,10 @@ function uploadFormData<T>(
         xhr.upload.onprogress = (event) => {
             if (!event.lengthComputable || !onProgress) return;
             onProgress(Math.min(0.98, Math.max(0, event.loaded / event.total)));
+        };
+
+        xhr.upload.onload = () => {
+            onUploadSent?.();
         };
 
         xhr.onload = () => {
@@ -668,7 +677,6 @@ function uploadFormData<T>(
             }
 
             try {
-                onProgress?.(1);
                 resolve(JSON.parse(xhr.responseText) as T);
             } catch {
                 reject(new UGCClientError('Upload response is invalid JSON.', 'uploadInvalidResponse'));

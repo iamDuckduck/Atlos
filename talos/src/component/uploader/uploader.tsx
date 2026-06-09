@@ -36,7 +36,7 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
     const carousel = useCarousel();
 
     const { active, activeImages, selectedImageId, setSelectedImageId, show, loading } = imageState;
-    const { uploading, progress, error, inputRef, upload, requestUpload } = uploadState;
+    const { uploading, uploadSent, progress, error, lastSubmission, inputRef, upload, requestUpload } = uploadState;
     const { actionPending, viewerOpen, setViewerOpen, handleToggleUpvote, handleToggleFlag, handleToggleRecall } = actionsState;
     const {
         state, canPreview, interactive, showRules, rulesUrl,
@@ -149,7 +149,7 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
                     </Carousel>
                 ) : (
                     <div className={styles.noImage}>
-                        {uploading
+                        {uploading && !uploadSent && !lastSubmission
                             ? tUI('detail.uploading')
                             : loading
                                 ? ''

@@ -1,32 +1,19 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import React, { memo, useCallback, useMemo, type CSSProperties } from 'react';
 import classNames from 'classnames';
 import styles from './uploader.module.scss';
 import Viewer from '../detail/viewer/viewer';
-import { getAnnouncementLocaleKey } from '@/utils/announcement';
-import { openOemAuthModal } from '@/component/login/authEvents';
-import { useAuthStore } from '@/store/auth';
-import { useLocale, useTranslateUI } from '@/locale';
+import { useTranslateUI } from '@/locale';
 import type { IMarkerData } from '@/data/marker';
 import { usePointShareLink } from '@/utils/shareLink';
-import { getAppDocument, subscribePictureInPictureState } from '@/component/scale/pip';
 import { Shortcut, type KeyChip } from '@/component/shortcut';
 import { modKey } from '@/component/settings/shortcuts';
 import Carousel from '@/component/carousel';
-import {
-    listUGCImages,
-    listUGCMyImages,
-    recallUGCImage,
-    resolveUGCUploadTarget,
-    toggleUGCImageFlag,
-    toggleUGCImageRecall,
-    toggleUGCImageUpvote,
-    uploadUGCImage,
-    UGCClientError,
-    type UGCImage,
-    type UGCImageActionPatch,
-    type UGCSubmissionImage,
-    type UGCUploadSubmission,
-} from '@/utils/ugcClient';
+import useUGCPointImages from './useUGCPointImages';
+import useUGCUpload from './useUGCUpload';
+import useUGCImageActions from './useUGCImageActions';
+import useImageUiState from './useImageUiState';
+import useUploadInteraction from './useUploadInteraction';
+import useCarousel from './useCarousel';
 
 type Props = {
     point: IMarkerData;
@@ -34,350 +21,40 @@ type Props = {
     active?: boolean;
 };
 
-type ImageState = 'noImage' | 'pending' | 'hasImage';
-
 const UPLOAD_ACCEPT = 'image/jpeg,image/png,image/webp,image/avif,image/heic,image/heif,.heic,.heif';
 const UPLOAD_KEY_SCALE = 0.75;
 const UPLOAD_CLICK_KEYS: KeyChip[] = [{ label: '', type: 'left-click', size: '1u' }];
 
-const hasDraggedFiles = (event: React.DragEvent<HTMLDivElement>): boolean => (
-    Array.from(event.dataTransfer.types).includes('Files')
-);
-
-type CarouselDirection = 'previous' | 'next';
-
-const getCarouselDirection = (
-    rect: DOMRect,
-    clientX: number,
-    clientY: number,
-    controlWidthRatio: number,
-    controlHeightRatio: number,
-    offsetRatio: number,
-): CarouselDirection | null => {
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
-    const controlWidth = rect.width * controlWidthRatio;
-    const controlHeight = controlWidth * controlHeightRatio;
-    const offset = rect.width * offsetRatio;
-    const top = (rect.height - controlHeight) / 2;
-    const bottom = top + controlHeight;
-
-    if (y < top || y > bottom) return null;
-    if (x >= offset && x <= offset + controlWidth) return 'previous';
-    if (x >= rect.width - offset - controlWidth && x <= rect.width - offset) return 'next';
-    return null;
-};
-
-const isPendingStatus = (status: UGCSubmissionImage['status'] | UGCImage['status']): boolean => (
-    status === 'pending_openai' || status === 'pending_audit'
-);
-
-const isPending = (image: Pick<UGCSubmissionImage, 'status'> | Pick<UGCImage, 'status'>): boolean => (
-    isPendingStatus(image.status)
-);
-
-const isPublic = (image: Pick<UGCSubmissionImage, 'status'> | Pick<UGCImage, 'status'>): boolean => (
-    image.status === 'active' || image.status === 'flagged' || image.status === 'remove_request'
-);
-
-const getUpvoteCount = (image: UGCImage): number => (
-    Number.isFinite(image.upvotes)
-        ? Math.max(0, image.upvotes as number)
-        : Number.isFinite(image.upvoteCount)
-            ? Math.max(0, image.upvoteCount as number)
-            : 0
-);
-
-const getImageCreatedAtTime = (image: UGCImage): number => {
-    const time = Date.parse(image.createdAt);
-    return Number.isNaN(time) ? Number.MAX_SAFE_INTEGER : time;
-};
-
-const isActionConflict = (err: unknown): boolean => (
-    err instanceof UGCClientError && err.status === 409
-);
-
-const useUpload = (point: IMarkerData) => {
-    const tUI = useTranslateUI();
-    const locale = useLocale();
-    const user = useAuthStore((state) => state.sessionUser);
-    const inputRef = useRef<HTMLInputElement | null>(null);
-    const target = useMemo(() => resolveUGCUploadTarget(point), [point]);
-    const [images, setImages] = useState<UGCImage[]>([]);
-    const [myImages, setMyImages] = useState<UGCSubmissionImage[]>([]);
-    const [publicImagesLoading, setPublicImagesLoading] = useState(false);
-    const [myImagesLoading, setMyImagesLoading] = useState(false);
-    const [uploading, setUploading] = useState(false);
-    const [progress, setProgress] = useState(0);
-    const [error, setError] = useState<string | null>(null);
-    const [viewerOpen, setViewerOpen] = useState(false);
-    const [pendingLoginUpload, setPendingLoginUpload] = useState(false);
-    const [lastSubmission, setLastSubmission] = useState<UGCUploadSubmission | null>(null);
-    const [actionPending, setActionPending] = useState(false);
-    const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
-
-    const errText = useCallback((err: unknown): string => {
-        if (err instanceof UGCClientError) {
-            const translated = tUI(`detail.errors.${err.code}`);
-            const fallback = tUI(err.status ? 'detail.errors.backendUnknown' : 'detail.errors.uploadFailed');
-            return typeof translated === 'string' && translated
-                ? translated
-                : String(fallback || 'Upload failed.');
-        }
-
-        return String(tUI('detail.errors.uploadFailed') || 'Upload failed.');
-    }, [tUI]);
-
-    useEffect(() => {
-        setImages([]);
-        setMyImages([]);
-        setError(null);
-        setLastSubmission(null);
-        setViewerOpen(false);
-        setSelectedImageId(null);
-        setPublicImagesLoading(false);
-        setMyImagesLoading(false);
-        if (!target) return;
-
-        let disposed = false;
-        setPublicImagesLoading(true);
-        setMyImagesLoading(Boolean(user));
-        void listUGCImages(point.id)
-            .then((nextImages) => {
-                if (!disposed) setImages(nextImages);
-            })
-            .catch(() => {
-                if (!disposed) setImages([]);
-            })
-            .finally(() => {
-                if (!disposed) setPublicImagesLoading(false);
-            });
-
-        if (user) {
-            void listUGCMyImages(point.id)
-                .then((nextImages) => {
-                    if (!disposed) setMyImages(nextImages);
-                })
-                .catch(() => {
-                    if (!disposed) setMyImages([]);
-                })
-                .finally(() => {
-                    if (!disposed) setMyImagesLoading(false);
-                });
-        }
-
-        return () => {
-            disposed = true;
-        };
-    }, [point.id, target, user]);
-
-    useEffect(() => {
-        if (!pendingLoginUpload || !user) return;
-        setPendingLoginUpload(false);
-        requestAnimationFrame(() => inputRef.current?.click());
-    }, [pendingLoginUpload, user]);
-
-    const pointImages = useMemo(
-        () => images.filter((image) => image.markerId === point.id),
-        [images, point.id],
-    );
-    const pointMyImages = useMemo(
-        () => myImages.filter((image) => image.markerId === point.id),
-        [myImages, point.id],
-    );
-    const activeImages = useMemo(() => {
-        const merged = new Map<string, UGCImage>();
-        pointImages.forEach((image) => {
-            const ownMatch = pointMyImages.find((myImage) => myImage.id === image.id);
-            merged.set(image.id, ownMatch
-                ? {
-                    ...image,
-                    ...ownMatch,
-                    author: image.author ?? ownMatch.author,
-                    url: image.url || ownMatch.url,
-                }
-                : image);
-        });
-
-        pointMyImages
-            .filter((image) => isPending(image) || isPublic(image))
-            .forEach((image) => {
-                const current = merged.get(image.id);
-                merged.set(image.id, current
-                    ? {
-                        ...current,
-                        ...image,
-                        author: current.author ?? image.author,
-                        url: current.url || image.url,
-                    }
-                    : image);
-            });
-
-        return [...merged.values()].sort((a, b) => {
-            const pendingDelta = Number(isPending(b)) - Number(isPending(a));
-            if (pendingDelta !== 0) return pendingDelta;
-            return getImageCreatedAtTime(b) - getImageCreatedAtTime(a);
-        });
-    }, [pointImages, pointMyImages]);
-    const active = useMemo(() => {
-        if (activeImages.length === 0) return null;
-        return activeImages.find((image) => image.id === selectedImageId) ?? activeImages[0];
-    }, [activeImages, selectedImageId]);
-
-    useEffect(() => {
-        if (activeImages.length === 0) {
-            setSelectedImageId(null);
-            return;
-        }
-        if (selectedImageId && activeImages.some((image) => image.id === selectedImageId)) return;
-        setSelectedImageId(activeImages[0].id);
-    }, [activeImages, selectedImageId]);
-
-    const isOwnActive = Boolean(active && pointMyImages.some((image) => image.id === active.id));
-    const isActivePending = Boolean(active && isPending(active));
-    const pendingOwn = useMemo(
-        () => pointMyImages.find(isPending) ?? null,
-        [pointMyImages],
-    );
-    const state: ImageState = pendingOwn || lastSubmission?.status === 'pending_openai' || lastSubmission?.status === 'pending_audit'
-        ? 'pending'
-        : active
-            ? 'hasImage'
-            : 'noImage';
-    const loading = publicImagesLoading || myImagesLoading;
-    const canUpload = Boolean(target) && !loading && state !== 'hasImage' && state !== 'pending' && !uploading;
-    const canPreview = Boolean(active);
-    const interactive = canPreview || canUpload;
-    const karma = Number.isFinite(user?.karma) ? Math.max(0, user?.karma as number) : 0;
-    const showRules = canUpload && state === 'noImage' && karma < 2;
-    const rulesUrl = useMemo(
-        () => `https://blog.opendfieldmap.org/${getAnnouncementLocaleKey(locale)}/docs/community-guidelines`,
-        [locale],
-    );
-
-    const requestUpload = useCallback(() => {
-        if (!canUpload) return;
-        setError(null);
-        if (!user) {
-            setPendingLoginUpload(true);
-            openOemAuthModal('login');
-            return;
-        }
-        inputRef.current?.click();
-    }, [canUpload, user]);
-
-    const uploadFile = useCallback(async (file: File) => {
-        if (!file || !target) return;
-
-        setUploading(true);
-        setProgress(0.02);
-        setError(null);
-        setLastSubmission(null);
-        try {
-            const submission = await uploadUGCImage(target, file, setProgress);
-            setLastSubmission(submission);
-            const [nextImages, nextMyImages] = await Promise.allSettled([
-                listUGCImages(point.id),
-                listUGCMyImages(point.id),
-            ]);
-            if (nextImages.status === 'fulfilled') {
-                setImages(nextImages.value);
-            }
-            if (nextMyImages.status === 'fulfilled') {
-                setMyImages(nextMyImages.value);
-            }
-        } catch (err) {
-            setLastSubmission(null);
-            setError(errText(err));
-        } finally {
-            setUploading(false);
-            setProgress(0);
-        }
-    }, [errText, point.id, target]);
-
-    const upload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        event.target.value = '';
-        if (!file) return;
-        await uploadFile(file);
-    }, [uploadFile]);
-
-    return {
-        active,
-        activeImages,
-        authorNickname: active?.author?.nickname ?? '',
-        authorPublicUid: active?.author?.publicUid ?? '',
-        canUpload,
-        canPreview,
-        error,
-        inputRef,
-        interactive,
-        loading,
-        progress,
-        requestUpload,
-        rulesUrl,
-        selectedImageId,
-        setSelectedImageId,
-        setViewerOpen,
-        show: Boolean(target) || pointImages.length > 0,
-        showRules,
-        state,
-        upload,
-        uploadFile,
-        uploading,
-        viewerOpen,
-        actionPending,
-        isOwnActive,
-        isAuthenticated: Boolean(user),
-        createdAt: active?.createdAt ?? '',
-        setActionPending,
-        setImages,
-        setMyImages,
-        isActivePending,
-    };
-};
-
 const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props) => {
     const tUI = useTranslateUI();
+
+    const imageState = useUGCPointImages(point);
+    const uploadState = useUGCUpload(point, imageState);
+    const actionsState = useUGCImageActions(imageState, uploadState);
+    const uiState = useImageUiState(imageState, uploadState);
+    const interaction = useUploadInteraction(point, uploadState, activeDetail, actionsState.viewerOpen);
+    const carousel = useCarousel();
+
+    const { active, activeImages, selectedImageId, setSelectedImageId, show, loading } = imageState;
+    const { uploading, progress, error, inputRef, upload, requestUpload } = uploadState;
+    const { actionPending, viewerOpen, setViewerOpen, handleToggleUpvote, handleToggleFlag, handleToggleRecall } = actionsState;
     const {
-        active,
-        activeImages,
-        authorNickname,
-        authorPublicUid,
-        canUpload,
-        canPreview,
-        createdAt,
-        error,
-        actionPending,
-        inputRef,
-        interactive,
-        isAuthenticated,
-        isOwnActive,
-        loading,
-        progress,
-        requestUpload,
-        rulesUrl,
-        selectedImageId,
-        setSelectedImageId,
-        setViewerOpen,
-        show,
-        showRules,
-        state,
-        upload,
-        uploadFile,
-        uploading,
-        viewerOpen,
-        setActionPending,
-        setImages,
-        setMyImages,
-        isActivePending,
-    } = useUpload(point);
+        state, canPreview, interactive, showRules, rulesUrl,
+        authorNickname, authorPublicUid, createdAt,
+        upvoteCount, upvoted, flagged, recallRequested,
+        canFlag, canRecall, recallOnly,
+    } = uiState;
+    const { dragActive, handleDragEnter, handleDragOver, handleDragLeave, handleDrop } = interaction;
+    const {
+        carouselHoverDirection,
+        handleCarouselLayerClick,
+        handleCarouselLayerPointerMove,
+        handleCarouselLayerPointerLeave,
+        handleCarouselLayerKeyDown,
+    } = carousel;
+
     const { copiedPopupVisible, copyPointShareUrl } = usePointShareLink(point);
-    const pendingUploadFileRef = useRef<File | null>(null);
-    const dragDepthRef = useRef(0);
-    const [appDocumentVersion, setAppDocumentVersion] = useState(0);
-    const [dragActive, setDragActive] = useState(false);
-    const [carouselHoverDirection, setCarouselHoverDirection] = useState<CarouselDirection | null>(null);
+
     const progressStyle = useMemo(
         () => ({ '--uploader-progress': `${Math.round(progress * 100)}%` }) as CSSProperties,
         [progress],
@@ -416,278 +93,6 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
         handleClick();
     }, [handleClick, interactive]);
 
-    const handleCarouselLayerClick = useCallback((
-        event: React.MouseEvent<HTMLDivElement>,
-        previous: () => void,
-        next: () => void,
-    ) => {
-        const rect = event.currentTarget.getBoundingClientRect();
-        const direction = getCarouselDirection(rect, event.clientX, event.clientY, 0.087, 1.5879, 0.052);
-
-        if (direction === 'previous') {
-            event.stopPropagation();
-            previous();
-            return;
-        }
-
-        if (direction === 'next') {
-            event.stopPropagation();
-            next();
-        }
-    }, []);
-
-    const handleCarouselLayerPointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-        const direction = getCarouselDirection(
-            event.currentTarget.getBoundingClientRect(),
-            event.clientX,
-            event.clientY,
-            0.087,
-            1.5879,
-            0.052,
-        );
-        setCarouselHoverDirection(direction);
-    }, []);
-
-    const handleCarouselLayerPointerLeave = useCallback(() => {
-        setCarouselHoverDirection(null);
-    }, []);
-
-    const handleCarouselLayerKeyDown = useCallback((
-        event: React.KeyboardEvent<HTMLDivElement>,
-        previous: () => void,
-        next: () => void,
-    ) => {
-        if (event.key === 'ArrowLeft') {
-            event.preventDefault();
-            event.stopPropagation();
-            previous();
-            return;
-        }
-
-        if (event.key === 'ArrowRight') {
-            event.preventDefault();
-            event.stopPropagation();
-            next();
-        }
-    }, []);
-
-    useEffect(() => subscribePictureInPictureState(() => {
-        setAppDocumentVersion((version) => version + 1);
-    }), []);
-
-    useEffect(() => {
-        pendingUploadFileRef.current = null;
-        dragDepthRef.current = 0;
-        setDragActive(false);
-    }, [point.id]);
-
-    const handleClipboardUpload = useCallback(async (file: File) => {
-        if (!file) return;
-        if (!isAuthenticated) {
-            pendingUploadFileRef.current = file;
-            openOemAuthModal('login');
-            return;
-        }
-        await uploadFile(file);
-    }, [isAuthenticated, uploadFile]);
-
-    useEffect(() => {
-        if (!activeDetail || !canUpload || !isAuthenticated || uploading) return;
-        const file = pendingUploadFileRef.current;
-        if (!file) return;
-        pendingUploadFileRef.current = null;
-        void uploadFile(file);
-    }, [activeDetail, canUpload, isAuthenticated, uploadFile, uploading]);
-
-    useEffect(() => {
-        if (!activeDetail || !canUpload || uploading || viewerOpen) return undefined;
-        const activeDocument = getAppDocument();
-
-        const handlePaste = (event: ClipboardEvent) => {
-            const items = Array.from(event.clipboardData?.items ?? []);
-            const file = items
-                .filter((item) => item.kind === 'file')
-                .map((item) => item.getAsFile())
-                .find((item): item is File => Boolean(item));
-
-            if (!file) return;
-            event.preventDefault();
-            void handleClipboardUpload(file);
-        };
-
-        activeDocument.addEventListener('paste', handlePaste);
-        return () => activeDocument.removeEventListener('paste', handlePaste);
-    }, [activeDetail, appDocumentVersion, canUpload, handleClipboardUpload, uploading, viewerOpen]);
-
-    useEffect(() => {
-        if (activeDetail && canUpload && !uploading && !viewerOpen) return;
-        dragDepthRef.current = 0;
-        setDragActive(false);
-    }, [activeDetail, canUpload, uploading, viewerOpen]);
-
-    const handleDragEnter = useCallback((event: React.DragEvent<HTMLDivElement>) => {
-        if (!hasDraggedFiles(event)) return;
-        event.preventDefault();
-        if (!activeDetail || !canUpload || uploading || viewerOpen) return;
-        dragDepthRef.current += 1;
-        setDragActive(true);
-    }, [activeDetail, canUpload, uploading, viewerOpen]);
-
-    const handleDragOver = useCallback((event: React.DragEvent<HTMLDivElement>) => {
-        if (!hasDraggedFiles(event)) return;
-        event.preventDefault();
-        event.dataTransfer.dropEffect = activeDetail && canUpload && !uploading && !viewerOpen ? 'copy' : 'none';
-    }, [activeDetail, canUpload, uploading, viewerOpen]);
-
-    const handleDragLeave = useCallback((event: React.DragEvent<HTMLDivElement>) => {
-        if (!hasDraggedFiles(event)) return;
-        event.preventDefault();
-        if (!activeDetail || !canUpload || uploading || viewerOpen) return;
-        dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
-        if (dragDepthRef.current === 0) {
-            setDragActive(false);
-        }
-    }, [activeDetail, canUpload, uploading, viewerOpen]);
-
-    const handleDrop = useCallback((event: React.DragEvent<HTMLDivElement>) => {
-        if (!hasDraggedFiles(event)) return;
-        event.preventDefault();
-        dragDepthRef.current = 0;
-        setDragActive(false);
-        if (!activeDetail || !canUpload || uploading || viewerOpen) return;
-
-        const file = event.dataTransfer.files[0];
-        if (!file) return;
-
-        if (!isAuthenticated) {
-            pendingUploadFileRef.current = file;
-            openOemAuthModal('login');
-            return;
-        }
-
-        void uploadFile(file);
-    }, [activeDetail, canUpload, isAuthenticated, uploadFile, uploading, viewerOpen]);
-
-    const patchActiveImage = useCallback((patch: (image: UGCImage) => UGCImage) => {
-        if (!active) return;
-        setImages((current) => current.map((image) => (image.id === active.id ? patch(image) : image)));
-        setMyImages((current) => current.map((image) => (image.id === active.id ? patch(image) as UGCSubmissionImage : image)));
-    }, [active, setImages, setMyImages]);
-
-    const applyServerImage = useCallback((serverImage: UGCImageActionPatch) => {
-        setImages((current) => current.map((image) => (image.id === serverImage.id ? {
-            ...image,
-            ...serverImage,
-        } : image)));
-        setMyImages((current) => current.map((image) => (image.id === serverImage.id ? {
-            ...image,
-            ...serverImage,
-            status: (serverImage as UGCSubmissionImage).status ?? image.status,
-        } : image)));
-    }, [setImages, setMyImages]);
-
-    const handleToggleUpvote = useCallback(async () => {
-        if (!active || actionPending) return;
-        if (!isAuthenticated) {
-            openOemAuthModal('login');
-            return;
-        }
-        const nextUpvoted = !active.upvoted;
-        const delta = nextUpvoted ? 1 : -1;
-        patchActiveImage((image) => ({
-            ...image,
-            upvoted: nextUpvoted,
-            upvotes: Math.max(0, getUpvoteCount(image) + delta),
-            upvoteCount: Math.max(0, getUpvoteCount(image) + delta),
-        }));
-        setActionPending(true);
-        try {
-            applyServerImage(await toggleUGCImageUpvote(active.id, nextUpvoted));
-        } catch {
-            patchActiveImage((image) => ({
-                ...image,
-                upvoted: !nextUpvoted,
-                upvotes: Math.max(0, getUpvoteCount(image) - delta),
-                upvoteCount: Math.max(0, getUpvoteCount(image) - delta),
-            }));
-        } finally {
-            setActionPending(false);
-        }
-    }, [actionPending, active, applyServerImage, isAuthenticated, patchActiveImage, setActionPending]);
-
-    const handleToggleFlag = useCallback(async () => {
-        if (!active || actionPending || isOwnActive) return;
-        if (!isAuthenticated) {
-            openOemAuthModal('login');
-            return;
-        }
-        const nextFlagged = !active.flagged;
-        patchActiveImage((image) => ({
-            ...image,
-            flagged: nextFlagged,
-            status: nextFlagged ? 'flagged' : image.status === 'flagged' ? 'active' : image.status,
-        }));
-        setActionPending(true);
-        try {
-            applyServerImage(await toggleUGCImageFlag(active.id, nextFlagged));
-        } catch {
-            patchActiveImage((image) => ({
-                ...image,
-                flagged: !nextFlagged,
-                status: !nextFlagged ? 'flagged' : image.status === 'flagged' ? 'active' : image.status,
-            }));
-        } finally {
-            setActionPending(false);
-        }
-    }, [actionPending, active, applyServerImage, isAuthenticated, isOwnActive, patchActiveImage, setActionPending]);
-
-    const handleToggleRecall = useCallback(async () => {
-        if (!active || actionPending || !isOwnActive) return;
-        if (!isAuthenticated) {
-            openOemAuthModal('login');
-            return;
-        }
-        if (isActivePending) {
-            setActionPending(true);
-            try {
-                const serverImage = await recallUGCImage(active.id);
-                applyServerImage(serverImage);
-                setMyImages((current) => current.filter((image) => image.id !== active.id));
-                setImages((current) => current.filter((image) => image.id !== active.id));
-                setViewerOpen(false);
-            } finally {
-                setActionPending(false);
-            }
-            return;
-        }
-        const nextRecallRequested = !active.recallRequested && active.status !== 'remove_request';
-        patchActiveImage((image) => ({
-            ...image,
-            recallRequested: nextRecallRequested,
-            status: nextRecallRequested ? 'remove_request' : image.status === 'remove_request' ? 'active' : image.status,
-        }));
-        setActionPending(true);
-        try {
-            applyServerImage(await toggleUGCImageRecall(active.id, nextRecallRequested));
-        } catch (err) {
-            if (nextRecallRequested && isActionConflict(err)) {
-                patchActiveImage((image) => ({
-                    ...image,
-                    recallRequested: true,
-                    status: 'remove_request',
-                }));
-                return;
-            }
-            patchActiveImage((image) => ({
-                ...image,
-                recallRequested: !nextRecallRequested,
-                status: !nextRecallRequested ? 'remove_request' : image.status === 'remove_request' ? 'active' : image.status,
-            }));
-        } finally {
-            setActionPending(false);
-        }
-    }, [actionPending, active, applyServerImage, isActivePending, isAuthenticated, isOwnActive, patchActiveImage, setActionPending, setImages, setMyImages, setViewerOpen]);
-
     if (!show) return null;
 
     return (
@@ -720,26 +125,26 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
                     >
                         {({ item, hasMultiple, previous, next }) => item && (
                             <>
-	                                <img src={item.url} alt={item.content || pointName} />
-	                                {hasMultiple && (
-	                                    <div
-	                                        className={styles.carouselLayer}
-	                                        data-hover={carouselHoverDirection ?? undefined}
-	                                        role="button"
-	                                        tabIndex={-1}
-	                                        aria-label="Switch image"
-	                                        onClick={(event) => handleCarouselLayerClick(event, previous, next)}
-	                                        onKeyDown={(event) => handleCarouselLayerKeyDown(event, previous, next)}
-	                                        onPointerMove={handleCarouselLayerPointerMove}
-	                                        onPointerLeave={handleCarouselLayerPointerLeave}
-	                                    />
-	                                )}
-                                    {state === 'pending' && (
-                                        <div className={styles.noImage}>
-                                            {tUI('detail.uploadPending')}
-                                        </div>
-                                    )}
-	                            </>
+                                <img src={item.url} alt={item.content || pointName} />
+                                {hasMultiple && (
+                                    <div
+                                        className={styles.carouselLayer}
+                                        data-hover={carouselHoverDirection ?? undefined}
+                                        role="button"
+                                        tabIndex={-1}
+                                        aria-label="Switch image"
+                                        onClick={(event) => handleCarouselLayerClick(event, previous, next)}
+                                        onKeyDown={(event) => handleCarouselLayerKeyDown(event, previous, next)}
+                                        onPointerMove={handleCarouselLayerPointerMove}
+                                        onPointerLeave={handleCarouselLayerPointerLeave}
+                                    />
+                                )}
+                                {state === 'pending' && (
+                                    <div className={styles.noImage}>
+                                        {tUI('detail.uploadPending')}
+                                    </div>
+                                )}
+                            </>
                         )}
                     </Carousel>
                 ) : (
@@ -792,13 +197,13 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
                 authorNickname={authorNickname}
                 authorPublicUid={authorPublicUid}
                 createdAt={createdAt}
-                upvoteCount={active ? getUpvoteCount(active) : 0}
-                upvoted={Boolean(active?.upvoted)}
-                flagged={Boolean(active?.flagged)}
-                recallRequested={Boolean(active?.recallRequested || active?.status === 'remove_request')}
-                canFlag={!isOwnActive && !isActivePending}
-                canRecall={isOwnActive}
-                recallOnly={isActivePending}
+                upvoteCount={upvoteCount}
+                upvoted={upvoted}
+                flagged={flagged}
+                recallRequested={recallRequested}
+                canFlag={canFlag}
+                canRecall={canRecall}
+                recallOnly={recallOnly}
                 actionPending={actionPending}
                 shareCopied={copiedPopupVisible}
                 onToggleUpvote={() => void handleToggleUpvote()}

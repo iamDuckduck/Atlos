@@ -221,7 +221,7 @@
     }
 }
 
-.pointImage.pending > img + .noImage {
+.pointImage.pending > img + .noImage, .carouselLayer + .noImage {
     position: absolute;
     color: var(--uploader-pending-holder);
     mix-blend-mode: luminosity;

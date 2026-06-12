@@ -74,7 +74,9 @@ type PendingSubmissionRequest = {
 };
 
 const UGC_API_BASE = `${getAuthBase()}/uploads/v1`;
-const IMAGE_CACHE_TTL_MS = 10_000;
+const PRIVATE_IMAGE_CACHE_POSITIVE_TTL_MS = 5 * 60 * 1000;
+const PUBLIC_IMAGE_CACHE_POSITIVE_TTL_MS = 30 * 1000;
+const IMAGE_CACHE_EMPTY_TTL_MS = 10 * 1000;
 const SUBMISSION_CACHE_TTL_MS = 0;
 const MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
 const CLIENT_WEBP_MAX_BYTES = 4 * 1024 * 1024;
@@ -96,10 +98,14 @@ const UGC_UPLOADABLE_CATEGORIES = new Set<UGCUploadableCategory>([
 ]);
 const imageCache = new Map<string, ImageCacheEntry>();
 const imageInFlight = new Map<string, Promise<UGCImage[]>>();
+const publicImageCache = new Map<string, ImageCacheEntry>();
+const publicImageInFlight = new Map<string, Promise<UGCImage[]>>();
 const submissionCache = new Map<string, SubmissionCacheEntry>();
 const submissionInFlight = new Map<string, Promise<UGCSubmissionImage[]>>();
 let pendingImageBatchTimer: number | null = null;
 let pendingImageBatchRequests: PendingImageRequest[] = [];
+let pendingPublicImageBatchTimer: number | null = null;
+let pendingPublicImageBatchRequests: PendingImageRequest[] = [];
 let pendingSubmissionBatchTimer: number | null = null;
 let pendingSubmissionBatchRequests: PendingSubmissionRequest[] = [];
 
@@ -119,8 +125,36 @@ export const invalidateUGCImageCache = (markerId: string): void => {
     imageCache.delete(markerId);
 };
 
+export const invalidateUGCPublicImageCache = (markerId: string): void => {
+    publicImageCache.delete(markerId);
+};
+
 export const invalidateUGCSubmissionCache = (markerId: string): void => {
     submissionCache.delete(markerId);
+};
+
+export const peekUGCImages = (markerId: string): UGCImage[] | null => {
+    const cached = imageCache.get(markerId);
+    if (!cached || cached.expiresAt <= Date.now()) {
+        return null;
+    }
+    return cached.images;
+};
+
+export const peekPublicUGCImages = (markerId: string): UGCImage[] | null => {
+    const cached = publicImageCache.get(markerId);
+    if (!cached || cached.expiresAt <= Date.now()) {
+        return null;
+    }
+    return cached.images;
+};
+
+export const peekUGCMyImages = (markerId: string): UGCSubmissionImage[] | null => {
+    const cached = submissionCache.get(markerId);
+    if (!cached || cached.expiresAt <= Date.now()) {
+        return null;
+    }
+    return cached.images;
 };
 
 export function resolveUGCUploadTarget(point: IMarkerData): UGCUploadTarget | null {
@@ -136,6 +170,10 @@ export function resolveUGCUploadTarget(point: IMarkerData): UGCUploadTarget | nu
 
 export async function listUGCImages(markerId: string): Promise<UGCImage[]> {
     return listUGCImagesByMarkerIds([markerId]).then((grouped) => grouped[markerId] ?? []);
+}
+
+export async function listPublicUGCImages(markerId: string): Promise<UGCImage[]> {
+    return listPublicUGCImagesByMarkerIds([markerId]).then((grouped) => grouped[markerId] ?? []);
 }
 
 export async function listUGCImagesByMarkerIds(markerIds: string[]): Promise<Record<string, UGCImage[]>> {
@@ -159,6 +197,36 @@ export async function listUGCImagesByMarkerIds(markerIds: string[]): Promise<Rec
 
     const fetchedEntries = await Promise.all(
         pendingIds.map(async (markerId) => [markerId, await getOrQueueUGCImages(markerId)] as const),
+    );
+
+    fetchedEntries.forEach(([markerId, images]) => {
+        result[markerId] = images;
+    });
+
+    return result;
+}
+
+export async function listPublicUGCImagesByMarkerIds(markerIds: string[]): Promise<Record<string, UGCImage[]>> {
+    const normalizedIds = [...new Set(markerIds.map((item) => item.trim()).filter(Boolean))];
+    const result: Record<string, UGCImage[]> = {};
+    const pendingIds: string[] = [];
+
+    normalizedIds.forEach((markerId) => {
+        const cached = publicImageCache.get(markerId);
+        if (cached && cached.expiresAt > Date.now()) {
+            result[markerId] = cached.images;
+            return;
+        }
+
+        pendingIds.push(markerId);
+    });
+
+    if (pendingIds.length === 0) {
+        return result;
+    }
+
+    const fetchedEntries = await Promise.all(
+        pendingIds.map(async (markerId) => [markerId, await getOrQueuePublicUGCImages(markerId)] as const),
     );
 
     fetchedEntries.forEach(([markerId, images]) => {
@@ -229,6 +297,7 @@ export async function uploadUGCImage(
     }
 
     invalidateUGCImageCache(point.id);
+    invalidateUGCPublicImageCache(point.id);
     invalidateUGCSubmissionCache(point.id);
     return payload.submission;
 }
@@ -276,6 +345,7 @@ async function updateUGCImageAction(imageId: string, action: string): Promise<UG
     if (payload.image) {
         const image = normalizeUGCImage(payload.image);
         invalidateUGCImageCache(image.markerId);
+        invalidateUGCPublicImageCache(image.markerId);
         invalidateUGCSubmissionCache(image.markerId);
         return image;
     }
@@ -416,6 +486,32 @@ function getOrQueueUGCImages(markerId: string): Promise<UGCImage[]> {
     });
 }
 
+function getOrQueuePublicUGCImages(markerId: string): Promise<UGCImage[]> {
+    const inFlight = publicImageInFlight.get(markerId);
+    if (inFlight) {
+        return inFlight;
+    }
+
+    const promise = new Promise<UGCImage[]>((resolve, reject) => {
+        pendingPublicImageBatchRequests.push({ markerId, resolve, reject });
+        if (pendingPublicImageBatchTimer !== null) {
+            return;
+        }
+
+        pendingPublicImageBatchTimer = window.setTimeout(() => {
+            pendingPublicImageBatchTimer = null;
+            const requests = pendingPublicImageBatchRequests;
+            pendingPublicImageBatchRequests = [];
+            void flushPublicUGCImageBatch(requests);
+        }, 0);
+    });
+
+    publicImageInFlight.set(markerId, promise);
+    return promise.finally(() => {
+        publicImageInFlight.delete(markerId);
+    });
+}
+
 function getOrQueueUGCMyImages(markerId: string): Promise<UGCSubmissionImage[]> {
     const inFlight = submissionInFlight.get(markerId);
     if (inFlight) {
@@ -486,7 +582,64 @@ async function flushUGCImageBatch(requests: PendingImageRequest[]): Promise<void
         markerIds.forEach((markerId) => {
             const images = groupedImages.get(markerId) ?? [];
             imageCache.set(markerId, {
-                expiresAt: Date.now() + IMAGE_CACHE_TTL_MS,
+                expiresAt: Date.now() + (images.length > 0 ? PRIVATE_IMAGE_CACHE_POSITIVE_TTL_MS : IMAGE_CACHE_EMPTY_TTL_MS),
+                images,
+            });
+            groupedResolvers.get(markerId)?.forEach((request) => {
+                request.resolve(images);
+            });
+        });
+    } catch (error) {
+        groupedResolvers.forEach((entries) => {
+            entries.forEach((request) => request.reject(error));
+        });
+    }
+}
+
+async function flushPublicUGCImageBatch(requests: PendingImageRequest[]): Promise<void> {
+    const groupedResolvers = new Map<string, PendingImageRequest[]>();
+    requests.forEach((request) => {
+        const bucket = groupedResolvers.get(request.markerId);
+        if (bucket) {
+            bucket.push(request);
+            return;
+        }
+        groupedResolvers.set(request.markerId, [request]);
+    });
+
+    const markerIds = [...groupedResolvers.keys()];
+    const scope = import.meta.env.DEV ? 'test' : 'prod';
+
+    try {
+        const response = await fetch(
+            `${UGC_API_BASE}/images?markerIds=${encodeURIComponent(markerIds.join(','))}&limit=6&scope=${scope}&publicOnly=1`,
+            {
+                credentials: 'omit',
+            },
+        );
+
+        if (!response.ok) {
+            throw await readUGCError(response);
+        }
+
+        const payload = await response.json() as { items?: UGCImage[] };
+        const groupedImages = new Map<string, UGCImage[]>();
+
+        markerIds.forEach((markerId) => {
+            groupedImages.set(markerId, []);
+        });
+
+        (payload.items ?? []).map(normalizeUGCImage).forEach((image) => {
+            const images = groupedImages.get(image.markerId);
+            if (images) {
+                images.push(image);
+            }
+        });
+
+        markerIds.forEach((markerId) => {
+            const images = groupedImages.get(markerId) ?? [];
+            publicImageCache.set(markerId, {
+                expiresAt: Date.now() + (images.length > 0 ? PUBLIC_IMAGE_CACHE_POSITIVE_TTL_MS : IMAGE_CACHE_EMPTY_TTL_MS),
                 images,
             });
             groupedResolvers.get(markerId)?.forEach((request) => {

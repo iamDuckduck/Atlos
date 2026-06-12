@@ -293,7 +293,7 @@ const upload = async (relativePath, retryCount = 0) => {
   }
 };
 
-const concurrency = 20; // limit concurrency
+const concurrency = 120; // limit concurrency
 let index = 0;
 let allFiles = [];
 

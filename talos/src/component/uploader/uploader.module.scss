@@ -128,7 +128,7 @@
         cursor: pointer;
         opacity: 0;
         transition: opacity 0.2s ease;
-        filter: drop-shadow(0px 0px 3px rgba($black-0, 0.5));
+        filter: drop-shadow(0 0 3px rgba($black-0, 0.5));
 
         &::before,
         &::after {
@@ -161,8 +161,45 @@
         }
     }
 
+    .previewShortActions {
+        --short-action-content-opacity: 0;
+        --short-action-disabled-content-opacity: 0;
+        --short-action-bg: #{rgba($white-0, 0)};
+        --short-action-blur: 0px;
+        --short-action-shadow: #{0 0 0 rgba($black-0, 0)};
+
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 4;
+        visibility: hidden;
+        pointer-events: none;
+        transition: visibility 0s linear 0.2s;
+
+        button {
+            transform: translateY(-2px);
+        }
+    }
+
     &:hover .carouselLayer {
         opacity: 1;
+    }
+
+    &:hover .previewShortActions,
+    &:focus-within .previewShortActions {
+        --short-action-content-opacity: 1;
+        --short-action-disabled-content-opacity: 0.42;
+        --short-action-bg: var(--actionbtn-bg);
+        --short-action-blur: 4px;
+        --short-action-shadow: #{0 0 4px rgba($black-0, 0.4)};
+
+        visibility: visible;
+        pointer-events: auto;
+        transition-delay: 0s;
+
+        button {
+            transform: translateY(0);
+        }
     }
 
     .noImage {
@@ -220,7 +257,12 @@
     }
 }
 
-.pointImage.pending > img + .noImage, .carouselLayer + .noImage {
+.previewShortActionRecallIcon {
+    display: inline-flex;
+    transform: rotate(90deg);
+}
+
+.pointImage.pending > img + .noImage, .carouselLayer + .noImage, .previewShortActions + .noImage {
     position: absolute;
     color: var(--uploader-pending-holder);
     mix-blend-mode: luminosity;

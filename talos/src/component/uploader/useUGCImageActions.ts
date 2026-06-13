@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useAuthStore } from '@/store/auth';
 import { openOemAuthModal } from '@/component/login/authEvents';
 import {
@@ -7,20 +7,48 @@ import {
     toggleUGCImageRecall,
     toggleUGCImageUpvote,
     UGCClientError,
+    type UGCImage,
+    type UGCImageActionPatch,
+    type UGCSubmissionImage,
 } from '@/utils/ugcClient';
 import { getUpvoteCount, type PointImagesState } from './useUGCPointImages';
 import type { UploadState } from './useUGCUpload';
+
+const TOGGLE_SYNC_DELAY_MS = 300;
 
 const isActionConflict = (err: unknown): boolean => (
     err instanceof UGCClientError && err.status === 409
 );
 
+type ToggleTask = {
+    desired: boolean;
+    inFlight: boolean;
+    lastSynced: boolean;
+    timer?: number;
+};
+
+const getToggleTask = (
+    tasks: Map<string, ToggleTask>,
+    imageId: string,
+    currentValue: boolean,
+): ToggleTask => {
+    const current = tasks.get(imageId);
+    if (current) return current;
+    const task = {
+        desired: currentValue,
+        inFlight: false,
+        lastSynced: currentValue,
+    };
+    tasks.set(imageId, task);
+    return task;
+};
+
 export type ImageActionsState = {
     actionPending: boolean;
     viewerOpen: boolean;
     setViewerOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    handleToggleUpvote: () => Promise<void>;
-    handleToggleFlag: () => Promise<void>;
+    handleToggleUpvote: () => void;
+    handleToggleFlag: () => void;
     handleToggleRecall: () => Promise<void>;
 };
 
@@ -29,6 +57,8 @@ const useUGCImageActions = (imageState: PointImagesState, uploadState: UploadSta
     const isAuthenticated = Boolean(user);
     const [actionPending, setActionPending] = useState(false);
     const [viewerOpen, setViewerOpen] = useState(false);
+    const upvoteTasksRef = useRef(new Map<string, ToggleTask>());
+    const flagTasksRef = useRef(new Map<string, ToggleTask>());
 
     const {
         active,
@@ -46,60 +76,139 @@ const useUGCImageActions = (imageState: PointImagesState, uploadState: UploadSta
 
     const { lastSubmission, setLastSubmission } = uploadState;
 
-    const handleToggleUpvote = useCallback(async () => {
-        if (!active || actionPending) return;
+    const patchImageById = useCallback((imageId: string, patch: (image: UGCImage) => UGCImage) => {
+        setImages((current) => current.map((image) => (image.id === imageId ? patch(image) : image)));
+        setMyImages((current) => current.map((image) => (image.id === imageId ? patch(image) as UGCSubmissionImage : image)));
+    }, [setImages, setMyImages]);
+
+    const scheduleUpvoteSync = useCallback((imageId: string) => {
+        const task = upvoteTasksRef.current.get(imageId);
+        if (!task) return;
+        if (task.timer) {
+            window.clearTimeout(task.timer);
+        }
+        task.timer = window.setTimeout(() => {
+            task.timer = undefined;
+            if (task.inFlight) return;
+            if (task.desired === task.lastSynced) return;
+
+            const sentState = task.desired;
+            task.inFlight = true;
+            void toggleUGCImageUpvote(imageId, sentState)
+                .then((serverImage: UGCImageActionPatch) => {
+                    task.lastSynced = sentState;
+                    if (task.desired === sentState) {
+                        applyServerImage(serverImage);
+                    }
+                })
+                .catch(() => {
+                    if (task.desired !== sentState) return;
+                    task.desired = task.lastSynced;
+                    patchImageById(imageId, (image) => {
+                        const currentUpvoted = Boolean(image.upvoted);
+                        if (currentUpvoted === task.lastSynced) return image;
+                        const nextCount = Math.max(0, getUpvoteCount(image) + (task.lastSynced ? 1 : -1));
+                        return {
+                            ...image,
+                            upvoted: task.lastSynced,
+                            upvotes: nextCount,
+                            upvoteCount: nextCount,
+                        };
+                    });
+                })
+                .finally(() => {
+                    task.inFlight = false;
+                    if (task.desired !== task.lastSynced) {
+                        scheduleUpvoteSync(imageId);
+                    }
+                });
+        }, TOGGLE_SYNC_DELAY_MS);
+    }, [applyServerImage, patchImageById]);
+
+    const scheduleFlagSync = useCallback((imageId: string) => {
+        const task = flagTasksRef.current.get(imageId);
+        if (!task) return;
+        if (task.timer) {
+            window.clearTimeout(task.timer);
+        }
+        task.timer = window.setTimeout(() => {
+            task.timer = undefined;
+            if (task.inFlight) return;
+            if (task.desired === task.lastSynced) return;
+
+            const sentState = task.desired;
+            task.inFlight = true;
+            void toggleUGCImageFlag(imageId, sentState)
+                .then((serverImage: UGCImageActionPatch) => {
+                    task.lastSynced = sentState;
+                    if (task.desired === sentState) {
+                        applyServerImage(serverImage);
+                    }
+                })
+                .catch(() => {
+                    if (task.desired !== sentState) return;
+                    task.desired = task.lastSynced;
+                    patchImageById(imageId, (image) => ({
+                        ...image,
+                        flagged: task.lastSynced,
+                        status: task.lastSynced ? 'flagged' : image.status === 'flagged' ? 'active' : image.status,
+                    }));
+                })
+                .finally(() => {
+                    task.inFlight = false;
+                    if (task.desired !== task.lastSynced) {
+                        scheduleFlagSync(imageId);
+                    }
+                });
+        }, TOGGLE_SYNC_DELAY_MS);
+    }, [applyServerImage, patchImageById]);
+
+    useEffect(() => () => {
+        upvoteTasksRef.current.forEach((task) => {
+            if (task.timer) window.clearTimeout(task.timer);
+        });
+        flagTasksRef.current.forEach((task) => {
+            if (task.timer) window.clearTimeout(task.timer);
+        });
+    }, []);
+
+    const handleToggleUpvote = useCallback(() => {
+        if (!active) return;
         if (!isAuthenticated) {
             openOemAuthModal('login');
             return;
         }
+        const imageId = active.id;
         const nextUpvoted = !active.upvoted;
         const delta = nextUpvoted ? 1 : -1;
-        patchActiveImage((image) => ({
+        patchImageById(imageId, (image) => ({
             ...image,
             upvoted: nextUpvoted,
             upvotes: Math.max(0, getUpvoteCount(image) + delta),
             upvoteCount: Math.max(0, getUpvoteCount(image) + delta),
         }));
-        setActionPending(true);
-        try {
-            applyServerImage(await toggleUGCImageUpvote(active.id, nextUpvoted));
-        } catch {
-            patchActiveImage((image) => ({
-                ...image,
-                upvoted: !nextUpvoted,
-                upvotes: Math.max(0, getUpvoteCount(image) - delta),
-                upvoteCount: Math.max(0, getUpvoteCount(image) - delta),
-            }));
-        } finally {
-            setActionPending(false);
-        }
-    }, [actionPending, active, applyServerImage, isAuthenticated, patchActiveImage]);
+        const task = getToggleTask(upvoteTasksRef.current, imageId, Boolean(active.upvoted));
+        task.desired = nextUpvoted;
+        scheduleUpvoteSync(imageId);
+    }, [active, isAuthenticated, patchImageById, scheduleUpvoteSync]);
 
-    const handleToggleFlag = useCallback(async () => {
-        if (!active || actionPending || isOwnActive) return;
+    const handleToggleFlag = useCallback(() => {
+        if (!active || isOwnActive) return;
         if (!isAuthenticated) {
             openOemAuthModal('login');
             return;
         }
+        const imageId = active.id;
         const nextFlagged = !active.flagged;
-        patchActiveImage((image) => ({
+        patchImageById(imageId, (image) => ({
             ...image,
             flagged: nextFlagged,
             status: nextFlagged ? 'flagged' : image.status === 'flagged' ? 'active' : image.status,
         }));
-        setActionPending(true);
-        try {
-            applyServerImage(await toggleUGCImageFlag(active.id, nextFlagged));
-        } catch {
-            patchActiveImage((image) => ({
-                ...image,
-                flagged: !nextFlagged,
-                status: !nextFlagged ? 'flagged' : image.status === 'flagged' ? 'active' : image.status,
-            }));
-        } finally {
-            setActionPending(false);
-        }
-    }, [actionPending, active, applyServerImage, isAuthenticated, isOwnActive, patchActiveImage]);
+        const task = getToggleTask(flagTasksRef.current, imageId, Boolean(active.flagged));
+        task.desired = nextFlagged;
+        scheduleFlagSync(imageId);
+    }, [active, isAuthenticated, isOwnActive, patchImageById, scheduleFlagSync]);
 
     const handleToggleRecall = useCallback(async () => {
         if (!active || actionPending || !isOwnActive) return;

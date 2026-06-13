@@ -22,7 +22,9 @@ export type UploadState = {
     setLastSubmission: React.Dispatch<React.SetStateAction<UGCUploadSubmission | null>>;
     inputRef: React.RefObject<HTMLInputElement | null>;
     canUpload: boolean;
+    canAppendUpload: boolean;
     requestUpload: () => void;
+    requestAppendUpload: () => void;
     upload: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
     uploadFile: (file: File) => Promise<void>;
 };
@@ -90,6 +92,7 @@ const useUGCUpload = (point: IMarkerData, imageState: PointImagesState): UploadS
             ? 'hasImage'
             : 'noImage';
     const canUpload = Boolean(target) && !loading && state !== 'hasImage' && state !== 'pending' && !uploading;
+    const canAppendUpload = Boolean(target) && !loading && !uploading;
 
     const errText = useCallback((err: unknown): string => {
         if (err instanceof UGCClientError) {
@@ -203,10 +206,9 @@ const useUGCUpload = (point: IMarkerData, imageState: PointImagesState): UploadS
         await uploadFileToTarget(file, uploadTarget);
     }, [target, uploadFileToTarget]);
 
-    const requestUpload = useCallback(() => {
-        if (!canUpload) return;
-        if (!target) return;
-        inputTargetRef.current = target;
+    const requestFileSelection = useCallback((uploadTarget: UGCUploadTarget | null) => {
+        if (!uploadTarget || uploading) return;
+        inputTargetRef.current = uploadTarget;
         setUploadTask(point.id, (current) => ({
             ...current,
             error: null,
@@ -217,7 +219,19 @@ const useUGCUpload = (point: IMarkerData, imageState: PointImagesState): UploadS
             return;
         }
         inputRef.current?.click();
-    }, [canUpload, point.id, target, user]);
+    }, [point.id, uploading, user]);
+
+    const requestUpload = useCallback(() => {
+        if (!canUpload) return;
+        if (!target) return;
+        requestFileSelection(target);
+    }, [canUpload, requestFileSelection, target]);
+
+    const requestAppendUpload = useCallback(() => {
+        if (!canAppendUpload) return;
+        if (!target) return;
+        requestFileSelection(target);
+    }, [canAppendUpload, requestFileSelection, target]);
 
     return {
         uploading,
@@ -228,7 +242,9 @@ const useUGCUpload = (point: IMarkerData, imageState: PointImagesState): UploadS
         setLastSubmission,
         inputRef,
         canUpload,
+        canAppendUpload,
         requestUpload,
+        requestAppendUpload,
         upload,
         uploadFile,
     };

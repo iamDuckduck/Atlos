@@ -730,6 +730,10 @@ export function useLocator(map: L.Map | undefined): void {
             disposed = true;
             cleanupAnimation();
             cleanupPolling();
+            if (socketRef.current) {
+                socketRef.current.close(1000, 'locator disposed');
+                socketRef.current = null;
+            }
 
             map.off('talos:regionSwitched', onRegionSwitched);
             map.off('talos:subregionSwitched', onSubregionSwitched);

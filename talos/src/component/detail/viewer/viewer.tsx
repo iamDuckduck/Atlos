@@ -10,6 +10,7 @@ import ShareIcon from '@/assets/images/UI/share.svg?react';
 import RecallIcon from '@/assets/images/UI/recall.svg?react';
 import Carousel from '@/component/carousel';
 import type { UGCImage } from '@/utils/ugcClient';
+import ShortActions, { type ShortActionItem } from '@/component/uploader/shortActions';
 
 type CarouselDirection = 'previous' | 'next';
 
@@ -66,6 +67,9 @@ interface ViewerProps {
     onShare?: () => void;
     onToggleRecall?: () => void;
     onSelectedImageIdChange?: (imageId: string) => void;
+    canAppendUpload?: boolean;
+    onRequestUpload?: () => void;
+    uploading?: boolean;
     onClose: () => void;
 }
 
@@ -92,6 +96,9 @@ const Viewer: React.FC<ViewerProps> = ({
     onShare,
     onToggleRecall,
     onSelectedImageIdChange,
+    canAppendUpload = false,
+    onRequestUpload,
+    uploading = false,
     onClose,
 }) => {
     type Phase = 'unmounted' | 'entering' | 'open' | 'exiting';
@@ -138,6 +145,18 @@ const Viewer: React.FC<ViewerProps> = ({
     }, [createdAtDate, tUI]);
     const flagLabel = currentFlagged ? tUI('detail.viewer.unflag') : tUI('detail.viewer.flag');
     const recallLabel = currentRecallRequested ? tUI('detail.viewer.unrecall') : tUI('detail.viewer.recall');
+    const uploadLabel = tUI('detail.viewer.uploadAno');
+    const viewerShortActions = useMemo<ShortActionItem[]>(() => (
+        [{
+            id: 'upload',
+            label: uploadLabel,
+            icon: <RecallIcon />,
+            iconClassName: styles.viewerShortActionUploadIcon,
+            disabled: !canAppendUpload,
+            active: uploading,
+            onClick: onRequestUpload,
+        }]
+    ), [canAppendUpload, onRequestUpload, uploadLabel, uploading]);
 
     const handleCarouselLayerClick = useCallback((
         event: React.MouseEvent<HTMLDivElement>,
@@ -283,6 +302,7 @@ const Viewer: React.FC<ViewerProps> = ({
                                 {!imageLoaded && (
                                     <div className={styles.viewerSkeleton} aria-hidden="true" />
                                 )}
+                                <ShortActions className={styles.viewerShortActions} items={viewerShortActions} />
                                 <img
                                     src={visibleImageUrl}
                                     alt={visibleAlt}
@@ -328,7 +348,7 @@ const Viewer: React.FC<ViewerProps> = ({
                                         type="button"
                                         className={styles.viewerActionButton}
                                         data-active={currentUpvoted ? 'true' : 'false'}
-                                        disabled={actionPending || !onToggleUpvote}
+                                        disabled={!onToggleUpvote}
                                         onClick={onToggleUpvote}
                                         aria-pressed={currentUpvoted}
                                         aria-label='Upvote'
@@ -341,12 +361,12 @@ const Viewer: React.FC<ViewerProps> = ({
                             </>
                         )}
                         {!recallOnly && canFlag && (
-                            <PopoverTooltip content={flagLabel} placement="top" gap={4}>
+                            <PopoverTooltip key={`flag:${currentFlagged ? 'on' : 'off'}`} content={flagLabel} placement="top" gap={4}>
                                 <button
                                     type="button"
                                     className={styles.viewerActionButton}
                                     data-active={currentFlagged ? 'true' : 'false'}
-                                    disabled={actionPending || !onToggleFlag}
+                                    disabled={!onToggleFlag}
                                     onClick={onToggleFlag}
                                     aria-pressed={currentFlagged}
                                     aria-label='Flag'

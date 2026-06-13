@@ -42,13 +42,14 @@
     "copied": "Link copied",
     "viewer": {
       "author": "AUTHOR",
-      "uploadedAt": "Uploaded at",
+      "uploadedAt": "Uploaded At",
       "upvote": "Upvote",
-      "flag": "Flag as inaccurate",
+      "flag": "Flag as Inaccurate",
       "unflag": "Unflag",
+      "uploadAno": "Upload Another",
       "share": "Share",
       "recall": "Recall",
-      "unrecall": "Cancel recall"
+      "unrecall": "Cancel Recall"
     },
     "errors": {
       "unsupportedType": "Only JPEG/PNG/WebP/AVIF/HEIC images are supported.",

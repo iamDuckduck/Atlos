@@ -8,6 +8,10 @@ import { usePointShareLink } from '@/utils/shareLink';
 import { Shortcut, type KeyChip } from '@/component/shortcut';
 import { modKey } from '@/component/settings/shortcuts';
 import Carousel from '@/component/carousel';
+import ShortActions, { type ShortActionItem } from './shortActions';
+import LikeIcon from '@/assets/images/UI/like.svg?react';
+import FlagIcon from '@/assets/images/UI/flag.svg?react';
+import RecallIcon from '@/assets/images/UI/recall.svg?react';
 import useUGCPointImages from './useUGCPointImages';
 import useUGCUpload from './useUGCUpload';
 import useUGCImageActions from './useUGCImageActions';
@@ -36,13 +40,24 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
     const carousel = useCarousel();
 
     const { active, activeImages, selectedImageId, setSelectedImageId, show, loading } = imageState;
-    const { uploading, uploadSent, progress, error, lastSubmission, inputRef, upload, requestUpload } = uploadState;
+    const {
+        uploading,
+        uploadSent,
+        progress,
+        error,
+        lastSubmission,
+        inputRef,
+        upload,
+        requestUpload,
+        requestAppendUpload,
+        canAppendUpload,
+    } = uploadState;
     const { actionPending, viewerOpen, setViewerOpen, handleToggleUpvote, handleToggleFlag, handleToggleRecall } = actionsState;
     const {
         state, canPreview, interactive, showRules, rulesUrl,
         authorNickname, authorPublicUid, createdAt,
         upvoteCount, upvoted, flagged, recallRequested,
-        canFlag, canRecall, recallOnly,
+        isOwnActive, canFlag, canRecall, recallOnly,
     } = uiState;
     const { dragActive, handleDragEnter, handleDragOver, handleDragLeave, handleDrop } = interaction;
     const {
@@ -64,7 +79,7 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
         [],
     );
     const uploadShortcutHint = useMemo(() => {
-        const text = String(tUI('detail.noInfo'));
+        const text = tUI('detail.noInfo');
         const parts = text.split(/(\{paste\}|\{click\})/g).filter(Boolean);
 
         return parts.map((part, index) => {
@@ -77,6 +92,63 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
             return <span key={`${part}:${index}`}>{part}</span>;
         });
     }, [tUI, uploadPasteKeys]);
+    const shortActionLabels = useMemo(() => ({
+        upvote: tUI('detail.viewer.upvote'),
+        flag: tUI('detail.viewer.flag'),
+        upload: tUI('detail.viewer.uploadAno'),
+    }), [tUI]);
+    const detailShortActions = useMemo<ShortActionItem[]>(() => {
+        if (!active) return [];
+
+        const actions: ShortActionItem[] = [
+            {
+                id: 'upvote',
+                label: shortActionLabels.upvote,
+                icon: <LikeIcon />,
+                active: upvoted,
+                disabled: recallOnly,
+                onClick: () => void handleToggleUpvote(),
+            },
+        ];
+
+        if (!isOwnActive) {
+            actions.push({
+                id: 'flag',
+                label: flagged ? tUI('detail.viewer.unflag') : shortActionLabels.flag,
+                icon: <FlagIcon />,
+                active: flagged,
+                disabled: !canFlag,
+                tooltipKey: `flag:${flagged ? 'on' : 'off'}`,
+                onClick: () => void handleToggleFlag(),
+            });
+        }
+
+        actions.push(
+            {
+                id: 'upload',
+                label: shortActionLabels.upload,
+                icon: <RecallIcon />,
+                iconClassName: styles.previewShortActionRecallIcon,
+                disabled: !canAppendUpload,
+                onClick: requestAppendUpload,
+            },
+        );
+
+        return actions;
+    }, [
+        active,
+        canAppendUpload,
+        canFlag,
+        flagged,
+        handleToggleFlag,
+        handleToggleUpvote,
+        isOwnActive,
+        recallOnly,
+        requestAppendUpload,
+        shortActionLabels,
+        tUI,
+        upvoted,
+    ]);
 
     const handleClick = useCallback(() => {
         if (canPreview) {
@@ -139,6 +211,10 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
                                         onPointerLeave={handleCarouselLayerPointerLeave}
                                     />
                                 )}
+                                <ShortActions
+                                    className={styles.previewShortActions}
+                                    items={detailShortActions}
+                                />
                                 {state === 'pending' && (
                                     <div className={styles.noImage}>
                                         {tUI('detail.uploadPending')}
@@ -210,6 +286,9 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
                 onToggleFlag={() => void handleToggleFlag()}
                 onShare={() => void copyPointShareUrl()}
                 onToggleRecall={() => void handleToggleRecall()}
+                canAppendUpload={canAppendUpload}
+                onRequestUpload={requestAppendUpload}
+                uploading={uploading}
                 onClose={() => setViewerOpen(false)}
             />
         </>

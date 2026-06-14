@@ -49,14 +49,16 @@ export const SUPPORTED_LANGS = [
     'th-TH',
     'vi-VN',
     'el-GR',
-    'hi-IN'
+    'hi-IN',
+    'uk-UA',
+    'tr-TR',
 ] as const;
 type Lang = (typeof SUPPORTED_LANGS)[number];
 
 // Languages that have both game and UI translations (full support)
 export const FULL_LANGS: readonly Lang[] = ['en-US', 'zh-CN', 'zh-HK', 'ja-JP', 'ko-KR', 'ru-RU', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', 'id-ID', 'pt-BR', 'th-TH', 'vi-VN'] as const;
 // Languages that only have UI translations
-export const UI_ONLY_LANGS: readonly Lang[] = [ 'ar-SA', 'ms-MY', 'pl-PL', 'sv-SE', 'el-GR', 'hi-IN' ] as const;
+export const UI_ONLY_LANGS: readonly Lang[] = [ 'ar-SA', 'ms-MY', 'pl-PL', 'sv-SE', 'el-GR', 'hi-IN', 'uk-UA', 'tr-TR' ] as const;
 
 // Check if a language has full support (game + UI)
 export const hasFullSupport = (lang: Lang): boolean => {
@@ -84,13 +86,24 @@ const toBCP47 = (locale: Lang): string => {
     return region ? `${lang}-${region.toUpperCase()}` : lang;
 };
 
-const normalizeLang = (lang?: string): Lang => {
-    let language = lang || navigator.language || 'en-US';
+const pickSupportedLang = (lang?: string | null): Lang | null => {
+    if (!lang) return null;
+    let language = lang.trim();
+    if (!language) return null;
     // Backward compatibility: map legacy zh-TW to zh-HK
     if (language.toLowerCase().startsWith('zh-tw')) language = 'zh-HK';
     // try to pick a supported lang
     const picked = ALP.pick([...SUPPORTED_LANGS], language);
-    return (picked as Lang) || 'en-US';
+    return (picked as Lang) || null;
+};
+
+const getNavigatorLanguage = (): string | undefined => {
+    if (typeof navigator === 'undefined') return undefined;
+    return navigator.language;
+};
+
+const normalizeLang = (lang?: string): Lang => {
+    return pickSupportedLang(lang || getNavigatorLanguage()) || 'en-US';
 };
 
 const getStoredLocale = (): Lang | null => {
@@ -222,27 +235,117 @@ async function loadLocaleOnMain(locale: Lang): Promise<II18nBundle> {
     };
 }
 
-// Preload all supported languages in background
-let preloadingStarted = false;
+const localeLoadPromises = new Map<Lang, Promise<II18nBundle>>();
 
-async function preloadLanguages(current: Lang) {
-    if (preloadingStarted) return;
-    preloadingStarted = true;
+function loadLocaleCached(locale: Lang): Promise<II18nBundle> {
+    const existing = localeLoadPromises.get(locale);
+    if (existing) return existing;
+
+    const promise = loadLocaleOnMain(locale).catch((err: unknown) => {
+        localeLoadPromises.delete(locale);
+        throw err;
+    });
+    localeLoadPromises.set(locale, promise);
+    return promise;
+}
+
+const wait = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
+
+const ACCEPT_LANGUAGE_PRELOAD_LIMIT = 4;
+const PRELOAD_BATCH_SIZE = 3;
+
+const parseAcceptLanguageHeader = (header?: string | null): string[] => {
+    if (!header) return [];
+    return ALP.parse(header)
+        .map((item, index) => ({
+            tag: item.region ? `${item.code}-${item.region}` : item.code,
+            quality: item.quality ?? 1,
+            index,
+        }))
+        .filter(item => item.tag)
+        .sort((a, b) => b.quality - a.quality || a.index - b.index)
+        .map(item => item.tag);
+};
+
+const getInjectedAcceptLanguage = (): string | null => {
+    try {
+        if (typeof window !== 'undefined' && typeof window.__OEM_ACCEPT_LANGUAGE__ === 'string') {
+            return window.__OEM_ACCEPT_LANGUAGE__;
+        }
+        if (typeof document !== 'undefined') {
+            return document.querySelector<HTMLMetaElement>('meta[name="accept-language"]')?.content || null;
+        }
+    } catch {
+        // ignore unavailable browser globals
+    }
+    return null;
+};
+
+const getBrowserLanguageCandidates = (): string[] => {
+    if (typeof navigator === 'undefined') return [];
+    const browserLanguages: readonly string[] | undefined = navigator.languages;
+    const languages = browserLanguages ? [...browserLanguages] : [];
+    if (navigator.language) languages.push(navigator.language);
+    return languages;
+};
+
+const getSystemLanguageCandidates = (): string[] => {
+    try {
+        const locale = Intl.DateTimeFormat().resolvedOptions().locale;
+        return locale ? [locale] : [];
+    } catch {
+        return [];
+    }
+};
+
+const toSupportedLanguageList = (candidates: string[]): Lang[] => {
+    const seen = new Set<Lang>();
+    const result: Lang[] = [];
+    for (const candidate of candidates) {
+        const lang = pickSupportedLang(candidate);
+        if (!lang || seen.has(lang)) continue;
+        seen.add(lang);
+        result.push(lang);
+    }
+    return result;
+};
+
+const getPriorityPreloadLanguages = (current: Lang): Lang[] => {
+    const acceptLanguageCandidates = parseAcceptLanguageHeader(getInjectedAcceptLanguage())
+        .slice(0, ACCEPT_LANGUAGE_PRELOAD_LIMIT);
+    const candidates = [
+        ...acceptLanguageCandidates,
+        ...getBrowserLanguageCandidates(),
+        ...getSystemLanguageCandidates(),
+    ];
+    return toSupportedLanguageList(candidates).filter(lang => lang !== current);
+};
+
+async function preloadLocales(locales: readonly Lang[]) {
+    for (let i = 0; i < locales.length; i += PRELOAD_BATCH_SIZE) {
+        const batch = locales.slice(i, i + PRELOAD_BATCH_SIZE);
+        await Promise.allSettled(batch.map(lang => loadLocaleCached(lang)));
+        await wait(200);
+    }
+}
+
+let priorityPreloadingStarted = false;
+let allPreloadingStarted = false;
+
+async function preloadPriorityLanguages(current: Lang) {
+    if (priorityPreloadingStarted) return;
+    priorityPreloadingStarted = true;
 
     // Delay to let main thread settle
-    await new Promise(r => setTimeout(r, 2000));
+    await wait(2000);
 
-    // Exclude current language
-    const toPreload = SUPPORTED_LANGS.filter(l => l !== current);
-    
-    // Load in small batches to avoid network congestion
-    const BATCH_SIZE = 3;
-    for (let i = 0; i < toPreload.length; i += BATCH_SIZE) {
-        const batch = toPreload.slice(i, i + BATCH_SIZE);
-        await Promise.allSettled(batch.map(lang => loadLocaleOnMain(lang)));
-        // Small breathing room between batches
-        await new Promise(r => setTimeout(r, 200));
-    }
+    await preloadLocales(getPriorityPreloadLanguages(current));
+}
+
+export async function preloadAllLanguages(current: Lang = getCurrentLocale()) {
+    if (allPreloadingStarted) return;
+    allPreloadingStarted = true;
+    await preloadLocales(SUPPORTED_LANGS.filter(lang => lang !== current));
 }
 
 async function loadAndSet(locale: Lang) {
@@ -261,7 +364,7 @@ async function loadAndSet(locale: Lang) {
     });
 
     // Load on main thread using build-safe module graph
-    const data = await loadLocaleOnMain(locale);
+    const data = await loadLocaleCached(locale);
     ui = data.ui;
     game = data.game;
 
@@ -278,8 +381,8 @@ async function loadAndSet(locale: Lang) {
         // ignore envs without document
     }
 
-    // Trigger preload of other languages
-    void preloadLanguages(locale);
+    // Warm likely languages first; the complete language list is deferred until the language modal opens.
+    void preloadPriorityLanguages(locale);
 }
 
 async function init() {

@@ -1,0 +1,433 @@
+{
+  "headbar": {
+    "tos": "Şartlar ve Depolama",
+    "hideUI": "Arayüzü Gizle",
+    "group": "İlgili gruba katıl",
+    "darkmode": "Karanlık moda geç",
+    "lightmode": "Aydınlık moda geç",
+    "language": "Dil seçin",
+    "help": "Yardım",
+    "announcement": "Duyurular",
+    "settings": "Tercihler"
+  },
+  "trigger": {
+    "boundaryMode": "Sınır Modu",
+    "clusterMode": "Küme Modu",
+    "labelName": "Bölge İsimleri"
+  },
+  "search": {
+    "placeholder": "Genel arama...",
+    "results": "{count} sonuç",
+    "locatedAt": "Bulunduğu yer",
+    "distributeAt": "Dağıldığı yer"
+  },
+  "markFilter": {
+    "title": "Filtre Seçenekleri",
+    "emptyTitle": "Eşleşen filtre yok.",
+    "emptyDesc": "Herhangi bir nokta bilgisinin eksik veya hatalı olduğunu doğrularsanız, lütfen topluluğumuzdaki yöneticilerle iletişime geçin veya GitHub depomuza bir <a href='https://github.com/Terra-Online/Atlos/issues' class='embed' target='_blank' rel='noopener' aria-label='Report location error'>Sorun (Issue)</a> gönderin."
+  },
+  "detail": {
+    "stat": {
+      "world": "Dünya",
+      "main": "Ana Bölge",
+      "sub": "Alt Bölge"
+    },
+    "noInfo": "Görsel yok. Yüklemek için {paste} / {click} kullanın.",
+    "communityRule1": "Yükleme yaparak, şunları okuduğunuzu ve kabul ettiğinizi onaylarsınız:",
+    "communityRule2": "Topluluk Kuralları",
+    "uploading": "Yükleniyor...",
+    "uploadPending": "Yüklendi. İnceleme bekleniyor.",
+    "readFullText": "Tam metni okumak için tıklayın.",
+    "share": "Bu işaretçi için paylaşılabilir bağlantıyı kopyala.",
+    "copied": "Bağlantı kopyalandı",
+    "viewer": {
+      "author": "YAZAR",
+      "uploadedAt": "Yüklenme Tarihi",
+      "upvote": "Beğen",
+      "flag": "Hatalı Olarak İşaretle",
+      "unflag": "İşareti Kaldır",
+      "uploadAno": "Başka Yükle",
+      "share": "Paylaş",
+      "recall": "Geri Çek",
+      "unrecall": "Geri Çekmeyi İptal Et"
+    },
+    "errors": {
+      "unsupportedType": "Yalnızca JPEG/PNG/WebP/AVIF/HEIC görselleri desteklenir.",
+      "fileTooLarge": "Görsel çok büyük.",
+      "imageDecodeFailed": "Bu görsel tarayıcı tarafından açılamadı.",
+      "imageProcessingUnavailable": "Yerel görsel işleme kullanılamıyor.",
+      "processedTooLarge": "İşlenen görsel hala çok büyük.",
+      "uploadInvalidResponse": "Yükleme yanıtı geçersizdi.",
+      "uploadNetwork": "Yükleme sırasında ağ hatası.",
+      "uploadAborted": "Yükleme iptal edildi.",
+      "rateLimited": "Yükleme limitine ulaşıldı, daha sonra tekrar deneyin.",
+      "uploadFailed": "Yükleme başarısız oldu, lütfen tekrar deneyin.",
+      "backendUnknown": "Yükleme servisi bir hata döndürdü."
+    }
+  },
+  "footer": {
+    "icp": "Designed by cirisus, HK"
+  },
+  "sidebar": {
+    "alt": {
+      "supportedBy": "Observator 6 tarafından desteklenmektedir"
+    }
+  },
+  "language": {
+    "title": "Dil",
+    "cancel": "İptal",
+    "current": "Şu anki",
+    "fullSupport": "Tam Desteklenen Diller",
+    "fullSupportHint": "Hem arayüz hem de oyun içi içerikler için tam çeviriler.",
+    "uiOnly": "Yalnızca Arayüz Dilleri",
+    "uiOnlyHint": "Sadece arayüz çevirileri, oyun içi içerikler İngilizce olarak görüntülenecektir.",
+    "fyi": "Diliniz henüz bu web sitesinde mevcut değilse, <a class='embed' href=\"mailto:translate@opendfieldmap.org?subject=%5BOEM%20Translation%5D\">translate@opendfieldmap.org</a> adresi üzerinden e-posta ile site yöneticisiyle iletişime geçebilir veya açık kaynak kodlu çeviri projemize katılmak için GitHub'ı ziyaret edebilirsiniz. Katkılarınızı içtenlikle takdir ediyor ve bekliyoruz.",
+    "names": {
+      "en-US": "İngilizce",
+      "zh-CN": "Basitleştirilmiş Çince",
+      "zh-HK": "Geleneksel Çince",
+      "ja-JP": "Japonca",
+      "ko-KR": "Korece",
+      "es-ES": "İspanyolca",
+      "fr-FR": "Fransızca",
+      "de-DE": "Almanca",
+      "it-IT": "İtalyanca",
+      "ru-RU": "Rusça",
+      "pt-BR": "Portekizce",
+      "id-ID": "Endonezce",
+      "ar-SA": "Arapça",
+      "ms-MY": "Malayca",
+      "pl-PL": "Lehçe",
+      "sv-SE": "İsveççe",
+      "th-TH": "Tayca",
+      "vi-VN": "Vietnamca",
+      "el-GR": "Yunanca",
+      "hi-IN": "Hintçe",
+      "uk-UA": "Ukraynaca",
+      "tr-TR": "Türkçe"
+    }
+  },
+  "group": {
+    "title": "Topluluk ve Medya",
+    "visit": "Ziyaret Et"
+  },
+  "tos": {
+    "title": "Şartlar ve Depolama",
+    "calculating": "Depolama kullanımı hesaplanıyor...",
+    "policy": "<p>Otomatik giriş bilgilerinizi depolamak için Çerezleri; arayüz tercihlerinizi ve işaretçi ilerlemenizi depolamak için LocalStorage'ı; diliniz için yazı tipi verilerini ve görsel kaynaklarını depolamak için CacheStorage'ı kullanıyoruz. Bu dosyalar, web sitesine daha hızlı erişmenizi ve çevrimdışı olduğunuzda da kullanılabilirliğini sağlar.</p><p>Web sitesinin yerel depolamasını silmek cihazınızda yer açabilir. Ancak, tekrar ziyaret ettiğinizde <span class=\"keyword\">bu dosyaların yüklenmesi daha uzun sürebilir</span>; web sitesi depolamasını devre dışı bırakırsanız, web sitesi bir sonraki kullanımınız için <span class=\"keyword\">verilerinizi otomatik olarak kaydedemeyecektir</span>.</p><p>Verilerinizi sunucuya raporlamıyoruz, gizlilik sorunları hakkında endişelenmenize gerek yok.</p>",
+    "filtersAndMarkers": "Filtreler ve İşaretçi Verileri",
+    "warning": "<p><strong>Uyarı:</strong> Depolanan verileri temizlerseniz, otomatik giriş bilgileriniz, arayüz tercihleriniz ve işaretçi ilerlemeniz kaybolur.</p><p>Onaylıyorsanız, silme düğmesine tekrar tıklayın.</p>",
+    "export": "Verileri Dışa Aktar",
+    "import": "Verileri İçe Aktar"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "uiPrefs": {
+      "title": "Arayüz Tercihleri",
+      "hint": "Tutmak istediğiniz arayüz durumunu seçin. Daha tutarlı bir deneyim için <span class=\"keyword\">tüm seçenekleri açık tutmanızı</span> öneririz.",
+      "sidebar": "Yan çubuk durumunu koru",
+      "filterOrder": "Filtre sırasını koru",
+      "triggers": "Tetikleyici durumunu koru",
+      "performanceMode": "Performans modu"
+    },
+    "mapPrefs": {
+      "title": "Harita Tercihleri",
+      "hint": "Harita depolama ve otomatik optimizasyon seçeneklerini seçin.",
+      "viewState": "Harita görünümünü koru",
+      "markerProgress": "İşaretçi ve ilerlemeyi koru",
+      "autoCluster": "Otomatik kümeleme",
+      "hideCompleted": "İşaretlenmişleri gizle"
+    },
+    "theme": {
+      "title": "Tema",
+      "hint": "Tercih ettiğiniz temayı seçin. <span class=\"keyword\">OTOMATİK</span> seçeneğinde tema cihazınızın tercihine göre değişir.",
+      "light": "Aydınlık",
+      "dark": "Karanlık",
+      "auto": "Otomatik"
+    },
+    "shortcuts": {
+      "title": "Klavye Kısayolları",
+      "hint": "Hızlı işlemler için kullanılabilen kısayollar.",
+      "exportData": "Verileri Dışa Aktar",
+      "importData": "Verileri İçe Aktar",
+      "undo": "Geri Al",
+      "redo": "Yinele",
+      "zoomIn": "Yakınlaştır",
+      "zoomOut": "Uzaklaştır",
+      "multiSelect": "Çoklu Seçim",
+      "multiDeselect": "Seçimleri Kaldır"
+    }
+  },
+  "guide": {
+    "welcome": "<span class=\"keyword\">OPEN ENDFIELD MAP</span>'e hoş geldiniz.<br>Haritanın özelliklerini hızlıca anlamanıza yardımcı olmak için kısa bir rehberli tur sunacağız.</p><p>Rehberi sonlandırmak için dilediğiniz zaman '<span class=\"keyword\">Geç</span>' düğmesine tıklayabilir veya üst çubuktaki yardım düğmesinden yeniden başlatabilirsiniz.",
+    "sidebarToggle": "<span class=\"keyword\">Yan çubuğu</span> genişletmek için tıklayın.<br>Yan çubuk, en sık kullandığınız filtreleri ve görüntülemeyle ilgili anahtarları içerir.",
+    "search": "Oyunda desteklenen dilleri kullanarak arama yapabilirsiniz.",
+    "filterContainer": "Aynı türdeki işaretçiler bir <span class=\"keyword\">filtrede</span> gruplandırılır.",
+    "filterSort": "<span class=\"keyword\">Sürükle modu</span> için filtrenin solundaki SİMGE'ye basılı tutun.",
+    "selectorSelect": "Belirli bir <span class=\"keyword\">işaretçi seçici</span>. Seçim durumunu değiştirmek için tıklayın; seçilen işaretçiler haritada görünecektir.<br><br>Birden fazla işaretçiyi hızlıca değiştirmek için yan çubuktaki boş alana <span class=\"keyword\">basılı tutup sürükleyerek kutu seçimi</span> yapabilirsiniz.",
+    "selectorComplete": "Tüm işaretçiler tamamlandı olarak işaretlendiğinde, seçici <span class=\"keyword\">tamamlandı durumuna</span> geçer.",
+    "triggerHandle": "Harita görünümüyle ilgili anahtarlar yan çubuğun alt kısmındadır.",
+    "triggerSwitch": "Durumu değiştirmek için tıklayın.<br><ul><li><span class=\"keyword\">Küme Modu</span> yoğun işaretçileri birleşik gösterir;</li><li><span class=\"keyword\">Sınır Modu</span> alt bölgeleri vurgular;</li><li><span class=\"keyword\">Bölge İsimleri</span> oyun içi bölge adlarını gösterir.</li></ul>",
+    "scale": "<span class=\"keyword\">Yakınlaştırma Kontrolünü</span> kullanarak haritayı ayarlayın.",
+    "filterList": "<span class=\"keyword\">İşaretçi Listesi</span>, seçtiğiniz işaretçileri listeler.",
+    "headbar": "Harita ayarları <span class=\"keyword\">üst çubukta</span> bulunur.",
+    "tos": "Web sitesinin <span class=\"keyword\">Hizmet Şartları</span> ve <span class=\"keyword\">Veri Yönetimi</span>.",
+    "hideUI": "Ekran görüntüsü almak için <span class=\"keyword\">Arayüzü Gizle</span>.",
+    "group": "Proje ile ilgili <span class=\"keyword\">toplulukları</span> görüntüle.",
+    "darkMode": "Mevcut <span class=\"keyword\">ortam ışığı modunu</span> değiştir.",
+    "language": "<span class=\"keyword\">Arayüz dilini</span> değiştir.",
+    "announcement": "Son <span class=\"keyword\">web sitesi duyurularını</span> görüntüle.",
+    "help": "Bu <span class=\"keyword\">rehberi</span> yeniden başlat.",
+    "settings": "<span class=\"keyword\">Tercihleri</span> açarak yerel depolamayı yönetin.",
+    "locator": "Oyundaki mevcut konumunuzu haritada göstermek için <span class=\"keyword\">Konum Senkronizasyonu</span>'na tıklayın.",
+    "regionSwitch": "Farklı <span class=\"keyword\">haritalar</span> arasında geçiş yap.",
+    "subregionSwitch": "Alt bölgeleri göstermek için farenizi ana bölge simgesinin üzerine <span class=\"keyword\">getirin</span>.",
+    "layerMain": "<span class=\"keyword\">Ana katmana (M)</span> dönmek için katman simgesine tıklayın.",
+    "layerSwitch": "Geçerli bölge için kullanılabilir katmanları görüntülemek için farenizi katman simgesinin üzerine <span class=\"keyword\">getirin</span>.",
+    "pointSelect": "İşaretçiyi <span class=\"keyword\">seçmek</span> için üzerine tıklayın.",
+    "pointMark": "Tamamlandı olarak işaretlemek için işaretçiye tekrar tıklayın.",
+    "detail": "Seçilen işaretçi hakkında daha fazla bilgi görüntüleyebilirsiniz.",
+    "pointIcon": "İşaretçi simgesine tıklamak da onu tamamlandı olarak işaretler.",
+    "mobile": {
+      "headbar": "Harita ayarları <span class=\"keyword\">sağ üst köşededir</span>.",
+      "locator": "<span class=\"keyword\">Konum Senkronizasyonu</span> sol üst köşededir.",
+      "regionLayerSwitch": "Farklı haritalara geçmek için bölge simgelerine dokunun.",
+      "divider": "Bu sürüklenebilir bir <span class=\"keyword\">ayırıcıdır</span>.",
+      "drawer": "Filtreleri görüntülemek için ekranın altından <span class=\"keyword\">yukarı kaydırın</span>.",
+      "selectorSelect": "Belirli bir <span class=\"keyword\">işaretçi seçici</span>."
+    }
+  },
+  "notice": {
+    "legacy": "<span class=\"keyword\">Not:</span> Harita veri seti oyundan sonra güncellenir. Güncellemelerimizi takip etmek için lütfen <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener'>Discord Sunucumuza</a> katılın.",
+    "uptodate": "Mevcut veri seti güncel.<br><br>Sorun bildirmek için lütfen <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener'>Discord sunucusuna</a> katılın."
+  },
+  "idcard": {
+    "group": "Grup: ",
+    "since": "Katılım",
+    "logintip": "Giriş yapmak için avatara tıklayın.",
+    "registip": "Kayıt olmak için avatara tıklayın.",
+    "ago": "Önce",
+    "karma": "Karma",
+    "loading": "Yükleniyor",
+    "unassigned": "Atanmamış",
+    "normal": "Normal",
+    "guest": "Misafir",
+    "pioneer": "Öncü",
+    "admin": "Yönetici",
+    "suspend": "Askıya Alındı",
+    "robot": "Bot",
+    "auth": {
+      "login": "Giriş Yap",
+      "register": "Kayıt Ol",
+      "passwordReset": "Şifre Sıfırlama",
+      "email": "E-posta:",
+      "password": "Şifre:",
+      "newPassword": "Yeni Şifre:",
+      "repeatPassword": "Şifreyi Tekrarla:",
+      "verification": "Doğrulama:",
+      "forgotPW": "Şifrenizi mi unuttunuz?",
+      "pwdRegex": "8-20 karakter; en az bir büyük harf",
+      "emailRegex": "Geçici e-posta adreslerine izin verilmez",
+      "send": "Gönder",
+      "sendResetLink": "Sıfırla",
+      "resend": "Tekrar Gönder({count})",
+      "dcLogin": "Discord ile Giriş Yap",
+      "gooLogin": "Google ile Giriş Yap",
+      "dcRegis": "Discord ile Devam Et",
+      "gooRegis": "Google ile Devam Et",
+      "connecting": "Bağlanıyor...",
+      "resetLink": "Lütfen hesabınızla ilişkili e-posta adresini girin, şifre sıfırlama bağlantısını göndereceğiz.<br><br>Gönderdikten sonra gelen kutunuzu ve spam klasörünüzü kontrol edin.",
+      "resetRequire": "Lütfen yeni şifrenizi girin ve onaylayın.",
+      "backTo": "Geri Dön",
+      "signIn": "Giriş Yap.",
+      "switchToRegisterPrefix": "Henüz hesabınız yok mu?",
+      "switchToRegisterAction": "Buradan Kayıt Olun!",
+      "switchToLoginPrefix": "Zaten bir hesabınız var mı?",
+      "switchToLoginAction": "Buradan Giriş Yapın.",
+      "ack": "Devam ederek şunları okuduğunuzu ve kabul ettiğinizi onaylarsınız: ",
+      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Gizlilik Politikası</a> ve <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Hizmet Şartları</a>.",
+      "hints": {
+        "0": "Kimlik Bilgisi Uyuşmazlığı",
+        "101": "E-posta Gerekli",
+        "102": "Geçersiz E-posta",
+        "103": "E-posta Kullanımda",
+        "104": "E-posta Bulunamadı",
+        "105": "E-posta Desteklenmiyor",
+        "111": "Şifre Gerekli",
+        "112": "Geçersiz Şifre",
+        "113": "Şifreler Eşleşmiyor",
+        "121": "OTP Gerekli",
+        "122": "Geçersiz OTP",
+        "123": "OTP Süresi Doldu",
+        "200": "Erişim Verildi",
+        "201": "Hesap Oluşturuldu",
+        "202": "Şifre Değiştirildi",
+        "429": "İstek Limiti Aşıldı",
+        "430": "Güvenlik Kontrolü",
+        "601": "Token Süresi Doldu",
+        "602": "Oturum Gerekli",
+        "603": "Erişim Reddedildi",
+        "604": "Sağlayıcı Çakışması",
+        "701": "Aşırı Yük",
+        "702": "Zaman Aşımı",
+        "703": "Bakım",
+        "801": "Askıya Alındı: Vandalizm",
+        "802": "Askıya Alındı: Erişim Reddedildi"
+      }
+    },
+    "profile": {
+      "title": "Profil",
+      "avatarHint": "Profil bilgisini aç",
+      "nameEditHint": "Kullanıcı adını düzenle",
+      "nickName": "kullanıcı adı",
+      "note": "Not",
+      "noteNickname": "En fazla 15 harf, rakam, tire veya alt çizgi kullanabilirsiniz.",
+      "noteUID": "UID, ilk kurulumda atanır ve değiştirilemez. Kullanıcı adınızı istediğiniz zaman güncelleyebilirsiniz.",
+      "auditLabel": "İşlem",
+      "importOfficial": "Resmi Haritadan İçe Aktar",
+      "save": "Değişiklikleri Kaydet",
+      "saving": "Kaydediliyor...",
+      "logout": "Çıkış Yap"
+    }
+  },
+  "scale": {
+    "pip": {
+      "activeTitle": "Resim içinde Resim etkin",
+      "returnHint": "Bu sekmeye dönmek için Logoya tıklayın",
+      "enterMode": "PiP moduna gir",
+      "exitMode": "PiP modundan çık",
+      "unsupported": "Belge PiP desteklenmiyor"
+    }
+  },
+  "locator": {
+    "binding": {
+      "title": "Hesap Bağlama",
+      "docsLead": "Devam ederek aşağıdaki tüm şartları kabul ettiğinizi onaylarsınız:",
+      "tos": "Hizmet Şartları",
+      "privacy": "Gizlilik Politikası",
+      "dataCollection": "Veri Toplama Kontrol Listesi",
+      "disclaimer": "Sorumluluk Reddi",
+      "chinaTab": "Çin (Hypergryph)",
+      "globalTab": "Küresel (Gryphline)",
+      "CNStep0": "<a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>Resmi web sitesine</a> gidin ve giriş yaptığınızdan emin olun.",
+      "UniStep0": "<a href='https://endfield.gryphline.com' target='_blank' rel='noopener noreferrer'>Resmi web sitesine</a> gidin ve giriş yaptığınızdan emin olun.",
+      "CNStep1": "<a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>Hypergryph API bağlantısını</a> açın, ardından tüm yanıtı kopyalayın.",
+      "UniStep1": "<a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>Gryphline API bağlantısını</a> açın, ardından tüm yanıtı kopyalayın.",
+      "Step2": "Yanıtın tamamını yapıştırın, şartları okuyun ve ardından hesabınızı bağlayın.",
+      "serverFallback": "Sunucu",
+      "changeBinding": "Bağlantıyı Değiştir",
+      "unlink": "Bağlantıyı Kes",
+      "bindWithCountdown": "Bağla ve konum senkronizasyonunu etkinleştir ({sec})",
+      "bind": "Bağla ve konum senkronizasyonunu etkinleştir",
+      "bindOnlyWithCountdown": "Hesabı bağla ({sec})",
+      "bindOnly": "Hesabı bağla",
+      "locateAuth": "Yetkilendir",
+      "locateAuthBody": "Konum Senkronizasyonunu etkinleştirmek oyun içi konum bilgilerinize erişime izin verecektir. Etkinleştirmek istiyor musunuz?",
+      "authAndSync": "Yetkilendir ve senkronizasyonu başlat"
+    },
+    "config": {
+      "title": "İzleme Yapılandırması",
+      "server": "Sunucu",
+      "uid": "Oyuncu UID",
+      "scopeTitle": "Kapsam",
+      "scopeHint": "Konum senkronizasyonu sırasında hangi yakındaki nokta gruplarının hatırlatıcıları tetiklemesi gerektiğini seçin.",
+      "scope": {
+        "balanced": {
+          "title": "Dengeli",
+          "desc": "OEM tarafından seçilen noktaları izleyin."
+        },
+        "collection": {
+          "title": "Koleksiyonlar",
+          "desc": "<span class=\"keyword\">Koleksiyon</span>/<span class=\"keyword\">Keşif</span> noktalarını izleyin."
+        },
+        "manual": {
+          "title": "Üretim El Kitabı",
+          "desc": "Düşmanlar ve nadir bitkiler dahil el kitabı noktalarını izleyin."
+        }
+      },
+      "featureTitle": "Özellik",
+      "trackPoints": "İzleme",
+      "centerOnPosition": "Merkezde tut",
+      "heatmap": "Isı haritası",
+      "configNote1": "Bu özelliği etkinleştirmek, şunları kabul ettiğiniz anlamına gelir: ",
+      "configNote2": " ve diğer şartlar."
+    },
+    "errors": {
+      "10000": "Konum senkronizasyon oturumu sona erdi. Lütfen tekrar bağlayın.",
+      "19001": "Konum kullanılamıyor. Lütfen oyuna giriş yapın.",
+      "19002": "Konum senkronizasyonunun başlamadan önce yetkilendirmeye ihtiyacı var.",
+      "noRole": "Bu hesapta hiçbir Endfield rolü bulunamadı.",
+      "tokenRequired": "Tam yanıtı veya token'ı yapıştırın.",
+      "bindingFailed": "Bağlama başarısız oldu.",
+      "roleRequired": "Lütfen bir rol seçin.",
+      "unlinkFailed": "Bağlantıyı kesme başarısız oldu.",
+      "authorizationFailed": "Yetkilendirme başarısız oldu."
+    }
+  },
+  "sync": {
+    "now": "Verileri OEM Cloud ile Senkronize Et",
+    "already": "Her şey güncel",
+    "done": "Buluta Senkronize Edildi: {times} önce",
+    "syncing": "Senkronize ediliyor: {count} Nokta",
+    "failed": "Senkronizasyon Başarısız ({reason})",
+    "offline": "Çevrimdışı",
+    "dataConflict": "Veri Çakışması",
+    "unknown": "Bilinmeyen",
+    "conflict": {
+      "title": "Veri Çakışması",
+      "local": "Yerel",
+      "remote": "Uzak",
+      "official": "Resmi",
+      "oemDb": "OEM Veritabanı",
+      "updatedAt": "Son değiştirilme",
+      "total": "İşaretlenen Noktalar",
+      "region": "Bölge",
+      "keepA": "{label} Verisini Tut",
+      "keepB": "{label} Verisini Kullan",
+      "merge": "Her iki kaynağı da birleştir ({count})"
+    }
+  },
+  "links": {
+    "enka": {
+      "name": "Fabrika Planlayıcı",
+      "desc": "Taslak Düzenleyici"
+    },
+    "talospioneers": {
+      "name": "Talos Pioneers",
+      "desc": "Taslak Paylaşım Topluluğu"
+    }
+  },
+  "common": {
+    "close": "Kapat",
+    "skip": "Atla",
+    "clear": "Temizle",
+    "all": "Tümü",
+    "selected": "Seçili",
+    "confirm": "Onayla",
+    "loading": "Yükleniyor...",
+    "enable": "Etkinleştir",
+    "disable": "Devre Dışı Bırak",
+    "expand": "Genişlet",
+    "collapse": "Daralt"
+  },
+  "announcement": {
+    "title": "Site Bildirimi",
+    "empty": "Duyuru bulunmamaktadır"
+  },
+  "meta": {
+    "title": "Open Endfield Map",
+    "description": "Open Endfield Map, oyuncular için etkileşimli haritalar, eşya toplama ve stratejik planlama araçları sağlayan Arknights: Endfield için açık kaynaklı bir çevrimiçi haritadır."
+  },
+  "domain": {
+    "cn": "<span class=\"keyword\">Çin Anakarası kullanıcılarının</span>, daha hızlı erişim için ana kara yansısını <a href='https://opendfieldmap.cn/' class='embed' target='_blank' rel='noopener'>(https://opendfieldmap.cn)</a> kullanmaları önerilir.",
+    "org": "<span class=\"keyword\">Denizaşırı kullanıcıların</span>, daha hızlı erişim için küresel yansıyı (<a href='https://opendfieldmap.org/' class='embed' target='_blank' rel='noopener'>https://opendfieldmap.org</a>) kullanmaları önerilir."
+  },
+  "support": {
+    "title": "Bizi Destekleyin",
+    "content": "Son üç hafta içinde Open Endfield Map <span class=\"hl\">200 MİLYON</span>'dan fazla HTTPS isteğini işledi (Günde <span class=\"hl\">8.34 Milyon</span>) ve <span class=\"hl\">2.8 TB</span>'ın üzerinde bant genişliği tüketti. Aktif kullanıcılar <span class=\"hl\">70.000'i aştı</span> ve hala artıyor.<br><br>OEM, Şubat 2025'ten bu yana açık kaynaklı ve ücretsiz kaldı ve çoğu zaman <span class=\"hl\">yalnızca benim tarafımdan (Jacy Chan/Cirisus)</span> yönetilmektedir. Sadece geçen ay, <a href='https://imgur.com/a/cloudflare-invoice-eqBC0zZ' class='embed' target='_blank'>CDN bant genişliği faturası</a> <span class=\"hl\">266.07 ABD Dolarına</span> ulaştı. Bu site keşiflerinize yardımcı oluyorsa, lütfen projeyi desteklemeyi düşünün. Fonlar doğrudan sunucu masraflarına ve gelecekteki özelliklere gidecektir.<br><br>Herhangi bir veri, arayüz veya çeviri hatası görürseniz, lütfen geri bildirim gönderin; en kısa sürede düzelteceğim. Anlayışınız ve desteğiniz için teşekkür ederiz!",
+    "patreon": "Patreon üzerinden Destekle",
+    "kofi": "Ko-fi üzerinden Destekle",
+    "afdian": "Afdian üzerinden Destekle",
+    "hint": "Küresel kullanıcılar için Patreon veya Ko-fi'yi ve Çin Anakarası'ndaki kullanıcılar için Afdian'ı öneriyoruz."
+  }
+}

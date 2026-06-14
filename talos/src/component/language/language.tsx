@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 
 import Modal from '@/component/modal/modal';
 import I18nIcon from '@/assets/logos/i18n.svg?react';
 import styles from './language.module.scss';
-import { FULL_LANGS, UI_ONLY_LANGS, setLocale, useLocale } from '@/locale';
+import { FULL_LANGS, UI_ONLY_LANGS, preloadAllLanguages, setLocale, useLocale } from '@/locale';
 import { useTranslateUI } from '@/locale';
 import parse from 'html-react-parser';
 
@@ -34,6 +34,8 @@ const LANG_LABEL_KEYS: Record<string, string> = {
   'vi-VN': 'Tiếng Việt',
   'el-GR': 'Ελληνικά',
   'hi-IN': 'हिंदी',
+  'uk-UA': 'Українська',
+  'tr-TR': 'Türkçe',
 };
 
 // Convert possible locale like "en-us" to canonical BCP-47 casing: "en-US"
@@ -68,6 +70,11 @@ const LanguageModal: React.FC<LanguageProps> = ({ open, onClose, onChange, onSel
   []);
   
   const groupId = useId();
+
+  useEffect(() => {
+    if (!open) return;
+    void preloadAllLanguages();
+  }, [open]);
   
   // freeze last active current lang, avoiding flicker when switching langs
   const [freeze, setFreeze] = useState<{ from: string; currentText: string } | null>(null);

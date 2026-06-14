@@ -67,6 +67,7 @@ const assetsHost = isProd
     : '';
 const excludedClipDirNames = new Set(['jinlong']);
 const scriptExts = new Set(['.py', '.sh', '.js', '.mjs', '.ts', '.bash', '.zsh']);
+const historicalMarkerDataPattern = /src\/data\/marker\/data\/\d{8}\//;
 
 const isExcludedClipDir = (name) => excludedClipDirNames.has(name.toLowerCase());
 
@@ -263,10 +264,26 @@ export default defineConfig({
     build: {
         rollupOptions: {
             external: [
-                // Exclude test/legacy data folders from bundle
-                /src\/data\/marker\/data\/20260110/,
-                /src\/data\/marker\/data\/20260204/,
+                // Exclude dated legacy marker snapshots from accidental glob/import expansion.
+                historicalMarkerDataPattern,
             ],
+            output: {
+                manualChunks(id) {
+                    if (!id.includes('/node_modules/')) return undefined;
+
+                    // 手动归并 React 核心运行时，确保它们在同一个 chunk
+                    if (
+                        id.includes('/react/') ||
+                        id.includes('/react-dom/') ||
+                        id.includes('/scheduler/') ||
+                        id.includes('/react-is/')
+                    ) {
+                        return 'vendor-react';
+                    }
+
+                    return undefined;
+                },
+            },
         },
     },
 });

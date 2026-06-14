@@ -3,12 +3,14 @@
 :root, :root[data-theme='light'] {
     --actionbtn-bg: #{rgba($white-0, 0.2)};
     --actionbtn-hover: #{rgba($primary-accent-4, 0.6)};
-    --actionbtn-active-icon: #{$primary-accent-4};
+    --actionbtn-active: #{$primary-accent-4};
+    --activebtn-active-hover: #{rgba($primary-accent-4, 0.3)};
 }
 :root[data-theme='dark'] {
     --actionbtn-bg: #{rgba($white-0, 0.2)};
     --actionbtn-hover: #{rgba($primary-accent-4, 0.6)};
-    --actionbtn-active-icon: #{$primary-accent-4};
+    --actionbtn-active: #{$primary-accent-4};
+    --activebtn-active-hover: #{rgba($primary-accent-4, 0.3)};
 }
 
 .shortActions {
@@ -42,7 +44,7 @@
     cursor: pointer;
     overflow: hidden;
     isolation: isolate;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    transition: box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
 
     &::before {
         content: '';
@@ -95,10 +97,13 @@
     }
 
     &[data-active='true'] {
-        --short-action-button-bg: rgba($primary-accent-6, 0.9);
+        &:hover:not(:disabled),
+        &:focus-visible {
+            --short-action-button-bg: var(--activebtn-active-hover);
 
+        }
         .shortActionIcon {
-            color: var(--actionbtn-active-icon);
+            color: var(--actionbtn-active);
         }
     }
 }

@@ -20,7 +20,7 @@ import {
 } from '@/utils/endfield/config';
 import { getCachedBinding, setCachedBinding } from '@/utils/backendCache';
 import ConfigIcon from '@/assets/images/UI/config.svg?react';
-import { LOCATOR_REMINDER_SCOPE_OPTIONS } from './proximityReminderConfig';
+import { LOCATOR_REMINDER_SCOPE_OPTIONS } from './proximityConfig';
 import { docsUrl, disableSession } from './session';
 import styles from './Locator.module.scss';
 

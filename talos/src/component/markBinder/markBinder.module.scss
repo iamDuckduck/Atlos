@@ -64,7 +64,8 @@
         box-shadow: 1px 3px 5px rgba($black-0, 0.2);
         transform: translateY(-1px);
     }
-    &.active {
+    &.active,
+    &[data-active='true'] {
         background-color: var(--binder-active-bg);
         color: var(--mark-active-fg);
         box-shadow: 0 3px 4px rgba($black-0, 0.4);
@@ -82,6 +83,20 @@
                 100% var(--progress-percentage, 0%),
                 0 var(--progress-percentage, 0%)
             );
+        }
+    }
+    &.active[data-active='false'] {
+        background-color: var(--mark-bg);
+        color: var(--mark-text);
+        box-shadow: 0 0 3px 1px rgba($black-0, 0);
+        &::before {
+            clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+        }
+        &::after {
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+        }
+        .binderStat {
+            color: var(--mark-stats-text);
         }
     }
 

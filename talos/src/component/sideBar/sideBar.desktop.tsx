@@ -244,7 +244,7 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                         draggable={'false'}
                     />
                 </div>
-                <div className={styles.sidebarContent}>
+                <div className={styles.sidebarContent} data-sidescroll="true">
                     <Search />
                     <div className={styles.filters}>
                         <MarkFilterDragProvider>

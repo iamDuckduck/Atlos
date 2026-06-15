@@ -62,7 +62,8 @@
     grid-template-areas:
         'icon Name'
         'icon Num';
-    &.active {
+    &.active,
+    &[data-active='true'] {
         background-color: var(--mark-active-bg);
         color: var(--mark-active-fg);
         box-shadow: 0 3px 4px rgba($black-0, 0.4);
@@ -75,6 +76,17 @@
                 var(--progress-percentage, 0%) 100%,
                 0 100%
             );
+        }
+    }
+    &.active[data-active='false'] {
+        background-color: var(--mark-bg);
+        color: var(--mark-text);
+        box-shadow: 0 0 3px 1px rgba($black-0, 0);
+        &::after {
+            clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+        }
+        &::before {
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
         }
     }
     &::after {
@@ -101,7 +113,8 @@
         clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
         transition: clip-path 0.3s $standard-curve, background-color 0.35s $moderato-curve;
     }
-    &.active::before {
+    &.active::before,
+    &[data-active='true']::before {
         clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
     &:hover {

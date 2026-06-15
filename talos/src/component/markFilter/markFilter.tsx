@@ -221,7 +221,11 @@ const MarkFilter = ({
                 </div>
             </div>
 
-            <div className={`${styles.filterContent} ${effectiveExpanded ? styles.expanded : ''}`}>
+            <div
+                className={`${styles.filterContent} ${effectiveExpanded ? styles.expanded : ''}`}
+                data-filter-content="true"
+                data-expanded={effectiveExpanded ? 'true' : 'false'}
+            >
                 <div
                     className={`${styles.contentInner} ${effectiveExpanded ? styles.visible : ''} ${binderMode ? styles.binderLayout : ''}`}
                     style={contentColumnsStyle}

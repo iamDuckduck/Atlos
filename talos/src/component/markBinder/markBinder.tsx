@@ -130,6 +130,8 @@ const MarkBinder = ({ group }: MarkBinderProps) => {
             className={`${styles.binderWrap} ${allActive ? styles.active : ''} ${isComplete ? styles.completed : ''}`}
             style={{ '--progress-percentage': `${progressPct}%` } as StyleVars}
             onClick={handleToggleAll}
+            data-binder-wrap="true"
+            data-active={allActive ? 'true' : 'false'}
         >
             {/* Header: layout only, click bubbles up to wrap */}
             <div

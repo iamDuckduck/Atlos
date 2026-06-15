@@ -295,8 +295,6 @@ const PopoverTooltip: React.FC<PopoverTooltipProps> = ({
     // Clone children and add event handlers
     const originalOnMouseEnter = childProps.onMouseEnter as ((e: React.MouseEvent<HTMLElement>) => void) | undefined;
     const originalOnMouseLeave = childProps.onMouseLeave as ((e: React.MouseEvent<HTMLElement>) => void) | undefined;
-    const originalOnFocus = childProps.onFocus as ((e: React.FocusEvent<HTMLElement>) => void) | undefined;
-    const originalOnBlur = childProps.onBlur as ((e: React.FocusEvent<HTMLElement>) => void) | undefined;
     const describedBy = disabled
         ? childProps['aria-describedby']
         : [childProps['aria-describedby'], popoverId].filter(Boolean).join(' ') || undefined;
@@ -314,18 +312,6 @@ const PopoverTooltip: React.FC<PopoverTooltipProps> = ({
             handleMouseLeave();
             if (originalOnMouseLeave) {
                 originalOnMouseLeave(e);
-            }
-        },
-        onFocus: (e: React.FocusEvent<HTMLElement>) => {
-            handleMouseEnter();
-            if (originalOnFocus) {
-                originalOnFocus(e);
-            }
-        },
-        onBlur: (e: React.FocusEvent<HTMLElement>) => {
-            handleMouseLeave();
-            if (originalOnBlur) {
-                originalOnBlur(e);
             }
         },
     } as Partial<React.HTMLAttributes<HTMLElement>> & { ref: React.Ref<HTMLElement> });

@@ -66,12 +66,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
       "supportedBy": "Observator 6에서 제공"
-    }
+    },
+    "newlyAdded": "버전 신규 추가"
   },
   "language": {
     "title": "언어",

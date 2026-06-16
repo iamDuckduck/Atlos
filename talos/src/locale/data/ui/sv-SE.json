@@ -66,12 +66,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
-      "supportedBy": "stöds av Observator 6"
-    }
+      "supportedBy": "Stöds av Observator 6"
+    },
+    "newlyAdded": "Nytt i Versionen"
   },
   "language": {
     "title": "Språk",

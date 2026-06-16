@@ -21,6 +21,8 @@ interface MarkFilterProps {
     binderMode?: boolean;
     // Pre-computed from parent so initial render has the correct empty state (prevents CLS)
     initialEmpty?: boolean;
+    variant?: 'versionNew';
+    reorderable?: boolean;
 }
 
 const MarkFilter = ({
@@ -33,6 +35,8 @@ const MarkFilter = ({
     columns = 2,
     binderMode = false,
     initialEmpty = false,
+    variant,
+    reorderable = true,
 }: MarkFilterProps) => {
     const t = useTranslateUI();
     const isExpanded = useMarkFilterExpanded(idKey);
@@ -125,6 +129,7 @@ const MarkFilter = ({
 
     // register for reorder measurements
     useEffect(() => {
+        if (!reorderable) return undefined;
         const getLayout = () => {
             const r = containerRef.current?.getBoundingClientRect();
             const top = r?.top ?? 0;
@@ -135,7 +140,7 @@ const MarkFilter = ({
         register?.(idKey, getLayout);
         return () => unregister?.(idKey);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [idKey]);
+    }, [idKey, reorderable]);
 
     const onDragStart = () => {
         didDragRef.current = true;
@@ -158,17 +163,23 @@ const MarkFilter = ({
     const contentColumnsStyle = binderMode
         ? undefined
         : { gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` };
+    const containerClassName = [
+        styles.markFilterContainer,
+        variant ? styles[variant] : '',
+        isSelfDragging ? styles.dragging : '',
+    ].filter(Boolean).join(' ');
 
     return (
     <MarkVisibilityContext.Provider value={contextValue}>
     <motion.div
             ref={containerRef}
             data-category={dataCategory} // Added data-category attribute for UserGuide selection
-            className={`${styles.markFilterContainer} ${isSelfDragging ? styles.dragging : ''}`}
+            data-filter-variant={variant}
+            className={containerClassName}
             layout
-            style={{ y, zIndex: isSelfDragging ? 1000 : 1, order: (isEmpty ? 1001 : 1) + orderIndex, touchAction: 'pan-y' }}
-            drag={isMounted ? "y" : false}
-            dragControls={isMounted ? dragControls : undefined}
+            style={{ y, zIndex: isSelfDragging ? 1000 : 1, order: reorderable ? (isEmpty ? 1001 : 1) + orderIndex : -1, touchAction: 'pan-y' }}
+            drag={isMounted && reorderable ? "y" : false}
+            dragControls={isMounted && reorderable ? dragControls : undefined}
             dragListener={false}
             dragElastic={0.05}
             dragMomentum={false}
@@ -186,6 +197,7 @@ const MarkFilter = ({
         >
         <div
                 className={`${styles.filterHeader} ${effectiveExpanded ? styles.expanded : ''}`}
+                data-filter-header="true"
                 onClick={toggleExpand}
             >
                 <div 
@@ -193,12 +205,12 @@ const MarkFilter = ({
                     data-drag-handle="true"
                     onPointerDown={(e) => {
                         e.stopPropagation();
-                        if (isMounted) dragControls.start(e);
+                        if (isMounted && reorderable) dragControls.start(e);
                     }}
                     onClick={(e) => {
                         e.stopPropagation();
                     }}
-                    style={{ cursor: isSelfDragging ? 'grabbing' : 'grab', touchAction: 'none' }}
+                    style={{ cursor: reorderable ? (isSelfDragging ? 'grabbing' : 'grab') : 'default', touchAction: 'none' }}
                 >
                     {CustomIcon ? (
                         typeof CustomIcon === 'function' ? (

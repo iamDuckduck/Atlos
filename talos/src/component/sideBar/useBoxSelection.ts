@@ -53,6 +53,7 @@ export const useBoxSelection = (
         let pendingFilterChangeCount = 0;
         let previousBodyUserSelect = '';
         let previousScrollBehavior = '';
+        let hasPointerCapture = false;
         let autoScrollRaf: number | null = null;
         let autoScrollLastTimestamp = 0;
         let selectionUpdateRaf: number | null = null;
@@ -343,19 +344,20 @@ export const useBoxSelection = (
             window.removeEventListener('pointercancel', onPointerCancel);
             activeScrollContainer?.removeEventListener('scroll', onScroll);
             if (activePointerId !== null) {
-                if (container.hasPointerCapture(activePointerId)) {
+                if (hasPointerCapture && container.hasPointerCapture(activePointerId)) {
                     container.releasePointerCapture(activePointerId);
                 }
+            }
+            if (isDragging) {
                 document.body.style.userSelect = previousBodyUserSelect;
-                if (activeScrollContainer) {
-                    activeScrollContainer.style.scrollBehavior = previousScrollBehavior;
-                }
+                if (activeScrollContainer) activeScrollContainer.style.scrollBehavior = previousScrollBehavior;
             }
             startPoint = null;
             lastClientPoint = null;
             activeScrollContainer = null;
             activeScrollGeometry = null;
             activePointerId = null;
+            hasPointerCapture = false;
             isDragging = false;
             initialFilter = [];
             currentOptimisticSet = new Set<string>();
@@ -373,7 +375,14 @@ export const useBoxSelection = (
             if ((e.pointerType === 'mouse' && e.button !== 0) || e.defaultPrevented) return;
             const target = e.target as HTMLElement;
             // Ignore interactive elements
-            if (target.closest('button') || target.closest('input') || target.closest('[data-drag-handle]')) return;
+            if (
+                target.closest('button')
+                || target.closest('input')
+                || target.closest('[data-drag-handle]')
+                || target.closest('[data-filter-header="true"]')
+                || target.closest('[data-key]')
+                || target.closest('[data-binder-wrap="true"]')
+            ) return;
             // Ignore drawer area
             if (target.closest(`div[class*="triggerDrawer"]`)) return;
 
@@ -432,13 +441,8 @@ export const useBoxSelection = (
                 }
             });
 
-            // Disable user-select during selection to enforce box selection
             previousBodyUserSelect = document.body.style.userSelect;
             previousScrollBehavior = scrollContainer.style.scrollBehavior;
-            document.body.style.userSelect = 'none';
-            scrollContainer.style.scrollBehavior = 'auto';
-
-            container.setPointerCapture(e.pointerId);
 
             window.addEventListener('pointermove', onPointerMove);
             window.addEventListener('pointerup', onPointerUp);
@@ -459,6 +463,10 @@ export const useBoxSelection = (
                 // Threshold to start dragging
                 if (dx * dx + dy * dy > DRAG_START_THRESHOLD_SQ) {
                     isDragging = true;
+                    document.body.style.userSelect = 'none';
+                    activeScrollContainer.style.scrollBehavior = 'auto';
+                    container.setPointerCapture(e.pointerId);
+                    hasPointerCapture = true;
                     setIsSelecting(true);
                 }
             }

@@ -31,6 +31,7 @@ import NpcIcon from '../../assets/images/category/npc.svg?react';
 import FacilityIcon from '../../assets/images/category/facility.svg?react';
 
 import { DEFAULT_SUBCATEGORY_ORDER, MARKER_TYPE_DICT, MARKER_TYPE_TREE, REGION_TYPE_COUNT_MAP, type IMarkerType } from '@/data/marker';
+import { VERSION_NEW_FILTER_GROUPS, useVersionNewMarkerCounts } from '@/data/marker/versionNew';
 import useRegion from '@/store/region';
 import { useTranslateGame, useTranslateUI } from '@/locale';
 import { useFilter, useMarkerStore } from '@/store/marker';
@@ -68,6 +69,7 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
   const tGame = useTranslateGame();
 
   const [supportOpen, setSupportOpen] = useState(false);
+  const versionNewCounts = useVersionNewMarkerCounts();
 
   const [vh, setVh] = useState<number>(typeof window !== 'undefined' ? window.innerHeight : 800);
   const filterList = useFilter();
@@ -257,7 +259,6 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
   const atRightEdge = showDivider && (searchExpanded || leftRatio >= rightBound - 0.01);
   const resolvedTopRowBaseHeight = topRowBaseHeight > 0 ? topRowBaseHeight : topRowHeight;
   const topBlurExtraHeight = Math.max(0, topRowHeight - resolvedTopRowBaseHeight);
-
   // Update ref when state changes
   useEffect(() => {
     leftRatioRef.current = leftRatio;
@@ -410,6 +411,25 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
 
             <div className={mobileStyles.filters}>
               <MarkFilterDragProvider>
+                {VERSION_NEW_FILTER_GROUPS.map((group) => (
+                  <MarkFilter
+                    idKey={group.key}
+                    title={String(t(group.titleKey))}
+                    dataCategory="versionNew"
+                    key={group.key}
+                    initialEmpty={false}
+                    variant="versionNew"
+                    reorderable={false}
+                  >
+                    {group.types.map((typeInfo) => (
+                      <MarkSelector
+                        key={typeInfo.key}
+                        typeInfo={typeInfo}
+                        countOverride={versionNewCounts[typeInfo.key]}
+                      />
+                    ))}
+                  </MarkFilter>
+                ))}
                 {DEFAULT_SUBCATEGORY_ORDER_LIST.filter((k) =>
                   Object.prototype.hasOwnProperty.call(MARKER_TYPE_TREE, k),
                 )

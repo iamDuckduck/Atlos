@@ -7,6 +7,10 @@
     --markfilter-title-shadow: #{rgba($black-0, 0.25)};
     --markfilter-accent: #{$primary-accent-5};
     --markfilter-placeholder: #{$black-1};
+    
+    --markfilter-version-bg: #{$light-2};
+    --markfilter-version-title: #{$black-1};
+    --markfilter-version-badge: #{$primary-accent-4};
 }
 :root[data-theme='dark'] {
     --markfilter-bg: #{$grey-1};
@@ -14,12 +18,17 @@
     --markfilter-title-shadow: #{rgba($black-0, 0.8)};
     --markfilter-accent: #{$primary-accent-4};
     --markfilter-placeholder: #{$light-2};
+
+    --markfilter-version-bg: #{$grey-2};
+    --markfilter-version-title: #{$light-2};
+    --markfilter-version-badge: #{$primary-accent-4};
 }
 
 .markFilterContainer {
     width: 100%;
     overflow: hidden;
     border-radius: 3px;
+    background-color: var(--markfilter-bg);
     box-shadow: 0 3px 4px rgba($black-0, 0.25);
     margin-bottom: 0.25rem;
     // Chrome 144+: overscroll-behavior now applies to non-scrollable containers.
@@ -27,6 +36,30 @@
     overscroll-behavior: auto;
     &.dragging {
         overflow: visible; // allow overlay while dragging
+    }
+
+    &.versionNew {
+        overflow: visible;
+        --markfilter-bg: var(--markfilter-version-bg);
+        --markfilter-title: var(--markfilter-version-title);
+
+        .filterHeader {
+            cursor: pointer;
+            &::before {
+            content: 'NEW!!';
+            position: absolute;
+            top: -0.5rem;
+            right: -0.25rem;
+            background-color: var(--markfilter-version-badge);
+            color: var($grey-1);
+            font-family: 'Novecento Bold', serif;
+            font-size: 0.625rem;
+            font-weight: 900;
+            padding: 2px 3px;
+            border-radius: 2px;
+            box-shadow: 0 2px 3px rgba($black-0, 0.25);
+        }
+        }
     }
 }
 
@@ -39,7 +72,6 @@
     height: 3rem;
     display: flex;
     align-items: center;
-    background-color: var(--markfilter-bg);
     border-radius: 3px 3px 0 0;
     cursor: grab;
     transition: all 0.2s;
@@ -119,7 +151,6 @@
     z-index: 2;
     position: relative;
     border-radius: 0 0 3px 3px;
-    background-color: var(--markfilter-bg);
     display: grid;
     grid-template-rows: 0fr;
     transition: grid-template-rows 0.4s $standard-curve;
@@ -140,7 +171,6 @@
         padding: 0 0.75rem;
         transform: translateY(-6px);
         filter: blur(6px);
-        background-color: var(--markfilter-bg);
         transition:
             opacity 0.4s ease 0.15s,
             transform 0.4s ease 0.15s,

@@ -66,12 +66,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
       "supportedBy": "Observator 6 tarafından desteklenmektedir"
-    }
+    },
+    "newlyAdded": "Bu Sürümde Yeni"
   },
   "language": {
     "title": "Dil",

@@ -33,6 +33,7 @@ import QQIcon from '../../assets/images/UI/media/qqicon.svg?react';
 import BskyIcon from '../../assets/images/UI/media/bluesky.svg?react';
 
 import { DEFAULT_SUBCATEGORY_ORDER, MARKER_TYPE_TREE, REGION_TYPE_COUNT_MAP, type IMarkerType } from '@/data/marker';
+import { VERSION_NEW_FILTER_GROUPS, useVersionNewMarkerCounts } from '@/data/marker/versionNew';
 import useRegion from '@/store/region';
 import { BINDER_GROUPS_BY_SUB } from '@/data/marker/binder';
 import MarkBinder from '../markBinder/markBinder';
@@ -92,6 +93,7 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
     const t = useTranslateUI();
     const tGame = useTranslateGame();
     const searchString = useSearchString();
+    const versionNewCounts = useVersionNewMarkerCounts();
     const isOpen = useSidebarOpen();
     const setIsOpen = useSetSidebarOpen();
     const sidebarWidth = useSidebarWidth();
@@ -184,7 +186,6 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
         const typeDisplayName = String(tGame(`markerType.key.${typeKey}`) ?? '').toLowerCase();
         return typeKey.toLowerCase().includes(lowerSearch) || typeDisplayName.includes(lowerSearch);
     }, [lowerSearch, tGame]);
-
     const emptyCategories = useMemo(() => {
         const regionTypeCounts = REGION_TYPE_COUNT_MAP[currentRegionKey] ?? {};
         return new Set(
@@ -195,7 +196,6 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
             ),
         );
     }, [currentRegionKey]);
-
     useMemo(() => {
         if (!currentRegion) return null;
         return {
@@ -248,6 +248,26 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                     <Search />
                     <div className={styles.filters}>
                         <MarkFilterDragProvider>
+                            {VERSION_NEW_FILTER_GROUPS.map((group) => (
+                                <MarkFilter
+                                    idKey={group.key}
+                                    title={String(t(group.titleKey))}
+                                    dataCategory="versionNew"
+                                    key={group.key}
+                                    columns={filterColumns}
+                                    initialEmpty={false}
+                                    variant="versionNew"
+                                    reorderable={false}
+                                >
+                                    {group.types.map((typeInfo) => (
+                                        <MarkSelector
+                                            key={typeInfo.key}
+                                            typeInfo={typeInfo}
+                                            countOverride={versionNewCounts[typeInfo.key]}
+                                        />
+                                    ))}
+                                </MarkFilter>
+                            ))}
                             {(
                                 DEFAULT_SUBCATEGORY_ORDER_LIST.filter(
                                     (k) => Object.prototype.hasOwnProperty.call(MARKER_TYPE_TREE, k),

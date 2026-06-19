@@ -11,9 +11,12 @@ const outputPath = path.join(markerRoot, 'diff.generated.json');
 const typePath = path.join(markerRoot, 'type.json');
 
 const VERSION_NEW_BUILD_CONFIG = {
-  from: '20260417',
-  to: 'current',
-  toLabel: '1.3',
+  snapshot: {
+    version: '1.3',
+    source: 'current',
+  },
+  from: '1.3',
+  to: '1.3',
   include: [
     'collection.*',
     'exploration.*',
@@ -132,16 +135,29 @@ const loadRef = (ref) => {
   throw new Error(`Cannot resolve marker snapshot "${ref}"`);
 };
 
+const ensureSnapshot = ({ version, source }) => {
+  const markers = loadRef(source);
+  const snapshotPath = snapshotPathFor(version);
+  writeJson(snapshotPath, markerMapToSnapshot(version, source, markers));
+  console.log(`[marker-version-new] wrote ${path.relative(root, snapshotPath)}`);
+  return markers;
+};
+
 const typeDict = readJson(typePath);
+if (VERSION_NEW_BUILD_CONFIG.snapshot) {
+  ensureSnapshot(VERSION_NEW_BUILD_CONFIG.snapshot);
+}
 const from = String(VERSION_NEW_BUILD_CONFIG.from);
 const to = String(VERSION_NEW_BUILD_CONFIG.to);
 const toLabel = String(VERSION_NEW_BUILD_CONFIG.toLabel ?? to);
 
 const before = loadRef(from);
 const after = loadRef(to);
-const nextSnapshotPath = snapshotPathFor(toLabel);
-writeJson(nextSnapshotPath, markerMapToSnapshot(toLabel, to, after));
-console.log(`[marker-version-new] wrote ${path.relative(root, nextSnapshotPath)}`);
+if (VERSION_NEW_BUILD_CONFIG.snapshot?.version !== toLabel) {
+  const nextSnapshotPath = snapshotPathFor(toLabel);
+  writeJson(nextSnapshotPath, markerMapToSnapshot(toLabel, to, after));
+  console.log(`[marker-version-new] wrote ${path.relative(root, nextSnapshotPath)}`);
+}
 
 const markerIdsByType = new Map();
 for (const [id, type] of after.entries()) {

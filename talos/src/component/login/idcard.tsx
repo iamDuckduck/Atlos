@@ -38,8 +38,7 @@ const IDCard = ({ username, id }: { username?: string; id?: string }) => {
     handleAvatarClick,
     handleCycleProfileAvatar,
     handleCloseProfile,
-    handleDiscordAuthClick,
-    handleGoogleAuthClick,
+    handleOAuthClick,
     handleRequestVerificationCode,
     handleRequestPasswordReset,
     handleAutoSubmit,
@@ -131,8 +130,7 @@ const IDCard = ({ username, id }: { username?: string; id?: string }) => {
         resetEmail={resetEmail}
         isSubmitting={isSubmitting}
         authError={authError}
-        handleDiscordAuthClick={handleDiscordAuthClick}
-        handleGoogleAuthClick={handleGoogleAuthClick}
+        handleOAuthClick={handleOAuthClick}
         onRequestVerificationCode={handleRequestVerificationCode}
         onRequestPasswordReset={handleRequestPasswordReset}
         onAutoSubmit={handleAutoSubmit}

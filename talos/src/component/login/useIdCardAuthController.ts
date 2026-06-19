@@ -11,8 +11,8 @@ import {
   registerWithEmail,
   resetPasswordWithToken,
   sendEmailVerificationOtp,
-  startDiscordAuth,
-  startGoogleAuth,
+  startOAuth,
+  type OAuthProvider,
   updateProfileNickname,
 } from './authFlow';
 import { getVerificationDigits, resolveErrorCode, type AuthMode, type AuthValues } from './access/authState';
@@ -272,7 +272,7 @@ export const useIdCardAuthController = () => {
     setProfileAvatar((current) => getNextAvatarIndex(current));
   }, []);
 
-  const handleDiscordAuthClick = useCallback(async () => {
+  const handleOAuthClick = useCallback(async (provider: OAuthProvider) => {
     if (isSubmitting) return;
 
     setAuthError(null);
@@ -280,24 +280,7 @@ export const useIdCardAuthController = () => {
 
     try {
       const callbackURL = buildOAuthCallbackUrl();
-      const { redirectUrl } = await startDiscordAuth(callbackURL);
-      window.location.assign(redirectUrl);
-    } catch (error) {
-      setAuthError(mapAuthErrorToHint(error));
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [isSubmitting]);
-
-  const handleGoogleAuthClick = useCallback(async () => {
-    if (isSubmitting) return;
-
-    setAuthError(null);
-    setIsSubmitting(true);
-
-    try {
-      const callbackURL = buildOAuthCallbackUrl();
-      const { redirectUrl } = await startGoogleAuth(callbackURL);
+      const { redirectUrl } = await startOAuth(provider, callbackURL);
       window.location.assign(redirectUrl);
     } catch (error) {
       setAuthError(mapAuthErrorToHint(error));
@@ -521,8 +504,7 @@ export const useIdCardAuthController = () => {
     handleAvatarClick,
     handleCycleProfileAvatar,
     handleCloseProfile,
-    handleDiscordAuthClick,
-    handleGoogleAuthClick,
+    handleOAuthClick,
     handleRequestVerificationCode,
     handleRequestPasswordReset,
     handleAutoSubmit,

@@ -28,6 +28,7 @@
     --oauth-pill-text: #{$grey-1};
 
     --oauth-discord: #5865f2;
+    --oauth-github: #24292f;
     --oauth-invert: 0;
 
     --ack-link: #{$primary-accent-6};
@@ -60,6 +61,7 @@
     --oauth-pill-text: #{$light-1};
 
     --oauth-discord: #e0e3ff;
+    --oauth-github: #f0f6fc;
     --oauth-invert: 1;
 
     --ack-link: #{$primary-accent-4};
@@ -520,6 +522,10 @@
   }
   &[data-platform='discord']>svg {
     fill: var(--oauth-discord);
+  }
+  &[data-platform='github']>svg {
+    fill: var(--oauth-github);
+    scale: 0.95;
   }
   &[data-platform='google']>svg {
     scale: 0.92

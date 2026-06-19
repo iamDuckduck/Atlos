@@ -316,41 +316,14 @@ export const exchangeAuthCode = async (code: string): Promise<SessionUser> => {
   return user;
 };
 
-export const startDiscordAuth = async (
-  callbackURL: string
+export type OAuthProvider = 'discord' | 'github' | 'google';
+
+export const startOAuth = async (
+  provider: OAuthProvider,
+  callbackURL: string,
 ): Promise<{ redirectUrl: string }> => {
   const response = await authClient.signIn.social({
-    provider: 'discord',
-    callbackURL,
-    disableRedirect: true,
-  });
-
-  if (response.error) {
-    throw new AuthFlowError(
-      pickApiErrorMessage(
-        response.error,
-        `Auth request failed (${response.error.status ?? 'unknown'})`
-      ),
-      {
-        status: response.error.status,
-        code: pickApiErrorCode(response.error),
-      }
-    );
-  }
-
-  const redirectUrl = pickRedirectUrl(response.data);
-  if (redirectUrl) {
-    return { redirectUrl };
-  }
-
-  throw new Error('Backend did not return an OAuth redirect URL.');
-};
-
-export const startGoogleAuth = async (
-  callbackURL: string
-): Promise<{ redirectUrl: string }> => {
-  const response = await authClient.signIn.social({
-    provider: 'google',
+    provider,
     callbackURL,
     disableRedirect: true,
   });

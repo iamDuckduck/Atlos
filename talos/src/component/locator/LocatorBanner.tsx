@@ -36,12 +36,11 @@ const LocatorBanner: React.FC = () => {
         return () => observer.disconnect();
     }, []);
 
-    if (!bannerKey) return null;
-
     return (
         <div ref={rootRef}>
             <Banner
-                content={t(bannerKey)}
+                open={Boolean(bannerKey)}
+                content={bannerKey ? t(bannerKey) : null}
                 onClose={clearBanner}
                 schema={resolvedTheme}
             />

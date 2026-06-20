@@ -29,7 +29,11 @@ $banner-mobile-width: 80vw;
     z-index: 9999;
     color: var(--banner-text);
     transition: all .35s $adagio-curve;
-    animation: slideDown 0.3s ease-out;
+    animation: slideDown 0.2s ease-out;
+    &[data-closing='true'] {
+        pointer-events: none;
+        animation: slideUp 0.2s ease-in forwards;
+    }
     &::before {
         content: "";
         position: absolute;
@@ -134,5 +138,16 @@ $banner-mobile-width: 80vw;
     to {
         transform: translateY(0);
         opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-100%);
+        opacity: 0;
     }
 }

@@ -317,7 +317,6 @@
       "CNStep1": "開啟<a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>Hypergryph API 連結</a>，複製完整回應。",
       "UniStep1": "開啟<a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>Gryphline API 連結</a>，複製完整回應。",
       "Step2": "在下方貼上完整回應，閱讀條款後即可綁定帳號。",
-      "serverFallback": "伺服器",
       "changeBinding": "切換綁定",
       "unlink": "解除綁定",
       "bindWithCountdown": "綁定並啟用位置同步（{sec}）",

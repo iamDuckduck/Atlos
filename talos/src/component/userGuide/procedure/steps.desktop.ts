@@ -64,14 +64,14 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-0_welcome',
             target: 'body',
-            content: parse(t('guide.welcome') || ''),
+            content: parse(t('guide.welcome')),
             placement: 'center',
             disableBeacon: true,
         },
         {
             id: 'STEP-1_sidebar-toggle',
             target: '[class*="sidebarToggle"]',
-            content: parse(t('guide.sidebarToggle') || ''),
+            content: parse(t('guide.sidebarToggle')),
             placement: 'right',
             disableBeacon: true,
             onNext: () => setSidebarOpen(true),
@@ -80,7 +80,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-2_search-container',
             target: '[class*="searchContainer"]',
-            content: parse(t('guide.search') || ''),
+            content: parse(t('guide.search')),
             placement: 'right',
             disableBeacon: true,
             onNext: () => {
@@ -111,7 +111,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-3_filter-container',
             target: `[data-category="${firstSubCategory}"]`,
-            content: parse(t('guide.filterContainer') || ''),
+            content: parse(t('guide.filterContainer')),
             placement: 'right',
             disableBeacon: true,
             onNext: () => {
@@ -147,14 +147,14 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-4_filter-icon',
             target: `[data-category="${firstSubCategory}"] [class*="filterIcon"]`, // Use specific category icon
-            content: parse(t('guide.filterSort') || ''),
+            content: parse(t('guide.filterSort')),
             placement: 'right',
             disableBeacon: true,
         },
         {
             id: 'STEP-5_selector-select',
             target: `[data-key="${firstType}"]`,
-            content: parse(t('guide.selectorSelect') || ''),
+            content: parse(t('guide.selectorSelect')),
             placement: 'right',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -168,7 +168,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-6_selector-complete',
             target: `[data-key="${firstType}"]`,
-            content: parse(t('guide.selectorComplete') || ''),
+            content: parse(t('guide.selectorComplete')),
             placement: 'right',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -183,7 +183,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-7_trigger-handle',
             target: '[class*="triggerDrawerHandle"]',
-            content: parse(t('guide.triggerHandle') || ''),
+            content: parse(t('guide.triggerHandle')),
             placement: 'top',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -200,14 +200,14 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-8_trigger-switch',
             target: '[class*="triggerButton"]',
-            content: parse(t('guide.triggerSwitch') || ''),
+            content: parse(t('guide.triggerSwitch')),
             placement: 'top',
             disableBeacon: true,
         },
         {
             id: 'STEP-9_scale-container',
             target: '[class*="scaleContainer"]',
-            content: parse(t('guide.scale') || ''),
+            content: parse(t('guide.scale')),
             placement: 'left',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -215,77 +215,77 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-10_filter-list',
             target: '[class*="mainFilterList"]',
-            content: parse(t('guide.filterList') || ''),
+            content: parse(t('guide.filterList')),
             placement: 'top',
             disableBeacon: true,
         },
         {
             id: 'STEP-11_headbar',
             target: '[class*="headbar"]',
-            content: parse(t('guide.headbar') || ''),
+            content: parse(t('guide.headbar')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'STEP-12_tos',
             target: '[data-guide="headbar-tos"]',
-            content: parse(t('guide.tos') || ''),
+            content: parse(t('guide.tos')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'STEP-13_hide-ui',
             target: '[data-guide="headbar-hide-ui"]',
-            content: parse(t('guide.hideUI') || ''),
+            content: parse(t('guide.hideUI')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'STEP-14_group',
             target: '[data-guide="headbar-group"]',
-            content: parse(t('guide.group') || ''),
+            content: parse(t('guide.group')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'STEP-15_dark-mode',
             target: '[data-guide="headbar-dark-mode"]',
-            content: parse(t('guide.darkMode') || ''),
+            content: parse(t('guide.darkMode')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'STEP-16_language',
             target: '[data-guide="headbar-language"]',
-            content: parse(t('guide.language') || ''),
+            content: parse(t('guide.language')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'STEP-17_help',
             target: '[data-guide="headbar-help"]',
-            content: parse(t('guide.help') || ''),
+            content: parse(t('guide.help')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'STEP-17_announcement',
             target: '[data-guide="headbar-announcement"]',
-            content: parse(t('guide.announcement') || ''),
+            content: parse(t('guide.announcement')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'STEP-18_settings',
             target: '[data-guide="headbar-settings"]',
-            content: parse(t('guide.settings') || ''),
+            content: parse(t('guide.settings')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'STEP-19_region-switch',
             target: '[class*="regswitch"]',
-            content: parse(t('guide.regionSwitch') || ''),
+            content: parse(t('guide.regionSwitch')),
             placement: 'right',
             disableBeacon: true,
             onNext: () => {
@@ -297,7 +297,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-20_subregion-switch',
             target: '[class*="subregionSwitch"]',
-            content: parse(t('guide.subregionSwitch') || ''),
+            content: parse(t('guide.subregionSwitch')),
             placement: 'right',
             disableBeacon: true,
             onNext: () => {
@@ -311,7 +311,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-21_layer-main',
             target: '[data-guide="layer-main-toggle"]',
-            content: parse(t('guide.layerMain') || ''),
+            content: parse(t('guide.layerMain')),
             placement: 'right',
             disableBeacon: true,
             onNext: () => {
@@ -323,7 +323,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-22_layer-switch',
             target: '[data-guide="layer-switch-item"]',
-            content: parse(t('guide.layerSwitch') || ''),
+            content: parse(t('guide.layerSwitch')),
             placement: 'right',
             disableBeacon: true,
             onNext: () => {
@@ -333,7 +333,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-23_locator-button',
             target: '[data-guide="locator-button"]',
-            content: parse(t('guide.locator') || ''),
+            content: parse(t('guide.locator')),
             placement: 'right',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -341,7 +341,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-24_point-select',
             target: '.leaflet-marker-icon',
-            content: parse(t('guide.pointSelect') || ''),
+            content: parse(t('guide.pointSelect')),
             placement: 'top',
             disableBeacon: true,
             onNext: () => {
@@ -353,7 +353,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-25_point-check',
             target: '.leaflet-marker-icon',
-            content: parse(t('guide.pointMark') || ''),
+            content: parse(t('guide.pointMark')),
             placement: 'top',
             disableBeacon: true,
             onNext: () => {
@@ -363,7 +363,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-26_detail-container',
             target: '[class*="detailContainer"]',
-            content: parse(t('guide.detail') || ''),
+            content: parse(t('guide.detail')),
             placement: 'top',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -371,7 +371,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         {
             id: 'STEP-27_point-icon',
             target: '[class*="pointIcon"]',
-            content: parse(t('guide.pointIcon') || ''),
+            content: parse(t('guide.pointIcon')),
             placement: 'top',
             disableBeacon: true,
             disableAutoScroll: true,

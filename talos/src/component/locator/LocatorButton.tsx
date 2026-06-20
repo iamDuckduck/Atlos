@@ -231,7 +231,7 @@ const LocatorButton: React.FC<LocatorButtonProps> = ({ variant = 'desktop' }) =>
                         className={styles.mobileLocatorButton}
                         data-active={viewMode !== 'off'}
                         onClick={handleMobileClick}
-                        aria-label={t('locator.title') || 'Locator'}
+                        aria-label={t('locator.title')}
                     >
                         <Icon />
                     </button>
@@ -243,7 +243,7 @@ const LocatorButton: React.FC<LocatorButtonProps> = ({ variant = 'desktop' }) =>
                             collapseMobileShell();
                             setConfigOpen(true);
                         }}
-                        aria-label={t('locator.config.title') || 'Tracking Config'}
+                        aria-label={t('locator.config.title')}
                         tabIndex={mobileExpanded ? 0 : -1}
                     >
                         <ConfigIcon />
@@ -303,7 +303,7 @@ const LocatorButton: React.FC<LocatorButtonProps> = ({ variant = 'desktop' }) =>
                     onClick={handleClick}
                     role="button"
                     tabIndex={0}
-                    aria-label={t('locator.title') || 'Locator'}
+                    aria-label={t('locator.title')}
                     onKeyDown={(event) => {
                         if (event.key !== 'Enter' && event.key !== ' ') return;
                         event.preventDefault();

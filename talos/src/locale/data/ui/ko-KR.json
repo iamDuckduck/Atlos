@@ -315,7 +315,6 @@
       "CNStep1": "<a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>Hypergryph API 링크</a>를 열고 응답 전체를 복사해 주세요.",
       "UniStep1": "<a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>Gryphline API 링크</a>를 열고 응답 전체를 복사해 주세요.",
       "Step2": "응답 전체를 붙여넣고 약관을 확인한 후 계정을 연동해 주세요.",
-      "serverFallback": "서버",
       "changeBinding": "연동 변경",
       "unlink": "연동 해제",
       "bindWithCountdown": "연동 후 위치 동기화 활성화 ({sec})",

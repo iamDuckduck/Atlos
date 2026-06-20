@@ -315,7 +315,6 @@
       "CNStep1": "<a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>Hypergryph API bağlantısını</a> açın, ardından tüm yanıtı kopyalayın.",
       "UniStep1": "<a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>Gryphline API bağlantısını</a> açın, ardından tüm yanıtı kopyalayın.",
       "Step2": "Yanıtın tamamını yapıştırın, şartları okuyun ve ardından hesabınızı bağlayın.",
-      "serverFallback": "Sunucu",
       "changeBinding": "Bağlantıyı Değiştir",
       "unlink": "Bağlantıyı Kes",
       "bindWithCountdown": "Bağla ve konum senkronizasyonunu etkinleştir ({sec})",

@@ -414,7 +414,7 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
                 {VERSION_NEW_FILTER_GROUPS.map((group) => (
                   <MarkFilter
                     idKey={group.key}
-                    title={String(t(group.titleKey))}
+                    title={t(group.titleKey)}
                     dataCategory="versionNew"
                     key={group.key}
                     initialEmpty={false}

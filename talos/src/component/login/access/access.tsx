@@ -144,10 +144,10 @@ const Access = ({
   };
 
   const modalTitle = isResetMode
-    ? t('idcard.auth.passwordReset') || 'Password Reset'
+    ? t('idcard.auth.passwordReset')
     : isRegisterMode
-      ? t('idcard.auth.register') || 'Register'
-      : t('idcard.auth.login') || 'Login';
+      ? t('idcard.auth.register')
+      : t('idcard.auth.login');
 
   const modalIcon = isResetMode
     ? <LoginIcon />
@@ -193,7 +193,7 @@ const Access = ({
       return null;
     }
 
-    return t('idcard.auth.forgotPW') || 'Forgot password?';
+    return t('idcard.auth.forgotPW');
   }, [fieldHintCodes.password, isRegisterMode, isResetMode, t]);
 
   const setFieldCode = useCallback((field: AuthField, code: AuthHintCode | null) => {
@@ -260,8 +260,8 @@ const Access = ({
   const shouldShowPwdRegex = isRegisterMode && touchedFields.password && fieldHintCodes.password === 112;
   const shouldShowEmailRegex = isRegisterMode && touchedFields.email && fieldHintCodes.email === 105;
   const isRegexRemoved = !open || (!shouldShowPwdRegex && !shouldShowEmailRegex);
-  const emailRegexText = t('idcard.auth.emailRegex') || 'Disposable email addresses are not allowed';
-  const pwdRegexText = t('idcard.auth.pwdRegex') || '8–20 characters; at least one uppercase';
+  const emailRegexText = t('idcard.auth.emailRegex');
+  const pwdRegexText = t('idcard.auth.pwdRegex');
   const regexText = shouldShowEmailRegex ? emailRegexText : pwdRegexText;
 
   const shouldShowSendVerificationButton = canShowSendVerificationButton(activeTab, authValues);
@@ -621,12 +621,12 @@ const Access = ({
     setOtpCooldownSeconds(OTP_COOLDOWN_SECONDS);
   };
 
-  const resendTemplate = t('idcard.auth.resend') || 'Resend ({count})';
+  const resendTemplate = t('idcard.auth.resend');
   const sendButtonLabel = otpCooldownSeconds > 0
     ? resendTemplate.replace('{count}', String(otpCooldownSeconds))
     : isResetMode
-      ? t('idcard.auth.sendResetLink') || 'Reset'
-      : t('idcard.auth.send') || 'Send';
+      ? t('idcard.auth.sendResetLink')
+      : t('idcard.auth.send');
   const modalSize = isMobile ? 'full' : 'l';
 
   const oauthLabelByPlatform: Record<OAuthProvider, string> = {
@@ -679,7 +679,7 @@ const Access = ({
           <form className={styles.emailAuthForm} onSubmit={handleSubmit} onKeyDown={handleFormKeyDown} noValidate>
             <div className={styles.inputRow}>
               <label htmlFor="access-email" className={styles.prtsIoLabel}>
-                <span className={styles.prtsIoItem}>{t('idcard.auth.email') || 'EMAIL:'}</span>
+                <span className={styles.prtsIoItem}>{t('idcard.auth.email')}</span>
                 {emailHintText ? (
                   <span className={styles.prtsHint} data-type={emailHintType ?? 'err'} data-text={emailHintText}>
                     {emailHintText}

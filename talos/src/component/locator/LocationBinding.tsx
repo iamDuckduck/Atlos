@@ -60,7 +60,6 @@ const LocationBinding: React.FC<LocationBindingProps> = ({
     const [error, setError] = useState('');
     const [countdown, setCountdown] = useState(BIND_COUNTDOWN_SECONDS);
     const sessionUser = useAuthStore((state) => state.sessionUser);
-    const l = useCallback((key: string, fallback: string) => t(key) || fallback, [t]);
     const errorText = error ?? '';
     const shouldShowError = open && Boolean(errorText);
     const isErrorRemoved = !shouldShowError;
@@ -107,7 +106,7 @@ const LocationBinding: React.FC<LocationBindingProps> = ({
         mode: LocatorAccountMode,
     ) => {
         if (!roles.length) {
-            throw new Error(l('locator.errors.noRole', 'No Endfield roles found on this account.'));
+            throw new Error(t('locator.errors.noRole'));
         }
 
         if (roles.length === 1) {
@@ -122,28 +121,29 @@ const LocationBinding: React.FC<LocationBindingProps> = ({
         setFlowId(nextFlowId);
         setAccountMode(mode);
         setStep('role');
-    }, [finishBind, l]);
+    }, [finishBind, t]);
 
     const bindByToken = useCallback(async () => {
         const accountToken = extractToken(tokenInput);
         if (!accountToken) {
-            setError(l('locator.errors.tokenRequired', 'Paste the full response or the token.'));
+            setError(t('locator.errors.tokenRequired'));
             return;
         }
 
         const exchanged = await exchangeEFToken(accountMode, accountToken);
         await loadRoles(exchanged.flowId, exchanged.roles, accountMode);
-    }, [accountMode, l, loadRoles, tokenInput]);
+    }, [accountMode, t, loadRoles, tokenInput]);
 
     const confirmRole = useCallback(async () => {
         const role = roleOptions.find((item) => `${item.serverId}:${item.roleId}` === selectedRoleKey);
         if (!role || !flowId) {
-            setError(l('locator.errors.roleRequired', 'Please select a role.'));
+            setError(t('locator.errors.roleRequired'));
+
             return;
         }
         const result = await bindEFRole(flowId, role);
         finishBind(accountMode, role, result.binding);
-    }, [accountMode, finishBind, flowId, l, roleOptions, selectedRoleKey]);
+    }, [accountMode, finishBind, flowId, t, roleOptions, selectedRoleKey]);
 
     const handleBind = useCallback(async () => {
         if (loading || countdown > 0) return;
@@ -153,11 +153,11 @@ const LocationBinding: React.FC<LocationBindingProps> = ({
             if (step === 'auth') await bindByToken();
             else await confirmRole();
         } catch (err) {
-            setError(err instanceof Error ? err.message : l('locator.errors.bindingFailed', 'Binding failed.'));
+            setError(err instanceof Error ? err.message : t('locator.errors.bindingFailed'));
         } finally {
             setLoading(false);
         }
-    }, [bindByToken, confirmRole, countdown, l, loading, step]);
+    }, [bindByToken, confirmRole, countdown, t, loading, step]);
 
     const switchMode = useCallback((mode: LocatorAccountMode) => {
         setAccountMode(mode);
@@ -243,7 +243,7 @@ const LocationBinding: React.FC<LocationBindingProps> = ({
                                 >
                                     <div className={styles.roleOptionName}>{role.nickname || role.roleId}</div>
                                     <div className={styles.roleOptionMeta}>
-                                        {role.serverName || role.serverType || `${t('locator.binding.serverFallback') || 'Server'} ${role.serverId}`}
+                                        {role.serverName || role.serverType || `${t('locator.config.server')} ${role.serverId}`}
                                         {' · '}
                                         {'Lv.'}
                                         {role.level}
@@ -276,7 +276,7 @@ const LocationBinding: React.FC<LocationBindingProps> = ({
                             </a>
                             {' · '}
                             <a href={docsUrl(locale, 'data-collection')} target="_blank" rel="noopener noreferrer">
-                                {t('locator.binding.dataCollection') || 'Data Collection'}
+                                {t('locator.binding.dataCollection')}
                             </a>
                             {' · '}
                             <a href={docsUrl(locale, 'disclaimer')} target="_blank" rel="noopener noreferrer">

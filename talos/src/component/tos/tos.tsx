@@ -172,7 +172,7 @@ const TOSModal: React.FC<ToSProps> = ({ open, onClose, onChange }) => {
       icon={<ToSIcon aria-hidden="true" />}
     >
       <div className={styles.storageContainer}>
-          {parse(t('tos.policy') || '')}
+          {parse(t('tos.policy'))}
       </div>
       <div className={styles.storageController} data-device={deviceType}>
         <div className={styles.storageMap}>

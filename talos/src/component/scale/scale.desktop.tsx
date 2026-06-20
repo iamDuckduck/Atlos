@@ -212,7 +212,7 @@ const ScaleDesktop = ({ map }: { map: L.Map }) => {
                         className={`${styles.zoomButton} ${styles.pipButton} ${pictureInPicture.active ? styles.active : ''} ${!pictureInPicture.supported ? styles.disabled : ''}`}
                         onClick={handlePictureInPictureToggle}
                         disabled={!pictureInPicture.supported}
-                        aria-label={String(tUI(pictureInPicture.active ? 'scale.pip.exitMode' : 'scale.pip.enterMode'))}
+                        aria-label={tUI(pictureInPicture.active ? 'scale.pip.exitMode' : 'scale.pip.enterMode')}
                     >
                         PiP
                     </button>

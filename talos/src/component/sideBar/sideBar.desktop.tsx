@@ -240,7 +240,7 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                 <div className={styles.headIcon}>
                     <img
                         src={Icon}
-                        alt={String(t('sidebar.alt.supportedBy'))}
+                        alt={t('sidebar.alt.supportedBy')}
                         draggable={'false'}
                     />
                 </div>
@@ -251,7 +251,7 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                             {VERSION_NEW_FILTER_GROUPS.map((group) => (
                                 <MarkFilter
                                     idKey={group.key}
-                                    title={String(t(group.titleKey))}
+                                    title={t(group.titleKey)}
                                     dataCategory="versionNew"
                                     key={group.key}
                                     columns={filterColumns}

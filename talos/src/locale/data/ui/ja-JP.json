@@ -315,7 +315,6 @@
       "CNStep1": "<a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>Hypergryph APIリンク</a>を開き、レスポンス全文をコピーしてください。",
       "UniStep1": "<a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>Gryphline APIリンク</a>を開き、レスポンス全文をコピーしてください。",
       "Step2": "レスポンス全文を貼り付け、規約を確認したうえでアカウントを連携してください。",
-      "serverFallback": "サーバー",
       "changeBinding": "連携を変更",
       "unlink": "連携解除",
       "bindWithCountdown": "連携して位置同期を有効化（{sec}）",

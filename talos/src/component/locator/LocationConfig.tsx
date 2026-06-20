@@ -211,7 +211,7 @@ const LocationConfig: React.FC<LocationConfigProps> = ({
             onBindingRemoved?.();
             onClose();
         } catch (err) {
-            setError(err instanceof Error ? err.message : (t('locator.errors.unlinkFailed') || 'Failed to unlink binding.'));
+            setError(err instanceof Error ? err.message : (t('locator.errors.unlinkFailed')));
         } finally {
             setSaving(false);
         }
@@ -219,7 +219,7 @@ const LocationConfig: React.FC<LocationConfigProps> = ({
 
     const tag = tagFor(binding?.serverName);
     const server = binding?.serverName
-        || (binding?.serverId !== undefined ? `${t('locator.binding.serverFallback') || 'Server'} ${binding.serverId}` : '-');
+        || (binding?.serverId !== undefined ? `${t('locator.config.server')} ${binding.serverId}` : '-');
     const name = binding?.nickname || binding?.roleId || '-';
     const roleId = binding?.roleId || '-';
     const dataUrl = docsUrl(locale, 'data-collection');
@@ -229,7 +229,7 @@ const LocationConfig: React.FC<LocationConfigProps> = ({
             open={open}
             size="m"
             onClose={onClose}
-            title={t('locator.config.title') || 'Tracking Config'}
+            title={t('locator.config.title')}
             icon={<ConfigIcon />}
             iconScale={0.8}
         >
@@ -288,7 +288,7 @@ const LocationConfig: React.FC<LocationConfigProps> = ({
                     ))}
                 </div>
 
-                <div className={profileStyles.profileDivider} data-label={t('locator.config.featureTitle') || 'Feature'}></div>
+                <div className={profileStyles.profileDivider} data-label={t('locator.config.featureTitle')}></div>
                 <div className={styles.featureGrid}>
                     <Trigger
                         isActive={trackPoints}

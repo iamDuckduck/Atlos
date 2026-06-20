@@ -100,10 +100,10 @@ const useUGCUpload = (point: IMarkerData, imageState: PointImagesState): UploadS
             const fallback = tUI(err.status ? 'detail.errors.backendUnknown' : 'detail.errors.uploadFailed');
             return typeof translated === 'string' && translated
                 ? translated
-                : String(fallback || 'Upload failed.');
+                : fallback;
         }
 
-        return String(tUI('detail.errors.uploadFailed') || 'Upload failed.');
+        return tUI('detail.errors.uploadFailed');
     }, [tUI]);
 
     useEffect(() => {

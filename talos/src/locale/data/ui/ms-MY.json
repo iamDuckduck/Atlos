@@ -315,7 +315,6 @@
       "CNStep1": "Buka <a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>pautan API Hypergryph</a> dan salin respons penuh.",
       "UniStep1": "Buka <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>pautan API Gryphline</a> dan salin respons penuh.",
       "Step2": "Tampal respons penuh, baca terma, kemudian pautkan akaun.",
-      "serverFallback": "Server",
       "changeBinding": "Tukar pautan",
       "unlink": "Nyahpaut",
       "bindWithCountdown": "Paut & aktifkan segerak lokasi ({sec})",

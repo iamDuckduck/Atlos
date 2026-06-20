@@ -69,7 +69,7 @@ const AnnModal: React.FC<AnnModalProps> = ({ open, onClose, onChange, onHasUnrea
             <div className={styles.body}>
                 {announcements.length === 0 ? (
                     <div className={styles.emptyState}>
-                        <p>{t('announcement.empty') || 'No announcements available'}</p>
+                        <p>{t('announcement.empty')}</p>
                     </div>
                 ) : (
                     <>

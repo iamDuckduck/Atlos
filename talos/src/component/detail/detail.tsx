@@ -259,7 +259,7 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
                         <div className={styles.headerActions}>
                             <Button
                                 text={tUI('common.close')}
-                                aria-label={tUI('common.close') || 'Close'}
+                                aria-label={tUI('common.close')}
                                 buttonType='close'
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -353,13 +353,13 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
                                     onClick={() => void handleOpenFullText()}
                                     role="button"
                                 >
-                                    {String(tUI('detail.readFullText'))}
+                                    {tUI('detail.readFullText')}
                                 </a>
                             </div>
                         )}
                         <div className={styles.detailUrl}>
                             <PopoverTooltip
-                                content={String(tUI('detail.copied'))}
+                                content={tUI('detail.copied')}
                                 placement="top"
                                 gap={4}
                                 visible={copiedPopupVisible}
@@ -370,7 +370,7 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
                                     onClick={() => void copyPointShareUrl()}
                                     role="button"
                                 >
-                                    {String(tUI('detail.share'))}
+                                    {tUI('detail.share')}
                                 </a>
                             </PopoverTooltip>
                         </div>

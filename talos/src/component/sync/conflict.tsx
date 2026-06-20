@@ -158,7 +158,7 @@ const SyncConflictModal: React.FC<SyncConflictModalProps> = ({
         <Modal
             open={open}
             size="l"
-            title={t('sync.conflict.title') || 'Progress Conflict'}
+            title={t('sync.conflict.title')}
             icon={<ConflictIcon />}
             iconScale={0.85}
             onClose={onClose}
@@ -201,11 +201,11 @@ const SyncConflictModal: React.FC<SyncConflictModalProps> = ({
 
                 <div className={styles.actions}>
                     <AccessButton
-                        label={(t('sync.conflict.keepA') || 'Keep {label}').replace('{label}', aShortLabel)}
+                        label={(t('sync.conflict.keepA')).replace('{label}', aShortLabel)}
                         onClick={() => onResolve('a')}
                     />
                     <AccessButton
-                        label={(t('sync.conflict.keepB') || 'Use {label}').replace('{label}', bShortLabel)}
+                        label={(t('sync.conflict.keepB')).replace('{label}', bShortLabel)}
                         onClick={() => onResolve('b')}
                     />
                     <div className={styles.actionWide}>

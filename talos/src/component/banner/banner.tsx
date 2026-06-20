@@ -19,8 +19,8 @@ const Banner: React.FC<BannerProps> = ({ content, onClose, schema = 'light' }) =
                     <span className={styles.bannerText}>{content}</span>
                 </div>
                 <Button
-                    text={t('common.close') || 'Close'}
-                    aria-label={t('common.close') || 'Close'}
+                    text={t('common.close')}
+                    aria-label={t('common.close')}
                     buttonType='close'
                     buttonStyle='icon'
                     schema={schema}

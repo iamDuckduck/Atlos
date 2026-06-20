@@ -315,7 +315,6 @@
       "CNStep1": "<a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>Hypergryph API लिंक</a> खोलें और पूरा रिस्पॉन्स कॉपी करें।",
       "UniStep1": "<a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>Gryphline API लिंक</a> खोलें और पूरा रिस्पॉन्स कॉपी करें।",
       "Step2": "पूरा रिस्पॉन्स पेस्ट करें, शर्तें पढ़ें और खाता लिंक करें।",
-      "serverFallback": "सर्वर",
       "changeBinding": "लिंक बदलें",
       "unlink": "अनलिंक",
       "bindWithCountdown": "लिंक करें और सिंक चालू करें ({sec})",

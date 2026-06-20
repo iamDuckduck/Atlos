@@ -238,7 +238,7 @@ const Modal: React.FC<ModalProps> = ({
             {showClose && (
               <Button
                 text={tUI('common.close')}
-                aria-label={tUI('common.close') || 'Close'}
+                aria-label={tUI('common.close')}
                 buttonType='close'
                 onClick={() => {
                   onClose?.();

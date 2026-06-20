@@ -61,7 +61,7 @@ const LocationAuth: React.FC = () => {
             clearBanner();
             closeAuth();
         } catch (err) {
-            setError(err instanceof Error ? err.message : (t('locator.errors.authorizationFailed') || 'Authorization failed.'));
+            setError(err instanceof Error ? err.message : (t('locator.errors.authorizationFailed')));
         } finally {
             setLoading(false);
         }
@@ -72,13 +72,13 @@ const LocationAuth: React.FC = () => {
             open={open}
             size="s"
             onClose={close}
-            title={t('locator.binding.locateAuth') || 'Location Sync Authorization'}
+            title={t('locator.binding.locateAuth')}
             icon={<Icon />}
             iconScale={0.86}
         >
             <div className={styles.authPane}>
                 <div className={styles.authBody}>
-                    {t('locator.binding.locateAuthBody') || 'Enabling Location Sync will allow access to your in-game location information. Do you want to enable it'}
+                    {t('locator.binding.locateAuthBody')}
                 </div>
                 <div
                     className={styles.bindingError}
@@ -95,8 +95,8 @@ const LocationAuth: React.FC = () => {
                         }}
                         disabled={loading}
                         label={loading
-                            ? (t('common.loading') || 'Loading...')
-                            : (t('locator.binding.authAndSync') || 'Authorize and start sync')}
+                            ? t('common.loading')
+                            : t('locator.binding.authAndSync')}
                     />
                 </div>
             </div>

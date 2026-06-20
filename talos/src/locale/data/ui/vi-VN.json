@@ -315,7 +315,6 @@
       "CNStep1": "Mở <a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>liên kết API Hypergryph</a> và sao chép phản hồi đầy đủ.",
       "UniStep1": "Mở <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>liên kết API Gryphline</a> và sao chép phản hồi đầy đủ.",
       "Step2": "Dán phản hồi đầy đủ, đọc điều khoản rồi liên kết tài khoản.",
-      "serverFallback": "Máy chủ",
       "changeBinding": "Đổi liên kết",
       "unlink": "Hủy liên kết",
       "bindWithCountdown": "Liên kết và bật đồng bộ ({sec})",

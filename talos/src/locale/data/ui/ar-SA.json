@@ -315,7 +315,6 @@
       "CNStep1": "افتح <a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>رابط Hypergryph API</a> وانسخ النص بالكامل.",
       "UniStep1": "افتح <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>رابط Gryphline API</a> وانسخ النص بالكامل.",
       "Step2": "ألصق النص المنسوخ هنا لربط حسابك.",
-      "serverFallback": "الخادم",
       "changeBinding": "تغيير الربط",
       "unlink": "إلغاء الربط",
       "bindWithCountdown": "اربط وفعّل المزامنة ({sec})",

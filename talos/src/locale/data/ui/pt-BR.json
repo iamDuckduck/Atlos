@@ -315,7 +315,6 @@
       "CNStep1": "Abra o <a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>link da API da Hypergryph</a> e copie a resposta completa.",
       "UniStep1": "Abra o <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>link da API da Gryphline</a> e copie a resposta completa.",
       "Step2": "Cole a resposta completa, leia os termos e vincule sua conta.",
-      "serverFallback": "Servidor",
       "changeBinding": "Trocar vínculo",
       "unlink": "Desvincular",
       "bindWithCountdown": "Vincular e ativar sincronização ({sec})",

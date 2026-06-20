@@ -242,13 +242,12 @@ const ProfileModal = ({
             </div>
           )}
 
-          <div className={styles.profileDivider} data-label={t('idcard.profile.note') || 'Note'}></div>
+          <div className={styles.profileDivider} data-label={t('idcard.profile.note')}></div>
 
           <div className={styles.profileNote}>
-            <p>{t('idcard.profile.noteNickname') || 'You can use letters, numbers, and underscores in your username.'}</p>
+            <p>{t('idcard.profile.noteNickname')}</p>
             <p>
-              {t('idcard.profile.noteUID') ||
-                'UID is assigned on first setup and cannot be changed. You can update your username any time.'}
+              {t('idcard.profile.noteUID')}
             </p>
           </div>
 
@@ -261,7 +260,7 @@ const ProfileModal = ({
             {profileErrorText}
           </div>
 
-          <div className={styles.profileDivider} data-label={t('idcard.profile.auditLabel') || 'Audit'}></div>
+          <div className={styles.profileDivider} data-label={t('idcard.profile.auditLabel')}></div>
 
           <div className={styles.profileActions}>
             <div className={styles.profileActionWide}>
@@ -280,7 +279,7 @@ const ProfileModal = ({
                 }}
                 disabled={isSavingProfile || isImportingOfficialMarks}
                 label={isImportingOfficialMarks
-                  ? t('common.loading') || 'Loading...'
+                  ? t('common.loading')
                   : t('idcard.profile.importOfficial')}
               />
             </div>
@@ -290,15 +289,15 @@ const ProfileModal = ({
               }}
               disabled={isSavingProfile}
               label={isSavingProfile
-                ? t('idcard.profile.saving') || 'Saving...'
-                : t('idcard.profile.save') || 'Save Changes'}
+                ? t('idcard.profile.saving')
+                : t('idcard.profile.save')}
             />
             <AccessButton
               onClick={() => {
                 void handleLogout();
               }}
               disabled={isSavingProfile}
-              label={t('idcard.profile.logout') || 'Sign Out'}
+              label={t('idcard.profile.logout')}
             />
           </div>
         </div>

@@ -63,12 +63,12 @@ const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%' }) => {
 
     const clickableResults = useMemo(() => results.map((group) => {
         const canNavigate = !!group.uniquePoint;
-        const locateText = String(t('search.locatePoint') || '');
-        const selectText = String(t('search.selectType') || '');
+        const locateText = t('search.locatePoint');
+        const selectText = t('search.selectType');
         return {
             ...group,
             canNavigate,
-            clickTitle: canNavigate ? (locateText || 'Locate point') : (selectText || 'Select type'),
+            clickTitle: canNavigate ? (locateText) : (selectText),
         };
     }), [results, t]);
 

@@ -1,3 +1,5 @@
+import { SEO_POINT_PREVIEWS, type SeoPointPreview } from './seo-preview.generated';
+
 const TARGET_CN_ORIGIN = 'https://opendfieldmap.cn';
 const TARGET_ORG_ORIGIN = 'https://opendfieldmap.org';
 const ROOT_SHORT_DOMAIN = 'oem.re';
@@ -200,11 +202,68 @@ const shouldServeSocialPreview = (userAgent: string, forcePreview: boolean): boo
 const buildPreviewImageUrl = (targetOrigin: string): string =>
 	new URL('/og_preview.jpg', targetOrigin).toString();
 
-const buildSocialPreviewHtml = (redirectUrl: string, targetOrigin: string): string => {
+const POINT_TOKEN_PATTERN = /^[0-9a-zA-Z]{7}$/;
+
+const getPointPreviewToken = (requestUrl: URL): string | null => {
+	const queryToken = requestUrl.searchParams.get('x')?.trim();
+	if (queryToken && POINT_TOKEN_PATTERN.test(queryToken)) return queryToken;
+	const pathToken = requestUrl.pathname.replace(/^\/+|\/+$/g, '');
+	if (pathToken && POINT_TOKEN_PATTERN.test(pathToken)) return pathToken;
+	return null;
+};
+
+const resolvePointPreview = (requestUrl: URL): SeoPointPreview | null => {
+	const token = getPointPreviewToken(requestUrl);
+	return token ? SEO_POINT_PREVIEWS[token] ?? null : null;
+};
+
+const withTargetOrigin = (value: string, targetOrigin: string): string => {
+	try {
+		const url = new URL(value);
+		const targetUrl = new URL(targetOrigin);
+		url.protocol = targetUrl.protocol;
+		url.host = targetUrl.host;
+		return url.toString();
+	} catch {
+		return value;
+	}
+};
+
+const withTargetOgImageVariant = (value: string, targetOrigin: string): string => {
+	try {
+		const url = new URL(value);
+		const targetUrl = new URL(targetOrigin);
+		const imageVariant = targetUrl.hostname.endsWith('opendfieldmap.cn') ? 'oss' : 'r2';
+		url.pathname = url.pathname.replace(/\/seo\/og\/(?:oss|r2)\//, `/seo/og/${imageVariant}/`);
+		return url.toString();
+	} catch {
+		return value;
+	}
+};
+
+const resolvePointPreviewForTarget = (
+	requestUrl: URL,
+	targetOrigin: string,
+): SeoPointPreview | null => {
+	const preview = resolvePointPreview(requestUrl);
+	if (!preview) return null;
+	return {
+		...preview,
+		url: withTargetOrigin(preview.url, targetOrigin),
+		image: withTargetOgImageVariant(preview.image, targetOrigin),
+	};
+};
+
+const buildSocialPreviewHtml = (redirectUrl: string, targetOrigin: string, pointPreview?: SeoPointPreview | null): string => {
 	const escapedRedirectUrl = escapeHtml(redirectUrl);
-	const escapedTitle = escapeHtml(PREVIEW_TITLE);
-	const escapedDescription = escapeHtml(PREVIEW_DESCRIPTION);
-	const previewImage = escapeHtml(buildPreviewImageUrl(targetOrigin));
+	const previewUrl = pointPreview?.url || redirectUrl;
+	const previewTitle = pointPreview?.title || PREVIEW_TITLE;
+	const previewDescription = pointPreview?.description || PREVIEW_DESCRIPTION;
+	const previewImageUrl = pointPreview?.image || buildPreviewImageUrl(targetOrigin);
+	const escapedPreviewUrl = escapeHtml(previewUrl);
+	const escapedTitle = escapeHtml(previewTitle);
+	const escapedDescription = escapeHtml(previewDescription);
+	const previewImage = escapeHtml(previewImageUrl);
 
 	return `<!doctype html>
         <html lang="en">
@@ -217,7 +276,7 @@ const buildSocialPreviewHtml = (redirectUrl: string, targetOrigin: string): stri
         <meta property="og:type" content="website" />
         <meta property="og:title" content="${escapedTitle}" />
         <meta property="og:description" content="${escapedDescription}" />
-        <meta property="og:url" content="${escapedRedirectUrl}" />
+        <meta property="og:url" content="${escapedPreviewUrl}" />
         <meta property="og:image" content="${previewImage}" />
 
         <meta name="twitter:card" content="summary_large_image" />
@@ -386,7 +445,8 @@ export default {
 		const hostReason = `host=${hostDecision.key}; ${target.reason}`;
 
 		if (isSocialPreview) {
-			return new Response(buildSocialPreviewHtml(redirectUrl, target.origin), {
+			const pointPreview = resolvePointPreviewForTarget(requestUrl, target.origin);
+			return new Response(buildSocialPreviewHtml(redirectUrl, target.origin, pointPreview), {
 				status: 200,
 				headers: {
 					'content-type': 'text/html; charset=utf-8',
@@ -401,6 +461,7 @@ export default {
 					'x-oem-relink-host-key': hostDecision.key,
 					'x-oem-relink-mode': mode,
 					'x-oem-relink-social-preview': '1',
+					'x-oem-relink-point-preview': pointPreview ? '1' : '0',
 				},
 			});
 		}

@@ -98,6 +98,8 @@ const deleteRemoteObjectKeys = async (keys) => {
 // Keep search index docs as single PUT objects so OSS ETag remains the file MD5.
 const MULTIPART_THRESHOLD = 64 * 1024 * 1024;
 const MAX_RETRIES = 3;
+const shouldUploadSeoPointAliases = process.env.SEO_UPLOAD_POINT_ALIASES === '1';
+const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || '20', 10);
 
 const normalizeEtag = (etag) =>
   String(etag ?? '').replace(/^"|"$/g, '').toLowerCase();
@@ -192,6 +194,61 @@ const upload = async (relativePath, retryCount = 0) => {
   }
 }
 
+const uploadAlias = async (sourceRelativePath, aliasRelativePath, retryCount = 0) => {
+  const cleanPrefix = prefix.replace(/^\/+/, '').replace(/\/+$/, '');
+  const normalizedAliasPath = aliasRelativePath.replace(/\\/g, '/');
+  const objectKey = cleanPrefix ? `${cleanPrefix}/${normalizedAliasPath}` : normalizedAliasPath;
+  const localPath = `./dist/${sourceRelativePath}`;
+
+  const headers = {
+    'x-oss-storage-class': 'Standard',
+    'x-oss-object-acl': 'default',
+    'x-oss-forbid-overwrite': 'false',
+    'Cache-Control': getCacheControl(aliasRelativePath),
+  };
+
+  try {
+    const stats = fs.statSync(localPath);
+    const fileSize = stats.size;
+    if (await shouldSkipUpload(aliasRelativePath, objectKey, localPath, fileSize)) {
+      return;
+    }
+    await client.put(objectKey, localPath, { headers });
+    console.log(`${sourceRelativePath} aliased as ${aliasRelativePath} (${(fileSize / 1024).toFixed(2)}KB)`);
+  } catch (e) {
+    if (retryCount < MAX_RETRIES) {
+      const waitTime = 2000 * Math.pow(2, retryCount);
+      console.warn(`Retry alias ${retryCount + 1}/${MAX_RETRIES} after ${waitTime}ms: ${aliasRelativePath}`);
+      await new Promise(r => setTimeout(r, waitTime));
+      return uploadAlias(sourceRelativePath, aliasRelativePath, retryCount + 1);
+    }
+    console.error(`Alias upload failed after ${MAX_RETRIES} retries: ${aliasRelativePath}`, e?.name || e?.code || e?.message || e);
+  }
+};
+
+const uploadSeoPointAliases = async (localFiles) => {
+  const seoPointFiles = localFiles
+    .map((relativePath) => relativePath.replace(/\\/g, '/'))
+    .filter((relativePath) => /^seo\/points\/[0-9a-zA-Z]{7}\.html$/.test(relativePath));
+
+  if (!seoPointFiles.length) return;
+
+  const workerCount = Math.max(
+    1,
+    Math.min(Number.isFinite(seoPointAliasConcurrency) ? seoPointAliasConcurrency : 20, seoPointFiles.length)
+  );
+  let cursor = 0;
+  const workers = Array.from({ length: workerCount }, async () => {
+    while (cursor < seoPointFiles.length) {
+      const relativePath = seoPointFiles[cursor++];
+      const token = path.basename(relativePath, '.html');
+      await uploadAlias(relativePath, `${token}/index.html`);
+    }
+  });
+
+  await Promise.all(workers);
+};
+
 const concurrency = 5; // limit concurrency
 let index = 0;
 let allFiles = [];
@@ -266,6 +323,12 @@ const run = async () => {
   }
 
   await Promise.all(promises);
+
+  if (shouldUploadSeoPointAliases) {
+    await uploadSeoPointAliases(allFiles);
+  } else {
+    console.log('[publish-oss] SEO point alias upload skipped. Set SEO_UPLOAD_POINT_ALIASES=1 to upload token/index.html aliases.');
+  }
 
   if (clipIndex.generated) {
     await reconcileClipObjects(clipIndex.expectedClipFiles);

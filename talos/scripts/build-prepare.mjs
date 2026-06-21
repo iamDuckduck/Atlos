@@ -30,6 +30,7 @@ if (shouldSkipSubset) {
 run('pnpm run build:marker-stats');
 run('pnpm run build:marker-version-new');
 run('pnpm run build:search-index');
+run('pnpm run build:seo:pages');
 
 if (shouldDeploy) {
   run('pnpm run worker:deploy');

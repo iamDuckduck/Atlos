@@ -62,6 +62,7 @@ const metaInfo = buildTarget === 'r2'
       };
 
 const isProd = process.env.NODE_ENV === 'production';
+const buildAssetVersion = process.env.BUILD_ASSET_VERSION || Date.now().toString(36);
 const assetsHost = isProd
     ? joinCdnPath(config?.web?.build?.cdn, resolvedPrefix)
     : '';
@@ -201,7 +202,7 @@ export default defineConfig({
     base: assetsHost,
     define: {
         __ASSETS_HOST: JSON.stringify(assetsHost),
-        __APP_VERSION__: JSON.stringify(Date.now().toString()),
+        __APP_VERSION__: JSON.stringify(buildAssetVersion),
     },
     resolve: {
         alias: {
@@ -262,12 +263,16 @@ export default defineConfig({
         },
     },
     build: {
+        emptyOutDir: true,
         rollupOptions: {
             external: [
                 // Exclude dated legacy marker snapshots from accidental glob/import expansion.
                 historicalMarkerDataPattern,
             ],
             output: {
+                entryFileNames: `assets/[name]-[hash]-${buildAssetVersion}.js`,
+                chunkFileNames: `assets/[name]-[hash]-${buildAssetVersion}.js`,
+                assetFileNames: `assets/[name]-[hash]-${buildAssetVersion}[extname]`,
                 manualChunks(id) {
                     if (!id.includes('/node_modules/')) return undefined;
 

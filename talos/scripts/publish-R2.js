@@ -5,6 +5,7 @@ import {
   ListObjectsV2Command,
   DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
+import { execFileSync } from "node:child_process";
 import { Upload } from "@aws-sdk/lib-storage";
 import fs from "fs-extra";
 import path from "path";
@@ -17,7 +18,7 @@ import { buildClipIndex, normalizeObjectKey, toPrefixedObjectKey } from "./tile-
 // {
 //   "web": {
 //     "build": {
-//       "cdn": "https://xxx.org-cdn.com",
+//       "cdn": "https://cdn.example.org",
 //       "r2": {
 //         "endpoint": "https://<accountid>.r2.cloudflarestorage.com",
 //         "bucket": "your-bucket",
@@ -164,6 +165,8 @@ const getMimeType = (filePath) => {
 // Keep search docs on single PUT so the remote ETag stays comparable to local MD5.
 const MULTIPART_THRESHOLD = 64 * 1024 * 1024;
 const MAX_RETRIES = 3;
+const shouldUploadSeoPointAliases = process.env.SEO_UPLOAD_POINT_ALIASES === "1";
+const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || "40", 10);
 
 const normalizeEtag = (etag) =>
   String(etag ?? "").replace(/^"|"$/g, "").toLowerCase();
@@ -293,6 +296,73 @@ const upload = async (relativePath, retryCount = 0) => {
   }
 };
 
+const uploadAlias = async (sourceRelativePath, aliasRelativePath, retryCount = 0) => {
+  const cleanPrefix = prefix.replace(/^\/+/, '').replace(/\/+$/, '');
+  const normalizedAliasPath = aliasRelativePath.replace(/\\/g, "/");
+  const objectKey = cleanPrefix ? `${cleanPrefix}/${normalizedAliasPath}` : normalizedAliasPath;
+  const localPath = `./dist/${sourceRelativePath}`;
+
+  try {
+    const stats = fs.statSync(localPath);
+    const fileSize = stats.size;
+    const contentType = getMimeType(aliasRelativePath);
+
+    if (await shouldSkipUpload(aliasRelativePath, objectKey, localPath, fileSize)) {
+      return;
+    }
+
+    const command = new PutObjectCommand({
+      Bucket: bucket,
+      Key: objectKey,
+      Body: fs.createReadStream(localPath),
+      ContentType: contentType,
+      CacheControl: getCacheControl(aliasRelativePath),
+    });
+    await client.send(command);
+    console.log(
+      `${sourceRelativePath} aliased as ${aliasRelativePath} (${(fileSize / 1024).toFixed(
+        2
+      )}KB, ${contentType})`
+    );
+  } catch (e) {
+    if (retryCount < MAX_RETRIES) {
+      const waitTime = 2000 * Math.pow(2, retryCount);
+      console.warn(
+        `Retry alias ${retryCount + 1}/${MAX_RETRIES} after ${waitTime}ms: ${aliasRelativePath}`
+      );
+      await new Promise((r) => setTimeout(r, waitTime));
+      return uploadAlias(sourceRelativePath, aliasRelativePath, retryCount + 1);
+    }
+    console.error(
+      `Alias upload failed after ${MAX_RETRIES} retries: ${aliasRelativePath}`,
+      e?.name || e?.code || e?.message || e
+    );
+  }
+};
+
+const uploadSeoPointAliases = async (localFiles) => {
+  const seoPointFiles = localFiles
+    .map((relativePath) => relativePath.replace(/\\/g, "/"))
+    .filter((relativePath) => /^seo\/points\/[0-9a-zA-Z]{7}\.html$/.test(relativePath));
+
+  if (!seoPointFiles.length) return;
+
+  const workerCount = Math.max(
+    1,
+    Math.min(Number.isFinite(seoPointAliasConcurrency) ? seoPointAliasConcurrency : 40, seoPointFiles.length)
+  );
+  let cursor = 0;
+  const workers = Array.from({ length: workerCount }, async () => {
+    while (cursor < seoPointFiles.length) {
+      const relativePath = seoPointFiles[cursor++];
+      const token = path.basename(relativePath, ".html");
+      await uploadAlias(relativePath, `${token}/index.html`);
+    }
+  });
+
+  await Promise.all(workers);
+};
+
 const concurrency = 120; // limit concurrency
 let index = 0;
 let allFiles = [];
@@ -342,6 +412,24 @@ const reconcileAssetObjects = async (localFiles) => {
   console.log(`[publish-R2] deleted ${staleKeys.length} stale assets objects.`);
 };
 
+const uploadExternalSeoOgImages = async () => {
+  if (process.env.SEO_SKIP_OG_UPLOAD === "1") {
+    console.log("[publish-R2] SEO OG image upload skipped by SEO_SKIP_OG_UPLOAD=1.");
+    return;
+  }
+
+  const seoOgDir = path.resolve(process.cwd(), process.env.SEO_OG_OUTPUT_DIR || "../seo-og");
+  if (!(await fs.pathExists(seoOgDir))) {
+    console.log("[publish-R2] SEO OG image upload skipped: external image directory does not exist.");
+    return;
+  }
+
+  execFileSync("node", ["./scripts/publish-seo-og-R2.js"], {
+    stdio: "inherit",
+    env: process.env,
+  });
+};
+
 const worker = async () => {
   while (index < allFiles.length) {
     const file = allFiles[index++];
@@ -368,11 +456,19 @@ const run = async () => {
 
   await Promise.all(promises);
 
+  if (shouldUploadSeoPointAliases) {
+    await uploadSeoPointAliases(allFiles);
+  } else {
+    console.log("[publish-R2] SEO point alias upload skipped. Set SEO_UPLOAD_POINT_ALIASES=1 to upload token/index.html aliases.");
+  }
+
   if (clipIndex.generated) {
     await reconcileClipObjects(clipIndex.expectedClipFiles);
   }
 
   await reconcileAssetObjects(allFiles);
+
+  await uploadExternalSeoOgImages();
 };
 
 run()

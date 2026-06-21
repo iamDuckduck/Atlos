@@ -41,6 +41,7 @@ const POINT_ID_PERMUTATION_MOD = 1n << 36n;
 const POINT_ID_PERMUTATION_MULTIPLIER = 25214903917n;
 const POINT_ID_PERMUTATION_OFFSET = 11n;
 const POINT_ID_TOKEN_LENGTH = 7;
+const POINT_TOKEN_PATTERN = /^[0-9a-zA-Z]{7}$/;
 
 // f 參數壓縮格式：
 // - 單個 type: ~<base36Index>
@@ -173,6 +174,21 @@ const decodePointIdToken = (token: string): string | null => {
     const decoded = ((obfuscated - POINT_ID_PERMUTATION_OFFSET + POINT_ID_PERMUTATION_MOD) % POINT_ID_PERMUTATION_MOD);
     const id = (decoded * POINT_ID_PERMUTATION_INVERSE) % POINT_ID_PERMUTATION_MOD;
     return id.toString();
+};
+
+const getPathPointToken = (pathname: string): string | null => {
+    const segments = pathname.split('/').filter(Boolean);
+    const lastSegment = segments[segments.length - 1];
+    return lastSegment && POINT_TOKEN_PATTERN.test(lastSegment) ? lastSegment : null;
+};
+
+const stripPathPointToken = (pathname: string): string => {
+    const segments = pathname.split('/').filter(Boolean);
+    if (!segments.length || !POINT_TOKEN_PATTERN.test(segments[segments.length - 1])) {
+        return pathname;
+    }
+    const keptSegments = segments.slice(0, -1);
+    return keptSegments.length ? `/${keptSegments.join('/')}/` : '/';
 };
 
 const mergeFilterKeys = (keys: string[]) => {
@@ -494,7 +510,7 @@ export const generateShareUrl = (): string => {
 
 /**
  * 生成指定點位的分享鏈接。
- * 預設生成單一 query token（?x=...）。
+ * 預設生成單一 token。
  * 若 id 超出編碼範圍，降級為 legacy query 參數。
  */
 export const buildPointShareToken = (point: Pick<IMarkerData, 'id' | 'type' | 'subregId'>): string => {
@@ -531,9 +547,7 @@ export const generatePointShareUrl = (point: Pick<IMarkerData, 'id' | 'type' | '
     if (tokenOrFallback.startsWith('?')) {
         return `${POINT_SHARE_SHORT_ORIGIN}/${tokenOrFallback}`;
     }
-    const tokenParams = new URLSearchParams();
-    tokenParams.set(PARAM_POINT_TOKEN, tokenOrFallback);
-    return `${POINT_SHARE_SHORT_ORIGIN}/?${tokenParams.toString()}`;
+    return `${POINT_SHARE_SHORT_ORIGIN}/${encodeURIComponent(tokenOrFallback)}`;
 };
 
 /**
@@ -563,6 +577,7 @@ export const applyUrlParams = async (): Promise<void> => {
     if (typeof window === 'undefined') return;
 
     const params = new URLSearchParams(window.location.search);
+    const pathPointToken = getPathPointToken(window.location.pathname);
 
     // 應用語言參數（以用户本地优先）
     const langParam = params.get(PARAM_LANG);
@@ -631,7 +646,7 @@ export const applyUrlParams = async (): Promise<void> => {
 
     const pointParam = params.get(PARAM_POINT);
     const typeParam = params.get(PARAM_TYPE)?.trim() || null;
-    const pointTokenParam = params.get(PARAM_POINT_TOKEN)?.trim() || null;
+    const pointTokenParam = params.get(PARAM_POINT_TOKEN)?.trim() || pathPointToken;
     const pointIdFromToken = pointTokenParam ? decodePointIdToken(pointTokenParam) : null;
     const resolvedFromToken = pointIdFromToken ? await resolvePointShareTarget(pointIdFromToken) : null;
     const resolvedFromType = typeParam ? await resolveArchiveTypeShareTarget(typeParam) : null;
@@ -674,7 +689,7 @@ export const applyUrlParams = async (): Promise<void> => {
     }
 
     // 清除地圖分享參數；僅保留認證流程必要參數，避免影響 reset password 流程。
-    if (params.toString()) {
+    if (params.toString() || pathPointToken) {
         const newParams = new URLSearchParams(window.location.search);
         newParams.delete(PARAM_LANG);
         newParams.delete(PARAM_FILTER);
@@ -692,9 +707,12 @@ export const applyUrlParams = async (): Promise<void> => {
         });
 
         const queryString = preservedParams.toString();
-        const newUrl = queryString
-            ? `${window.location.pathname}?${queryString}`
+        const nextPathname = pathPointToken
+            ? stripPathPointToken(window.location.pathname)
             : window.location.pathname;
+        const newUrl = queryString
+            ? `${nextPathname}?${queryString}`
+            : nextPathname;
         window.history.replaceState({}, '', newUrl);
     }
 };

@@ -30,7 +30,11 @@ dist-ssr
 
 talos/public/clips
 talos/public/files
+talos/public/points
+talos/public/seo
 talos/public/search
+talos/public/robots.txt
+talos/public/sitemap*.xml
 talos/originData
 talos/src/assets/fonts/UD_ShinGo
 talos/src/assets/fonts/Harmony
@@ -47,6 +51,7 @@ talos/scripts/logs/
 talos/src/data/marker/diff.generated.json
 
 ref/
+seo-og/
 stats.json
 
 # Local-only map label placement tool (UI should not be merged)

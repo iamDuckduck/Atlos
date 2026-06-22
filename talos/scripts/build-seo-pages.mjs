@@ -44,6 +44,7 @@ const SEO_OUT_DIR = path.resolve(PUBLIC_OUT_DIR, 'seo');
 const SEO_POINTS_OUT_DIR = path.resolve(SEO_OUT_DIR, 'points');
 const SEO_OG_OUT_DIR = path.resolve(SEO_OUT_DIR, 'og');
 const WORKER_PREVIEW_FILE = path.resolve(ROOT, 'oem-relink/src/seo-preview.generated.ts');
+const OSS_CONFIG_FILE = path.resolve(ROOT, 'config/config.json');
 
 const POINT_SHARE_SHORT_ORIGIN = 'https://oem.re';
 const SITE_NAME = 'Open Endfield Map';
@@ -120,16 +121,19 @@ function readJsonSync(file) {
 }
 
 function resolveDefaultOgUrlBase() {
-  const r2Config = readJsonSync(R2_CONFIG_FILE);
-  const cdn = r2Config?.web?.build?.cdn;
-  if (!cdn) return `${siteUrl}/seo/og`;
+  const config = readJsonSync(buildTarget === 'r2' ? R2_CONFIG_FILE : OSS_CONFIG_FILE);
+  const buildConfig = config?.web?.build ?? {};
+  const cdn = buildConfig.cdn;
+  if (!cdn) return `${siteUrl}/seo/og/${buildTarget}`;
 
-  const r2 = r2Config?.web?.build?.r2 ?? {};
+  const storage = buildTarget === 'r2'
+    ? buildConfig.r2 ?? {}
+    : buildConfig.oss ?? {};
   const { prefix } = resolveDeployPrefix({
-    basePrefix: r2.prefix,
+    basePrefix: storage.prefix,
     channel: deployChannel,
-    target: 'r2',
-    deployChannels: r2Config?.web?.build?.deployChannels,
+    target: buildTarget,
+    deployChannels: buildConfig.deployChannels,
   });
   return `${joinCdnPath(cdn, prefix)}/seo/og/${buildTarget}`;
 }

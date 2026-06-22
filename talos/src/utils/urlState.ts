@@ -29,12 +29,26 @@ const PARAM_POINT = 'p';
 const PARAM_POINT_TOKEN = 'x';
 const AUTH_URL_PARAM_WHITELIST = new Set(['token', 'email', 'error', 'domain']);
 const POINT_SHARE_SHORT_ORIGIN = 'https://oem.re';
+const POINT_SHARE_CN_ORIGIN = 'https://opendfieldmap.cn';
+const POINT_SHARE_CN_HOSTNAME = 'opendfieldmap.cn';
 
 const BASE62_ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const BASE62_CHAR_TO_VALUE = new Map<string, bigint>(
     BASE62_ALPHABET.split('').map((char, index) => [char, BigInt(index)]),
 );
 const BASE62_BASE = BigInt(BASE62_ALPHABET.length);
+
+const isPointShareCnHostname = (hostname: string): boolean => (
+    hostname === POINT_SHARE_CN_HOSTNAME || hostname.endsWith(`.${POINT_SHARE_CN_HOSTNAME}`)
+);
+
+const getPointShareOrigin = (): string => {
+    if (typeof window !== 'undefined' && isPointShareCnHostname(window.location.hostname)) {
+        return POINT_SHARE_CN_ORIGIN;
+    }
+
+    return POINT_SHARE_SHORT_ORIGIN;
+};
 
 // 可逆置換：以 36-bit 空間做乘法置換，兼顧可逆與短碼長度。
 const POINT_ID_PERMUTATION_MOD = 1n << 36n;
@@ -544,10 +558,11 @@ export const generatePointShareShortUrl = (point: Pick<IMarkerData, 'id' | 'type
 
 export const generatePointShareUrl = (point: Pick<IMarkerData, 'id' | 'type' | 'subregId'>): string => {
     const tokenOrFallback = buildPointShareToken(point);
+    const pointShareOrigin = getPointShareOrigin();
     if (tokenOrFallback.startsWith('?')) {
-        return `${POINT_SHARE_SHORT_ORIGIN}/${tokenOrFallback}`;
+        return `${pointShareOrigin}/${tokenOrFallback}`;
     }
-    return `${POINT_SHARE_SHORT_ORIGIN}/${encodeURIComponent(tokenOrFallback)}`;
+    return `${pointShareOrigin}/${encodeURIComponent(tokenOrFallback)}`;
 };
 
 /**

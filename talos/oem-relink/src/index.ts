@@ -2,6 +2,8 @@ import { SEO_POINT_PREVIEWS, type SeoPointPreview } from './seo-preview.generate
 
 const TARGET_CN_ORIGIN = 'https://opendfieldmap.cn';
 const TARGET_ORG_ORIGIN = 'https://opendfieldmap.org';
+const TARGET_CN_CDN_ORIGIN = 'https://cdn.opendfieldmap.cn';
+const TARGET_ORG_CDN_ORIGIN = 'https://cdn.opendfieldmap.org';
 const ROOT_SHORT_DOMAIN = 'oem.re';
 const WORKER_VERSION = '20260408.02';
 const PREVIEW_TITLE = 'Open Endfield Map';
@@ -233,7 +235,11 @@ const withTargetOgImageVariant = (value: string, targetOrigin: string): string =
 	try {
 		const url = new URL(value);
 		const targetUrl = new URL(targetOrigin);
-		const imageVariant = targetUrl.hostname.endsWith('opendfieldmap.cn') ? 'oss' : 'r2';
+		const isCnTarget = targetUrl.hostname.endsWith('opendfieldmap.cn');
+		const imageVariant = isCnTarget ? 'oss' : 'r2';
+		const cdnUrl = new URL(isCnTarget ? TARGET_CN_CDN_ORIGIN : TARGET_ORG_CDN_ORIGIN);
+		url.protocol = cdnUrl.protocol;
+		url.host = cdnUrl.host;
 		url.pathname = url.pathname.replace(/\/seo\/og\/(?:oss|r2)\//, `/seo/og/${imageVariant}/`);
 		return url.toString();
 	} catch {

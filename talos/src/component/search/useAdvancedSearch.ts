@@ -181,6 +181,51 @@ const buildDocsPath = (locale: string): string => `${PREBUILT_DOCS_BASE_PATH}/${
 const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
     typeof value === 'object' && value !== null;
 
+const buildSearchDoc = (value: {
+    docId: unknown;
+    pointId: unknown;
+    typeKey: unknown;
+    typeMain: unknown;
+    title: unknown;
+    aliases: unknown;
+    binderTokens?: unknown;
+    binderDisplay?: unknown;
+    regionKey: unknown;
+    subregionId: unknown;
+    body: unknown;
+    cjk: unknown;
+}): SearchDoc | null => {
+    if (
+        typeof value.docId !== 'string' ||
+        typeof value.pointId !== 'string' ||
+        typeof value.typeKey !== 'string' ||
+        typeof value.typeMain !== 'string' ||
+        typeof value.title !== 'string' ||
+        typeof value.aliases !== 'string' ||
+        typeof value.regionKey !== 'string' ||
+        typeof value.subregionId !== 'string' ||
+        typeof value.body !== 'string' ||
+        typeof value.cjk !== 'string'
+    ) {
+        return null;
+    }
+
+    return {
+        docId: value.docId,
+        pointId: value.pointId,
+        typeKey: value.typeKey,
+        typeMain: value.typeMain,
+        title: value.title,
+        aliases: value.aliases,
+        binderTokens: typeof value.binderTokens === 'string' ? value.binderTokens : '',
+        binderDisplay: typeof value.binderDisplay === 'string' ? value.binderDisplay : '',
+        regionKey: value.regionKey,
+        subregionId: value.subregionId,
+        body: value.body,
+        cjk: value.cjk,
+    };
+};
+
 const parseWorkerSearchResponse = (value: unknown): WorkerSearchResponse | null => {
     if (!isObjectRecord(value)) return null;
     const hitsRaw = value.hits;
@@ -231,33 +276,30 @@ const parseWorkerSearchResponse = (value: unknown): WorkerSearchResponse | null 
     return { hits };
 };
 
-const isSearchDocBase = (value: unknown): value is Omit<SearchDoc, 'binderTokens' | 'binderDisplay'> & Partial<Pick<SearchDoc, 'binderTokens' | 'binderDisplay'>> => {
-    if (!isObjectRecord(value)) return false;
-    return (
-        typeof value.docId === 'string' &&
-        typeof value.pointId === 'string' &&
-        typeof value.typeKey === 'string' &&
-        typeof value.typeMain === 'string' &&
-        typeof value.title === 'string' &&
-        typeof value.aliases === 'string' &&
-        typeof value.regionKey === 'string' &&
-        typeof value.subregionId === 'string' &&
-        typeof value.body === 'string' &&
-        typeof value.cjk === 'string'
-    );
-};
-
 const parsePrebuiltDocs = (value: unknown): SearchDoc[] => {
     if (!Array.isArray(value)) return [];
     const docs: SearchDoc[] = [];
 
     value.forEach((item) => {
-        if (!isSearchDocBase(item)) return;
-        docs.push({
-            ...item,
-            binderTokens: typeof item.binderTokens === 'string' ? item.binderTokens : '',
-            binderDisplay: typeof item.binderDisplay === 'string' ? item.binderDisplay : '',
-        });
+        const doc = Array.isArray(item)
+            ? buildSearchDoc({
+                docId: item[0],
+                pointId: item[1],
+                typeKey: item[2],
+                typeMain: item[3],
+                title: item[4],
+                aliases: item[5],
+                binderTokens: item[6],
+                binderDisplay: item[7],
+                regionKey: item[8],
+                subregionId: item[9],
+                body: item[10],
+                cjk: item[11],
+            })
+            : isObjectRecord(item)
+                ? buildSearchDoc(item as unknown as Parameters<typeof buildSearchDoc>[0])
+                : null;
+        if (doc) docs.push(doc);
     });
 
     return docs;

@@ -1,11 +1,21 @@
-import { SEO_POINT_PREVIEWS, type SeoPointPreview } from './seo-preview.generated';
+import { SEO_POINT_PREVIEWS, type SeoPointPreview, type SeoPointPreviewLocale } from './seo-preview.generated';
 
 const TARGET_CN_ORIGIN = 'https://opendfieldmap.cn';
 const TARGET_ORG_ORIGIN = 'https://opendfieldmap.org';
 const TARGET_CN_CDN_ORIGIN = 'https://cdn.opendfieldmap.cn';
 const TARGET_ORG_CDN_ORIGIN = 'https://cdn.opendfieldmap.org';
+const CDN_PREFIXES = {
+	cn: {
+		prod: '/_dev/endfield/atlos',
+		beta: '/_beta/endfield/atlos',
+	},
+	org: {
+		prod: '/_dev/endfield/atlos',
+		beta: '/_beta/endfield/atlos',
+	},
+} as const;
 const ROOT_SHORT_DOMAIN = 'oem.re';
-const WORKER_VERSION = '20260408.02';
+const WORKER_VERSION = '20260627.01';
 const PREVIEW_TITLE = 'Open Endfield Map';
 const PREVIEW_DESCRIPTION =
 	'Open Endfield Map is an open-source interactive map for Arknights: Endfield.';
@@ -21,6 +31,11 @@ const SOCIAL_PREVIEW_BOT_KEYWORDS: string[] = [
 type CountrySource = {
 	byHeader?: string;
 	byCfCountry?: string;
+};
+
+type ResolvedSeoPointPreview = SeoPointPreview & {
+	image: string;
+	url: string;
 };
 
 type RedirectMode = 'geo' | 'org' | 'cn';
@@ -214,53 +229,45 @@ const getPointPreviewToken = (requestUrl: URL): string | null => {
 	return null;
 };
 
-const resolvePointPreview = (requestUrl: URL): SeoPointPreview | null => {
+const resolveTargetKind = (targetOrigin: string): 'cn' | 'org' => {
+	const targetUrl = new URL(targetOrigin);
+	return targetUrl.hostname.endsWith('opendfieldmap.cn') ? 'cn' : 'org';
+};
+
+const resolveTargetChannel = (targetOrigin: string): 'beta' | 'prod' => {
+	const targetUrl = new URL(targetOrigin);
+	return targetUrl.hostname.startsWith('beta.') ? 'beta' : 'prod';
+};
+
+const resolvePreviewLocale = (targetKind: 'cn' | 'org'): SeoPointPreviewLocale =>
+	targetKind === 'cn' ? 'zh' : 'en';
+
+const buildPointCanonicalUrl = (targetOrigin: string, token: string): string =>
+	new URL(`/${encodeURIComponent(token)}/`, targetOrigin).toString();
+
+const buildPointOgImageUrl = (targetKind: 'cn' | 'org', channel: 'beta' | 'prod', token: string): string => {
+	const cdnOrigin = targetKind === 'cn' ? TARGET_CN_CDN_ORIGIN : TARGET_ORG_CDN_ORIGIN;
+	const variant = targetKind === 'cn' ? 'oss' : 'r2';
+	const prefix = CDN_PREFIXES[targetKind][channel];
+	return `${cdnOrigin}${prefix}/seo/og/${variant}/${encodeURIComponent(token)}.jpg`;
+};
+
+const resolvePointPreviewForTarget = (requestUrl: URL, targetOrigin: string): ResolvedSeoPointPreview | null => {
 	const token = getPointPreviewToken(requestUrl);
-	return token ? SEO_POINT_PREVIEWS[token] ?? null : null;
-};
-
-const withTargetOrigin = (value: string, targetOrigin: string): string => {
-	try {
-		const url = new URL(value);
-		const targetUrl = new URL(targetOrigin);
-		url.protocol = targetUrl.protocol;
-		url.host = targetUrl.host;
-		return url.toString();
-	} catch {
-		return value;
-	}
-};
-
-const withTargetOgImageVariant = (value: string, targetOrigin: string): string => {
-	try {
-		const url = new URL(value);
-		const targetUrl = new URL(targetOrigin);
-		const isCnTarget = targetUrl.hostname.endsWith('opendfieldmap.cn');
-		const imageVariant = isCnTarget ? 'oss' : 'r2';
-		const cdnUrl = new URL(isCnTarget ? TARGET_CN_CDN_ORIGIN : TARGET_ORG_CDN_ORIGIN);
-		url.protocol = cdnUrl.protocol;
-		url.host = cdnUrl.host;
-		url.pathname = url.pathname.replace(/\/seo\/og\/(?:oss|r2)\//, `/seo/og/${imageVariant}/`);
-		return url.toString();
-	} catch {
-		return value;
-	}
-};
-
-const resolvePointPreviewForTarget = (
-	requestUrl: URL,
-	targetOrigin: string,
-): SeoPointPreview | null => {
-	const preview = resolvePointPreview(requestUrl);
+	if (!token) return null;
+	const targetKind = resolveTargetKind(targetOrigin);
+	const channel = resolveTargetChannel(targetOrigin);
+	const locale = resolvePreviewLocale(targetKind);
+	const preview = SEO_POINT_PREVIEWS[locale][token] ?? null;
 	if (!preview) return null;
 	return {
 		...preview,
-		url: withTargetOrigin(preview.url, targetOrigin),
-		image: withTargetOgImageVariant(preview.image, targetOrigin),
+		url: buildPointCanonicalUrl(targetOrigin, token),
+		image: buildPointOgImageUrl(targetKind, channel, token),
 	};
 };
 
-const buildSocialPreviewHtml = (redirectUrl: string, targetOrigin: string, pointPreview?: SeoPointPreview | null): string => {
+const buildSocialPreviewHtml = (redirectUrl: string, targetOrigin: string, pointPreview?: ResolvedSeoPointPreview | null): string => {
 	const escapedRedirectUrl = escapeHtml(redirectUrl);
 	const previewUrl = pointPreview?.url || redirectUrl;
 	const previewTitle = pointPreview?.title || PREVIEW_TITLE;

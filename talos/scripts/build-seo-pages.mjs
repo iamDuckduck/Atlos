@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import fsSync from 'node:fs';
+import crypto from 'node:crypto';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -43,7 +44,7 @@ const LEGACY_POINTS_OUT_DIR = path.resolve(PUBLIC_OUT_DIR, 'points');
 const SEO_OUT_DIR = path.resolve(PUBLIC_OUT_DIR, 'seo');
 const SEO_POINTS_OUT_DIR = path.resolve(SEO_OUT_DIR, 'points');
 const SEO_OG_OUT_DIR = path.resolve(SEO_OUT_DIR, 'og');
-const WORKER_PREVIEW_FILE = path.resolve(ROOT, 'oem-relink/src/seo-preview.generated.ts');
+const DEFAULT_WORKER_PREVIEW_FILE = path.resolve(ROOT, 'oem-relink/src/seo-preview.generated.ts');
 const OSS_CONFIG_FILE = path.resolve(ROOT, 'config/config.json');
 
 const POINT_SHARE_SHORT_ORIGIN = 'https://oem.re';
@@ -99,18 +100,28 @@ const shouldForceAllImages = process.env.SEO_FORCE_ALL_IMAGES === '1';
 const shouldSkipPointFiles = process.env.SEO_SKIP_POINT_FILES === '1';
 const shouldBuildImagesOnly = process.env.SEO_IMAGE_ONLY === '1';
 const shouldBuildPreviewOnly = process.env.SEO_PREVIEW_ONLY === '1';
+const shouldWriteWorkerPreview = shouldBuildPreviewOnly || process.env.SEO_WRITE_WORKER_PREVIEW === '1';
+const workerPreviewFile = process.env.SEO_PREVIEW_OUTPUT_FILE
+  ? path.resolve(ROOT, process.env.SEO_PREVIEW_OUTPUT_FILE)
+  : DEFAULT_WORKER_PREVIEW_FILE;
+const workerPreviewFormat = process.env.SEO_PREVIEW_FORMAT === 'json' ? 'json' : 'ts';
 const hasExplicitPointScope = seoTokens.length > 0 || (Number.isFinite(seoLimit) && seoLimit > 0);
 const shouldWriteAllPointFiles = process.env.SEO_WRITE_ALL_POINT_FILES === '1' || shouldForceAllImages;
 const shouldWritePointFiles = !shouldBuildImagesOnly && !shouldBuildPreviewOnly && !shouldSkipPointFiles && (hasExplicitPointScope || shouldWriteAllPointFiles);
-const shouldBuildPointImages = shouldGenerateImages && (hasExplicitPointScope || shouldForceImages || shouldForceAllImages);
+const shouldBuildPointImages = shouldGenerateImages && (shouldBuildImagesOnly || hasExplicitPointScope || shouldForceImages || shouldForceAllImages);
 const seoOgOutputDir = process.env.SEO_OG_OUTPUT_DIR
   ? path.resolve(ROOT, process.env.SEO_OG_OUTPUT_DIR)
   : path.resolve(SEO_OG_OUT_DIR, buildTarget);
+const SEO_CACHE_DIR = path.resolve(ROOT, '.cache/seo');
+const SEO_PAGE_STATE_FILE = path.resolve(SEO_CACHE_DIR, `pages-${buildTarget}-${defaultLocale}.json`);
+const SEO_OG_STATE_FILE = path.resolve(SEO_CACHE_DIR, `og-${buildTarget}-${defaultLocale}.json`);
 const requestedSeoOgConcurrency = Number.parseInt(process.env.SEO_OG_CONCURRENCY || '', 10);
 const defaultSeoOgConcurrency = 12;
 const seoOgConcurrency = Number.isFinite(requestedSeoOgConcurrency) && requestedSeoOgConcurrency > 0
   ? requestedSeoOgConcurrency
   : defaultSeoOgConcurrency;
+const SEO_STATE_VERSION = 1;
+const OG_RENDER_SIGNATURE_VERSION = 1;
 
 function readJsonSync(file) {
   try {
@@ -220,6 +231,38 @@ async function pathExists(file) {
   } catch {
     return false;
   }
+}
+
+async function fileFingerprint(file) {
+  if (!file) return 'missing';
+  try {
+    const stats = await fs.stat(file);
+    return `${path.relative(ROOT, file)}:${stats.size}:${Math.trunc(stats.mtimeMs)}`;
+  } catch {
+    return `${path.relative(ROOT, file)}:missing`;
+  }
+}
+
+function stableJson(value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => stableJson(item));
+  }
+  if (value && typeof value === 'object') {
+    return Object.keys(value).sort().reduce((acc, key) => {
+      acc[key] = stableJson(value[key]);
+      return acc;
+    }, {});
+  }
+  return value;
+}
+
+function hashSignature(value) {
+  return crypto.createHash('sha256').update(JSON.stringify(stableJson(value))).digest('hex');
+}
+
+async function collectFingerprints(files) {
+  const entries = await Promise.all(files.map(async (file) => [path.relative(ROOT, file), await fileFingerprint(file)]));
+  return Object.fromEntries(entries);
 }
 
 async function resolveLocaleJsonFile(dir, locale) {
@@ -486,6 +529,16 @@ function pointOgUrl(token) {
   return `${seoOgUrlBase}/${encodeURIComponent(token)}.jpg`;
 }
 
+function getOgTileOffsets() {
+  const offsets = [];
+  for (let y = -SAMPLE_IMAGE_HEIGHT / 2 - TILE_IMAGE_SIZE; y <= SAMPLE_IMAGE_HEIGHT / 2 + TILE_IMAGE_SIZE; y += TILE_IMAGE_SIZE) {
+    for (let x = -SAMPLE_IMAGE_WIDTH / 2 - TILE_IMAGE_SIZE; x <= SAMPLE_IMAGE_WIDTH / 2 + TILE_IMAGE_SIZE; x += TILE_IMAGE_SIZE) {
+      offsets.push([x, y]);
+    }
+  }
+  return offsets;
+}
+
 function shouldIndexPoint(typeInfo, hasBody) {
   const main = typeInfo?.category?.main ?? '';
   const sub = typeInfo?.category?.sub ?? '';
@@ -518,6 +571,102 @@ async function resolveIconPath(typeInfo) {
     if (await pathExists(candidate)) return candidate;
   }
   return null;
+}
+
+async function buildHtmlSignature(point) {
+  return hashSignature({
+    version: SEO_STATE_VERSION,
+    kind: 'html',
+    target: buildTarget,
+    locale: defaultLocale,
+    langKey,
+    htmlLang,
+    title: point.documentTitle,
+    description: point.description,
+    canonicalUrl: point.canonicalUrl,
+    ogImageUrl: point.ogImageUrl,
+    spaUrl: point.spaUrl,
+  });
+}
+
+async function buildOgSignature(point, sharedFingerprints) {
+  const iconPath = await resolveIconPath(point.typeInfo);
+  const tilePaths = buildTilePathsForPoint(point);
+  const labelRows = (point.mapLabels ?? [])
+    .filter((label) => label.type === 'site')
+    .map((label) => ({
+      type: label.type,
+      sub: label.sub,
+      site: label.site,
+      point: label.point,
+      text: resolveLabelTextWithFallback(point.regionLocale, point.fallbackRegionLocale, point.regionCode, label),
+    }))
+    .filter((label) => label.text);
+
+  return hashSignature({
+    version: OG_RENDER_SIGNATURE_VERSION,
+    target: buildTarget,
+    locale: defaultLocale,
+    langKey,
+    htmlLang,
+    mode: 'rendered',
+    point: {
+      token: point.token,
+      markerId: point.marker.id,
+      markerTier: point.marker.tier,
+      markerType: point.marker.type,
+      title: point.title,
+      documentTitle: point.documentTitle,
+      description: point.description,
+      regionKey: point.regionKey,
+      regionMaxZoom: point.region.maxZoom,
+      typeKey: point.typeInfo.key,
+      typeIcon: point.typeInfo.icon ?? null,
+      noFrame: Boolean(point.typeInfo.noFrame),
+      place: point.place,
+      labels: labelRows,
+    },
+    tiles: tilePaths.reduce((acc, file, index) => {
+      acc[index] = file;
+      return acc;
+    }, {}),
+    fingerprints: {
+      shared: sharedFingerprints,
+      icon: await fileFingerprint(iconPath),
+      tiles: await collectFingerprints(tilePaths),
+    },
+  });
+}
+
+async function buildFallbackOgSignature(point, sharedFingerprints) {
+  const iconPath = await resolveIconPath(point.typeInfo);
+  return hashSignature({
+    version: OG_RENDER_SIGNATURE_VERSION,
+    target: buildTarget,
+    locale: defaultLocale,
+    langKey,
+    htmlLang,
+    mode: 'fallback',
+    point: {
+      token: point.token,
+      markerId: point.marker.id,
+      markerTier: point.marker.tier,
+      markerType: point.marker.type,
+      title: point.title,
+      documentTitle: point.documentTitle,
+      description: point.description,
+      regionKey: point.regionKey,
+      regionMaxZoom: point.region.maxZoom,
+      typeKey: point.typeInfo.key,
+      typeIcon: point.typeInfo.icon ?? null,
+      noFrame: Boolean(point.typeInfo.noFrame),
+      place: point.place,
+    },
+    fingerprints: {
+      shared: sharedFingerprints,
+      icon: await fileFingerprint(iconPath),
+    },
+  });
 }
 
 function markerTierLabel(tierValue) {
@@ -1092,12 +1241,7 @@ async function generateOgImage(point) {
   const centerPixel = markerToTileImagePixel(point.marker, region, tileZoom);
   const markerCenter = tileImagePixelToOgPixel(centerPixel, centerPixel);
   const composites = [];
-  const offsets = [];
-  for (let y = -SAMPLE_IMAGE_HEIGHT / 2 - TILE_IMAGE_SIZE; y <= SAMPLE_IMAGE_HEIGHT / 2 + TILE_IMAGE_SIZE; y += TILE_IMAGE_SIZE) {
-    for (let x = -SAMPLE_IMAGE_WIDTH / 2 - TILE_IMAGE_SIZE; x <= SAMPLE_IMAGE_WIDTH / 2 + TILE_IMAGE_SIZE; x += TILE_IMAGE_SIZE) {
-      offsets.push([x, y]);
-    }
-  }
+  const offsets = getOgTileOffsets();
   const suffix = tileSuffixForTier(point.marker.tier);
   for (const [x, y] of offsets) {
     const loaded = suffix
@@ -1243,40 +1387,73 @@ Sitemap: ${siteUrl}/sitemap.xml
 `;
 }
 
-function previewTs(points) {
-  const entries = points.map((point) => ({
+function previewData(points) {
+  return Object.fromEntries(points.map((point) => [point.token, {
     title: point.documentTitle,
     description: point.description,
-    image: point.ogImageUrl,
-    url: point.canonicalUrl,
-  }));
-  const mapObject = Object.fromEntries(points.map((point, index) => [point.token, entries[index]]));
+  }]));
+}
+
+function previewTs(points) {
+  const mapObject = previewData(points);
   return `export type SeoPointPreview = {
   title: string;
   description: string;
-  image: string;
-  url: string;
 };
 
 export const SEO_POINT_PREVIEWS: Record<string, SeoPointPreview> = ${JSON.stringify(mapObject, null, 2)} as const;
 `;
 }
 
-async function cleanOutput() {
-  if (!shouldBuildImagesOnly) {
-    await fs.rm(SEO_OUT_DIR, { recursive: true, force: true });
-    await fs.rm(LEGACY_POINTS_OUT_DIR, { recursive: true, force: true });
+async function writePreviewFile(points) {
+  await fs.mkdir(path.dirname(workerPreviewFile), { recursive: true });
+  if (workerPreviewFormat === 'json') {
+    await fs.writeFile(workerPreviewFile, `${JSON.stringify(previewData(points), null, 2)}\n`);
+    return;
   }
-  if (shouldBuildPointImages) {
-    await fs.rm(seoOgOutputDir, { recursive: true, force: true });
+  await fs.writeFile(workerPreviewFile, previewTs(points));
+}
+
+async function loadBuildState(file) {
+  try {
+    const raw = await fs.readFile(file, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (!parsed || parsed.version !== SEO_STATE_VERSION || typeof parsed.entries !== 'object') return { version: SEO_STATE_VERSION, entries: {} };
+    return parsed;
+  } catch {
+    return { version: SEO_STATE_VERSION, entries: {} };
   }
-  if (!shouldBuildImagesOnly) {
-    await fs.mkdir(SEO_OUT_DIR, { recursive: true });
-    await fs.mkdir(SEO_POINTS_OUT_DIR, { recursive: true });
-  }
-  if (shouldBuildPointImages) {
-    await fs.mkdir(seoOgOutputDir, { recursive: true });
-  }
+}
+
+async function writeBuildState(file, state) {
+  await fs.mkdir(path.dirname(file), { recursive: true });
+  await fs.writeFile(file, `${JSON.stringify(state, null, 2)}\n`);
+}
+
+async function pruneStaleFiles(dir, extension, activeTokens, previousTokens) {
+  const staleTokens = [...previousTokens].filter((token) => !activeTokens.has(token));
+  await Promise.all(staleTokens.map(async (token) => {
+    const file = path.resolve(dir, `${token}${extension}`);
+    try {
+      await fs.rm(file, { force: true });
+    } catch {
+      // ignore
+    }
+  }));
+}
+
+function buildTilePathsForPoint(point) {
+  const region = point.region;
+  const tileZoom = getOgTileZoom(region);
+  const centerPixel = markerToTileImagePixel(point.marker, region, tileZoom);
+  const suffix = tileSuffixForTier(point.marker.tier);
+  const offsets = getOgTileOffsets();
+  return offsets.flatMap(([x, y]) => {
+    const tileX = Math.floor((centerPixel.x + x) / TILE_IMAGE_SIZE);
+    const tileY = Math.floor((centerPixel.y + y) / TILE_IMAGE_SIZE);
+    const primary = path.resolve(CLIPS_DIR, point.regionKey, String(tileZoom), `${tileX}_${tileY}${suffix}.webp`);
+    return [primary];
+  });
 }
 
 async function generateOgImagesInParallel(points) {
@@ -1303,8 +1480,35 @@ async function generateOgImagesInParallel(points) {
   await Promise.all(workers);
 }
 
+async function buildOgWorklist(points, sharedOgFingerprints, previousOgState) {
+  const worklist = [];
+  const nextState = { version: SEO_STATE_VERSION, entries: {} };
+  for (const point of points) {
+    const signature = await buildOgSignature(point, sharedOgFingerprints);
+    nextState.entries[point.token] = { signature };
+    if (previousOgState.entries?.[point.token]?.signature !== signature || !(await pathExists(point.ogImagePath))) {
+      worklist.push(point);
+    }
+  }
+  return { worklist, nextState };
+}
+
 async function build() {
   await configureSharpFonts();
+  const sharedOgFingerprints = await collectFingerprints([
+    MAP_PATTERN_FILE,
+    OBSERVATOR_LOGO_FILE,
+    HARMONY_FONT_FILE,
+    HARMONY_SC_FONT_FILE,
+    HARMONY_TC_FONT_FILE,
+    UDSHINGO_HK_DB_FONT_FILE,
+    COINBASE_DISPLAY_FONT_FILE,
+    COINBASE_DISPLAY_BOLD_FONT_FILE,
+    ZILLA_SLAB_HIGHLIGHT_FONT_FILE,
+    NOVECENTO_SLAB_BOLD_FONT_FILE,
+  ]);
+  const previousPageState = await loadBuildState(SEO_PAGE_STATE_FILE);
+  const previousOgState = await loadBuildState(SEO_OG_STATE_FILE);
 
   const [
     typeMap,
@@ -1394,35 +1598,57 @@ async function build() {
   }
 
   if (shouldBuildPreviewOnly) {
-    await fs.writeFile(WORKER_PREVIEW_FILE, previewTs(markers));
+    await writePreviewFile(markers);
     console.log(`[seo] target=${buildTarget} locale=${defaultLocale} site=${siteUrl}`);
-    console.log(`[seo] wrote point previews=${markers.length} to ${path.relative(ROOT, WORKER_PREVIEW_FILE)}`);
+    console.log(`[seo] wrote point previews=${markers.length} to ${path.relative(ROOT, workerPreviewFile)}`);
     return;
   }
 
-  await cleanOutput();
+  if (!shouldBuildImagesOnly) {
+    await fs.mkdir(SEO_OUT_DIR, { recursive: true });
+    await fs.mkdir(SEO_POINTS_OUT_DIR, { recursive: true });
+  }
+  if (shouldBuildPointImages) {
+    await fs.mkdir(seoOgOutputDir, { recursive: true });
+  }
 
   if (shouldBuildImagesOnly) {
-    await generateOgImagesInParallel(markers);
+    const { worklist, nextState } = await buildOgWorklist(markers, sharedOgFingerprints, previousOgState);
+    await generateOgImagesInParallel(worklist);
+    await writeBuildState(SEO_OG_STATE_FILE, nextState);
+    await pruneStaleFiles(seoOgOutputDir, '.jpg', new Set(markers.map((point) => point.token)), new Set(Object.keys(previousOgState.entries ?? {})));
     console.log(`[seo] target=${buildTarget} locale=${defaultLocale} site=${siteUrl}`);
-    console.log(`[seo] generated point images=${markers.length}, output=${path.relative(ROOT, seoOgOutputDir)}`);
+    console.log(`[seo] generated point images=${worklist.length}/${markers.length}, output=${path.relative(ROOT, seoOgOutputDir)}`);
     return;
   }
 
   const today = new Date().toISOString().slice(0, 10);
   const sitemapItems = [];
+  const nextPageState = { version: SEO_STATE_VERSION, entries: {} };
+  const nextOgState = { version: SEO_STATE_VERSION, entries: {} };
   for (let index = 0; index < markers.length; index += 1) {
     const point = markers[index];
     if (shouldWritePointFiles) {
-      const hasImage = await pathExists(point.ogImagePath);
-      if (shouldForceImages || shouldForceAllImages || (shouldBuildPointImages && !hasImage)) {
-        if (shouldBuildPointImages) {
-          await generateOgImage(point);
-        } else {
-          await generateFallbackOgImage(point);
+      const htmlSignature = await buildHtmlSignature(point);
+      nextPageState.entries[point.token] = { signature: htmlSignature };
+      const pageStateSignature = previousPageState.entries?.[point.token]?.signature;
+      if (pageStateSignature !== htmlSignature || !(await pathExists(point.htmlPath))) {
+        await fs.writeFile(point.htmlPath, buildPointHtml(point));
+      }
+      if (shouldBuildPointImages || shouldForceImages || shouldForceAllImages) {
+        const ogSignature = shouldBuildPointImages
+          ? await buildOgSignature(point, sharedOgFingerprints)
+          : await buildFallbackOgSignature(point, sharedOgFingerprints);
+        nextOgState.entries[point.token] = { signature: ogSignature };
+        const previousSignature = previousOgState.entries?.[point.token]?.signature;
+        if (previousSignature !== ogSignature || !(await pathExists(point.ogImagePath))) {
+          if (shouldBuildPointImages) {
+            await generateOgImage(point);
+          } else {
+            await generateFallbackOgImage(point);
+          }
         }
       }
-      await fs.writeFile(point.htmlPath, buildPointHtml(point));
     }
     if (point.indexable) {
       sitemapItems.push({
@@ -1437,6 +1663,15 @@ async function build() {
     }
   }
 
+  if (shouldWritePointFiles) {
+    await writeBuildState(SEO_PAGE_STATE_FILE, nextPageState);
+    await pruneStaleFiles(SEO_POINTS_OUT_DIR, '.html', new Set(markers.map((point) => point.token)), new Set(Object.keys(previousPageState.entries ?? {})));
+  }
+  if (shouldBuildPointImages || shouldForceImages || shouldForceAllImages) {
+    await writeBuildState(SEO_OG_STATE_FILE, nextOgState);
+    await pruneStaleFiles(seoOgOutputDir, '.jpg', new Set(markers.map((point) => point.token)), new Set(Object.keys(previousOgState.entries ?? {})));
+  }
+
   const sitemapFiles = [];
   for (let i = 0; i < sitemapItems.length; i += SITEMAP_LIMIT) {
     const chunk = sitemapItems.slice(i, i + SITEMAP_LIMIT);
@@ -1447,11 +1682,15 @@ async function build() {
   await fs.writeFile(path.resolve(PUBLIC_OUT_DIR, 'sitemap.xml'), buildSitemapIndex(sitemapFiles));
   await fs.writeFile(path.resolve(PUBLIC_OUT_DIR, 'robots.txt'), buildRobots());
 
-  await fs.writeFile(WORKER_PREVIEW_FILE, previewTs(markers));
+  if (shouldWriteWorkerPreview) {
+    await writePreviewFile(markers);
+  }
 
   console.log(`[seo] target=${buildTarget} locale=${defaultLocale} site=${siteUrl}`);
   console.log(`[seo] generated point pages=${markers.length}, sitemap urls=${sitemapItems.length}, sitemap files=${sitemapFiles.length}`);
-  console.log(`[seo] wrote ${path.relative(ROOT, WORKER_PREVIEW_FILE)}`);
+  if (shouldWriteWorkerPreview) {
+    console.log(`[seo] wrote ${path.relative(ROOT, workerPreviewFile)}`);
+  }
 }
 
 build().catch((err) => {

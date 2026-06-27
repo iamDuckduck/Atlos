@@ -167,6 +167,16 @@ const MULTIPART_THRESHOLD = 64 * 1024 * 1024;
 const MAX_RETRIES = 3;
 const shouldUploadSeoPointAliases = process.env.SEO_UPLOAD_POINT_ALIASES === "1";
 const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || "40", 10);
+const uploadProfile = process.env.R2_UPLOAD_PROFILE === "resources" ? "resources" : "full";
+const resourceUploadPrefixes = ["assets/", "files/", "search/", "clips/"];
+
+console.log(`[publish-R2] uploadProfile=${uploadProfile}`);
+
+const shouldUploadLocalFile = (relativePath) => {
+  if (uploadProfile === "full") return true;
+  const normalizedPath = relativePath.replace(/\\/g, "/");
+  return resourceUploadPrefixes.some((prefix) => normalizedPath.startsWith(prefix));
+};
 
 const normalizeEtag = (etag) =>
   String(etag ?? "").replace(/^"|"$/g, "").toLowerCase();
@@ -447,7 +457,10 @@ const run = async () => {
     console.log(`[publish-R2] clip index skipped: ${clipIndex.reason}`);
   }
 
-  allFiles = getAllFiles("./dist");
+  allFiles = getAllFiles("./dist").filter(shouldUploadLocalFile);
+  if (uploadProfile === "resources") {
+    console.log(`[publish-R2] resources profile selected; uploading ${allFiles.length} resource files from dist.`);
+  }
   const promises = [];
 
   for (let i = 0; i < concurrency; i++) {

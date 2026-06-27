@@ -49,6 +49,8 @@ talos/src/locale/data/ui/reports
 talos/src/data/marker/stats.json
 talos/scripts/logs/
 talos/src/data/marker/diff.generated.json
+talos/.pages-dist/
+talos/.cache/
 
 ref/
 seo-og/

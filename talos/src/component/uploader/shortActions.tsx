@@ -1,4 +1,5 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import classNames from 'classnames';
 import PopoverTooltip from '@/component/popover/popover';
 import styles from './shortActions.module.scss';
@@ -17,24 +18,262 @@ export type ShortActionItem = {
 type Props = {
     items: ShortActionItem[];
     className?: string;
+    anchorClassName?: string;
+    ariaLabel?: string;
+    variant?: 'separate' | 'grouped' | 'floating';
 };
 
-const ShortActions = memo(({ items, className }: Props) => {
+type PopoverElement = HTMLDivElement & {
+    showPopover?: () => void;
+    hidePopover?: () => void;
+};
+
+const VIEWPORT_MARGIN = 4;
+const CLOSE_MS = 120;
+const HIDE_DELAY_MS = 180;
+
+const clamp = (value: number, min: number, max: number): number => (
+    Math.min(Math.max(value, min), max)
+);
+
+const isPopoverOpen = (popover: HTMLElement): boolean => {
+    try {
+        return popover.matches(':popover-open');
+    } catch {
+        return false;
+    }
+};
+
+const ShortActions = memo(({
+    items,
+    className,
+    anchorClassName,
+    ariaLabel = 'Actions',
+    variant = 'separate',
+}: Props) => {
+    const [mounted, setMounted] = useState(false);
+    const anchorRef = useRef<HTMLSpanElement | null>(null);
+    const layerRef = useRef<PopoverElement | null>(null);
+    const hideTimerRef = useRef<number | undefined>(undefined);
+    const closeTimerRef = useRef<number | undefined>(undefined);
+    const frameRef = useRef<number | undefined>(undefined);
+    const rootHoverRef = useRef(false);
+    const layerHoverRef = useRef(false);
+    const rootFocusRef = useRef(false);
+    const layerFocusRef = useRef(false);
+    const isFloating = variant === 'floating';
+
+    const clearTimers = useCallback(() => {
+        if (hideTimerRef.current) {
+            window.clearTimeout(hideTimerRef.current);
+            hideTimerRef.current = undefined;
+        }
+        if (closeTimerRef.current) {
+            window.clearTimeout(closeTimerRef.current);
+            closeTimerRef.current = undefined;
+        }
+    }, []);
+
+    const positionLayer = useCallback(() => {
+        const anchor = anchorRef.current;
+        const layer = layerRef.current;
+        if (!anchor || !layer || !isPopoverOpen(layer)) return;
+
+        const anchorRect = anchor.getBoundingClientRect();
+        const layerWidth = layer.offsetWidth;
+        const layerHeight = layer.offsetHeight;
+        layer.style.position = 'fixed';
+        layer.style.left = `${clamp(
+            anchorRect.right - layerWidth,
+            VIEWPORT_MARGIN,
+            Math.max(VIEWPORT_MARGIN, window.innerWidth - layerWidth - VIEWPORT_MARGIN),
+        )}px`;
+        layer.style.top = `${clamp(
+            anchorRect.top,
+            VIEWPORT_MARGIN,
+            Math.max(VIEWPORT_MARGIN, window.innerHeight - layerHeight - VIEWPORT_MARGIN),
+        )}px`;
+        layer.style.right = 'auto';
+        layer.style.bottom = 'auto';
+    }, []);
+
+    const schedulePosition = useCallback(() => {
+        if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
+        frameRef.current = window.requestAnimationFrame(() => {
+            frameRef.current = undefined;
+            positionLayer();
+        });
+    }, [positionLayer]);
+
+    const hideLayer = useCallback((immediate = false) => {
+        clearTimers();
+        const layer = layerRef.current;
+        if (!layer) return;
+
+        const finish = () => {
+            try {
+                layer.hidePopover?.();
+            } catch {
+                // Already hidden.
+            }
+            layer.dataset.open = 'false';
+            layer.classList.remove(styles.floatingLayerClosing);
+        };
+
+        if (immediate || !isPopoverOpen(layer)) {
+            finish();
+            return;
+        }
+
+        layer.dataset.open = 'false';
+        layer.classList.add(styles.floatingLayerClosing);
+        closeTimerRef.current = window.setTimeout(finish, CLOSE_MS);
+    }, [clearTimers]);
+
+    const shouldKeepLayerOpen = useCallback(() => (
+        rootHoverRef.current || layerHoverRef.current || rootFocusRef.current || layerFocusRef.current
+    ), []);
+
+    const showLayer = useCallback(() => {
+        if (!isFloating || items.length === 0) return;
+        clearTimers();
+
+        const layer = layerRef.current;
+        if (!layer) return;
+
+        layer.dataset.open = 'true';
+        layer.classList.remove(styles.floatingLayerClosing);
+        try {
+            if (!isPopoverOpen(layer)) layer.showPopover?.();
+        } catch {
+            // Already shown.
+        }
+        positionLayer();
+        schedulePosition();
+    }, [clearTimers, isFloating, items.length, positionLayer, schedulePosition]);
+
+    const scheduleHideLayer = useCallback(() => {
+        if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
+        hideTimerRef.current = window.setTimeout(() => {
+            hideTimerRef.current = undefined;
+            if (!shouldKeepLayerOpen()) hideLayer();
+        }, HIDE_DELAY_MS);
+    }, [hideLayer, shouldKeepLayerOpen]);
+
+    useEffect(() => {
+        setMounted(true);
+        return () => {
+            clearTimers();
+            if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
+            hideLayer(true);
+        };
+    }, [clearTimers, hideLayer]);
+
+    useEffect(() => {
+        if (!isFloating) return undefined;
+
+        const anchor = anchorRef.current;
+        const root = anchor?.closest('[data-short-actions-root="true"]') as HTMLElement | null;
+        if (!root) return undefined;
+
+        const handleRootEnter = () => {
+            rootHoverRef.current = true;
+            showLayer();
+        };
+        const handleRootLeave = (event: PointerEvent) => {
+            rootHoverRef.current = false;
+            const nextTarget = event.relatedTarget;
+            if (nextTarget instanceof Node && layerRef.current?.contains(nextTarget)) return;
+            scheduleHideLayer();
+        };
+        const handleFocusIn = () => {
+            rootFocusRef.current = true;
+            showLayer();
+        };
+        const handleFocusOut = () => {
+            window.setTimeout(() => {
+                const activeElement = document.activeElement;
+                rootFocusRef.current = Boolean(activeElement && root.contains(activeElement));
+                layerFocusRef.current = Boolean(activeElement && layerRef.current?.contains(activeElement));
+                if (!activeElement || (!root.contains(activeElement) && !layerRef.current?.contains(activeElement))) {
+                    scheduleHideLayer();
+                }
+            }, 0);
+        };
+
+        root.addEventListener('pointerenter', handleRootEnter);
+        root.addEventListener('pointerleave', handleRootLeave);
+        root.addEventListener('focusin', handleFocusIn);
+        root.addEventListener('focusout', handleFocusOut);
+
+        return () => {
+            root.removeEventListener('pointerenter', handleRootEnter);
+            root.removeEventListener('pointerleave', handleRootLeave);
+            root.removeEventListener('focusin', handleFocusIn);
+            root.removeEventListener('focusout', handleFocusOut);
+        };
+    }, [isFloating, scheduleHideLayer, showLayer]);
+
+    useEffect(() => {
+        if (!isFloating) return undefined;
+
+        window.addEventListener('resize', schedulePosition);
+        window.addEventListener('scroll', schedulePosition, true);
+        return () => {
+            window.removeEventListener('resize', schedulePosition);
+            window.removeEventListener('scroll', schedulePosition, true);
+        };
+    }, [isFloating, schedulePosition]);
+
     if (items.length === 0) return null;
 
-    return (
+    const actionLayer = (
         <div
-            className={classNames(styles.shortActions, className)}
+            className={classNames(styles.shortActions, className, {
+                [styles.grouped]: variant === 'grouped' || isFloating,
+                [styles.floatingLayer]: isFloating,
+            })}
+            ref={isFloating ? layerRef : undefined}
+            {...(isFloating ? { popover: 'manual' } : {})}
             onClick={(event) => event.stopPropagation()}
             onPointerDown={(event) => event.stopPropagation()}
+            onPointerEnter={isFloating ? () => {
+                layerHoverRef.current = true;
+                showLayer();
+            } : undefined}
+            onPointerLeave={isFloating ? (event) => {
+                layerHoverRef.current = false;
+                const root = anchorRef.current?.closest('[data-short-actions-root="true"]');
+                const nextTarget = event.relatedTarget;
+                if (nextTarget instanceof Node && root?.contains(nextTarget)) return;
+                scheduleHideLayer();
+            } : undefined}
+            onPointerMove={isFloating ? () => {
+                layerHoverRef.current = true;
+            } : undefined}
+            onFocus={isFloating ? () => {
+                layerFocusRef.current = true;
+                showLayer();
+            } : undefined}
+            onBlur={isFloating ? () => {
+                window.setTimeout(() => {
+                    const activeElement = document.activeElement;
+                    const root = anchorRef.current?.closest('[data-short-actions-root="true"]');
+                    rootFocusRef.current = Boolean(activeElement && root?.contains(activeElement));
+                    layerFocusRef.current = Boolean(activeElement && layerRef.current?.contains(activeElement));
+                    if (!shouldKeepLayerOpen()) scheduleHideLayer();
+                }, 0);
+            } : undefined}
             role="toolbar"
-            aria-label="Image actions"
+            aria-label={ariaLabel}
         >
             {items.map((item) => (
                 <PopoverTooltip key={item.tooltipKey ?? item.id} content={item.label} placement="top" gap={4}>
                     <button
                         type="button"
                         className={styles.shortActionButton}
+                        data-action={item.id}
+                        data-label={item.id}
                         data-active={item.active ? 'true' : 'false'}
                         disabled={item.disabled}
                         onClick={(event) => {
@@ -50,6 +289,17 @@ const ShortActions = memo(({ items, className }: Props) => {
             ))}
         </div>
     );
+
+    if (isFloating) {
+        return (
+            <>
+                <span ref={anchorRef} className={classNames(styles.floatingAnchor, anchorClassName)} aria-hidden="true"></span>
+                {mounted && createPortal(actionLayer, document.body)}
+            </>
+        );
+    }
+
+    return actionLayer;
 });
 
 ShortActions.displayName = 'ShortActions';

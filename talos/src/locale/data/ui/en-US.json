@@ -32,6 +32,17 @@
       "main": "Main",
       "sub": "Sub"
     },
+    "label": {
+      "note": "Note",
+      "url": "URL",
+      "comments": "Comments"
+    },
+    "tabs": {
+      "title": "Detail sections",
+      "collectAll": "Mark all markers of this type in the current main region as complete",
+      "general": "General",
+      "comments": "Comments"
+    },
     "noInfo": "No image. Use {paste} / {click} to upload.",
     "communityRule1": "By uploading, make sure you have read and follow the",
     "communityRule2": "Community Guidelines",
@@ -50,6 +61,20 @@
       "share": "Share",
       "recall": "Recall",
       "unrecall": "Cancel Recall"
+    },
+    "comments": {
+      "title": "Comments",
+      "placeholder": "Type something...",
+      "submit": "Submit comment",
+      "actions": "Comment actions",
+      "translate": "Translate",
+      "upvote": "Upvote",
+      "downvote": "Downvote",
+      "anonymous": "Anonymous",
+      "emptyWithRule": "No comments yet. Please follow community guidelines when posting.",
+      "ruleOnly": "Please follow community guidelines when posting.",
+      "loadFailed": "Comments failed to load.",
+      "submitFailed": "Comment failed to submit."
     },
     "errors": {
       "unsupportedType": "Only JPEG/PNG/WebP/AVIF/HEIC images are supported.",

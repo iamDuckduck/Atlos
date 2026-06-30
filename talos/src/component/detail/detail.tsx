@@ -4,12 +4,14 @@ import Button from '@/component/button/button';
 import Modal from '@/component/modal/modal';
 import PopoverTooltip from '@/component/popover/popover';
 import Uploader from '../uploader/uploader';
+import Comments from './comments';
 
 import parse from 'html-react-parser';
 import { getItemIconUrl, getFileContentUrl, fetchArchiveFile } from '@/utils/resource.ts';
 import { parseArchiveJsonResponse, createArchiveHtmlParserOptions } from './archiveFullText';
-import { MARKER_TYPE_DICT } from '@/data/marker';
+import { getLoadedRegionMarkers, loadRegionMarkers, MARKER_TYPE_DICT } from '@/data/marker';
 import { usePointShareLink } from '@/utils/shareLink';
+import useRegion from '@/store/region';
 
 import BossIcon from '@/assets/images/category/boss.svg?react';
 import CollectionIcon from '@/assets/images/category/collection.svg?react';
@@ -21,6 +23,9 @@ import NaturalIcon from '@/assets/images/category/natural.svg?react';
 import NpcIcon from '@/assets/images/category/npc.svg?react';
 import ValuableIcon from '@/assets/images/category/valuable.svg?react';
 import ArchivesIcon from '@/assets/images/category/archives.svg?react';
+import CollectAllIcon from '@/assets/logos/collectall.svg?react';
+import GeneralInfoIcon from '@/assets/logos/general_info.svg?react';
+import CommentIcon from '@/assets/logos/comment.svg?react';
 
 import {
     useMarkerStore,
@@ -32,6 +37,7 @@ import {
     useAddPoint,
     useDeletePoint,
     useUserRecord,
+    useUserRecordStore,
 } from '@/store/userRecord.ts';
 import classNames from 'classnames';
 import { useTranslateGame, useTranslateUI, useLocale } from '@/locale';
@@ -52,6 +58,7 @@ const CATEGORY_ICON_MAP: Record<string, React.FC<React.SVGProps<SVGSVGElement>>>
 };
 
 type DetailPhase = 'hidden' | 'entering' | 'open' | 'exiting';
+type DetailTab = 'general' | 'comments';
 
 const DETAIL_EXIT_DURATION_MS = 300;
 
@@ -63,6 +70,7 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
     const pointsRecord = useUserRecord();
     const addPoint = useAddPoint();
     const deletePoint = useDeletePoint();
+    const currentRegion = useRegion((state) => state.currentRegionKey);
     const isCollected = currentPoint
         ? pointsRecord.includes(currentPoint.id)
         : false;
@@ -83,6 +91,7 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
         ? pointNameRaw
         : (currentPoint?.type ?? '');
     const { copiedPopupVisible, copyPointShareUrl } = usePointShareLink(currentPoint);
+    const [activeTab, setActiveTab] = useState<DetailTab>('general');
 
     // Archive full-text state — content may be plain text and/or HTML (<i>, <del>, <img>, …)
     const [hasFullText, setHasFullText] = useState(false);
@@ -146,24 +155,29 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
     const forceDetailOpen = useForceDetailOpen();
     const ref = useRef<HTMLDivElement | null>(null);
     const headerRef = useRef<HTMLDivElement | null>(null);
+    const tabsRef = useRef<HTMLDivElement | null>(null);
     const contentRef = useRef<HTMLDivElement | null>(null);
     const contentInnerRef = useRef<HTMLDivElement | null>(null);
+    const generalPanelRef = useRef<HTMLDivElement | null>(null);
+    const commentsPanelRef = useRef<HTMLDivElement | null>(null);
+    const [hasOpenedComments, setHasOpenedComments] = useState(false);
     const updateDetailHeight = useCallback(() => {
         const container = ref.current;
         const header = headerRef.current;
+        const tabs = tabsRef.current;
         const content = contentRef.current;
-        const contentInner = contentInnerRef.current;
-        if (!container || !header || !content || !contentInner || typeof window === 'undefined') return;
+        const activePanel = activeTab === 'comments' ? commentsPanelRef.current : generalPanelRef.current;
+        if (!container || !header || !tabs || !content || !activePanel || typeof window === 'undefined') return;
 
         const contentStyle = window.getComputedStyle(content);
         const contentPadding =
             Number.parseFloat(contentStyle.paddingTop || '0') +
             Number.parseFloat(contentStyle.paddingBottom || '0');
-        const naturalHeight = header.getBoundingClientRect().height + contentPadding + contentInner.scrollHeight;
+        const naturalHeight = header.getBoundingClientRect().height + tabs.getBoundingClientRect().height + contentPadding + activePanel.scrollHeight;
         const maxHeight = Math.max(0, window.innerHeight * 0.8);
         const nextHeight = Math.ceil(Math.min(naturalHeight, maxHeight));
         container.style.setProperty('--detail-panel-height', `${nextHeight}px`);
-    }, []);
+    }, [activeTab]);
     
     // 当 currentPoint 更新时，显示 detail
     useEffect(() => {
@@ -195,6 +209,7 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
     }, [
         currentPoint,
         detailPhase,
+        activeTab,
         hasFullText,
         pointName,
         statItems,
@@ -222,6 +237,7 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
         if (detailPhase === 'hidden' || typeof ResizeObserver === 'undefined') return undefined;
         const resizeObserver = new ResizeObserver(() => updateDetailHeight());
         if (headerRef.current) resizeObserver.observe(headerRef.current);
+        if (tabsRef.current) resizeObserver.observe(tabsRef.current);
         if (contentInnerRef.current) resizeObserver.observe(contentInnerRef.current);
         return () => resizeObserver.disconnect();
     }, [detailPhase, updateDetailHeight]);
@@ -234,7 +250,31 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
 
     useEffect(() => {
         contentRef.current?.scrollTo({ top: 0 });
+        setActiveTab('general');
+        setHasOpenedComments(false);
     }, [currentPoint?.id]);
+
+    const isRegionTypeComplete = currentPoint
+        ? regionCnt.total > 0 && regionCnt.collected >= regionCnt.total
+        : false;
+
+    const handleCollectAllInRegion = useCallback(async () => {
+        if (!currentPoint || !currentRegion || isRegionTypeComplete) return;
+
+        let regionMarkers = getLoadedRegionMarkers(currentRegion);
+        if (regionMarkers.length === 0) {
+            regionMarkers = await loadRegionMarkers(currentRegion);
+            useMarkerStore.getState().bumpMarkerDataVersion();
+        }
+
+        const typeMarkerIds = regionMarkers
+            .filter((marker) => marker.type === currentPoint.type)
+            .map((marker) => marker.id);
+        if (typeMarkerIds.length === 0) return;
+
+        const currentIds = useUserRecordStore.getState().activePoints;
+        useUserRecordStore.getState().setPoints([...currentIds, ...typeMarkerIds]);
+    }, [currentPoint, currentRegion, isRegionTypeComplete]);
 
     return (
         <>
@@ -268,112 +308,166 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
                             />
                         </div>
                     </div>
+                    <div className={styles.detailTabs} role="tablist" aria-label={tUI('detail.tabs.title')} ref={tabsRef}>
+                        <button
+                            type="button"
+                            className={classNames(styles.collectAllTab, {
+                                [styles.disabled]: isRegionTypeComplete,
+                            })}
+                            disabled={isRegionTypeComplete}
+                            onClick={() => void handleCollectAllInRegion()}
+                            aria-label={tUI('detail.tabs.collectAll')}
+                            title={tUI('detail.tabs.collectAll')}
+                        >
+                            <CollectAllIcon />
+                        </button>
+                        <button
+                            type="button"
+                            className={classNames(styles.detailTab, {
+                                [styles.active]: activeTab === 'general',
+                            })}
+                            role="tab"
+                            aria-selected={activeTab === 'general'}
+                            onClick={() => setActiveTab('general')}
+                        >
+                            <GeneralInfoIcon />
+                            {tUI('detail.tabs.general')}
+                        </button>
+                        <button
+                            type="button"
+                            className={classNames(styles.detailTab, {
+                                [styles.active]: activeTab === 'comments',
+                            })}
+                            role="tab"
+                            aria-selected={activeTab === 'comments'}
+                            onClick={() => {
+                                setHasOpenedComments(true);
+                                setActiveTab('comments');
+                            }}
+                        >
+                            <CommentIcon />
+                            {tUI('detail.tabs.comments')}
+                        </button>
+                    </div>
                     {/* Content */}
                     <div className={styles.detailContent} ref={contentRef}>
                         <div className={styles.detailContentInner} ref={contentInnerRef}>
-                        {/* Icon & Stats */}
-                        <div className={styles.iconStatsContainer}>
-                            <div
-                                className={classNames(styles.pointIcon, {
-                                    [styles.collected]: isCollected,
-                                })}
-                                onClick={() => {
-                                    if (isCollected) {
-                                        deletePoint(currentPoint.id);
-                                    } else {
-                                        addPoint(currentPoint.id);
-                                    }
-                                }}
-                            >
-                                {iconUrl && (
-                                    <img
-                                        key={currentPoint?.id ?? 'null'}
-                                        src={iconUrl}
-                                        alt={pointName}
+                            <div className={styles.detailTabPanel} hidden={activeTab !== 'general'} ref={generalPanelRef}>
+                                {/* Icon & Stats */}
+                                <div className={styles.iconStatsContainer}>
+                                    <div
+                                        className={classNames(styles.pointIcon, {
+                                            [styles.collected]: isCollected,
+                                        })}
+                                        onClick={() => {
+                                            if (isCollected) {
+                                                deletePoint(currentPoint.id);
+                                            } else {
+                                                addPoint(currentPoint.id);
+                                            }
+                                        }}
+                                    >
+                                        {iconUrl && (
+                                            <img
+                                                key={currentPoint?.id ?? 'null'}
+                                                src={iconUrl}
+                                                alt={pointName}
+                                            />
+                                        )}
+                                    </div>
+                                    <div className={styles.pointStats}>
+                                        <div className={styles.statsTxt}>
+                                            {statItems.map((item) => (
+                                                <div
+                                                    className={styles.statRow}
+                                                    key={item.label}
+                                                    style={{
+                                                        transform: `translateY(${3 - item.index * 2}px)`,
+                                                    }}
+                                                >
+                                                    <span className={styles.statLabel}>
+                                                        {item.label}:{' '}
+                                                    </span>
+                                                    <div className={styles.statValue}>
+                                                        <span
+                                                            className={`user-value ${item.data.collected === item.data.total ? 'check' : ''}`}
+                                                        >
+                                                            {item.data.collected}
+                                                        </span>
+                                                        <span className='value-separator'>
+                                                            /
+                                                        </span>
+                                                        <span className='total-value'>
+                                                            {item.data.total}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className={styles.statsProg}>
+                                            {statItems.map((item) => (
+                                                <div
+                                                    key={`prog-${item.label}`}
+                                                    className={classNames(
+                                                        styles.progBar,
+                                                        {
+                                                            [styles.check]:
+                                                                item.data.collected ===
+                                                                item.data.total,
+                                                        },
+                                                    )}
+                                                    style={{
+                                                        '--prog':
+                                                            item.data.total > 0
+                                                                ? item.data.collected / item.data.total
+                                                                : 0,
+                                                    }}
+                                                ></div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                                <Uploader point={currentPoint} pointName={pointName} active={detailPhase === 'open' && activeTab === 'general'} />
+                                {hasFullText && (
+                                    <>
+                                        <div className={styles.detailDivider} data-label={tUI('detail.label.note')}></div>
+                                        <div className={styles.detailAction}>
+                                            <a
+                                                onClick={() => void handleOpenFullText()}
+                                                role="button"
+                                            >
+                                                {tUI('detail.readFullText')}
+                                            </a>
+                                        </div>
+                                    </>
+                                )}
+                                <div className={styles.detailDivider} data-label={tUI('detail.label.url')}></div>
+                                <div className={styles.detailAction}>
+                                    <PopoverTooltip
+                                        content={tUI('detail.copied')}
+                                        placement="top"
+                                        gap={4}
+                                        visible={copiedPopupVisible}
+                                        disabled={false}
+                                    >
+                                        <a
+                                            onClick={() => void copyPointShareUrl()}
+                                            role="button"
+                                        >
+                                            {tUI('detail.share')}
+                                        </a>
+                                    </PopoverTooltip>
+                                </div>
+                            </div>
+                            <div className={styles.detailTabPanel} hidden={activeTab !== 'comments'} ref={commentsPanelRef}>
+                                {hasOpenedComments && (
+                                    <Comments
+                                        point={currentPoint}
+                                        pointName={pointName}
+                                        active={detailPhase === 'open' && activeTab === 'comments'}
                                     />
                                 )}
                             </div>
-                            <div className={styles.pointStats}>
-                                <div className={styles.statsTxt}>
-                                    {statItems.map((item) => (
-                                        <div
-                                            className={styles.statRow}
-                                            key={item.label}
-                                            style={{
-                                                transform: `translateY(${3 - item.index * 2}px)`,
-                                            }}
-                                        >
-                                            <span className={styles.statLabel}>
-                                                {item.label}:{' '}
-                                            </span>
-                                            <div className={styles.statValue}>
-                                                <span
-                                                    className={`user-value ${item.data.collected === item.data.total ? 'check' : ''}`}
-                                                >
-                                                    {item.data.collected}
-                                                </span>
-                                                <span className='value-separator'>
-                                                    /
-                                                </span>
-                                                <span className='total-value'>
-                                                    {item.data.total}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className={styles.statsProg}>
-                                    {statItems.map((item) => (
-                                        <div
-                                            key={`prog-${item.label}`}
-                                            className={classNames(
-                                                styles.progBar,
-                                                {
-                                                    [styles.check]:
-                                                        item.data.collected ===
-                                                        item.data.total,
-                                                },
-                                            )}
-                                            style={{
-                                                '--prog':
-                                                    item.data.collected /
-                                                    item.data.total,
-                                            }}
-                                        ></div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                        <Uploader point={currentPoint} pointName={pointName} active={detailPhase === 'open'} />
-                        {/* Note — shown when an archive full-text file is available */}
-                        {hasFullText && (
-                            <div className={styles.detailNotes}>
-                                <a
-                                    className={styles.readFullText}
-                                    onClick={() => void handleOpenFullText()}
-                                    role="button"
-                                >
-                                    {tUI('detail.readFullText')}
-                                </a>
-                            </div>
-                        )}
-                        <div className={styles.detailUrl}>
-                            <PopoverTooltip
-                                content={tUI('detail.copied')}
-                                placement="top"
-                                gap={4}
-                                visible={copiedPopupVisible}
-                                disabled={false}
-                            >
-                                <a
-                                    className={styles.pointShareLink}
-                                    onClick={() => void copyPointShareUrl()}
-                                    role="button"
-                                >
-                                    {tUI('detail.share')}
-                                </a>
-                            </PopoverTooltip>
-                        </div>
                         </div>
                     </div>
                 </div>

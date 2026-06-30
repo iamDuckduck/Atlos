@@ -34,6 +34,34 @@ export type UGCImage = {
     status?: UGCSubmissionStatus;
 };
 
+export type UGCCommentVoteValue = -1 | 0 | 1;
+
+export type UGCCommentAuthor = {
+    nickname: string;
+    publicUid: string;
+    avatar?: number;
+};
+
+export type UGCComment = {
+    id: string;
+    markerId: string;
+    poiHash?: string;
+    poiType?: string;
+    parentId: string | null;
+    depth: number;
+    content: string;
+    translatedContent?: string;
+    author?: UGCCommentAuthor | null;
+    createdAt: string;
+    score: number;
+    viewerVote?: UGCCommentVoteValue;
+    flagged?: boolean;
+    recallRequested?: boolean;
+    status?: UGCSubmissionStatus;
+    replyCount: number;
+    replies: UGCComment[];
+};
+
 export type UGCUploadSubmission = {
     id: string;
     markerId: string;
@@ -51,14 +79,34 @@ export type UGCSubmissionImage = UGCImage & {
     status: UGCSubmissionStatus;
 };
 
+export type UGCCommentSubmission = {
+    id: string;
+    markerId: string;
+    parentId: string | null;
+    depth: number;
+    status: UGCSubmissionStatus;
+    snapshotId: string;
+};
+
 type ImageCacheEntry = {
     expiresAt: number;
     images: UGCImage[];
 };
 
+type CommentCacheEntry = {
+    expiresAt: number;
+    comments: UGCComment[];
+};
+
 type PendingImageRequest = {
     markerId: string;
     resolve: (images: UGCImage[]) => void;
+    reject: (error: unknown) => void;
+};
+
+type PendingCommentRequest = {
+    markerId: string;
+    resolve: (comments: UGCComment[]) => void;
     reject: (error: unknown) => void;
 };
 
@@ -77,6 +125,8 @@ const UGC_API_BASE = `${getAuthBase()}/uploads/v1`;
 const PRIVATE_IMAGE_CACHE_POSITIVE_TTL_MS = 5 * 60 * 1000;
 const PUBLIC_IMAGE_CACHE_POSITIVE_TTL_MS = 30 * 1000;
 const IMAGE_CACHE_EMPTY_TTL_MS = 10 * 1000;
+const COMMENT_CACHE_POSITIVE_TTL_MS = 30 * 1000;
+const COMMENT_CACHE_EMPTY_TTL_MS = 10 * 1000;
 const SUBMISSION_CACHE_TTL_MS = 0;
 const MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
 const CLIENT_WEBP_MAX_BYTES = 4 * 1024 * 1024;
@@ -100,12 +150,16 @@ const imageCache = new Map<string, ImageCacheEntry>();
 const imageInFlight = new Map<string, Promise<UGCImage[]>>();
 const publicImageCache = new Map<string, ImageCacheEntry>();
 const publicImageInFlight = new Map<string, Promise<UGCImage[]>>();
+const commentCache = new Map<string, CommentCacheEntry>();
+const commentInFlight = new Map<string, Promise<UGCComment[]>>();
 const submissionCache = new Map<string, SubmissionCacheEntry>();
 const submissionInFlight = new Map<string, Promise<UGCSubmissionImage[]>>();
 let pendingImageBatchTimer: number | null = null;
 let pendingImageBatchRequests: PendingImageRequest[] = [];
 let pendingPublicImageBatchTimer: number | null = null;
 let pendingPublicImageBatchRequests: PendingImageRequest[] = [];
+let pendingCommentBatchTimer: number | null = null;
+let pendingCommentBatchRequests: PendingCommentRequest[] = [];
 let pendingSubmissionBatchTimer: number | null = null;
 let pendingSubmissionBatchRequests: PendingSubmissionRequest[] = [];
 
@@ -133,6 +187,10 @@ export const invalidateUGCSubmissionCache = (markerId: string): void => {
     submissionCache.delete(markerId);
 };
 
+export const invalidateUGCCommentCache = (markerId: string): void => {
+    commentCache.delete(markerId);
+};
+
 export const peekUGCImages = (markerId: string): UGCImage[] | null => {
     const cached = imageCache.get(markerId);
     if (!cached || cached.expiresAt <= Date.now()) {
@@ -147,6 +205,14 @@ export const peekPublicUGCImages = (markerId: string): UGCImage[] | null => {
         return null;
     }
     return cached.images;
+};
+
+export const peekUGCComments = (markerId: string): UGCComment[] | null => {
+    const cached = commentCache.get(markerId);
+    if (!cached || cached.expiresAt <= Date.now()) {
+        return null;
+    }
+    return cached.comments;
 };
 
 export const peekUGCMyImages = (markerId: string): UGCSubmissionImage[] | null => {
@@ -174,6 +240,10 @@ export async function listUGCImages(markerId: string): Promise<UGCImage[]> {
 
 export async function listPublicUGCImages(markerId: string): Promise<UGCImage[]> {
     return listPublicUGCImagesByMarkerIds([markerId]).then((grouped) => grouped[markerId] ?? []);
+}
+
+export async function listUGCComments(markerId: string): Promise<UGCComment[]> {
+    return listUGCCommentsByMarkerIds([markerId]).then((grouped) => grouped[markerId] ?? []);
 }
 
 export async function listUGCImagesByMarkerIds(markerIds: string[]): Promise<Record<string, UGCImage[]>> {
@@ -231,6 +301,36 @@ export async function listPublicUGCImagesByMarkerIds(markerIds: string[]): Promi
 
     fetchedEntries.forEach(([markerId, images]) => {
         result[markerId] = images;
+    });
+
+    return result;
+}
+
+export async function listUGCCommentsByMarkerIds(markerIds: string[]): Promise<Record<string, UGCComment[]>> {
+    const normalizedIds = [...new Set(markerIds.map((item) => item.trim()).filter(Boolean))];
+    const result: Record<string, UGCComment[]> = {};
+    const pendingIds: string[] = [];
+
+    normalizedIds.forEach((markerId) => {
+        const cached = commentCache.get(markerId);
+        if (cached && cached.expiresAt > Date.now()) {
+            result[markerId] = cached.comments;
+            return;
+        }
+
+        pendingIds.push(markerId);
+    });
+
+    if (pendingIds.length === 0) {
+        return result;
+    }
+
+    const fetchedEntries = await Promise.all(
+        pendingIds.map(async (markerId) => [markerId, await getOrQueueUGCComments(markerId)] as const),
+    );
+
+    fetchedEntries.forEach(([markerId, comments]) => {
+        result[markerId] = comments;
     });
 
     return result;
@@ -302,7 +402,34 @@ export async function uploadUGCImage(
     return payload.submission;
 }
 
+export async function submitUGCComment(
+    point: IMarkerData,
+    content: string,
+    parentId?: string | null,
+): Promise<UGCCommentSubmission> {
+    const payload = await postJson<{
+        submission?: UGCCommentSubmission;
+    }>(`${UGC_API_BASE}/comments`, {
+        markerId: point.id,
+        poiHash: buildPoiHash(point),
+        poiType: point.type,
+        content,
+        ...(parentId ? { parentId } : {}),
+    });
+
+    if (!payload.submission) {
+        throw new UGCClientError('Comment response missing submission.', 'commentInvalidResponse');
+    }
+
+    invalidateUGCCommentCache(point.id);
+    return payload.submission;
+}
+
 export type UGCImageActionPatch = Partial<Pick<UGCImage, 'upvoteCount' | 'upvotes' | 'upvoted' | 'flagged' | 'recallRequested' | 'status'>> & {
+    id: string;
+};
+
+export type UGCCommentActionPatch = Partial<Pick<UGCComment, 'score' | 'viewerVote' | 'flagged' | 'recallRequested' | 'status'>> & {
     id: string;
 };
 
@@ -312,6 +439,26 @@ type UGCImageActionResponse = {
     upvoteCount?: number;
     flagCount?: number;
     status?: UGCSubmissionStatus;
+};
+
+type UGCCommentActionResponse = {
+    ok?: boolean;
+    comment?: UGCComment;
+    vote?: UGCCommentVoteValue;
+    score?: number;
+    flagCount?: number;
+    status?: UGCSubmissionStatus;
+};
+
+export type UGCCommentTranslation = {
+    commentId: string;
+    translatedContent?: string;
+    sourceLanguage?: string;
+    targetLanguage: string;
+    provider: string;
+    glossaryApplied: boolean;
+    cached: boolean;
+    error?: string;
 };
 
 export async function toggleUGCImageUpvote(imageId: string, upvoted: boolean): Promise<UGCImageActionPatch> {
@@ -328,6 +475,43 @@ export async function toggleUGCImageRecall(imageId: string, recallRequested: boo
 
 export async function recallUGCImage(imageId: string): Promise<UGCImageActionPatch> {
     return updateUGCImageAction(imageId, 'recall');
+}
+
+export async function voteUGCComment(commentId: string, value: 1 | -1): Promise<UGCCommentActionPatch> {
+    return updateUGCCommentAction(commentId, value === 1 ? 'upvote' : 'downvote');
+}
+
+export async function toggleUGCCommentFlag(commentId: string, flagged: boolean): Promise<UGCCommentActionPatch> {
+    return updateUGCCommentAction(commentId, flagged ? 'flag' : 'unflag');
+}
+
+export async function requestUGCCommentRemoval(commentId: string): Promise<UGCCommentActionPatch> {
+    return updateUGCCommentAction(commentId, 'remove-request');
+}
+
+export async function recallUGCComment(commentId: string): Promise<UGCCommentActionPatch> {
+    return updateUGCCommentAction(commentId, 'recall');
+}
+
+export async function translateUGCComments(
+    commentIds: string[],
+    targetLanguage: string,
+    sourceLanguage?: string,
+): Promise<UGCCommentTranslation[]> {
+    const normalizedIds = [...new Set(commentIds.map((id) => id.trim()).filter(Boolean))];
+    if (normalizedIds.length === 0) return [];
+
+    const payload = await postJson<{ items?: UGCCommentTranslation[] }>(
+        `${UGC_API_BASE}/comments/translations`,
+        {
+            commentIds: normalizedIds,
+            targetLanguage,
+            ...(sourceLanguage ? { sourceLanguage } : {}),
+        },
+        false,
+    );
+
+    return payload.items ?? [];
 }
 
 async function updateUGCImageAction(imageId: string, action: string): Promise<UGCImageActionPatch> {
@@ -370,6 +554,45 @@ async function updateUGCImageAction(imageId: string, action: string): Promise<UG
             patch.flagged = true;
         }
         if (payload.status === 'active' && (action === 'unflag' || action === 'unrecall')) {
+            patch.flagged = false;
+        }
+    }
+    return patch;
+}
+
+async function updateUGCCommentAction(commentId: string, action: string): Promise<UGCCommentActionPatch> {
+    const payload = await postJson<UGCCommentActionResponse>(
+        `${UGC_API_BASE}/comments/${encodeURIComponent(commentId)}/${action}`,
+        undefined,
+    );
+
+    if (payload.comment) {
+        const comment = normalizeUGCComment(payload.comment);
+        invalidateUGCCommentCache(comment.markerId);
+        return comment;
+    }
+
+    if (payload.ok !== true) {
+        throw new UGCClientError('Comment action response is invalid.', 'commentActionInvalidResponse');
+    }
+
+    const patch: UGCCommentActionPatch = { id: commentId };
+    if (Number.isFinite(payload.score)) {
+        patch.score = Math.trunc(payload.score as number);
+    }
+    if (payload.vote === -1 || payload.vote === 0 || payload.vote === 1) {
+        patch.viewerVote = payload.vote;
+    }
+    if (Number.isFinite(payload.flagCount)) {
+        patch.flagged = action === 'flag';
+    }
+    if (payload.status) {
+        patch.status = payload.status;
+        patch.recallRequested = payload.status === 'remove_request';
+        if (payload.status === 'flagged') {
+            patch.flagged = true;
+        }
+        if (payload.status === 'active' && action === 'unflag') {
             patch.flagged = false;
         }
     }
@@ -509,6 +732,32 @@ function getOrQueuePublicUGCImages(markerId: string): Promise<UGCImage[]> {
     publicImageInFlight.set(markerId, promise);
     return promise.finally(() => {
         publicImageInFlight.delete(markerId);
+    });
+}
+
+function getOrQueueUGCComments(markerId: string): Promise<UGCComment[]> {
+    const inFlight = commentInFlight.get(markerId);
+    if (inFlight) {
+        return inFlight;
+    }
+
+    const promise = new Promise<UGCComment[]>((resolve, reject) => {
+        pendingCommentBatchRequests.push({ markerId, resolve, reject });
+        if (pendingCommentBatchTimer !== null) {
+            return;
+        }
+
+        pendingCommentBatchTimer = window.setTimeout(() => {
+            pendingCommentBatchTimer = null;
+            const requests = pendingCommentBatchRequests;
+            pendingCommentBatchRequests = [];
+            void flushUGCCommentBatch(requests);
+        }, 0);
+    });
+
+    commentInFlight.set(markerId, promise);
+    return promise.finally(() => {
+        commentInFlight.delete(markerId);
     });
 }
 
@@ -653,6 +902,64 @@ async function flushPublicUGCImageBatch(requests: PendingImageRequest[]): Promis
     }
 }
 
+async function flushUGCCommentBatch(requests: PendingCommentRequest[]): Promise<void> {
+    const groupedResolvers = new Map<string, PendingCommentRequest[]>();
+    requests.forEach((request) => {
+        const bucket = groupedResolvers.get(request.markerId);
+        if (bucket) {
+            bucket.push(request);
+            return;
+        }
+        groupedResolvers.set(request.markerId, [request]);
+    });
+
+    const markerIds = [...groupedResolvers.keys()];
+    const scope = import.meta.env.DEV ? 'test' : 'prod';
+
+    try {
+        const response = await fetch(
+            `${UGC_API_BASE}/comments?markerIds=${encodeURIComponent(markerIds.join(','))}&limit=20&replyLimit=10&scope=${scope}`,
+            {
+                credentials: 'include',
+                headers: getAuthHeaders(),
+            },
+        );
+
+        if (!response.ok) {
+            throw await readUGCError(response);
+        }
+
+        const payload = await response.json() as { items?: UGCComment[] };
+        const groupedComments = new Map<string, UGCComment[]>();
+
+        markerIds.forEach((markerId) => {
+            groupedComments.set(markerId, []);
+        });
+
+        (payload.items ?? []).map(normalizeUGCComment).forEach((comment) => {
+            const comments = groupedComments.get(comment.markerId);
+            if (comments) {
+                comments.push(comment);
+            }
+        });
+
+        markerIds.forEach((markerId) => {
+            const comments = groupedComments.get(markerId) ?? [];
+            commentCache.set(markerId, {
+                expiresAt: Date.now() + (comments.length > 0 ? COMMENT_CACHE_POSITIVE_TTL_MS : COMMENT_CACHE_EMPTY_TTL_MS),
+                comments,
+            });
+            groupedResolvers.get(markerId)?.forEach((request) => {
+                request.resolve(comments);
+            });
+        });
+    } catch (error) {
+        groupedResolvers.forEach((entries) => {
+            entries.forEach((request) => request.reject(error));
+        });
+    }
+}
+
 async function flushUGCSubmissionBatch(requests: PendingSubmissionRequest[]): Promise<void> {
     const groupedResolvers = new Map<string, PendingSubmissionRequest[]>();
     requests.forEach((request) => {
@@ -727,6 +1034,31 @@ function normalizeUGCImage(image: UGCImage): UGCImage {
     };
 }
 
+function normalizeUGCComment(comment: UGCComment): UGCComment {
+    const status = comment.status;
+    const rawAvatar = comment.author?.avatar;
+    const avatar = Number.isFinite(rawAvatar) ? Math.floor(rawAvatar as number) : undefined;
+    const author = comment.author
+        ? {
+            ...comment.author,
+            ...(avatar !== undefined && avatar >= 1 ? { avatar } : { avatar: undefined }),
+        }
+        : comment.author;
+
+    return {
+        ...comment,
+        author,
+        parentId: comment.parentId ?? null,
+        depth: Number.isFinite(comment.depth) ? Math.max(0, Math.trunc(comment.depth)) : 0,
+        score: Number.isFinite(comment.score) ? Math.trunc(comment.score) : 0,
+        viewerVote: comment.viewerVote === -1 || comment.viewerVote === 1 ? comment.viewerVote : comment.viewerVote === 0 ? 0 : undefined,
+        flagged: comment.flagged,
+        recallRequested: Boolean(comment.recallRequested || status === 'remove_request'),
+        replyCount: Number.isFinite(comment.replyCount) ? Math.max(0, Math.trunc(comment.replyCount)) : comment.replies?.length ?? 0,
+        replies: (comment.replies ?? []).map(normalizeUGCComment),
+    };
+}
+
 function normalizeUGCSubmissionImage(image: UGCSubmissionImage): UGCSubmissionImage {
     if (!import.meta.env.DEV) {
         return image;
@@ -764,6 +1096,24 @@ function extractObjectPathFromUrl(rawUrl: string): string | null {
 
 function encodeObjectPath(path: string): string {
     return path.split('/').map((segment) => encodeURIComponent(segment)).join('/');
+}
+
+async function postJson<T>(url: string, body?: unknown, includeCredentials = true): Promise<T> {
+    const response = await fetch(url, {
+        method: 'POST',
+        credentials: includeCredentials ? 'include' : 'omit',
+        headers: {
+            ...getAuthHeaders(),
+            ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
+        },
+        ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+    });
+
+    if (!response.ok) {
+        throw await readUGCError(response);
+    }
+
+    return response.json() as Promise<T>;
 }
 
 async function readUGCError(response: Response): Promise<UGCClientError> {

@@ -32,6 +32,17 @@
       "main": "主区域",
       "sub": "子区域"
     },
+    "label": {
+      "note": "注记",
+      "url": "相关链接",
+      "comments": "留言"
+    },
+    "tabs": {
+      "title": "详情分区",
+      "collectAll": "将当前主区域内所有同类点标记为完成",
+      "general": "General",
+      "comments": "Comments"
+    },
     "noInfo": "暂无信息，使用 {paste} / {click} 上传点位截图",
     "communityRule1": "上传前，请您详阅并遵循",
     "communityRule2": "OEM 社区守则",
@@ -50,6 +61,20 @@
       "share": "分享",
       "recall": "申请撤回此图片",
       "unrecall": "取消撤回"
+    },
+    "comments": {
+      "title": "留言",
+      "placeholder": "Type something...",
+      "submit": "发布留言",
+      "actions": "留言操作",
+      "translate": "翻译",
+      "upvote": "赞同",
+      "downvote": "不赞同",
+      "anonymous": "匿名用户",
+      "emptyWithRule": "暂无留言。发布内容请遵循社区守则。",
+      "ruleOnly": "发布内容请遵循社区守则。",
+      "loadFailed": "留言加载失败。",
+      "submitFailed": "留言发布失败。"
     },
     "errors": {
       "unsupportedType": "仅支持 JPEG/PNG/WebP/AVIF/HEIC 图片",

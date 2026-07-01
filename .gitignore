@@ -51,6 +51,7 @@ talos/scripts/logs/
 talos/src/data/marker/diff.generated.json
 talos/.pages-dist/
 talos/.cache/
+talos/locale/data
 
 ref/
 seo-og/

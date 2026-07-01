@@ -4,7 +4,7 @@ import Button from '@/component/button/button';
 import Modal from '@/component/modal/modal';
 import PopoverTooltip from '@/component/popover/popover';
 import Uploader from '../uploader/uploader';
-import Comments from './comments';
+import Comments, { CommentExcerpt } from './comments';
 
 import parse from 'html-react-parser';
 import { getItemIconUrl, getFileContentUrl, fetchArchiveFile } from '@/utils/resource.ts';
@@ -12,6 +12,7 @@ import { parseArchiveJsonResponse, createArchiveHtmlParserOptions } from './arch
 import { getLoadedRegionMarkers, loadRegionMarkers, MARKER_TYPE_DICT } from '@/data/marker';
 import { usePointShareLink } from '@/utils/shareLink';
 import useRegion from '@/store/region';
+import { listUGCComments, type UGCComment } from '@/utils/ugcClient';
 
 import BossIcon from '@/assets/images/category/boss.svg?react';
 import CollectionIcon from '@/assets/images/category/collection.svg?react';
@@ -82,11 +83,24 @@ const getElementNaturalHeight = (element: HTMLElement): number => {
     return paddingHeight + childrenHeight + gap * Math.max(0, children.length - 1);
 };
 
+const flattenComments = (comments: UGCComment[]): UGCComment[] => (
+    comments.flatMap((comment) => [comment, ...flattenComments(comment.replies ?? [])])
+);
+
+const getTopRatedComment = (comments: UGCComment[]): UGCComment | null => {
+    const allComments = flattenComments(comments);
+    if (allComments.length === 0) return null;
+    return allComments.reduce((topComment, comment) => (
+        comment.score > topComment.score ? comment : topComment
+    ));
+};
+
 export const Detail = ({ inline = false }: { inline?: boolean }) => {
     /**
      * @type {import('../mapContainer/store/marker.type').IMarkerData}
      */
     const currentPoint = useMarkerStore((state) => state.currentActivePoint);
+    const currentPointId = currentPoint?.id;
     const pointsRecord = useUserRecord();
     const addPoint = useAddPoint();
     const deletePoint = useDeletePoint();
@@ -118,6 +132,7 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
     const [textModalOpen, setTextModalOpen] = useState(false);
     const [fullTextContent, setFullTextContent] = useState<string | null>(null);
     const [isLoadingFullText, setIsLoadingFullText] = useState(false);
+    const [highlightComment, setHighlightComment] = useState<UGCComment | null>(null);
 
     // GET + validate JSON (HEAD is unreliable: Vite may return 200 + index.html for missing paths)
     useEffect(() => {
@@ -139,6 +154,24 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
             .catch(() => { /* network / abort */ });
         return () => controller.abort();
     }, [isFilesType, currentPoint, locale]);
+
+    useEffect(() => {
+        setHighlightComment(null);
+        if (!currentPointId) return undefined;
+
+        let disposed = false;
+        void listUGCComments(currentPointId)
+            .then((comments) => {
+                if (!disposed) setHighlightComment(getTopRatedComment(comments));
+            })
+            .catch(() => {
+                if (!disposed) setHighlightComment(null);
+            });
+
+        return () => {
+            disposed = true;
+        };
+    }, [currentPointId]);
 
     const handleOpenFullText = useCallback(async () => {
         if (!currentPoint) return;
@@ -239,6 +272,7 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
         detailPhase,
         activeTab,
         hasFullText,
+        highlightComment,
         pointName,
         statItems,
         updateDetailHeight,
@@ -372,19 +406,25 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
                             />
                         </div>
                     </div>
-                    <div className={styles.detailTabs} role="tablist" aria-label={tUI('detail.tabs.title')} ref={tabsRef}>
-                        <button
-                            type="button"
-                            className={classNames(styles.collectAllTab, {
-                                [styles.disabled]: isRegionTypeComplete,
-                            })}
-                            disabled={isRegionTypeComplete}
-                            onClick={() => void handleCollectAllInRegion()}
-                            aria-label={tUI('detail.tabs.collectAll')}
-                            title={tUI('detail.tabs.collectAll')}
-                        >
-                            <CollectAllIcon />
-                        </button>
+                    <div
+                        className={styles.detailTabs}
+                        role="tablist"
+                        data-active-tab={activeTab}
+                        ref={tabsRef}
+                    >
+                        <PopoverTooltip content={tUI('detail.tabs.collectAll')} placement="top" gap={4}>
+                            <button
+                                type="button"
+                                className={classNames(styles.collectAllTab, {
+                                    [styles.disabled]: isRegionTypeComplete,
+                                })}
+                                aria-disabled={isRegionTypeComplete}
+                                aria-label={tUI('detail.tabs.collectAll')}
+                                onClick={() => void handleCollectAllInRegion()}
+                            >
+                                <CollectAllIcon />
+                            </button>
+                        </PopoverTooltip>
                         <button
                             type="button"
                             className={classNames(styles.detailTab, {
@@ -392,10 +432,11 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
                             })}
                             role="tab"
                             aria-selected={activeTab === 'general'}
+                            data-tab="general"
                             onClick={() => setActiveTab('general')}
                         >
                             <GeneralInfoIcon />
-                            {tUI('detail.tabs.general')}
+                            <span>{tUI('detail.tabs.general')}</span>
                         </button>
                         <button
                             type="button"
@@ -404,13 +445,14 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
                             })}
                             role="tab"
                             aria-selected={activeTab === 'comments'}
+                            data-tab="comments"
                             onClick={() => {
                                 setHasOpenedComments(true);
                                 setActiveTab('comments');
                             }}
                         >
                             <CommentIcon />
-                            {tUI('detail.tabs.comments')}
+                            <span>{tUI('detail.tabs.comments')}</span>
                         </button>
                     </div>
                     {/* Content */}
@@ -491,6 +533,12 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
                                 </div>
                             </div>
                             <Uploader point={currentPoint} pointName={pointName} active={detailPhase === 'open' && activeTab === 'general'} />
+                            {highlightComment && (
+                                <>
+                                    <div className={styles.detailDivider} data-label={tUI('detail.label.comments')}></div>
+                                    <CommentExcerpt comment={highlightComment} />
+                                </>
+                            )}
                             {hasFullText && (
                                 <>
                                     <div className={styles.detailDivider} data-label={tUI('detail.label.note')}></div>

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { LinearBlur } from 'progressive-blur';
 import styles from './comments.module.scss';
@@ -40,6 +40,7 @@ type Props = {
 const COMMENT_MAX_LENGTH = 200;
 const COMMENT_TOGGLE_SYNC_DELAY_MS = 300;
 const COMMENT_MAX_DISPLAY_DEPTH = 2;
+const COMMENT_REPLY_QUOTE_TRANSITION_MS = 180;
 
 type CommentSyncTask<T> = {
     desired: T;
@@ -246,6 +247,11 @@ const getVoteDelta = (current: UGCCommentVoteValue | undefined, next: UGCComment
     next - (current ?? 0)
 );
 
+const parseCssPixelValue = (value: string): number => {
+    const parsed = Number.parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+};
+
 const getCommentSyncTask = <T,>(
     tasks: Map<string, CommentSyncTask<T>>,
     commentId: string,
@@ -277,6 +283,54 @@ const CommentAvatar = memo(({ comment }: { comment: UGCComment }) => (
 
 CommentAvatar.displayName = 'CommentAvatar';
 
+type CommentExcerptProps = {
+    comment: UGCComment;
+    displayDepth?: number;
+    actions?: React.ReactNode;
+};
+
+export const CommentExcerpt = memo(({
+    comment,
+    displayDepth = 0,
+    actions,
+}: CommentExcerptProps) => {
+    const tUI = useTranslateUI();
+    const createdAt = useMemo(() => parseDateLike(comment.createdAt), [comment.createdAt]);
+    const timeLabel = createdAt
+        ? formatRelativeTime(createdAt, { precision: 'dateTime', agoDisplay: 'hover', agoLabel: tUI('idcard.ago') }).agoText
+        : '';
+    const statusLabel = getCommentStatusLabel(comment, timeLabel);
+    const authorName = comment.author?.nickname || tUI('detail.comments.anonymous');
+
+    return (
+        <div
+            className={classNames(styles.commentNode, { [styles.replyNode]: displayDepth > 0 })}
+            style={{ '--comment-display-depth': displayDepth } as React.CSSProperties}
+        >
+            <article
+                className={styles.commentBubble}
+                data-short-actions-root={actions ? 'true' : undefined}
+            >
+                {actions}
+                <div
+                    className={classNames(styles.commentMeta, {
+                        [styles.reviewing]: isReviewingStatus(comment.status),
+                    })}
+                    data-status={statusLabel}
+                >
+                    <CommentAvatar comment={comment} />
+                    <span className={styles.commentAuthor}>{authorName}</span>
+                </div>
+                <p className={styles.commentBody}>
+                    {comment.translatedContent || comment.content}
+                </p>
+            </article>
+        </div>
+    );
+});
+
+CommentExcerpt.displayName = 'CommentExcerpt';
+
 type CommentItemProps = {
     comment: UGCComment;
     displayDepth: number;
@@ -303,12 +357,6 @@ const CommentItem = memo(({
     onReply,
 }: CommentItemProps) => {
     const tUI = useTranslateUI();
-    const createdAt = useMemo(() => parseDateLike(comment.createdAt), [comment.createdAt]);
-    const timeLabel = createdAt
-        ? formatRelativeTime(createdAt, { precision: 'dateTime', agoDisplay: 'hover', agoLabel: tUI('idcard.ago') }).agoText
-        : '';
-    const statusLabel = getCommentStatusLabel(comment, timeLabel);
-    const authorName = comment.author?.nickname || tUI('detail.comments.anonymous');
     const canModerate = isVisibleStatus(comment.status);
     const actions = useMemo<ShortActionItem[]>(() => {
         const items: ShortActionItem[] = [
@@ -384,11 +432,10 @@ const CommentItem = memo(({
     ]);
 
     return (
-        <div
-            className={classNames(styles.commentNode, { [styles.replyNode]: displayDepth > 0 })}
-            style={{ '--comment-display-depth': displayDepth } as React.CSSProperties}
-        >
-            <article className={styles.commentBubble} data-short-actions-root="true">
+        <CommentExcerpt
+            comment={comment}
+            displayDepth={displayDepth}
+            actions={(
                 <ShortActions
                     className={styles.commentActions}
                     anchorClassName={styles.commentActionsAnchor}
@@ -396,20 +443,8 @@ const CommentItem = memo(({
                     ariaLabel={tUI('detail.comments.actions')}
                     variant="floating"
                 />
-                <div
-                    className={classNames(styles.commentMeta, {
-                        [styles.reviewing]: isReviewingStatus(comment.status),
-                    })}
-                    data-status={statusLabel}
-                >
-                    <CommentAvatar comment={comment} />
-                    <span className={styles.commentAuthor}>{authorName}</span>
-                </div>
-                <p className={styles.commentBody}>
-                    {comment.translatedContent || comment.content}
-                </p>
-            </article>
-        </div>
+            )}
+        />
     );
 });
 
@@ -427,10 +462,15 @@ const Comments = ({ point, pointName, active = true }: Props) => {
     const [actionPendingIds, setActionPendingIds] = useState<Set<string>>(() => new Set());
     const [error, setError] = useState('');
     const [replyTarget, setReplyTarget] = useState<UGCComment | null>(null);
+    const [renderedReplyTarget, setRenderedReplyTarget] = useState<UGCComment | null>(null);
+    const [replyQuoteVisible, setReplyQuoteVisible] = useState(false);
     const inputRef = useRef<HTMLTextAreaElement | null>(null);
+    const inputBarRef = useRef<HTMLDivElement | null>(null);
+    const commentsPanelRef = useRef<HTMLElement | null>(null);
     const commentListRef = useRef<HTMLDivElement | null>(null);
     const voteTasksRef = useRef(new Map<string, CommentSyncTask<UGCCommentVoteValue>>());
     const flagTasksRef = useRef(new Map<string, CommentSyncTask<boolean>>());
+    const replyQuoteTimerRef = useRef<number | undefined>(undefined);
     const [commentBottomBlurVisible, setCommentBottomBlurVisible] = useState(false);
     const loadFailedText = tUI('detail.comments.loadFailed');
 
@@ -468,6 +508,32 @@ const Comments = ({ point, pointName, active = true }: Props) => {
     useEffect(() => {
         setReplyTarget(null);
     }, [point.id]);
+
+    useEffect(() => {
+        if (replyQuoteTimerRef.current) {
+            window.clearTimeout(replyQuoteTimerRef.current);
+            replyQuoteTimerRef.current = undefined;
+        }
+
+        if (replyTarget) {
+            setRenderedReplyTarget(replyTarget);
+            const frameId = window.requestAnimationFrame(() => setReplyQuoteVisible(true));
+            return () => window.cancelAnimationFrame(frameId);
+        }
+
+        setReplyQuoteVisible(false);
+        replyQuoteTimerRef.current = window.setTimeout(() => {
+            setRenderedReplyTarget(null);
+            replyQuoteTimerRef.current = undefined;
+        }, COMMENT_REPLY_QUOTE_TRANSITION_MS);
+
+        return () => {
+            if (replyQuoteTimerRef.current) {
+                window.clearTimeout(replyQuoteTimerRef.current);
+                replyQuoteTimerRef.current = undefined;
+            }
+        };
+    }, [replyTarget]);
 
     const setCommentActionPending = useCallback((commentId: string, pending: boolean) => {
         setActionPendingIds((current) => {
@@ -507,6 +573,20 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         const overflow = list.scrollHeight - list.clientHeight > 2;
         const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 2;
         setCommentBottomBlurVisible(overflow && !atBottom);
+    }, []);
+
+    const resizeInput = useCallback(() => {
+        const input = inputRef.current;
+        if (!input) return;
+
+        const style = window.getComputedStyle(input);
+        const minHeight = parseCssPixelValue(style.minHeight);
+        const maxHeight = parseCssPixelValue(style.maxHeight);
+        input.style.height = `${minHeight}px`;
+        const contentHeight = input.value.length === 0 ? minHeight : input.scrollHeight;
+        const nextHeight = Math.min(Math.max(contentHeight, minHeight), maxHeight || contentHeight);
+        input.style.height = `${nextHeight}px`;
+        input.style.overflowY = input.scrollHeight > nextHeight + 1 ? 'auto' : 'hidden';
     }, []);
 
     const scheduleVoteSync = useCallback((commentId: string) => {
@@ -602,6 +682,9 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         flagTasksRef.current.forEach((task) => {
             if (task.timer) window.clearTimeout(task.timer);
         });
+        if (replyQuoteTimerRef.current) {
+            window.clearTimeout(replyQuoteTimerRef.current);
+        }
     }, []);
 
     useEffect(() => {
@@ -623,9 +706,31 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         error,
         inputValue,
         loading,
-        replyTarget,
+        renderedReplyTarget,
+        replyQuoteVisible,
         updateCommentBottomBlur,
     ]);
+
+    useLayoutEffect(() => {
+        resizeInput();
+    }, [inputValue, renderedReplyTarget, resizeInput]);
+
+    useEffect(() => {
+        const inputBar = inputBarRef.current;
+        const panel = commentsPanelRef.current;
+        if (!inputBar || !panel) return undefined;
+
+        const syncInputHeight = () => {
+            panel.style.setProperty('--comment-input-height', `${Math.ceil(inputBar.getBoundingClientRect().height)}px`);
+            updateCommentBottomBlur();
+        };
+        syncInputHeight();
+
+        if (typeof ResizeObserver === 'undefined') return undefined;
+        const resizeObserver = new ResizeObserver(syncInputHeight);
+        resizeObserver.observe(inputBar);
+        return () => resizeObserver.disconnect();
+    }, [renderedReplyTarget, replyQuoteVisible, updateCommentBottomBlur]);
 
     const requireAuth = useCallback(() => {
         if (isAuthenticated) return true;
@@ -760,11 +865,16 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         : tUI('detail.comments.emptyWithRule');
     const allCommentIds = useMemo(() => flattenCommentIds(comments), [comments]);
     const displayComments = useMemo(() => flattenDisplayComments(comments), [comments]);
+    const replyQuoteShown = Boolean(renderedReplyTarget && replyQuoteVisible);
+    const replyQuoteText = renderedReplyTarget
+        ? renderedReplyTarget.translatedContent || renderedReplyTarget.content
+        : '';
 
     return (
         <section
+            ref={commentsPanelRef}
             className={styles.commentsPanel}
-            data-replying={replyTarget ? 'true' : 'false'}
+            data-replying={replyQuoteShown ? 'true' : 'false'}
             aria-label={`${pointName} ${tUI('detail.comments.title')}`}
         >
             <div
@@ -810,34 +920,44 @@ const Comments = ({ point, pointName, active = true }: Props) => {
                     [styles.commentBottomBlurVisible]: commentBottomBlurVisible,
                 })}
             />
-            <div className={styles.commentInputBar} data-replying={replyTarget ? 'true' : 'false'}>
+            <div
+                className={styles.commentInputBar}
+                data-replying={replyQuoteShown ? 'true' : 'false'}
+                ref={inputBarRef}
+            >
                 <div className={styles.commentInputStack}>
-                    {replyTarget && (
+                    <div
+                        className={styles.commentReplyQuoteShell}
+                        data-visible={replyQuoteShown ? 'true' : 'false'}
+                        aria-hidden={!replyQuoteShown}
+                    >
                         <div className={styles.commentReplyQuote}>
-                            {replyTarget.translatedContent || replyTarget.content}
+                            {replyQuoteText}
                         </div>
-                    )}
-                    <textarea
-                        ref={inputRef}
-                        className={styles.commentInput}
-                        value={inputValue}
-                        maxLength={COMMENT_MAX_LENGTH}
-                        placeholder={tUI('detail.comments.placeholder')}
-                        disabled={inputDisabled}
-                        onChange={(event) => setInputValue(event.target.value)}
-                        onKeyDown={handleKeyDown}
-                        rows={replyTarget ? 2 : 1}
-                    />
+                    </div>
+                    <div className={styles.commentInputRow}>
+                        <textarea
+                            ref={inputRef}
+                            className={styles.commentInput}
+                            value={inputValue}
+                            maxLength={COMMENT_MAX_LENGTH}
+                            placeholder={tUI('detail.comments.placeholder')}
+                            disabled={inputDisabled}
+                            onChange={(event) => setInputValue(event.target.value)}
+                            onKeyDown={handleKeyDown}
+                            rows={1}
+                        />
+                        <button
+                            type="button"
+                            className={styles.commentSubmit}
+                            disabled={inputDisabled || inputValue.trim().length === 0}
+                            onClick={() => void handleSubmit()}
+                            aria-label={tUI('detail.comments.submit')}
+                        >
+                            <SubmitIcon />
+                        </button>
+                    </div>
                 </div>
-                <button
-                    type="button"
-                    className={styles.commentSubmit}
-                    disabled={inputDisabled || inputValue.trim().length === 0}
-                    onClick={() => void handleSubmit()}
-                    aria-label={tUI('detail.comments.submit')}
-                >
-                    <SubmitIcon />
-                </button>
             </div>
         </section>
     );

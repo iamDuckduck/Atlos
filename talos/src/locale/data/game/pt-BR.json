@@ -192,6 +192,8 @@
             "glaring_rakerbeast": "Rastejante Brilhante",
             "skydrummer": "Retumbador Celeste",
             "ethillu": "Æthillu",
+            "rockhowler": "Uivante Montanhês",
+            "armored_manglerbeast": "Besta Mutiladora Encouraçada",
             "nar_col_lv003_1": "Carta de Vale IV",
             "nar_col_lv003_15": "Memo: Um Conselho",
             "nar_col_lv003_19": "Notas: Encontrado em algum lugar",
@@ -509,7 +511,9 @@
             "quillbeast_liver": "Fígado de Penoso",
             "rakerbeast_longfur": "Pelo Longo de Rastejante",
             "howlerbeast_braid": "Trança de Bugio",
-            "echoing_dust": "Poeira Ecoante"
+            "echoing_dust": "Poeira Ecoante",
+            "century_rind": "Casca Secular",
+            "caudal_goldscale": "Escama Dourada Caudal"
         },
         "FileCtgr": {
             "paper": "Manuscritos",

@@ -38,8 +38,7 @@
       "comments": "Comments"
     },
     "tabs": {
-      "title": "Detail sections",
-      "collectAll": "Mark all markers of this type in the current main region as complete",
+      "collectAll": "Mark all as completed",
       "general": "General",
       "comments": "Comments"
     },

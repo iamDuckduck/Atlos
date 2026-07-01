@@ -38,10 +38,9 @@
       "comments": "留言"
     },
     "tabs": {
-      "title": "详情分区",
-      "collectAll": "将当前主区域内所有同类点标记为完成",
-      "general": "General",
-      "comments": "Comments"
+      "collectAll": "将所有同类点标记为完成",
+      "general": "点位详情",
+      "comments": "留言区"
     },
     "noInfo": "暂无信息，使用 {paste} / {click} 上传点位截图",
     "communityRule1": "上传前，请您详阅并遵循",
@@ -64,7 +63,7 @@
     },
     "comments": {
       "title": "留言",
-      "placeholder": "Type something...",
+      "placeholder": "说些什么吧！",
       "submit": "发布留言",
       "actions": "留言操作",
       "translate": "翻译",

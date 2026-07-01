@@ -30,7 +30,6 @@ type PopoverElement = HTMLDivElement & {
 
 const VIEWPORT_MARGIN = 4;
 const CLOSE_MS = 120;
-const HIDE_DELAY_MS = 180;
 
 const clamp = (value: number, min: number, max: number): number => (
     Math.min(Math.max(value, min), max)
@@ -58,7 +57,6 @@ const ShortActions = memo(({
     const [mounted, setMounted] = useState(false);
     const anchorRef = useRef<HTMLSpanElement | null>(null);
     const layerRef = useRef<PopoverElement | null>(null);
-    const hideTimerRef = useRef<number | undefined>(undefined);
     const closeTimerRef = useRef<number | undefined>(undefined);
     const frameRef = useRef<number | undefined>(undefined);
     const rootHoverRef = useRef(false);
@@ -72,10 +70,6 @@ const ShortActions = memo(({
     ), []);
 
     const clearTimers = useCallback(() => {
-        if (hideTimerRef.current) {
-            window.clearTimeout(hideTimerRef.current);
-            hideTimerRef.current = undefined;
-        }
         if (closeTimerRef.current) {
             window.clearTimeout(closeTimerRef.current);
             closeTimerRef.current = undefined;
@@ -176,11 +170,7 @@ const ShortActions = memo(({
     }, [clearTimers, isFloating, items.length, positionLayer, schedulePosition]);
 
     const scheduleHideLayer = useCallback(() => {
-        if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
-        hideTimerRef.current = window.setTimeout(() => {
-            hideTimerRef.current = undefined;
-            if (!shouldKeepLayerOpen()) hideLayer();
-        }, HIDE_DELAY_MS);
+        if (!shouldKeepLayerOpen()) hideLayer();
     }, [hideLayer, shouldKeepLayerOpen]);
 
     useEffect(() => {

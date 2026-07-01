@@ -89,6 +89,20 @@
         overlay 0.16s $standard-curve allow-discrete,
         display 0.16s $standard-curve allow-discrete;
 
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        border-radius: inherit;
+        background-color: var(--short-action-bg);
+        backdrop-filter: blur(var(--short-action-blur));
+        pointer-events: none;
+        transform: translateZ(0);
+        transition: background-color 0.2s ease, opacity 0.16s $standard-curve;
+        will-change: opacity, backdrop-filter, transform;
+    }
+
     &:popover-open,
     &[data-open='true'] {
         opacity: 1;

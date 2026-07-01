@@ -1,5 +1,6 @@
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import classNames from 'classnames';
+import { LinearBlur } from 'progressive-blur';
 import styles from './comments.module.scss';
 import { openOemAuthModal } from '@/component/login/authEvents';
 import { useAuthStore } from '@/store/auth';
@@ -8,6 +9,7 @@ import { useLocale, useTranslateUI } from '@/locale';
 import { formatRelativeTime, parseDateLike } from '@/utils/timeFormat';
 import type { IMarkerData } from '@/data/marker';
 import {
+    invalidateUGCCommentCache,
     listUGCComments,
     recallUGCComment,
     requestUGCCommentRemoval,
@@ -27,6 +29,7 @@ import LikeIcon from '@/assets/images/UI/like.svg?react';
 import FlagIcon from '@/assets/images/UI/flag.svg?react';
 import RecallIcon from '@/assets/images/UI/recall.svg?react';
 import SubmitIcon from '@/assets/logos/submit.svg?react';
+import ReplyIcon from '@/assets/logos/comment.svg?react';
 
 type Props = {
     point: IMarkerData;
@@ -34,7 +37,21 @@ type Props = {
     active?: boolean;
 };
 
-const COMMENT_MAX_LENGTH = 199;
+const COMMENT_MAX_LENGTH = 200;
+const COMMENT_TOGGLE_SYNC_DELAY_MS = 300;
+const COMMENT_MAX_DISPLAY_DEPTH = 2;
+
+type CommentSyncTask<T> = {
+    desired: T;
+    inFlight: boolean;
+    lastSynced: T;
+    timer?: number;
+};
+
+type DisplayComment = {
+    comment: UGCComment;
+    displayDepth: number;
+};
 
 const isVisibleStatus = (status: UGCSubmissionStatus | undefined): boolean => (
     status === 'active' || status === 'flagged' || status === 'remove_request'
@@ -54,6 +71,23 @@ const getCommentAvatarIndex = (comment: UGCComment): number | undefined => {
 
 const flattenCommentIds = (comments: UGCComment[]): string[] => (
     comments.flatMap((comment) => [comment.id, ...flattenCommentIds(comment.replies ?? [])])
+);
+
+const collectCommentIds = (comment: UGCComment): string[] => (
+    [comment.id, ...(comment.replies ?? []).flatMap(collectCommentIds)]
+);
+
+const flattenDisplayComments = (
+    comments: UGCComment[],
+    depth = 0,
+): DisplayComment[] => (
+    comments.flatMap((comment) => [
+        {
+            comment,
+            displayDepth: Math.min(depth, COMMENT_MAX_DISPLAY_DEPTH),
+        },
+        ...flattenDisplayComments(comment.replies ?? [], depth + 1),
+    ])
 );
 
 const createPendingComment = (
@@ -91,14 +125,88 @@ const appendSubmittedComment = (comments: UGCComment[], comment: UGCComment): UG
         return [comment, ...comments];
     }
 
-    return comments.map((item) => {
-        if (item.id !== comment.parentId) return item;
-        return {
-            ...item,
-            replyCount: item.replyCount + 1,
-            replies: [...item.replies, comment],
-        };
-    });
+    const appendToParent = (items: UGCComment[]): [UGCComment[], boolean] => {
+        let inserted = false;
+        const nextItems = items.map((item) => {
+            if (item.id === comment.parentId) {
+                inserted = true;
+                return {
+                    ...item,
+                    replyCount: item.replyCount + 1,
+                    replies: [...(item.replies ?? []), comment],
+                };
+            }
+
+            const replies = item.replies ?? [];
+            if (replies.length === 0) return item;
+            const [nextReplies, childInserted] = appendToParent(replies);
+            if (!childInserted) return item;
+            inserted = true;
+            return {
+                ...item,
+                replies: nextReplies,
+            };
+        });
+
+        return inserted ? [nextItems, true] : [items, false];
+    };
+
+    const [nextComments, inserted] = appendToParent(comments);
+    return inserted ? nextComments : [comment, ...comments];
+};
+
+const removeCommentTree = (
+    comments: UGCComment[],
+    commentId: string,
+): {
+    comments: UGCComment[];
+    removed: UGCComment | null;
+    removedIds: Set<string>;
+} => {
+    let removed: UGCComment | null = null;
+
+    const removeFromItems = (items: UGCComment[]): [UGCComment[], boolean, boolean] => {
+        let changed = false;
+        let removedDirectChild = false;
+        const nextItems: UGCComment[] = [];
+
+        items.forEach((item) => {
+            if (item.id === commentId) {
+                removed = item;
+                changed = true;
+                removedDirectChild = true;
+                return;
+            }
+
+            const replies = item.replies ?? [];
+            if (replies.length === 0) {
+                nextItems.push(item);
+                return;
+            }
+
+            const [nextReplies, childChanged, childRemovedDirectChild] = removeFromItems(replies);
+            if (!childChanged) {
+                nextItems.push(item);
+                return;
+            }
+
+            changed = true;
+            nextItems.push({
+                ...item,
+                replyCount: childRemovedDirectChild ? Math.max(0, item.replyCount - 1) : item.replyCount,
+                replies: nextReplies,
+            });
+        });
+
+        return changed ? [nextItems, true, removedDirectChild] : [items, false, false];
+    };
+
+    const [nextComments] = removeFromItems(comments);
+    return {
+        comments: nextComments,
+        removed,
+        removedIds: new Set(removed ? collectCommentIds(removed) : []),
+    };
 };
 
 const patchCommentTree = (
@@ -138,6 +246,31 @@ const getVoteDelta = (current: UGCCommentVoteValue | undefined, next: UGCComment
     next - (current ?? 0)
 );
 
+const getCommentSyncTask = <T,>(
+    tasks: Map<string, CommentSyncTask<T>>,
+    commentId: string,
+    currentValue: T,
+): CommentSyncTask<T> => {
+    const current = tasks.get(commentId);
+    if (current) return current;
+    const task = {
+        desired: currentValue,
+        inFlight: false,
+        lastSynced: currentValue,
+    };
+    tasks.set(commentId, task);
+    return task;
+};
+
+const getVoteRequestValue = (
+    lastSynced: UGCCommentVoteValue,
+    desired: UGCCommentVoteValue,
+): 1 | -1 | null => {
+    if (desired === 1 || desired === -1) return desired;
+    if (lastSynced === 1 || lastSynced === -1) return lastSynced;
+    return null;
+};
+
 const CommentAvatar = memo(({ comment }: { comment: UGCComment }) => (
     <span className={styles.commentAvatar} data-avt={getCommentAvatarIndex(comment)} aria-hidden="true"></span>
 ));
@@ -146,7 +279,7 @@ CommentAvatar.displayName = 'CommentAvatar';
 
 type CommentItemProps = {
     comment: UGCComment;
-    depth: number;
+    displayDepth: number;
     isOwn: boolean;
     canInteract: boolean;
     actionPending: boolean;
@@ -154,13 +287,12 @@ type CommentItemProps = {
     onFlag: (comment: UGCComment) => void;
     onRecall: (comment: UGCComment) => void;
     onTranslate: (comment: UGCComment) => void;
-    isOwnComment: (comment: UGCComment) => boolean;
-    isActionPending: (commentId: string) => boolean;
+    onReply: (comment: UGCComment) => void;
 };
 
 const CommentItem = memo(({
     comment,
-    depth,
+    displayDepth,
     isOwn,
     canInteract,
     actionPending,
@@ -168,8 +300,7 @@ const CommentItem = memo(({
     onFlag,
     onRecall,
     onTranslate,
-    isOwnComment,
-    isActionPending,
+    onReply,
 }: CommentItemProps) => {
     const tUI = useTranslateUI();
     const createdAt = useMemo(() => parseDateLike(comment.createdAt), [comment.createdAt]);
@@ -229,6 +360,14 @@ const CommentItem = memo(({
             });
         }
 
+        items.push({
+            id: 'reply',
+            label: tUI('detail.comments.reply'),
+            icon: <ReplyIcon />,
+            disabled: !canInteract || !canModerate || actionPending,
+            onClick: () => onReply(comment),
+        });
+
         return items;
     }, [
         actionPending,
@@ -238,13 +377,17 @@ const CommentItem = memo(({
         isOwn,
         onFlag,
         onRecall,
+        onReply,
         onTranslate,
         onVote,
         tUI,
     ]);
 
     return (
-        <div className={classNames(styles.commentNode, { [styles.replyNode]: depth > 0 })}>
+        <div
+            className={classNames(styles.commentNode, { [styles.replyNode]: displayDepth > 0 })}
+            style={{ '--comment-display-depth': displayDepth } as React.CSSProperties}
+        >
             <article className={styles.commentBubble} data-short-actions-root="true">
                 <ShortActions
                     className={styles.commentActions}
@@ -266,22 +409,6 @@ const CommentItem = memo(({
                     {comment.translatedContent || comment.content}
                 </p>
             </article>
-            {comment.replies?.map((reply) => (
-                <CommentItem
-                    key={reply.id}
-                    comment={reply}
-                    depth={depth + 1}
-                    isOwn={isOwnComment(reply)}
-                    canInteract={canInteract}
-                    actionPending={isActionPending(reply.id)}
-                    onVote={onVote}
-                    onFlag={onFlag}
-                    onRecall={onRecall}
-                    onTranslate={onTranslate}
-                    isOwnComment={isOwnComment}
-                    isActionPending={isActionPending}
-                />
-            ))}
         </div>
     );
 });
@@ -299,6 +426,12 @@ const Comments = ({ point, pointName, active = true }: Props) => {
     const [submitting, setSubmitting] = useState(false);
     const [actionPendingIds, setActionPendingIds] = useState<Set<string>>(() => new Set());
     const [error, setError] = useState('');
+    const [replyTarget, setReplyTarget] = useState<UGCComment | null>(null);
+    const inputRef = useRef<HTMLTextAreaElement | null>(null);
+    const commentListRef = useRef<HTMLDivElement | null>(null);
+    const voteTasksRef = useRef(new Map<string, CommentSyncTask<UGCCommentVoteValue>>());
+    const flagTasksRef = useRef(new Map<string, CommentSyncTask<boolean>>());
+    const [commentBottomBlurVisible, setCommentBottomBlurVisible] = useState(false);
     const loadFailedText = tUI('detail.comments.loadFailed');
 
     const hasComments = comments.length > 0;
@@ -307,10 +440,6 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         if (!user) return false;
         return comment.author?.publicUid === user.uid;
     }, [user]);
-    const isActionPending = useCallback((commentId: string): boolean => (
-        actionPendingIds.has(commentId)
-    ), [actionPendingIds]);
-
     useEffect(() => {
         let disposed = false;
         setLoading(true);
@@ -336,6 +465,10 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         };
     }, [loadFailedText, point.id]);
 
+    useEffect(() => {
+        setReplyTarget(null);
+    }, [point.id]);
+
     const setCommentActionPending = useCallback((commentId: string, pending: boolean) => {
         setActionPendingIds((current) => {
             const next = new Set(current);
@@ -352,112 +485,259 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         setComments((current) => patchCommentTree(current, commentId, patch));
     }, []);
 
+    const clearCommentSyncTasks = useCallback((commentIds: Set<string>) => {
+        commentIds.forEach((commentId) => {
+            const voteTask = voteTasksRef.current.get(commentId);
+            if (voteTask?.timer) window.clearTimeout(voteTask.timer);
+            voteTasksRef.current.delete(commentId);
+
+            const flagTask = flagTasksRef.current.get(commentId);
+            if (flagTask?.timer) window.clearTimeout(flagTask.timer);
+            flagTasksRef.current.delete(commentId);
+        });
+    }, []);
+
+    const updateCommentBottomBlur = useCallback(() => {
+        const list = commentListRef.current;
+        if (!list) {
+            setCommentBottomBlurVisible(false);
+            return;
+        }
+
+        const overflow = list.scrollHeight - list.clientHeight > 2;
+        const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 2;
+        setCommentBottomBlurVisible(overflow && !atBottom);
+    }, []);
+
+    const scheduleVoteSync = useCallback((commentId: string) => {
+        const task = voteTasksRef.current.get(commentId);
+        if (!task) return;
+        if (task.timer) {
+            window.clearTimeout(task.timer);
+        }
+        task.timer = window.setTimeout(() => {
+            task.timer = undefined;
+            if (task.inFlight) return;
+            if (task.desired === task.lastSynced) return;
+
+            const sentState = task.desired;
+            const requestValue = getVoteRequestValue(task.lastSynced, sentState);
+            if (requestValue === null) {
+                task.lastSynced = sentState;
+                return;
+            }
+
+            task.inFlight = true;
+            void voteUGCComment(commentId, requestValue)
+                .then((patch) => {
+                    task.lastSynced = sentState;
+                    if (task.desired === sentState) {
+                        patchComment(commentId, (item) => applyCommentPatch(item, patch));
+                    }
+                })
+                .catch(() => {
+                    if (task.desired !== sentState) return;
+                    task.desired = task.lastSynced;
+                    patchComment(commentId, (item) => {
+                        const currentVote = item.viewerVote ?? 0;
+                        if (currentVote === task.lastSynced) return item;
+                        return {
+                            ...item,
+                            viewerVote: task.lastSynced,
+                            score: item.score + getVoteDelta(currentVote, task.lastSynced),
+                        };
+                    });
+                })
+                .finally(() => {
+                    task.inFlight = false;
+                    if (task.desired !== task.lastSynced) {
+                        scheduleVoteSync(commentId);
+                    }
+                });
+        }, COMMENT_TOGGLE_SYNC_DELAY_MS);
+    }, [patchComment]);
+
+    const scheduleFlagSync = useCallback((commentId: string) => {
+        const task = flagTasksRef.current.get(commentId);
+        if (!task) return;
+        if (task.timer) {
+            window.clearTimeout(task.timer);
+        }
+        task.timer = window.setTimeout(() => {
+            task.timer = undefined;
+            if (task.inFlight) return;
+            if (task.desired === task.lastSynced) return;
+
+            const sentState = task.desired;
+            task.inFlight = true;
+            void toggleUGCCommentFlag(commentId, sentState)
+                .then((patch) => {
+                    task.lastSynced = sentState;
+                    if (task.desired === sentState) {
+                        patchComment(commentId, (item) => applyCommentPatch(item, patch));
+                    }
+                })
+                .catch(() => {
+                    if (task.desired !== sentState) return;
+                    task.desired = task.lastSynced;
+                    patchComment(commentId, (item) => ({
+                        ...item,
+                        flagged: task.lastSynced,
+                        status: task.lastSynced ? 'flagged' : item.status === 'flagged' ? 'active' : item.status,
+                    }));
+                })
+                .finally(() => {
+                    task.inFlight = false;
+                    if (task.desired !== task.lastSynced) {
+                        scheduleFlagSync(commentId);
+                    }
+                });
+        }, COMMENT_TOGGLE_SYNC_DELAY_MS);
+    }, [patchComment]);
+
+    useEffect(() => () => {
+        voteTasksRef.current.forEach((task) => {
+            if (task.timer) window.clearTimeout(task.timer);
+        });
+        flagTasksRef.current.forEach((task) => {
+            if (task.timer) window.clearTimeout(task.timer);
+        });
+    }, []);
+
+    useEffect(() => {
+        const list = commentListRef.current;
+        if (!list) return undefined;
+
+        const rafId = window.requestAnimationFrame(updateCommentBottomBlur);
+        const resizeObserver = typeof ResizeObserver === 'undefined'
+            ? null
+            : new ResizeObserver(updateCommentBottomBlur);
+        resizeObserver?.observe(list);
+
+        return () => {
+            window.cancelAnimationFrame(rafId);
+            resizeObserver?.disconnect();
+        };
+    }, [
+        comments,
+        error,
+        inputValue,
+        loading,
+        replyTarget,
+        updateCommentBottomBlur,
+    ]);
+
     const requireAuth = useCallback(() => {
         if (isAuthenticated) return true;
         openOemAuthModal('login');
         return false;
     }, [isAuthenticated]);
 
+    const handleReply = useCallback((comment: UGCComment) => {
+        setReplyTarget(comment);
+        window.requestAnimationFrame(() => {
+            inputRef.current?.focus();
+        });
+    }, []);
+
     const handleSubmit = useCallback(async () => {
         const content = inputValue.trim();
         if (!content || submitting) return;
         if (!requireAuth()) return;
+        const parentId = replyTarget?.id ?? null;
 
         setSubmitting(true);
         setError('');
         try {
-            const submission = await submitUGCComment(point, content);
+            const submission = await submitUGCComment(point, content, parentId);
             setComments((current) => appendSubmittedComment(
                 current,
                 createPendingComment(point, content, submission, user),
             ));
             setInputValue('');
+            setReplyTarget(null);
         } catch {
             setError(tUI('detail.comments.submitFailed'));
         } finally {
             setSubmitting(false);
         }
-    }, [inputValue, point, requireAuth, submitting, tUI, user]);
+    }, [inputValue, point, replyTarget, requireAuth, submitting, tUI, user]);
 
     const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (
+            event.key === 'Backspace'
+            && !event.nativeEvent.isComposing
+            && inputValue.length === 0
+            && replyTarget
+        ) {
+            event.preventDefault();
+            setReplyTarget(null);
+            return;
+        }
+
         if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) return;
         event.preventDefault();
         void handleSubmit();
-    }, [handleSubmit]);
+    }, [handleSubmit, inputValue.length, replyTarget]);
 
     const handleVote = useCallback((comment: UGCComment, value: 1 | -1) => {
-        if (!requireAuth() || actionPendingIds.has(comment.id)) return;
+        if (!requireAuth()) return;
         const nextVote: UGCCommentVoteValue = comment.viewerVote === value ? 0 : value;
         const previousVote = comment.viewerVote ?? 0;
-        const previousScore = comment.score;
         patchComment(comment.id, (item) => ({
             ...item,
             viewerVote: nextVote,
             score: item.score + getVoteDelta(previousVote, nextVote),
         }));
-        setCommentActionPending(comment.id, true);
-        void voteUGCComment(comment.id, value)
-            .then((patch) => {
-                patchComment(comment.id, (item) => applyCommentPatch(item, patch));
-            })
-            .catch(() => {
-                patchComment(comment.id, (item) => ({
-                    ...item,
-                    viewerVote: previousVote,
-                    score: previousScore,
-                }));
-            })
-            .finally(() => setCommentActionPending(comment.id, false));
-    }, [actionPendingIds, patchComment, requireAuth, setCommentActionPending]);
+        const task = getCommentSyncTask(voteTasksRef.current, comment.id, previousVote);
+        task.desired = nextVote;
+        scheduleVoteSync(comment.id);
+    }, [patchComment, requireAuth, scheduleVoteSync]);
 
     const handleFlag = useCallback((comment: UGCComment) => {
-        if (!requireAuth() || actionPendingIds.has(comment.id)) return;
+        if (!requireAuth()) return;
         const nextFlagged = !comment.flagged;
         patchComment(comment.id, (item) => ({
             ...item,
             flagged: nextFlagged,
             status: nextFlagged ? 'flagged' : item.status === 'flagged' ? 'active' : item.status,
         }));
-        setCommentActionPending(comment.id, true);
-        void toggleUGCCommentFlag(comment.id, nextFlagged)
-            .then((patch) => {
-                patchComment(comment.id, (item) => applyCommentPatch(item, patch));
-            })
-            .catch(() => {
-                patchComment(comment.id, (item) => ({
-                    ...item,
-                    flagged: !nextFlagged,
-                    status: !nextFlagged ? 'flagged' : item.status === 'flagged' ? 'active' : item.status,
-                }));
-            })
-            .finally(() => setCommentActionPending(comment.id, false));
-    }, [actionPendingIds, patchComment, requireAuth, setCommentActionPending]);
+        const task = getCommentSyncTask(flagTasksRef.current, comment.id, Boolean(comment.flagged));
+        task.desired = nextFlagged;
+        scheduleFlagSync(comment.id);
+    }, [patchComment, requireAuth, scheduleFlagSync]);
 
     const handleRecall = useCallback((comment: UGCComment) => {
         if (!requireAuth() || actionPendingIds.has(comment.id)) return;
-        const nextRecallRequested = true;
-        patchComment(comment.id, (item) => ({
-            ...item,
-            recallRequested: nextRecallRequested,
-            status: isReviewingStatus(item.status) ? item.status : 'remove_request',
-        }));
+        const previousComments = comments;
+        const previousReplyTarget = replyTarget;
+        const removal = removeCommentTree(comments, comment.id);
+        if (!removal.removed) return;
+
+        setComments(removal.comments);
+        setReplyTarget((current) => (current && removal.removedIds.has(current.id) ? null : current));
+        invalidateUGCCommentCache(point.id);
+        clearCommentSyncTasks(removal.removedIds);
         setCommentActionPending(comment.id, true);
         const request = isReviewingStatus(comment.status)
             ? recallUGCComment(comment.id)
             : requestUGCCommentRemoval(comment.id);
         void request
-            .then((patch) => {
-                patchComment(comment.id, (item) => applyCommentPatch(item, patch));
-            })
+            .then(() => undefined)
             .catch(() => {
-                patchComment(comment.id, (item) => ({
-                    ...item,
-                    recallRequested: false,
-                    status: item.status === 'remove_request' ? 'active' : item.status,
-                }));
+                setComments(previousComments);
+                setReplyTarget(previousReplyTarget);
             })
             .finally(() => setCommentActionPending(comment.id, false));
-    }, [actionPendingIds, patchComment, requireAuth, setCommentActionPending]);
+    }, [
+        actionPendingIds,
+        clearCommentSyncTasks,
+        comments,
+        point.id,
+        replyTarget,
+        requireAuth,
+        setCommentActionPending,
+    ]);
 
     const handleTranslate = useCallback((comment: UGCComment) => {
         if (actionPendingIds.has(comment.id)) return;
@@ -479,15 +759,26 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         ? tUI('detail.comments.ruleOnly')
         : tUI('detail.comments.emptyWithRule');
     const allCommentIds = useMemo(() => flattenCommentIds(comments), [comments]);
+    const displayComments = useMemo(() => flattenDisplayComments(comments), [comments]);
 
     return (
-        <section className={styles.commentsPanel} aria-label={`${pointName} ${tUI('detail.comments.title')}`}>
-            <div className={styles.commentList} data-loading={loading ? 'true' : 'false'}>
-                {comments.map((comment) => (
+        <section
+            className={styles.commentsPanel}
+            data-replying={replyTarget ? 'true' : 'false'}
+            aria-label={`${pointName} ${tUI('detail.comments.title')}`}
+        >
+            <div
+                className={styles.commentList}
+                data-loading={loading ? 'true' : 'false'}
+                data-comment-list="true"
+                ref={commentListRef}
+                onScroll={updateCommentBottomBlur}
+            >
+                {displayComments.map(({ comment, displayDepth }) => (
                     <CommentItem
                         key={comment.id}
                         comment={comment}
-                        depth={0}
+                        displayDepth={displayDepth}
                         isOwn={isOwnComment(comment)}
                         canInteract={active}
                         actionPending={actionPendingIds.has(comment.id)}
@@ -495,8 +786,7 @@ const Comments = ({ point, pointName, active = true }: Props) => {
                         onFlag={handleFlag}
                         onRecall={handleRecall}
                         onTranslate={handleTranslate}
-                        isOwnComment={isOwnComment}
-                        isActionPending={isActionPending}
+                        onReply={handleReply}
                     />
                 ))}
                 {loading && comments.length === 0 && (
@@ -512,17 +802,33 @@ const Comments = ({ point, pointName, active = true }: Props) => {
                 ></div>
                 <div className={styles.commentRule}>{footerText}</div>
             </div>
-            <div className={styles.commentInputBar}>
-                <textarea
-                    className={styles.commentInput}
-                    value={inputValue}
-                    maxLength={COMMENT_MAX_LENGTH}
-                    placeholder={tUI('detail.comments.placeholder')}
-                    disabled={inputDisabled}
-                    onChange={(event) => setInputValue(event.target.value)}
-                    onKeyDown={handleKeyDown}
-                    rows={1}
-                />
+            <LinearBlur
+                side="bottom"
+                strength={8}
+                falloffPercentage={100}
+                className={classNames(styles.commentBottomBlur, {
+                    [styles.commentBottomBlurVisible]: commentBottomBlurVisible,
+                })}
+            />
+            <div className={styles.commentInputBar} data-replying={replyTarget ? 'true' : 'false'}>
+                <div className={styles.commentInputStack}>
+                    {replyTarget && (
+                        <div className={styles.commentReplyQuote}>
+                            {replyTarget.translatedContent || replyTarget.content}
+                        </div>
+                    )}
+                    <textarea
+                        ref={inputRef}
+                        className={styles.commentInput}
+                        value={inputValue}
+                        maxLength={COMMENT_MAX_LENGTH}
+                        placeholder={tUI('detail.comments.placeholder')}
+                        disabled={inputDisabled}
+                        onChange={(event) => setInputValue(event.target.value)}
+                        onKeyDown={handleKeyDown}
+                        rows={replyTarget ? 2 : 1}
+                    />
+                </div>
                 <button
                     type="button"
                     className={styles.commentSubmit}

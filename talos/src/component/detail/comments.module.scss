@@ -4,40 +4,60 @@
 :root, :root[data-theme='light'] {
     --detail-comment-text: #{$black-1};
     --detail-comment-meta: #{$grey-1};
-    --detail-comment-muted: #{$grey-3};
+    --detail-comment-muted: #{$grey-2};
     --detail-comment-line: #{$grey-2};
     --detail-comment-hover: #{rgba($primary-accent-1, 0.28)};
     --detail-comment-input-bg: #{$white-0};
-    --detail-comment-submit: #{$grey-2};
-    --detail-comment-submit-active: #{$primary-accent-6};
+    --detail-comment-submit: #{$grey-1};
+    --detail-comment-submit-active: #{$primary-accent-5};
 }
 
 :root[data-theme='dark'] {
     --detail-comment-text: #{$black-1};
     --detail-comment-meta: #{$grey-1};
-    --detail-comment-muted: #{$grey-3};
+    --detail-comment-muted: #{$grey-2};
     --detail-comment-line: #{$grey-2};
     --detail-comment-hover: #{rgba($primary-accent-1, 0.28)};
     --detail-comment-input-bg: #{$white-0};
-    --detail-comment-submit: #{$grey-2};
-    --detail-comment-submit-active: #{$primary-accent-6};
+    --detail-comment-submit: #{$grey-1};
+    --detail-comment-submit-active: #{$primary-accent-5};
 }
 
 .commentsPanel {
+    --comment-panel-inset: 0.6rem;
+    --comment-input-reserved: 6rem;
+    --comment-bottom-blur-height: 6rem;
+
+    position: relative;
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    min-height: 100%;
-    display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
-    gap: 1rem;
+    height: 100%;
+    min-height: 12rem;
     color: var(--detail-comment-text);
+    overflow: hidden;
+
+    &[data-replying='true'] {
+        --comment-input-reserved: 7rem;
+    }
 }
 
 .commentList {
     width: 100%;
-    min-height: 18rem;
+    height: 100%;
     overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    box-sizing: border-box;
+    padding: var(--comment-panel-inset) var(--comment-panel-inset) calc(var(--comment-input-reserved) + var(--comment-bottom-blur-height));
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+        width: 0;
+    }
 }
 
 .commentNode {
@@ -48,7 +68,7 @@
 }
 
 .replyNode {
-    margin-left: 1.25rem;
+    margin-left: calc(var(--comment-display-depth, 1) * 1.25rem);
     padding-left: 0.85rem;
 
     &::before {
@@ -68,6 +88,9 @@
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
     transition: background-color 0.16s $standard-curve;
 
     &:hover,
@@ -85,8 +108,8 @@
 }
 
 .commentActionsAnchor {
-    top: 0.15rem;
-    right: 0.3rem;
+    top: -0.5rem;
+    right: 0.5rem;
 }
 
 .commentActions [data-label='translate'] {
@@ -115,25 +138,35 @@
 
 .commentActions [data-label='recall'] {
     > span {
-        transform: rotate(-90deg) scale(1);
+        transform: scale(0.85);
+    }
+}
+
+.commentActions [data-label='reply'] {
+    > span {
+        transform: scale(1);
     }
 }
 
 .commentMeta {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.375rem;
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
-    padding-right: 9.5rem;
     color: var(--detail-comment-meta);
-    line-height: 1.2;
+    line-height: 1;
 
     &::after {
-        content: '\00b7  ' attr(data-status);
-        color: var(--detail-comment-muted);
+        font-family: 'Fedra Sans Pro', sans-serif;
+        letter-spacing: -.5px;
         white-space: nowrap;
+        font-weight: 400;
+        font-size: 0.875rem;
+        font-variant-numeric: lining-nums;
+        content: '\00b7''\2008' attr(data-status);
+        color: var(--detail-comment-muted);
     }
 
     &.reviewing::after {
@@ -143,10 +176,9 @@
 
 .commentAvatar {
     flex: 0 0 auto;
-    width: 2rem;
-    height: 2rem;
-    border: 2px solid $white-0;
-    background-color: $white-2;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color: $white-1;
     background-position: center top;
     background-size: cover;
     box-shadow: 0 0 2px rgba($black-0, 0.35);
@@ -159,36 +191,36 @@
 }
 
 .commentAuthor {
-    min-width: 0;
-    max-width: 11rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-family: 'Fedra Sans Pro', sans-serif;
+    letter-spacing: -.5px;
     white-space: nowrap;
-    font-weight: 700;
+    font-weight: 500;
 }
 
 .commentBody {
+    font-family: 'HMSans_EN', "Noto Sans Arabic", "Noto Sans Thai", sans-serif;
+    letter-spacing: -.2px;
+    font-weight: 600;
     min-width: 0;
     max-width: 100%;
-    margin: 0.4rem 0 0;
     color: var(--detail-comment-text);
     line-height: 1.25;
     overflow-wrap: anywhere;
     white-space: pre-wrap;
+    hyphens: auto;
 }
 
 .commentStatus {
-    padding: 1.25rem 0.5rem 0.75rem;
     text-align: center;
     color: var(--detail-comment-muted);
-    line-height: 1.2;
+    line-height: 1;
 }
 
 .commentDivider {
     position: relative;
     width: 100%;
     height: 1.5px;
-    margin: 1rem auto;
+    margin: 0.5rem auto 0.25rem;
     background: linear-gradient(
         90deg,
         var(--detail-comment-line) 0,
@@ -199,6 +231,7 @@
         var(--detail-comment-line) 100%
     );
     opacity: 0.75;
+    flex-shrink: 0;
 
     &::after {
         content: '';
@@ -213,34 +246,85 @@
 }
 
 .commentRule {
-    font-size: 0.875rem;
+    font-family: "Fedra Sans Pro", "UD_ShinGo Regular", "Noto Sans Arabic", "Noto Sans Thai", sans-serif;
+    font-weight: 500;
+    font-size: 0.75rem;
     text-align: center;
     color: var(--detail-comment-muted);
     line-height: 1.2;
 }
 
-.commentInputBar {
-    position: sticky;
+.commentBottomBlur {
+    position: absolute;
+    left: 0;
+    right: 0;
     bottom: 0;
+    z-index: 2;
+    height: var(--comment-bottom-blur-height);
+    pointer-events: none;
+    transform: translateY(var(--comment-bottom-blur-height));
+    transition: transform 0.25s ease-out;
+}
+
+.commentBottomBlurVisible {
+    transform: translateY(0);
+}
+
+.commentInputBar {
+    position: absolute;
+    left: var(--comment-panel-inset);
+    right: var(--comment-panel-inset);
+    bottom: 0.75rem;
     z-index: 3;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.5rem;
     min-width: 0;
-    max-width: calc(100% - 0.6rem);
     box-sizing: border-box;
-    margin: 0.5rem 0.3rem 0.25rem;
+    margin: 0.5rem;
     padding: 0.75rem 0.85rem 0.75rem 1.25rem;
     background: var(--detail-comment-input-bg);
-    border-radius: 999px;
-    box-shadow: 0 0.45rem 1.25rem rgba($black-0, 0.15);
+    border-radius: 1rem;
+    @supports (corner-shape: superellipse(1.5)) {
+        corner-shape: superellipse(1.5);
+        border-radius: 1.5rem;
+    }
+    box-shadow: 0 0.5rem 1rem rgba($black-0, 0.15);
+
+    &[data-replying='true'] {
+        align-items: end;
+        padding-top: 0.65rem;
+        padding-bottom: 0.65rem;
+    }
+}
+
+.commentInputStack {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.commentReplyQuote {
+    font-family: 'HMSans_EN', "Noto Sans Arabic", "Noto Sans Thai", sans-serif;
+    letter-spacing: -.2px;
+    font-weight: 600;
+    min-width: 0;
+    max-width: 100%;
+    color: var(--detail-comment-text);
+    font-size: 0.85em;
+    line-height: 1.25;
+    opacity: 0.8;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .commentInput {
+    font-family: 'Fedra Sans Pro', sans-serif;
     width: 100%;
     min-width: 0;
-    box-sizing: border-box;
     min-height: 2rem;
     max-height: 6rem;
     padding: 0.35rem 0;
@@ -258,13 +342,13 @@
 
     &:disabled {
         cursor: default;
-        opacity: 0.58;
+        opacity: 0.6;
     }
 }
 
 .commentSubmit {
-    width: 2.35rem;
-    height: 2.35rem;
+    width: 1.25rem;
+    height: 1.25rem;
     padding: 0;
     border: 0;
     border-radius: 50%;

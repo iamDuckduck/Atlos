@@ -62,6 +62,26 @@ type DetailTab = 'general' | 'comments';
 
 const DETAIL_EXIT_DURATION_MS = 300;
 
+const parseCssPixelValue = (value: string): number => {
+    const parsed = Number.parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const getElementNaturalHeight = (element: HTMLElement): number => {
+    const style = window.getComputedStyle(element);
+    const paddingHeight = parseCssPixelValue(style.paddingTop) + parseCssPixelValue(style.paddingBottom);
+    const gap = parseCssPixelValue(style.rowGap || style.gap);
+    const children = Array.from(element.children).filter((child): child is HTMLElement => child instanceof HTMLElement);
+    const childrenHeight = children.reduce((sum, child) => {
+        const childStyle = window.getComputedStyle(child);
+        return sum
+            + child.getBoundingClientRect().height
+            + parseCssPixelValue(childStyle.marginTop)
+            + parseCssPixelValue(childStyle.marginBottom);
+    }, 0);
+    return paddingHeight + childrenHeight + gap * Math.max(0, children.length - 1);
+};
+
 export const Detail = ({ inline = false }: { inline?: boolean }) => {
     /**
      * @type {import('../mapContainer/store/marker.type').IMarkerData}
@@ -157,7 +177,6 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
     const headerRef = useRef<HTMLDivElement | null>(null);
     const tabsRef = useRef<HTMLDivElement | null>(null);
     const contentRef = useRef<HTMLDivElement | null>(null);
-    const contentInnerRef = useRef<HTMLDivElement | null>(null);
     const generalPanelRef = useRef<HTMLDivElement | null>(null);
     const commentsPanelRef = useRef<HTMLDivElement | null>(null);
     const [hasOpenedComments, setHasOpenedComments] = useState(false);
@@ -169,14 +188,23 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
         const activePanel = activeTab === 'comments' ? commentsPanelRef.current : generalPanelRef.current;
         if (!container || !header || !tabs || !content || !activePanel || typeof window === 'undefined') return;
 
-        const contentStyle = window.getComputedStyle(content);
-        const contentPadding =
-            Number.parseFloat(contentStyle.paddingTop || '0') +
-            Number.parseFloat(contentStyle.paddingBottom || '0');
-        const naturalHeight = header.getBoundingClientRect().height + tabs.getBoundingClientRect().height + contentPadding + activePanel.scrollHeight;
+        const headerHeight = header.getBoundingClientRect().height;
+        const tabsHeight = tabs.getBoundingClientRect().height;
+        const commentsList = activeTab === 'comments'
+            ? activePanel.querySelector<HTMLElement>('[data-comment-list="true"]')
+            : null;
+        const commentsPanel = commentsList?.parentElement instanceof HTMLElement ? commentsList.parentElement : null;
+        const commentsPanelMinHeight = commentsPanel
+            ? parseCssPixelValue(window.getComputedStyle(commentsPanel).minHeight)
+            : 0;
+        const activePanelHeight = commentsList
+            ? Math.max(getElementNaturalHeight(commentsList), commentsPanelMinHeight)
+            : activePanel.scrollHeight;
+        const naturalHeight = headerHeight + tabsHeight + activePanelHeight;
         const maxHeight = Math.max(0, window.innerHeight * 0.8);
         const nextHeight = Math.ceil(Math.min(naturalHeight, maxHeight));
         container.style.setProperty('--detail-panel-height', `${nextHeight}px`);
+        container.style.setProperty('--detail-content-height', `${Math.max(0, nextHeight - headerHeight - tabsHeight)}px`);
     }, [activeTab]);
     
     // 当 currentPoint 更新时，显示 detail
@@ -238,8 +266,42 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
         const resizeObserver = new ResizeObserver(() => updateDetailHeight());
         if (headerRef.current) resizeObserver.observe(headerRef.current);
         if (tabsRef.current) resizeObserver.observe(tabsRef.current);
-        if (contentInnerRef.current) resizeObserver.observe(contentInnerRef.current);
+        if (generalPanelRef.current) resizeObserver.observe(generalPanelRef.current);
+        if (commentsPanelRef.current) resizeObserver.observe(commentsPanelRef.current);
         return () => resizeObserver.disconnect();
+    }, [detailPhase, updateDetailHeight]);
+
+    useEffect(() => {
+        if (detailPhase === 'hidden' || typeof MutationObserver === 'undefined') return undefined;
+        let frameId: number | undefined;
+        const scheduleUpdate = () => {
+            if (frameId) window.cancelAnimationFrame(frameId);
+            frameId = window.requestAnimationFrame(() => {
+                frameId = undefined;
+                updateDetailHeight();
+            });
+        };
+        const mutationObserver = new MutationObserver(scheduleUpdate);
+        if (generalPanelRef.current) {
+            mutationObserver.observe(generalPanelRef.current, {
+                attributes: true,
+                childList: true,
+                characterData: true,
+                subtree: true,
+            });
+        }
+        if (commentsPanelRef.current) {
+            mutationObserver.observe(commentsPanelRef.current, {
+                attributes: true,
+                childList: true,
+                characterData: true,
+                subtree: true,
+            });
+        }
+        return () => {
+            if (frameId) window.cancelAnimationFrame(frameId);
+            mutationObserver.disconnect();
+        };
     }, [detailPhase, updateDetailHeight]);
 
     useEffect(() => {
@@ -250,6 +312,8 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
 
     useEffect(() => {
         contentRef.current?.scrollTo({ top: 0 });
+        generalPanelRef.current?.scrollTo({ top: 0 });
+        commentsPanelRef.current?.scrollTo({ top: 0 });
         setActiveTab('general');
         setHasOpenedComments(false);
     }, [currentPoint?.id]);
@@ -351,123 +415,125 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
                     </div>
                     {/* Content */}
                     <div className={styles.detailContent} ref={contentRef}>
-                        <div className={styles.detailContentInner} ref={contentInnerRef}>
-                            <div className={styles.detailTabPanel} hidden={activeTab !== 'general'} ref={generalPanelRef}>
-                                {/* Icon & Stats */}
-                                <div className={styles.iconStatsContainer}>
-                                    <div
-                                        className={classNames(styles.pointIcon, {
-                                            [styles.collected]: isCollected,
-                                        })}
-                                        onClick={() => {
-                                            if (isCollected) {
-                                                deletePoint(currentPoint.id);
-                                            } else {
-                                                addPoint(currentPoint.id);
-                                            }
-                                        }}
-                                    >
-                                        {iconUrl && (
-                                            <img
-                                                key={currentPoint?.id ?? 'null'}
-                                                src={iconUrl}
-                                                alt={pointName}
-                                            />
-                                        )}
-                                    </div>
-                                    <div className={styles.pointStats}>
-                                        <div className={styles.statsTxt}>
-                                            {statItems.map((item) => (
-                                                <div
-                                                    className={styles.statRow}
-                                                    key={item.label}
-                                                    style={{
-                                                        transform: `translateY(${3 - item.index * 2}px)`,
-                                                    }}
-                                                >
-                                                    <span className={styles.statLabel}>
-                                                        {item.label}:{' '}
+                        <div className={styles.detailTabPanel} hidden={activeTab !== 'general'} ref={generalPanelRef}>
+                            {/* Icon & Stats */}
+                            <div className={styles.iconStatsContainer}>
+                                <div
+                                    className={classNames(styles.pointIcon, {
+                                        [styles.collected]: isCollected,
+                                    })}
+                                    onClick={() => {
+                                        if (isCollected) {
+                                            deletePoint(currentPoint.id);
+                                        } else {
+                                            addPoint(currentPoint.id);
+                                        }
+                                    }}
+                                >
+                                    {iconUrl && (
+                                        <img
+                                            key={currentPoint?.id ?? 'null'}
+                                            src={iconUrl}
+                                            alt={pointName}
+                                        />
+                                    )}
+                                </div>
+                                <div className={styles.pointStats}>
+                                    <div className={styles.statsTxt}>
+                                        {statItems.map((item) => (
+                                            <div
+                                                className={styles.statRow}
+                                                key={item.label}
+                                                style={{
+                                                    transform: `translateY(${3 - item.index * 2}px)`,
+                                                }}
+                                            >
+                                                <span className={styles.statLabel}>
+                                                    {item.label}:{' '}
+                                                </span>
+                                                <div className={styles.statValue}>
+                                                    <span
+                                                        className={`user-value ${item.data.collected === item.data.total ? 'check' : ''}`}
+                                                    >
+                                                        {item.data.collected}
                                                     </span>
-                                                    <div className={styles.statValue}>
-                                                        <span
-                                                            className={`user-value ${item.data.collected === item.data.total ? 'check' : ''}`}
-                                                        >
-                                                            {item.data.collected}
-                                                        </span>
-                                                        <span className='value-separator'>
-                                                            /
-                                                        </span>
-                                                        <span className='total-value'>
-                                                            {item.data.total}
-                                                        </span>
-                                                    </div>
+                                                    <span className='value-separator'>
+                                                        /
+                                                    </span>
+                                                    <span className='total-value'>
+                                                        {item.data.total}
+                                                    </span>
                                                 </div>
-                                            ))}
-                                        </div>
-                                        <div className={styles.statsProg}>
-                                            {statItems.map((item) => (
-                                                <div
-                                                    key={`prog-${item.label}`}
-                                                    className={classNames(
-                                                        styles.progBar,
-                                                        {
-                                                            [styles.check]:
-                                                                item.data.collected ===
-                                                                item.data.total,
-                                                        },
-                                                    )}
-                                                    style={{
-                                                        '--prog':
-                                                            item.data.total > 0
-                                                                ? item.data.collected / item.data.total
-                                                                : 0,
-                                                    }}
-                                                ></div>
-                                            ))}
-                                        </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className={styles.statsProg}>
+                                        {statItems.map((item) => (
+                                            <div
+                                                key={`prog-${item.label}`}
+                                                className={classNames(
+                                                    styles.progBar,
+                                                    {
+                                                        [styles.check]:
+                                                            item.data.collected ===
+                                                            item.data.total,
+                                                    },
+                                                )}
+                                                style={{
+                                                    '--prog':
+                                                        item.data.total > 0
+                                                            ? item.data.collected / item.data.total
+                                                            : 0,
+                                                }}
+                                            ></div>
+                                        ))}
                                     </div>
                                 </div>
-                                <Uploader point={currentPoint} pointName={pointName} active={detailPhase === 'open' && activeTab === 'general'} />
-                                {hasFullText && (
-                                    <>
-                                        <div className={styles.detailDivider} data-label={tUI('detail.label.note')}></div>
-                                        <div className={styles.detailAction}>
-                                            <a
-                                                onClick={() => void handleOpenFullText()}
-                                                role="button"
-                                            >
-                                                {tUI('detail.readFullText')}
-                                            </a>
-                                        </div>
-                                    </>
-                                )}
-                                <div className={styles.detailDivider} data-label={tUI('detail.label.url')}></div>
-                                <div className={styles.detailAction}>
-                                    <PopoverTooltip
-                                        content={tUI('detail.copied')}
-                                        placement="top"
-                                        gap={4}
-                                        visible={copiedPopupVisible}
-                                        disabled={false}
-                                    >
+                            </div>
+                            <Uploader point={currentPoint} pointName={pointName} active={detailPhase === 'open' && activeTab === 'general'} />
+                            {hasFullText && (
+                                <>
+                                    <div className={styles.detailDivider} data-label={tUI('detail.label.note')}></div>
+                                    <div className={styles.detailAction}>
                                         <a
-                                            onClick={() => void copyPointShareUrl()}
+                                            onClick={() => void handleOpenFullText()}
                                             role="button"
                                         >
-                                            {tUI('detail.share')}
+                                            {tUI('detail.readFullText')}
                                         </a>
-                                    </PopoverTooltip>
-                                </div>
+                                    </div>
+                                </>
+                            )}
+                            <div className={styles.detailDivider} data-label={tUI('detail.label.url')}></div>
+                            <div className={styles.detailAction}>
+                                <PopoverTooltip
+                                    content={tUI('detail.copied')}
+                                    placement="top"
+                                    gap={4}
+                                    visible={copiedPopupVisible}
+                                    disabled={false}
+                                >
+                                    <a
+                                        onClick={() => void copyPointShareUrl()}
+                                        role="button"
+                                    >
+                                        {tUI('detail.share')}
+                                    </a>
+                                </PopoverTooltip>
                             </div>
-                            <div className={styles.detailTabPanel} hidden={activeTab !== 'comments'} ref={commentsPanelRef}>
-                                {hasOpenedComments && (
-                                    <Comments
-                                        point={currentPoint}
-                                        pointName={pointName}
-                                        active={detailPhase === 'open' && activeTab === 'comments'}
-                                    />
-                                )}
-                            </div>
+                        </div>
+                        <div
+                            className={classNames(styles.detailTabPanel, styles.commentsTabPanel)}
+                            hidden={activeTab !== 'comments'}
+                            ref={commentsPanelRef}
+                        >
+                            {hasOpenedComments && (
+                                <Comments
+                                    point={currentPoint}
+                                    pointName={pointName}
+                                    active={detailPhase === 'open' && activeTab === 'comments'}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>

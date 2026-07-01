@@ -44,6 +44,10 @@ const isPopoverOpen = (popover: HTMLElement): boolean => {
     }
 };
 
+const containsNode = (container: Element | null | undefined, target: EventTarget | null | undefined): boolean => (
+    target instanceof Node && Boolean(container?.contains(target))
+);
+
 const ShortActions = memo(({
     items,
     className,
@@ -62,6 +66,10 @@ const ShortActions = memo(({
     const rootFocusRef = useRef(false);
     const layerFocusRef = useRef(false);
     const isFloating = variant === 'floating';
+
+    const getRootElement = useCallback(() => (
+        anchorRef.current?.closest('[data-short-actions-root="true"]') as HTMLElement | null
+    ), []);
 
     const clearTimers = useCallback(() => {
         if (hideTimerRef.current) {
@@ -118,6 +126,10 @@ const ShortActions = memo(({
             }
             layer.dataset.open = 'false';
             layer.classList.remove(styles.floatingLayerClosing);
+            rootHoverRef.current = false;
+            layerHoverRef.current = false;
+            rootFocusRef.current = false;
+            layerFocusRef.current = false;
         };
 
         if (immediate || !isPopoverOpen(layer)) {
@@ -133,6 +145,17 @@ const ShortActions = memo(({
     const shouldKeepLayerOpen = useCallback(() => (
         rootHoverRef.current || layerHoverRef.current || rootFocusRef.current || layerFocusRef.current
     ), []);
+
+    const syncHoverState = useCallback((target?: EventTarget | null, point?: { x: number; y: number }) => {
+        const root = getRootElement();
+        const layer = layerRef.current;
+        const pointTarget = point ? document.elementFromPoint(point.x, point.y) : null;
+        const rootHovered = containsNode(root, target) || containsNode(root, pointTarget);
+        const layerHovered = containsNode(layer, target) || containsNode(layer, pointTarget);
+        rootHoverRef.current = rootHovered;
+        layerHoverRef.current = layerHovered;
+        return rootHovered || layerHovered;
+    }, [getRootElement]);
 
     const showLayer = useCallback(() => {
         if (!isFloating || items.length === 0) return;
@@ -172,8 +195,7 @@ const ShortActions = memo(({
     useEffect(() => {
         if (!isFloating) return undefined;
 
-        const anchor = anchorRef.current;
-        const root = anchor?.closest('[data-short-actions-root="true"]') as HTMLElement | null;
+        const root = getRootElement();
         if (!root) return undefined;
 
         const handleRootEnter = () => {
@@ -212,18 +234,67 @@ const ShortActions = memo(({
             root.removeEventListener('focusin', handleFocusIn);
             root.removeEventListener('focusout', handleFocusOut);
         };
-    }, [isFloating, scheduleHideLayer, showLayer]);
+    }, [getRootElement, isFloating, scheduleHideLayer, showLayer]);
 
     useEffect(() => {
         if (!isFloating) return undefined;
 
-        window.addEventListener('resize', schedulePosition);
-        window.addEventListener('scroll', schedulePosition, true);
-        return () => {
-            window.removeEventListener('resize', schedulePosition);
-            window.removeEventListener('scroll', schedulePosition, true);
+        const closeIfPointerOutside = (event: PointerEvent) => {
+            const layer = layerRef.current;
+            if (!layer || !isPopoverOpen(layer)) return;
+            const inside = syncHoverState(event.target, { x: event.clientX, y: event.clientY });
+            if (!inside && !rootFocusRef.current && !layerFocusRef.current) {
+                scheduleHideLayer();
+            }
         };
-    }, [isFloating, schedulePosition]);
+        const closeImmediatelyIfPointerOutside = (event: PointerEvent) => {
+            const layer = layerRef.current;
+            if (!layer || !isPopoverOpen(layer)) return;
+            const inside = syncHoverState(event.target, { x: event.clientX, y: event.clientY });
+            if (!inside) hideLayer(true);
+        };
+        const handleScroll = () => {
+            schedulePosition();
+            const layer = layerRef.current;
+            if (!layer || !isPopoverOpen(layer)) return;
+            const root = getRootElement();
+            rootHoverRef.current = Boolean(root?.matches(':hover'));
+            layerHoverRef.current = Boolean(layer.matches(':hover'));
+            if (!shouldKeepLayerOpen()) scheduleHideLayer();
+        };
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') hideLayer(true);
+        };
+        const handleWindowBlur = () => hideLayer(true);
+        const handleVisibilityChange = () => {
+            if (document.visibilityState !== 'visible') hideLayer(true);
+        };
+
+        document.addEventListener('pointermove', closeIfPointerOutside, true);
+        document.addEventListener('pointerdown', closeImmediatelyIfPointerOutside, true);
+        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('blur', handleWindowBlur);
+        window.addEventListener('resize', schedulePosition);
+        window.addEventListener('scroll', handleScroll, true);
+        return () => {
+            document.removeEventListener('pointermove', closeIfPointerOutside, true);
+            document.removeEventListener('pointerdown', closeImmediatelyIfPointerOutside, true);
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('blur', handleWindowBlur);
+            window.removeEventListener('resize', schedulePosition);
+            window.removeEventListener('scroll', handleScroll, true);
+        };
+    }, [
+        getRootElement,
+        hideLayer,
+        isFloating,
+        scheduleHideLayer,
+        schedulePosition,
+        shouldKeepLayerOpen,
+        syncHoverState,
+    ]);
 
     if (items.length === 0) return null;
 
@@ -276,6 +347,14 @@ const ShortActions = memo(({
                         data-label={item.id}
                         data-active={item.active ? 'true' : 'false'}
                         disabled={item.disabled}
+                        onPointerDown={isFloating ? (event) => {
+                            event.stopPropagation();
+                            if (event.pointerType !== 'touch') {
+                                event.preventDefault();
+                            }
+                            rootFocusRef.current = false;
+                            layerFocusRef.current = false;
+                        } : undefined}
                         onClick={(event) => {
                             event.stopPropagation();
                             item.onClick?.();

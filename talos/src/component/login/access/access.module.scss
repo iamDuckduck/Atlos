@@ -132,7 +132,7 @@
     font-size: 1rem;
     letter-spacing: -1%;
     font-weight: 700;
-    font-family: 'FedraSansPro Normal', 'UD_ShinGo DemiBold', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
+    font-family: 'Fedra Sans Pro', 'UD_ShinGo DemiBold', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
     text-transform: capitalize;
     font-variant-ligatures: common-ligatures;
     font-feature-settings: 'liga' 1, 'clig' 1, 'calt' 1;
@@ -315,9 +315,9 @@
     padding-top: 12px;
     border: none;
     outline: none;
-    font-family: 'FedraSansPro Book', sans-serif;
+    font-family: 'Fedra Sans Pro', sans-serif;
     font-size: .95rem;
-    font-weight: 700;
+    font-weight: 400;
     font-variant-numeric: lining-nums;
     color: var(--auth-text);
     background: transparent;
@@ -441,7 +441,7 @@
   padding: 0 6%;
   margin: 0 auto 3rem;
   font-size: 1rem;
-  font-family: "FedraSansPro Normal", "HMSans", "UD_ShinGo Regular", "Noto Sans Arabic", "Noto Sans Thai", sans-serif;
+  font-family: "Fedra Sans Pro", "HMSans", "UD_ShinGo Regular", "Noto Sans Arabic", "Noto Sans Thai", sans-serif;
   letter-spacing: -.2px;
   font-weight: 500;
   line-height: 1.25;
@@ -533,10 +533,10 @@
 }
 
 .oauthMethodLabel {
-  font-family: 'FedraSansPro Normal', 'UD_ShinGo Regular', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
+  font-family: 'Fedra Sans Pro', 'UD_ShinGo Regular', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
   font-size: .875rem;
   line-height: 1;
-  font-weight: 700;
+  font-weight: 500;
   letter-spacing: -0.2px;
   text-transform: capitalize;
   transform: translateY(1px);
@@ -563,7 +563,8 @@
   flex-wrap: wrap;
   font-size: .875rem;
   color: var(--auth-text);
-  font-family: 'FedraSansPro Normal', 'HMSans', 'Noto Sans Arabic', 'Noto Sans Thai',sans-serif;
+  font-family: 'Fedra Sans Pro', 'HMSans', 'Noto Sans Arabic', 'Noto Sans Thai',sans-serif;
+  font-weight: 500;
   letter-spacing: -2%;
   > span::after {
     content: '\2005';
@@ -576,13 +577,13 @@
   font-size: 0.75rem;
   letter-spacing: -.5px;
   color: var(--auth-text);
-  font-family: 'FedraSansPro Book', 'HMSans', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
+  font-family: 'Fedra Sans Pro', 'HMSans', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
   font-weight: 400;
   text-align: center;
   unicode-bidi: plaintext;
   > span a {
     color: var(--ack-link);
-    font-family: 'FedraSansPro Normal', 'HMSans', 'Noto Sans Arabic', 'Noto Sans Thai',sans-serif;
+    font-family: 'Fedra Sans Pro', 'HMSans', 'Noto Sans Arabic', 'Noto Sans Thai',sans-serif;
     font-weight: 500;
     text-decoration: none;
     position: relative;

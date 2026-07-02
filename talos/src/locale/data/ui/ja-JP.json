@@ -32,6 +32,17 @@
       "main": "メインエリア",
       "sub": "サブエリア"
     },
+    "label": {
+      "note": "メモ",
+      "url": "関連リンク",
+      "comments": "コメント"
+    },
+    "tabs": {
+      "collectAll": "同種の地点をすべて収集済みにします",
+      "general": "地点詳細",
+      "comments": "コメント"
+
+    },
     "noInfo": "画像なし。{paste} / {click} でアップロードしてください。",
     "communityRule": "アップロード前に、以下をよく読み遵守してください <a href=\"{link}\">OEM コミュニティガイドライン</a>",
     "uploading": "アップロード中…",
@@ -49,6 +60,23 @@
       "share": "共有",
       "recall": "削除申請",
       "unrecall": "削除申請を取り消す"
+    },
+    "comments": {
+      "placeholder": "何か書いてみましょう！",
+      "submit": "コメントを投稿",
+      "actions": "コメント操作",
+      "translate": "翻訳",
+      "showOriginal": "原文を表示",
+      "translatedFrom": "{language}から翻訳",
+      "translating": "翻訳中…",
+      "translateFailed": "翻訳に失敗しました",
+      "upvote": "高評価",
+      "downvote": "低評価",
+      "reply": "返信",
+      "emptyWithRule": "まだコメントはありません。投稿時は<a href=\"{link}\">コミュニティガイドライン</a>に従ってください。",
+      "ruleOnly": "投稿時は<a href=\"{link}\">コミュニティガイドライン</a>に従ってください。",
+      "loadFailed": "コメントの読み込みに失敗しました。",
+      "submitFailed": "コメントの投稿に失敗しました。"
     },
     "errors": {
       "unsupportedType": "JPEG/PNG/WebP/AVIF/HEIC 画像のみ対応しています。",
@@ -233,8 +261,10 @@
       "resend": "再送({count})",
       "dcLogin": "Discord でログイン",
       "gooLogin": "Google でログイン",
+      "ghLogin": "",
       "dcRegis": "Discord アカウントで登録",
       "gooRegis": "Google アカウントで登録",
+      "ghRegis": "",
       "connecting": "接続中…",
       "resetLink": "パスワード再設定用のメールアドレスを入力してください。登録済みのメールアドレスにパスワード再設定リンクを送信します。<br><br>送信後、受信トレイおよび迷惑メールフォルダをご確認ください。",
       "resetRequire": "新しいパスワードを入力し、正しく再入力してください。<br><br>パスワードを再設定します。",

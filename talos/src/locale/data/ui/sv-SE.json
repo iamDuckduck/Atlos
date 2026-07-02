@@ -32,6 +32,16 @@
       "main": "Område",
       "sub": "Zon"
     },
+    "label": {
+      "note": "Anteckning",
+      "url": "Länk",
+      "comments": "Kommentarer"
+    },
+    "tabs": {
+      "collectAll": "Markera alla av samma typ som slutförda",
+      "general": "Detaljer",
+      "comments": "Kommentarer"
+    },
     "noInfo": "Ingen bild. Använd {paste} / {click} för att ladda upp.",
     "communityRule": "Innan du laddar upp, se till att du har läst och följer <a href=\"{link}\">Community-riktlinjer</a>",
     "uploading": "Laddar upp...",
@@ -49,6 +59,23 @@
       "share": "Dela",
       "recall": "Begär borttagning",
       "unrecall": "Avbryt borttagning"
+    },
+    "comments": {
+      "placeholder": "Skriv något!",
+      "submit": "Publicera kommentar",
+      "actions": "Kommentarsåtgärder",
+      "translate": "Översätt",
+      "showOriginal": "Visa original",
+      "translatedFrom": "Översatt från {language}",
+      "translating": "Översätter...",
+      "translateFailed": "Översättning misslyckades",
+      "upvote": "Gilla",
+      "downvote": "Ogilla",
+      "reply": "Svara",
+      "emptyWithRule": "Inga kommentarer ännu. Följ <a href=\"{link}\">communityriktlinjerna</a> när du publicerar.",
+      "ruleOnly": "Följ <a href=\"{link}\">communityriktlinjerna</a> när du publicerar.",
+      "loadFailed": "Kommentarer kunde inte läsas in.",
+      "submitFailed": "Kommentaren kunde inte skickas."
     },
     "errors": {
       "unsupportedType": "Endast JPEG/PNG/WebP/AVIF/HEIC-bilder stöds.",
@@ -233,8 +260,10 @@
       "resend": "Skicka({count})",
       "dcLogin": "Logga in med Discord",
       "gooLogin": "Logga in med Google",
+      "ghLogin": "",
       "dcRegis": "Fortsätt med Discord",
       "gooRegis": "Fortsätt med Google",
+      "ghRegis": "",
       "connecting": "Ansluter...",
       "resetLink": "Ange e-postadressen som är kopplad till ditt konto, så skickar vi en länk för återställning av lösenord om den finns.<br><br>Kontrollera din inkorg och skräppostmapp efter inlämning.",
       "resetRequire": "Ange och bekräfta ditt nya lösenord.<br><br>Vi återställer ditt lösenord omedelbart.",

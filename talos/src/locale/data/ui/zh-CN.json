@@ -38,7 +38,7 @@
       "comments": "留言"
     },
     "tabs": {
-      "collectAll": "将所有同类点标记为完成",
+      "collectAll": "一键收集同类点",
       "general": "点位详情",
       "comments": "留言区"
     },
@@ -61,7 +61,6 @@
       "unrecall": "取消撤回"
     },
     "comments": {
-      "title": "留言",
       "placeholder": "说些什么吧！",
       "submit": "发布留言",
       "actions": "留言操作",
@@ -70,10 +69,9 @@
       "translatedFrom": "翻译自{language}",
       "translating": "翻译中…",
       "translateFailed": "翻译失败",
-      "upvote": "赞同",
-      "downvote": "不赞同",
-      "reply": "回复",
-      "anonymous": "匿名用户",
+      "upvote": "点赞",
+      "downvote": "不喜欢",
+      "reply": "回复帖文",
       "emptyWithRule": "暂无留言。发布内容请遵循<a href=\"{link}\">社区守则</a>。",
       "ruleOnly": "发布内容请遵循<a href=\"{link}\">社区守则</a>。",
       "loadFailed": "留言加载失败。",
@@ -82,7 +80,7 @@
     "errors": {
       "unsupportedType": "仅支持 JPEG/PNG/WebP/AVIF/HEIC 图片",
       "fileTooLarge": "图片文件过大",
-      "imageDecodeFailed": "浏览器无法读取此图片",
+      "imageDecodeFailed": "浏d览器无法读取此图片",
       "imageProcessingUnavailable": "本地图片处理不可用",
       "processedTooLarge": "处理后的图片仍然过大",
       "uploadInvalidResponse": "上传接口返回异常",

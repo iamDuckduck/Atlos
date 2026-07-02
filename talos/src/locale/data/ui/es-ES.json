@@ -32,6 +32,16 @@
       "main": "Región",
       "sub": "Sub"
     },
+    "label": {
+      "note": "Nota",
+      "url": "Enlace",
+      "comments": "Comentarios"
+    },
+    "tabs": {
+      "collectAll": "Marcar todos los del mismo tipo como completados",
+      "general": "Detalles",
+      "comments": "Comentarios"
+    },
     "noInfo": "Sin imagen. Usa {paste} / {click} para subir.",
     "communityRule": "Antes de subir contenido, asegúrate de haber leído y seguir las <a href=\"{link}\">Normas de la comunidad</a>",
     "uploading": "Subiendo...",
@@ -49,6 +59,23 @@
       "share": "Compartir",
       "recall": "Solicitar retirada",
       "unrecall": "Cancelar retirada"
+    },
+    "comments": {
+      "placeholder": "¡Di algo!",
+      "submit": "Publicar comentario",
+      "actions": "Acciones del comentario",
+      "translate": "Traducir",
+      "showOriginal": "Mostrar original",
+      "translatedFrom": "Traducido del {language}",
+      "translating": "Traduciendo...",
+      "translateFailed": "Error al traducir",
+      "upvote": "Votar a favor",
+      "downvote": "Votar en contra",
+      "reply": "Responder",
+      "emptyWithRule": "Aún no hay comentarios. Al publicar, sigue las <a href=\"{link}\">normas de la comunidad</a>.",
+      "ruleOnly": "Al publicar, sigue las <a href=\"{link}\">normas de la comunidad</a>.",
+      "loadFailed": "No se pudieron cargar los comentarios.",
+      "submitFailed": "No se pudo publicar el comentario."
     },
     "errors": {
       "unsupportedType": "Solo se admiten imágenes JPEG/PNG/WebP/AVIF/HEIC.",
@@ -233,8 +260,10 @@
       "resend": "Reenviar({count})",
       "dcLogin": "Iniciar sesión con Discord",
       "gooLogin": "Iniciar sesión con Google",
+      "ghLogin": "",
       "dcRegis": "Continuar con Discord",
       "gooRegis": "Continuar con Google",
+      "ghRegis": "",
       "connecting": "Conectando...",
       "resetLink": "Ingrese la dirección de correo electrónico asociada con su cuenta y le enviaremos un enlace para restablecer la contraseña, si existe.<br><br>Revise su bandeja de entrada y su carpeta de correo no deseado después del envío.",
       "resetRequire": "Por favor ingrese su nueva contraseña y confírmela. <br><br>Restableceremos su contraseña inmediatamente.",

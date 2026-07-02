@@ -35,7 +35,7 @@
     "label": {
       "note": "Note",
       "url": "URL",
-      "comments": "Comments"
+      "comments": "Top Comment"
     },
     "tabs": {
       "collectAll": "Mark all as completed",
@@ -61,19 +61,17 @@
       "unrecall": "Cancel Recall"
     },
     "comments": {
-      "title": "Comments",
-      "placeholder": "Type something...",
-      "submit": "Submit comment",
+      "placeholder": "Type something?",
+      "submit": "Submit",
       "actions": "Comment actions",
       "translate": "Translate",
       "showOriginal": "Show original",
       "translatedFrom": "Translated from {language}",
-      "translating": "Translating",
+      "translating": "Translating...",
       "translateFailed": "Translation failed",
       "upvote": "Upvote",
       "downvote": "Downvote",
       "reply": "Reply",
-      "anonymous": "Anonymous",
       "emptyWithRule": "No comments yet. Please follow <a href=\"{link}\">community guidelines</a> when posting.",
       "ruleOnly": "Please follow <a href=\"{link}\">community guidelines</a> when posting.",
       "loadFailed": "Comments failed to load.",

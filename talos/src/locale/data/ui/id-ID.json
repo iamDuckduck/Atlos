@@ -32,6 +32,16 @@
       "main": "Utama",
       "sub": "Sub"
     },
+    "label": {
+      "note": "Catatan",
+      "url": "Tautan",
+      "comments": "Komentar"
+    },
+    "tabs": {
+      "collectAll": "Tandai semua jenis yang sama sebagai selesai",
+      "general": "Detail",
+      "comments": "Komentar"
+    },
     "noInfo": "Tidak ada gambar. Gunakan {paste} / {click} untuk mengunggah.",
     "communityRule": "Sebelum mengunggah, pastikan Anda telah membaca dan mengikuti <a href=\"{link}\">Panduan Komunitas</a>",
     "uploading": "Mengunggah...",
@@ -49,6 +59,23 @@
       "share": "Bagikan",
       "recall": "Minta penghapusan",
       "unrecall": "Batalkan penghapusan"
+    },
+    "comments": {
+      "placeholder": "Tulis sesuatu !",
+      "submit": "Kirim komentar",
+      "actions": "Aksi komentar",
+      "translate": "Terjemahkan",
+      "showOriginal": "Tampilkan asli",
+      "translatedFrom": "Diterjemahkan dari {language}",
+      "translating": "Menerjemahkan...",
+      "translateFailed": "Terjemahan gagal",
+      "upvote": "Suka",
+      "downvote": "Tidak suka",
+      "reply": "Balas",
+      "emptyWithRule": "Belum ada komentar. Harap ikuti <a href=\"{link}\">pedoman komunitas</a> saat memposting.",
+      "ruleOnly": "Harap ikuti <a href=\"{link}\">pedoman komunitas</a> saat memposting.",
+      "loadFailed": "Komentar gagal dimuat.",
+      "submitFailed": "Komentar gagal dikirim."
     },
     "errors": {
       "unsupportedType": "Hanya gambar JPEG/PNG/WebP/AVIF/HEIC yang didukung.",
@@ -233,8 +260,10 @@
       "resend": "Kirim ulang({count})",
       "dcLogin": "Masuk dengan Discord",
       "gooLogin": "Masuk dengan Google",
+      "ghLogin": "",
       "dcRegis": "Lanjut dengan Discord",
       "gooRegis": "Lanjut dengan Google",
+      "ghRegis": "",
       "connecting": "Menghubungkan...",
       "resetLink": "Masukkan email akun Anda. Kami akan mengirimkan tautan reset jika tersedia.<br><br>Periksa inbox dan spam Anda.",
       "resetRequire": "Masukkan dan konfirmasi password baru Anda.<br><br>Password akan segera diperbarui.",

@@ -32,6 +32,16 @@
       "main": "Ana Bölge",
       "sub": "Alt Bölge"
     },
+    "label": {
+      "note": "Not",
+      "url": "Bağlantı",
+      "comments": "Yorumlar"
+    },
+    "tabs": {
+      "collectAll": "Aynı türdekilerin tümünü tamamlandı olarak işaretle",
+      "general": "Detaylar",
+      "comments": "Yorumlar"
+    },
     "noInfo": "Görsel yok. Yüklemek için {paste} / {click} kullanın.",
     "communityRule": "Yükleme yaparak, şunları okuduğunuzu ve kabul ettiğinizi onaylarsınız: <a href=\"{link}\">Topluluk Kuralları</a>",
     "uploading": "Yükleniyor...",
@@ -49,6 +59,23 @@
       "share": "Paylaş",
       "recall": "Geri Çek",
       "unrecall": "Geri Çekmeyi İptal Et"
+    },
+    "comments": {
+      "placeholder": "Bir şeyler yazın!",
+      "submit": "Yorum gönder",
+      "actions": "Yorum işlemleri",
+      "translate": "Çevir",
+      "showOriginal": "Orijinali göster",
+      "translatedFrom": "{language} dilinden çevrildi",
+      "translating": "Çevriliyor...",
+      "translateFailed": "Çeviri başarısız",
+      "upvote": "Beğen",
+      "downvote": "Beğenme",
+      "reply": "Yanıtla",
+      "emptyWithRule": "Henüz yorum yok. Gönderi paylaşırken lütfen <a href=\"{link}\">topluluk kurallarına</a> uyun.",
+      "ruleOnly": "Gönderi paylaşırken lütfen <a href=\"{link}\">topluluk kurallarına</a> uyun.",
+      "loadFailed": "Yorumlar yüklenemedi.",
+      "submitFailed": "Yorum gönderilemedi."
     },
     "errors": {
       "unsupportedType": "Yalnızca JPEG/PNG/WebP/AVIF/HEIC görselleri desteklenir.",
@@ -233,8 +260,10 @@
       "resend": "Tekrar Gönder({count})",
       "dcLogin": "Discord ile Giriş Yap",
       "gooLogin": "Google ile Giriş Yap",
+      "ghLogin": "",
       "dcRegis": "Discord ile Devam Et",
       "gooRegis": "Google ile Devam Et",
+      "ghRegis": "",
       "connecting": "Bağlanıyor...",
       "resetLink": "Lütfen hesabınızla ilişkili e-posta adresini girin, şifre sıfırlama bağlantısını göndereceğiz.<br><br>Gönderdikten sonra gelen kutunuzu ve spam klasörünüzü kontrol edin.",
       "resetRequire": "Lütfen yeni şifrenizi girin ve onaylayın.",

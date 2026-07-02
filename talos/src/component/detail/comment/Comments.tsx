@@ -74,7 +74,7 @@ export const CommentExcerpt = memo(({
         ? formatRelativeTime(createdAt, { precision: 'dateTime', agoDisplay: 'hover', agoLabel: tUI('idcard.ago') }).agoText
         : '';
     const status = statusLabel(comment, timeLabel);
-    const authorName = comment.author?.nickname || tUI('detail.comments.anonymous');
+    const authorName = comment.author?.nickname;
     const note = transNote(comment, tUI);
 
     return (
@@ -432,7 +432,7 @@ const Comments = ({ point, pointName, active = true }: Props) => {
             ref={commentsPanelRef}
             className={styles.commentsPanel}
             data-replying={replyQuoteShown ? 'true' : 'false'}
-            aria-label={`${pointName} ${tUI('detail.comments.title')}`}
+            aria-label={`${pointName}}`}
         >
             <div
                 className={styles.commentList}

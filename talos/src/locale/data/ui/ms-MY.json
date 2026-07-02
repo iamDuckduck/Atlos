@@ -32,6 +32,16 @@
       "main": "Utama",
       "sub": "Sub"
     },
+    "label": {
+      "note": "Nota",
+      "url": "Pautan",
+      "comments": "Komen"
+    },
+    "tabs": {
+      "collectAll": "Kumpulkan semua item dari jenis yang sama sebagai selesai",
+      "general": "Butiran",
+      "comments": "Komen"
+    },
     "noInfo": "Tiada gambar. Guna {paste} / {click} untuk muat naik.",
     "communityRule": "Sebelum memuat naik, pastikan anda telah membaca dan mematuhi <a href=\"{link}\">Garis Panduan Komuniti</a>",
     "uploading": "Memuat naik...",
@@ -49,6 +59,23 @@
       "share": "Kongsi",
       "recall": "Minta pemadaman",
       "unrecall": "Batalkan pemadaman"
+    },
+    "comments": {
+      "placeholder": "Tulis sesuatu!",
+      "submit": "Hantar komen",
+      "actions": "Tindakan komen",
+      "translate": "Terjemah",
+      "showOriginal": "Tunjuk asal",
+      "translatedFrom": "Diterjemahkan daripada {language}",
+      "translating": "Sedang menterjemah...",
+      "translateFailed": "Terjemahan gagal",
+      "upvote": "Suka",
+      "downvote": "Tidak suka",
+      "reply": "Balas",
+      "emptyWithRule": "Belum ada komen. Sila ikut <a href=\"{link}\">garis panduan komuniti</a> semasa menyiarkan.",
+      "ruleOnly": "Sila ikut <a href=\"{link}\">garis panduan komuniti</a> semasa menyiarkan.",
+      "loadFailed": "Komen gagal dimuatkan.",
+      "submitFailed": "Komen gagal dihantar."
     },
     "errors": {
       "unsupportedType": "Hanya imej JPEG/PNG/WebP/AVIF/HEIC disokong.",
@@ -233,8 +260,10 @@
       "resend": "Hantar Semula ({count})",
       "dcLogin": "Log masuk dengan Discord",
       "gooLogin": "Log masuk dengan Google",
+      "ghLogin": "",
       "dcRegis": "Teruskan dengan Discord",
       "gooRegis": "Teruskan dengan Google",
+      "ghRegis": "",
       "connecting": "Menyambung...",
       "resetLink": "Sila masukkan alamat e-mel yang dikaitkan dengan akaun anda untuk menerima pautan tetapan semula kata laluan.<br><br>Sila semak peti masuk dan folder spam anda selepas dihantar.",
       "resetRequire": "Sila masukkan dan sahkan kata laluan baharu anda.<br><br>Kami akan menetapkan semula kata laluan anda serta-merta.",

@@ -32,6 +32,17 @@
       "main": "지역",
       "sub": "서브"
     },
+    "label": {
+      "note": "메모",
+      "url": "관련 링크",
+      "comments": "댓글"
+
+    },
+    "tabs": {
+      "collectAll": "같은 종류 모두 완료로 표시",
+      "general": "위치 상세",
+      "comments": "댓글"
+    },
     "noInfo": "이미지 없음. {paste} / {click}하여 업로드하세요.",
     "communityRule": "업로드하기 전에 아래 내용을 읽고 준수해 주세요 <a href=\"{link}\">커뮤니티 가이드라인</a>",
     "uploading": "업로드 중…",
@@ -49,6 +60,23 @@
       "share": "공유",
       "recall": "철회 요청",
       "unrecall": "철회 요청 취소"
+    },
+    "comments": {
+      "placeholder": "무언가를 남겨 보세요!",
+      "submit": "댓글 게시",
+      "actions": "댓글 작업",
+      "translate": "번역",
+      "showOriginal": "원문 보기",
+      "translatedFrom": "{language}에서 번역됨",
+      "translating": "번역 중…",
+      "translateFailed": "번역 실패",
+      "upvote": "추천",
+      "downvote": "비추천",
+      "reply": "답글",
+      "emptyWithRule": "아직 댓글이 없습니다. 게시 시 <a href=\"{link}\">커뮤니티 가이드라인</a>을 따라 주세요.",
+      "ruleOnly": "게시 시 <a href=\"{link}\">커뮤니티 가이드라인</a>을 따라 주세요.",
+      "loadFailed": "댓글을 불러오지 못했습니다.",
+      "submitFailed": "댓글을 게시하지 못했습니다."
     },
     "errors": {
       "unsupportedType": "JPEG/PNG/WebP/AVIF/HEIC 이미지만 지원됩니다.",
@@ -233,8 +261,10 @@
       "resend": "재전송({count})",
       "dcLogin": "디스코드로 로그인",
       "gooLogin": "Google로 로그인",
+      "ghLogin": "",
       "dcRegis": "디스코드로 계속하기",
       "gooRegis": "Google로 계속하기",
+      "ghRegis": "",
       "connecting": "연결 중…",
       "resetLink": "귀하의 계정과 연결된 이메일 주소를 입력해 주세요. 비밀번호 재설정 링크가 있는 경우 보내드리겠습니다.<br><br>제출 후 받은 편지함과 스팸 폴더를 확인하세요.",
       "resetRequire": "새로운 비밀번호를 입력하고 확인해주세요. <br><br>귀하의 비밀번호는 즉시 재설정됩니다.",

@@ -32,6 +32,16 @@
       "main": "Principal",
       "sub": "Sub"
     },
+    "label": {
+      "note": "Nota",
+      "url": "Link",
+      "comments": "Comentários"
+    },
+    "tabs": {
+      "collectAll": "Marcar todos do mesmo tipo como concluídos",
+      "general": "Detalhes",
+      "comments": "Comentários"
+    },
     "noInfo": "Sem imagem. Use {paste} / {click} para fazer upload.",
     "communityRule": "Antes de enviar, confirme que você leu e segue as <a href=\"{link}\">Diretrizes da Comunidade</a>",
     "uploading": "Enviando...",
@@ -49,6 +59,23 @@
       "share": "Compartilhar",
       "recall": "Solicitar remoção",
       "unrecall": "Cancelar remoção"
+    },
+    "comments": {
+      "placeholder": "Escreva algo!",
+      "submit": "Publicar comentário",
+      "actions": "Ações do comentário",
+      "translate": "Traduzir",
+      "showOriginal": "Mostrar original",
+      "translatedFrom": "Traduzido de {language}",
+      "translating": "Traduzindo...",
+      "translateFailed": "Falha na tradução",
+      "upvote": "Curtir",
+      "downvote": "Não curtir",
+      "reply": "Responder",
+      "emptyWithRule": "Ainda não há comentários. Ao publicar, siga as <a href=\"{link}\">diretrizes da comunidade</a>.",
+      "ruleOnly": "Ao publicar, siga as <a href=\"{link}\">diretrizes da comunidade</a>.",
+      "loadFailed": "Falha ao carregar comentários.",
+      "submitFailed": "Falha ao enviar comentário."
     },
     "errors": {
       "unsupportedType": "Apenas imagens JPEG/PNG/WebP/AVIF/HEIC são suportadas.",
@@ -233,8 +260,10 @@
       "resend": "Reenviar ({count})",
       "dcLogin": "Entrar com Discord",
       "gooLogin": "Entrar com Google",
+      "ghLogin": "",
       "dcRegis": "Continuar com Discord",
       "gooRegis": "Continuar com Google",
+      "ghRegis": "",
       "connecting": "Conectando...",
       "resetLink": "Digite o e-mail associado à sua conta. Enviaremos um link de redefinição se existir.<br><br>Verifique sua caixa de entrada e spam.",
       "resetRequire": "Digite e confirme sua nova senha.<br><br>A senha será redefinida imediatamente.",

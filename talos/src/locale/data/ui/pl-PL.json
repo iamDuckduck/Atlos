@@ -32,6 +32,16 @@
       "main": "Główny",
       "sub": "Podreg"
     },
+    "label": {
+      "note": "Notatka",
+      "url": "Link",
+      "comments": "Komentarze"
+    },
+    "tabs": {
+      "collectAll": "Oznacz wszystkie tego samego typu jako ukończone",
+      "general": "Szczegóły",
+      "comments": "Komentarze"
+    },
     "noInfo": "Brak obrazu. Użyj {paste} / {click}, aby przesłać.",
     "communityRule": "Przed przesłaniem upewnij się, że przeczytałeś i przestrzegasz <a href=\"{link}\">Wytycznych społeczności</a>",
     "uploading": "Przesyłanie...",
@@ -49,6 +59,23 @@
       "share": "Udostępnij",
       "recall": "Poproś o usunięcie",
       "unrecall": "Anuluj usunięcie"
+    },
+    "comments": {
+      "placeholder": "Napisz coś!",
+      "submit": "Opublikuj komentarz",
+      "actions": "Akcje komentarza",
+      "translate": "Przetłumacz",
+      "showOriginal": "Pokaż oryginał",
+      "translatedFrom": "Przetłumaczono z {language}",
+      "translating": "Tłumaczenie...",
+      "translateFailed": "Tłumaczenie nie powiodło się",
+      "upvote": "Lubię to",
+      "downvote": "Nie lubię",
+      "reply": "Odpowiedz",
+      "emptyWithRule": "Nie ma jeszcze komentarzy. Podczas publikowania przestrzegaj <a href=\"{link}\">zasad społeczności</a>.",
+      "ruleOnly": "Podczas publikowania przestrzegaj <a href=\"{link}\">zasad społeczności</a>.",
+      "loadFailed": "Nie udało się wczytać komentarzy.",
+      "submitFailed": "Nie udało się wysłać komentarza."
     },
     "errors": {
       "unsupportedType": "Obsługiwane są tylko obrazy JPEG/PNG/WebP/AVIF/HEIC.",
@@ -233,8 +260,10 @@
       "resend": "Ponów ({count})",
       "dcLogin": "Zaloguj się przez Discord",
       "gooLogin": "Zaloguj się przez Google",
+      "ghLogin": "",
       "dcRegis": "Kontynuuj z Discord",
       "gooRegis": "Kontynuuj z Google",
+      "ghRegis": "",
       "connecting": "Łączenie...",
       "resetLink": "Wprowadź adres e-mail powiązany z kontem. Jeśli istnieje, wyślemy Ci link do resetowania hasła.<br><br>Po wysłaniu sprawdź skrzynkę odbiorczą i folder spam.",
       "resetRequire": "Wprowadź i potwierdź nowe hasło.<br><br>Twoje hasło zostanie natychmiast zresetowane.",

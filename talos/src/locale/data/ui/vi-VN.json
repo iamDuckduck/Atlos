@@ -32,6 +32,16 @@
       "main": "Khu vực",
       "sub": "Phụ"
     },
+    "label": {
+      "note": "Ghi chú",
+      "url": "Liên kết",
+      "comments": "Bình luận"
+    },
+    "tabs": {
+      "collectAll": "Đánh dấu tất cả cùng loại là đã hoàn thành",
+      "general": "Chi tiết",
+      "comments": "Bình luận"
+    },
     "noInfo": "Không có hình ảnh. Sử dụng {paste} / {click} để tải lên.",
     "communityRule": "Trước khi tải lên, hãy đảm bảo bạn đã đọc và tuân thủ <a href=\"{link}\">Nguyên tắc cộng đồng</a>",
     "uploading": "Đang tải lên...",
@@ -49,6 +59,23 @@
       "share": "Chia sẻ",
       "recall": "Yêu cầu gỡ",
       "unrecall": "Hủy yêu cầu gỡ"
+    },
+    "comments": {
+      "placeholder": "Viết gì đó đi!",
+      "submit": "Đăng bình luận",
+      "actions": "Thao tác bình luận",
+      "translate": "Dịch",
+      "showOriginal": "Hiển thị bản gốc",
+      "translatedFrom": "Được dịch từ {language}",
+      "translating": "Đang dịch...",
+      "translateFailed": "Dịch thất bại",
+      "upvote": "Thích",
+      "downvote": "Không thích",
+      "reply": "Trả lời",
+      "emptyWithRule": "Chưa có bình luận nào. Vui lòng tuân thủ <a href=\"{link}\">nguyên tắc cộng đồng</a> khi đăng.",
+      "ruleOnly": "Vui lòng tuân thủ <a href=\"{link}\">nguyên tắc cộng đồng</a> khi đăng.",
+      "loadFailed": "Không tải được bình luận.",
+      "submitFailed": "Không gửi được bình luận."
     },
     "errors": {
       "unsupportedType": "Chỉ hỗ trợ ảnh JPEG/PNG/WebP/AVIF/HEIC.",
@@ -233,8 +260,10 @@
       "resend": "Gửi lại ({count})",
       "dcLogin": "Đăng nhập bằng Discord",
       "gooLogin": "Đăng nhập bằng Google",
+      "ghLogin": "",
       "dcRegis": "Đăng ký bằng Discord",
       "gooRegis": "Đăng ký bằng Google",
+      "ghRegis": "",
       "connecting": "Đang kết nối...",
       "resetLink": "Vui lòng nhập địa chỉ email liên kết với tài khoản của bạn, chúng tôi sẽ gửi liên kết đặt lại mật khẩu nếu email này tồn tại.<br><br>Hãy kiểm tra hộp thư đến và thư mục spam sau khi gửi.",
       "resetRequire": "Vui lòng nhập và xác nhận mật khẩu mới của bạn.<br><br>Chúng tôi sẽ cập nhật mật khẩu ngay lập tức.",

@@ -32,6 +32,16 @@
       "main": "Principale",
       "sub": "Sotto"
     },
+    "label": {
+      "note": "Nota",
+      "url": "Link",
+      "comments": "Commenti"
+    },
+    "tabs": {
+      "collectAll": "Segna tutti i punti uguali come completati",
+      "general": "Dettagli",
+      "comments": "Commenti"
+    },
     "noInfo": "Nessuna immagine. Usa {paste} / {click} per caricare.",
     "communityRule": "Prima di caricare, assicurati di aver letto e rispettare le <a href=\"{link}\">Linee guida della community</a>",
     "uploading": "Caricamento...",
@@ -49,6 +59,23 @@
       "share": "Condividi",
       "recall": "Richiedi rimozione",
       "unrecall": "Annulla rimozione"
+    },
+    "comments": {
+      "placeholder": "Scrivi qualcosa!",
+      "submit": "Pubblica commento",
+      "actions": "Azioni commento",
+      "translate": "Traduci",
+      "showOriginal": "Mostra originale",
+      "translatedFrom": "Tradotto da {language}",
+      "translating": "Traduzione in corso...",
+      "translateFailed": "Traduzione non riuscita",
+      "upvote": "Mi piace",
+      "downvote": "Non mi piace",
+      "reply": "Rispondi",
+      "emptyWithRule": "Non ci sono ancora commenti. Quando pubblichi, segui le <a href=\"{link}\">linee guida della community</a>.",
+      "ruleOnly": "Quando pubblichi, segui le <a href=\"{link}\">linee guida della community</a>.",
+      "loadFailed": "Caricamento dei commenti non riuscito.",
+      "submitFailed": "Invio del commento non riuscito."
     },
     "errors": {
       "unsupportedType": "Sono supportate solo immagini JPEG/PNG/WebP/AVIF/HEIC.",
@@ -233,8 +260,10 @@
       "resend": "Reinvia({count})",
       "dcLogin": "Accedi con Discord",
       "gooLogin": "Accedi con Google",
+      "ghLogin": "",
       "dcRegis": "Continua con Discord",
       "gooRegis": "Continua con Google",
+      "ghRegis": "",
       "connecting": "Connessione...",
       "resetLink": "Inserisci l'indirizzo email associato al tuo account e ti invieremo un collegamento per reimpostare la password, se esistente.<br><br>Controlla la posta in arrivo e la cartella spam dopo l'invio.",
       "resetRequire": "Inserisci la tua nuova password e confermala. <br><br>Reimposteremo immediatamente la tua password.",

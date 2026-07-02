@@ -32,6 +32,16 @@
       "main": "الرئيسية",
       "sub": "الفرعية"
     },
+    "label": {
+      "note": "ملاحظة",
+      "url": "رابط",
+      "comments": "التعليقات"
+    },
+    "tabs": {
+      "collectAll": "تحديد كل العناصر من نفس النوع كمكتملة",
+      "general": "تفاصيل",
+      "comments": "التعليقات"
+    },
     "noInfo": "لا توجد صورة. استخدم {paste} / {click} للرفع.",
     "communityRule": "برفعك للصورة، أنت تؤكد قراءتك والتزامك بـ <a href=\"{link}\">إرشادات المجتمع</a>",
     "uploading": "جاري الرفع...",
@@ -49,6 +59,23 @@
       "share": "مشاركة",
       "recall": "تراجع",
       "unrecall": "إلغاء التراجع"
+    },
+    "comments": {
+      "placeholder": "اكتب شيئًا!",
+      "submit": "نشر التعليق",
+      "actions": "إجراءات التعليق",
+      "translate": "ترجمة",
+      "showOriginal": "عرض النص الأصلي",
+      "translatedFrom": "مترجم من {language}",
+      "translating": "جارٍ الترجمة...",
+      "translateFailed": "فشلت الترجمة",
+      "upvote": "إعجاب",
+      "downvote": "عدم إعجاب",
+      "reply": "رد",
+      "emptyWithRule": "لا توجد تعليقات بعد. يرجى الالتزام بـ<a href=\"{link}\">إرشادات المجتمع</a> عند النشر.",
+      "ruleOnly": "يرجى الالتزام بـ<a href=\"{link}\">إرشادات المجتمع</a> عند النشر.",
+      "loadFailed": "فشل تحميل التعليقات.",
+      "submitFailed": "فشل إرسال التعليق."
     },
     "errors": {
       "unsupportedType": "يُدعم فقط صيغ JPEG/PNG/WebP/AVIF.",
@@ -233,8 +260,10 @@
       "resend": "إعادة إرسال ({count})",
       "dcLogin": "الدخول عبر Discord",
       "gooLogin": "الدخول عبر Google",
+      "ghLogin": "",
       "dcRegis": "المتابعة عبر Discord",
       "gooRegis": "المتابعة عبر Google",
+      "ghRegis": "",
       "connecting": "يتصل...",
       "resetLink": "أدخل بريدك الإلكتروني المسجل لدينا، وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.<br><br>يرجى تفقد صندوق الوارد والبريد المزعج (Spam).",
       "resetRequire": "أدخل كلمة المرور الجديدة وقم بتأكيدها.<br><br>سيتم التحديث فوراً.",

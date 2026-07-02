@@ -32,6 +32,16 @@
       "main": "主區域",
       "sub": "子區域"
     },
+    "label": {
+      "note": "注解",
+      "url": "分享連結",
+      "comments": "精選留言"
+    },
+    "tabs": {
+      "collectAll": "一鍵收集同類點",
+      "general": "點位詳情",
+      "comments": "留言區"
+    },
     "noInfo": "暫無資訊，使用 {paste} / {click} 上載點位截圖",
     "communityRule": "上載前，請詳閱並遵循 <a href=\"{link}\">OEM 社群守則</a>",
     "uploading": "上載中…",
@@ -49,6 +59,23 @@
       "share": "分享此點位",
       "recall": "申請撤回此圖片",
       "unrecall": "取消撤回申請"
+    },
+    "comments": {
+      "placeholder": "傾兩句？",
+      "submit": "發布留言",
+      "actions": "留言操作",
+      "translate": "翻譯",
+      "showOriginal": "顯示原文",
+      "translatedFrom": "翻譯自{language}",
+      "translating": "翻譯中…",
+      "translateFailed": "翻譯失敗",
+      "upvote": "讚好",
+      "downvote": "反對",
+      "reply": "回覆帖文",
+      "emptyWithRule": "暫無留言。發布內容請遵循<a href=\"{link}\">社群守則</a>。",
+      "ruleOnly": "發布內容請遵循<a href=\"{link}\">社群守則</a>。",
+      "loadFailed": "留言載入失敗。",
+      "submitFailed": "留言發布失敗。"
     },
     "errors": {
       "unsupportedType": "僅接收 JPEG/PNG/WebP/AVIF/HEIC 檔案",

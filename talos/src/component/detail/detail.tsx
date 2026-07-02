@@ -349,6 +349,17 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
         setHasOpenedComments(false);
     }, [currentPoint?.id]);
 
+    const openCommentsTab = useCallback(() => {
+        setHasOpenedComments(true);
+        setActiveTab('comments');
+    }, []);
+
+    const handleHighlightCommentKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        openCommentsTab();
+    }, [openCommentsTab]);
+
     const isRegionTypeComplete = currentPoint
         ? regionCnt.total > 0 && regionCnt.collected >= regionCnt.total
         : false;
@@ -443,10 +454,7 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
                             role="tab"
                             aria-selected={activeTab === 'comments'}
                             data-tab="comments"
-                            onClick={() => {
-                                setHasOpenedComments(true);
-                                setActiveTab('comments');
-                            }}
+                            onClick={openCommentsTab}
                         >
                             <CommentIcon />
                             <span>{tUI('detail.tabs.comments')}</span>
@@ -533,7 +541,16 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
                             {highlightComment && (
                                 <>
                                     <div className={styles.detailDivider} data-label={tUI('detail.label.comments')}></div>
-                                    <CommentExcerpt comment={highlightComment} />
+                                    <div
+                                        className={styles.highlightCommentLink}
+                                        role="button"
+                                        tabIndex={0}
+                                        onClick={openCommentsTab}
+                                        onKeyDown={handleHighlightCommentKeyDown}
+                                        aria-label={tUI('detail.tabs.comments')}
+                                    >
+                                        <CommentExcerpt comment={highlightComment} />
+                                    </div>
                                 </>
                             )}
                             {hasFullText && (

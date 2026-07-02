@@ -344,6 +344,11 @@
             overflow: hidden;
         }
 
+        .highlightCommentLink {
+            cursor: pointer;
+            outline: none;
+        }
+
         .iconStatsContainer {
             display: flex;
             gap: 0.25rem;

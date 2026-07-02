@@ -117,19 +117,19 @@
 
 .commentActions [data-label='upvote'] {
     > span {
-        transform: scale(1);
+        transform: scale(0.95);
     }
 }
 
 .commentActions [data-label='downvote'] {
     > span {
-        transform: rotate(180deg) scale(1);
+        transform: rotate(180deg) scale(0.95);
     }
 }
 
 .commentActions [data-label='flag'] {
     > span {
-        transform: scale(1);
+        transform: scale(0.95);
     }
 }
 
@@ -141,7 +141,7 @@
 
 .commentActions [data-label='reply'] {
     > span {
-        transform: scale(1);
+        transform: scale(0.9);
     }
 }
 

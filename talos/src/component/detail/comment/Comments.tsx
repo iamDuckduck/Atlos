@@ -20,7 +20,7 @@ import LikeIcon from '@/assets/images/UI/like.svg?react';
 import FlagIcon from '@/assets/images/UI/flag.svg?react';
 import RecallIcon from '@/assets/images/UI/recall.svg?react';
 import SubmitIcon from '@/assets/logos/submit.svg?react';
-import ReplyIcon from '@/assets/logos/comment.svg?react';
+import ReplyIcon from '@/assets/logos/reply.svg?react';
 import {
     appendItem,
     flatDisplay,

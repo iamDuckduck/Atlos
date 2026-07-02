@@ -41,7 +41,6 @@
       "collectAll": "Marquer tous les points du même type comme terminés",
       "general": "Détails",
       "comments": "Commentaires"
-
     },
     "noInfo": "Aucune image. Utilisez {paste} / {click} pour importer.",
     "communityRule": "Avant de téléverser, assurez-vous d’avoir lu et de respecter les <a href=\"{link}\">Règles de la communauté</a>",
@@ -261,10 +260,10 @@
       "resend": "Renvoyer ({count})",
       "dcLogin": "Connectez-vous avec Discord",
       "gooLogin": "Connectez-vous avec Google",
-      "ghLogin": "",
+      "ghLogin": "Connectez-vous avec GitHub",
       "dcRegis": "Continuer avec Discord",
       "gooRegis": "Continuer avec Google",
-      "ghRegis": "",
+      "ghRegis": "Continuer avec GitHub",
       "connecting": "Connexion...",
       "resetLink": "Veuillez saisir l'adresse e-mail associée à votre compte et nous vous enverrons un lien de réinitialisation de mot de passe s'il existe.<br><br>Vérifiez votre boîte de réception et votre dossier spam après la soumission.",
       "resetRequire": "Veuillez saisir votre nouveau mot de passe et le confirmer. <br><br>Nous réinitialiserons votre mot de passe immédiatement.",

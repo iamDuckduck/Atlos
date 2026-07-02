@@ -41,7 +41,6 @@
       "collectAll": "同種の地点をすべて収集済みにします",
       "general": "地点詳細",
       "comments": "コメント"
-
     },
     "noInfo": "画像なし。{paste} / {click} でアップロードしてください。",
     "communityRule": "アップロード前に、以下をよく読み遵守してください <a href=\"{link}\">OEM コミュニティガイドライン</a>",
@@ -261,10 +260,10 @@
       "resend": "再送({count})",
       "dcLogin": "Discord でログイン",
       "gooLogin": "Google でログイン",
-      "ghLogin": "",
-      "dcRegis": "Discord アカウントで登録",
-      "gooRegis": "Google アカウントで登録",
-      "ghRegis": "",
+      "ghLogin": "GitHub でログイン",
+      "dcRegis": "Discord で続行",
+      "gooRegis": "Google で続行",
+      "ghRegis": "GitHub で続行",
       "connecting": "接続中…",
       "resetLink": "パスワード再設定用のメールアドレスを入力してください。登録済みのメールアドレスにパスワード再設定リンクを送信します。<br><br>送信後、受信トレイおよび迷惑メールフォルダをご確認ください。",
       "resetRequire": "新しいパスワードを入力し、正しく再入力してください。<br><br>パスワードを再設定します。",

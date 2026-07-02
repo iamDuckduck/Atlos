@@ -1,4 +1,5 @@
 import logger from '@/utils/log';
+import type { FontRegion } from '@/utils/lang';
 
 import { getFontAssetUrls } from './fontAssets';
 
@@ -238,7 +239,7 @@ export async function cleanupFontCache(activeUrls?: string[]): Promise<void> {
  * Get all font URLs for a specific region.
  * Uses build-time glob registry: missing font files simply won't be included.
  */
-export function getFontUrlsForRegion(region: 'CN' | 'HK' | 'JP'): string[] {
+export function getFontUrlsForRegion(region: FontRegion): string[] {
     const regionPrefix = region === 'CN' ? 'CN' : region === 'HK' ? 'HK' : 'JP';
     const weights = ['B', 'DB', 'M', 'R'] as const;
 

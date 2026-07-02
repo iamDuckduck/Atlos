@@ -4,7 +4,8 @@ import Button from '@/component/button/button';
 import Modal from '@/component/modal/modal';
 import PopoverTooltip from '@/component/popover/popover';
 import Uploader from '../uploader/uploader';
-import Comments, { CommentExcerpt } from './comments';
+import Comments, { CommentExcerpt } from './comment/Comments';
+import { flatList } from './comment/commentsTree';
 
 import parse from 'html-react-parser';
 import { getItemIconUrl, getFileContentUrl, fetchArchiveFile } from '@/utils/resource.ts';
@@ -83,12 +84,8 @@ const getElementNaturalHeight = (element: HTMLElement): number => {
     return paddingHeight + childrenHeight + gap * Math.max(0, children.length - 1);
 };
 
-const flattenComments = (comments: UGCComment[]): UGCComment[] => (
-    comments.flatMap((comment) => [comment, ...flattenComments(comment.replies ?? [])])
-);
-
 const getTopRatedComment = (comments: UGCComment[]): UGCComment | null => {
-    const allComments = flattenComments(comments);
+    const allComments = flatList(comments);
     if (allComments.length === 0) return null;
     return allComments.reduce((topComment, comment) => (
         comment.score > topComment.score ? comment : topComment

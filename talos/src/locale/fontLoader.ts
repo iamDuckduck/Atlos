@@ -3,6 +3,7 @@
 import { cleanupFontCache, getCachedFontBuffer } from './fontCache';
 
 import { getFontAssetUrl } from './fontAssets';
+import { getFontRegionForLocale, type FontRegion } from '@/utils/lang';
 
 
 // Build CDN URL with base and normalize dev paths to production paths
@@ -27,7 +28,6 @@ const toCdnUrl = (p: string): string => {
 };
 
 type FontWeight = 'Bold' | 'DemiBold' | 'Medium' | 'Regular';
-type Region = 'CN' | 'HK' | 'JP';
 
 interface FontDefinition {
     family: string;
@@ -144,44 +144,16 @@ const fontDefinitions: FontDefinition[] = [
 ];
 
 // detect document language
-function detectDocumentLanguage(): Region {
-    const htmlLang = (document.documentElement.lang || document.documentElement.getAttribute('lang') || '').toLowerCase();
-    const navigatorLang = String(navigator.language || '').toLowerCase();
-    
-    // check HTML lang attribute first
-    if (htmlLang) {
-        if (htmlLang.includes('zh-cn') || htmlLang.includes('zh-hans')) {
-            return 'CN';
-        }
-        if (htmlLang.includes('zh-tw') || htmlLang.includes('zh-hk') || htmlLang.includes('zh-hant')) {
-            return 'HK';
-        }
-        if (htmlLang.includes('ja') || htmlLang.includes('jp')) {
-            return 'JP';
-        }
-    }
-    
-    // then check browser language
-    if (navigatorLang) {
-        if (navigatorLang.includes('zh-cn') || navigatorLang.includes('zh-hans')) {
-            return 'CN';
-        }
-        if (navigatorLang.includes('zh-tw') || navigatorLang.includes('zh-hk') || navigatorLang.includes('zh-hant')) {
-            return 'HK';
-        }
-        if (navigatorLang.includes('ja') || navigatorLang.includes('jp')) {
-            return 'JP';
-        }
-    }
-    
-    // default to HK
-    return 'HK';
+function detectDocumentLanguage(): FontRegion {
+    const htmlLang = document.documentElement.lang || document.documentElement.getAttribute('lang') || '';
+    if (htmlLang) return getFontRegionForLocale(htmlLang);
+    return getFontRegionForLocale(navigator.language || '');
 }
 
 // Keep track of loaded fonts to remove them when switching
 const loadedFonts = new Set<FontFace>();
 
-async function loadFonts(region: Region): Promise<void> {
+async function loadFonts(region: FontRegion): Promise<void> {
     // Clean up previously loaded fonts
     loadedFonts.forEach(font => {
         document.fonts.delete(font);
@@ -276,12 +248,12 @@ export function fontLoader(): void {
 /* EXTERNAL API */
 
 // for manual region switch (external call)
-export function switchFontRegion(region: Region): void {
+export function switchFontRegion(region: FontRegion): void {
     void loadFonts(region);
     console.log(`Font switched to region: ${region}`);
 }
 
 // get current region (external call)
-export function getCurrentRegion(): Region {
+export function getCurrentRegion(): FontRegion {
     return detectDocumentLanguage();
 }

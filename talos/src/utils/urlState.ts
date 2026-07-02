@@ -7,7 +7,7 @@
 
 import { useMarkerStore } from '@/store/marker';
 import useRegion from '@/store/region';
-import { setLocale, SUPPORTED_LANGS } from '@/locale';
+import { setLocale } from '@/locale';
 import {
     findMarkerById,
     findUniqueArchiveMarkerByType,
@@ -15,9 +15,8 @@ import {
     type IMarkerData,
 } from '@/data/marker';
 import { REGION_DICT } from '@/data/map';
+import { getLanguageFromUrlCode, getLanguageUrlCode } from '@/utils/lang';
 import { navigateToSharedPoint } from '@/utils/navigation';
-
-type Lang = (typeof SUPPORTED_LANGS)[number];
 
 // URL 參數名稱
 const PARAM_LANG = 'l';
@@ -62,32 +61,6 @@ const POINT_TOKEN_PATTERN = /^[0-9a-zA-Z]{7}$/;
 // - 多個 type: ~~<base64url(varint(count, firstIndex, deltaMinusOne...))>
 const FILTER_SINGLE_PREFIX = '~';
 const FILTER_MULTI_PREFIX = '~~';
-
-// 語言代碼映射（雙向）
-const LANG_CODE_MAP: Record<string, string> = {
-    'en-US': 'en',
-    'zh-CN': 'cn',
-    'zh-HK': 'hk',
-    'ja-JP': 'jp',
-    'ko-KR': 'kr',
-    'ru-RU': 'ru',
-    'es-ES': 'es',
-    'fr-FR': 'fr',
-    'de-DE': 'de',
-    'it-IT': 'it',
-    'id-ID': 'id',
-    'pt-BR': 'br',
-    'ar-SA': 'ar',
-    'ms-MY': 'my',
-    'pl-PL': 'pl',
-    'sv-SE': 'se',
-    'th-TH': 'th',
-    'vi-VN': 'vn',
-};
-
-const LANG_CODE_REVERSE: Record<string, string> = Object.fromEntries(
-    Object.entries(LANG_CODE_MAP).map(([k, v]) => [v, k])
-);
 
 // 區域代碼映射
 const REGION_CODE_MAP: Record<string, string> = {
@@ -497,7 +470,7 @@ export const generateShareUrl = (): string => {
     // 語言（簡化為2字符代碼）
     const locale = getCurrentLocale();
     if (locale) {
-        const shortCode = LANG_CODE_MAP[locale] || locale;
+        const shortCode = getLanguageUrlCode(locale);
         params.set(PARAM_LANG, shortCode);
     }
 
@@ -600,9 +573,9 @@ export const applyUrlParams = async (): Promise<void> => {
         const currentLocale = getCurrentLocale();
         // 只有当本地没有设置语言时，才应用 URL 参数
         if (!currentLocale) {
-            const fullLocale = LANG_CODE_REVERSE[langParam] || langParam;
-            if ((SUPPORTED_LANGS as readonly string[]).includes(fullLocale)) {
-                await setLocale(fullLocale as Lang);
+            const fullLocale = getLanguageFromUrlCode(langParam);
+            if (fullLocale) {
+                await setLocale(fullLocale);
             }
         }
     }

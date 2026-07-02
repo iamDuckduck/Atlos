@@ -7,7 +7,7 @@ import {
     WORLD_TYPE_COUNT_MAP,
 } from '@/data/marker';
 import { SUBREGION_DICT } from '@/data/map';
-import { FULL_LANGS, UI_ONLY_LANGS, useTranslateGame } from '@/locale';
+import { hasFullSupport, isUIOnly, resolveFileContentLocale, useTranslateGame } from '@/locale';
 import useRegion from '@/store/region';
 
 interface SearchDoc {
@@ -147,8 +147,6 @@ const REMOTE_SEARCH_ENDPOINT =
     (import.meta.env.VITE_SEARCH_ENDPOINT as string | undefined)?.trim() || DEFAULT_SEARCH_ENDPOINT;
 const PROD_WORKER_FIRST = false;
 
-const supportedFullLocaleSet = new Set<string>(FULL_LANGS as readonly string[]);
-const uiOnlyLocaleSet = new Set<string>(UI_ONLY_LANGS as readonly string[]);
 const CJK_RE = /[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]/;
 
 const normalizeText = (value: string): string =>
@@ -170,9 +168,8 @@ const normalizeBinderKey = (value: string): string =>
     value.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/(^_|_$)/g, '');
 
 const normalizeDocsLocale = (locale: string): string => {
-    if (locale === 'zh-HK') return 'zh-TW';
-    if (supportedFullLocaleSet.has(locale)) return locale;
-    if (uiOnlyLocaleSet.has(locale)) return 'en-US';
+    if (hasFullSupport(locale)) return resolveFileContentLocale(locale);
+    if (isUIOnly(locale)) return 'en-US';
     return 'en-US';
 };
 

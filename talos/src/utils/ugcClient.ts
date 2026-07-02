@@ -51,6 +51,10 @@ export type UGCComment = {
     depth: number;
     content: string;
     translatedContent?: string;
+    translationSourceLanguage?: string;
+    translationTargetLanguage?: string;
+    translationHidden?: boolean;
+    translationStatus?: 'translating' | 'failed';
     author?: UGCCommentAuthor | null;
     createdAt: string;
     score: number;

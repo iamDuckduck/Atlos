@@ -2,22 +2,23 @@
 @use '@/styles/curves.scss' as *;
 
 :root, :root[data-theme='light'] {
-    --actionbtn-bg: #{rgba($white-0, 0.2)};
+    --actionbtn-bg: #{rgba($black-1, 0.1)};
     --actionbtn-hover: #{rgba($primary-accent-4, 0.6)};
     --actionbtn-active: #{$primary-accent-4};
     --activebtn-active-hover: #{rgba($primary-accent-4, 0.3)};
+    --float-bg: #{rgba($black-1, 0.3)};
 }
 :root[data-theme='dark'] {
-    --actionbtn-bg: #{rgba($white-0, 0.2)};
+    --actionbtn-bg: #{rgba($black-1, 0.1)};
     --actionbtn-hover: #{rgba($primary-accent-4, 0.6)};
     --actionbtn-active: #{$primary-accent-4};
     --activebtn-active-hover: #{rgba($primary-accent-4, 0.3)};
+    --float-bg: #{rgba($black-1, 0.3)};
 }
 
 .shortActions {
     --short-action-content-opacity: 1;
     --short-action-disabled-content-opacity: 0.42;
-    --short-action-bg: var(--actionbtn-bg);
     --short-action-blur: 4px;
     --short-action-shadow: #{0 0 4px rgba($black-0, 0.4)};
 
@@ -53,7 +54,7 @@
         inset: 0;
         z-index: 0;
         border-radius: inherit;
-        background-color: var(--short-action-bg);
+        background-color: var(--actionbtn-bg);
         backdrop-filter: blur(var(--short-action-blur));
         transition: background-color 0.2s ease, backdrop-filter 0.2s ease;
         will-change: backdrop-filter;
@@ -95,7 +96,7 @@
         inset: 0;
         z-index: 0;
         border-radius: inherit;
-        background-color: var(--short-action-bg);
+        background-color: var(--actionbtn-bg);
         backdrop-filter: blur(var(--short-action-blur));
         pointer-events: none;
         transform: translateZ(0);
@@ -126,7 +127,7 @@
 }
 
 .shortActionButton {
-    --short-action-button-bg: var(--short-action-bg);
+    --short-action-button-bg: var(--actionbtn-bg);
 
     position: relative;
     width: 1.5rem;

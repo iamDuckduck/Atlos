@@ -33,8 +33,7 @@
       "sub": "Alt Bölge"
     },
     "noInfo": "Görsel yok. Yüklemek için {paste} / {click} kullanın.",
-    "communityRule1": "Yükleme yaparak, şunları okuduğunuzu ve kabul ettiğinizi onaylarsınız:",
-    "communityRule2": "Topluluk Kuralları",
+    "communityRule": "Yükleme yaparak, şunları okuduğunuzu ve kabul ettiğinizi onaylarsınız: <a href=\"{link}\">Topluluk Kuralları</a>",
     "uploading": "Yükleniyor...",
     "uploadPending": "Yüklendi. İnceleme bekleniyor.",
     "readFullText": "Tam metni okumak için tıklayın.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "Zaten bir hesabınız var mı?",
       "switchToLoginAction": "Buradan Giriş Yapın.",
       "ack": "Devam ederek şunları okuduğunuzu ve kabul ettiğinizi onaylarsınız: ",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Gizlilik Politikası</a> ve <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Hizmet Şartları</a>.",
+      "ackLink": "<a href=\"{privacy}\">Gizlilik Politikası</a> ve <a href=\"{tos}\">Hizmet Şartları</a>.",
       "hints": {
         "0": "Kimlik Bilgisi Uyuşmazlığı",
         "101": "E-posta Gerekli",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "Hesap Bağlama",
       "docsLead": "Devam ederek aşağıdaki tüm şartları kabul ettiğinizi onaylarsınız:",
-      "tos": "Hizmet Şartları",
-      "privacy": "Gizlilik Politikası",
-      "dataCollection": "Veri Toplama Kontrol Listesi",
-      "disclaimer": "Sorumluluk Reddi",
+      "docsLinks": "<a href=\"{tos}\">Hizmet Şartları</a> · <a href=\"{privacy}\">Gizlilik Politikası</a> · <a href=\"{data}\">Veri Toplama Kontrol Listesi</a> · <a href=\"{disclaimer}\">Sorumluluk Reddi</a>",
       "chinaTab": "Çin (Hypergryph)",
       "globalTab": "Küresel (Gryphline)",
       "CNStep0": "<a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>Resmi web sitesine</a> gidin ve giriş yaptığınızdan emin olun.",
@@ -349,8 +345,7 @@
       "trackPoints": "İzleme",
       "centerOnPosition": "Merkezde tut",
       "heatmap": "Isı haritası",
-      "configNote1": "Bu özelliği etkinleştirmek, şunları kabul ettiğiniz anlamına gelir: ",
-      "configNote2": " ve diğer şartlar."
+      "configNote": "Bu özelliği etkinleştirmek, şunları kabul ettiğiniz anlamına gelir: <a href=\"{data}\">Veri Toplama Kontrol Listesi</a> ve diğer şartlar."
     },
     "errors": {
       "10000": "Konum senkronizasyon oturumu sona erdi. Lütfen tekrar bağlayın.",

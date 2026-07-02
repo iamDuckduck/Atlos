@@ -43,8 +43,7 @@
       "comments": "留言区"
     },
     "noInfo": "暂无信息，使用 {paste} / {click} 上传点位截图",
-    "communityRule1": "上传前，请您详阅并遵循",
-    "communityRule2": "OEM 社区守则",
+    "communityRule": "上传前，请您详阅并遵循 <a href=\"{link}\">OEM 社区守则</a>",
     "uploading": "正在上传…",
     "uploadPending": "已提交，等待审核后展示。",
     "readFullText": "点此查看全文。",
@@ -68,15 +67,15 @@
       "actions": "留言操作",
       "translate": "翻译",
       "showOriginal": "显示原文",
-      "translatedFrom": "翻译自“{language}”",
-      "translating": "Translating",
+      "translatedFrom": "翻译自{language}",
+      "translating": "翻译中…",
       "translateFailed": "翻译失败",
       "upvote": "赞同",
       "downvote": "不赞同",
       "reply": "回复",
       "anonymous": "匿名用户",
-      "emptyWithRule": "暂无留言。发布内容请遵循社区守则。",
-      "ruleOnly": "发布内容请遵循社区守则。",
+      "emptyWithRule": "暂无留言。发布内容请遵循<a href=\"{link}\">社区守则</a>。",
+      "ruleOnly": "发布内容请遵循<a href=\"{link}\">社区守则</a>。",
       "loadFailed": "留言加载失败。",
       "submitFailed": "留言发布失败。"
     },
@@ -277,7 +276,7 @@
       "switchToLoginPrefix": "若已有账号，",
       "switchToLoginAction": "请点此登录。",
       "ack": "若继续操作，即表明您已阅读并同意我们的",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">隐私权政策</a>与<a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">使用条款</a>。",
+      "ackLink": "<a href=\"{privacy}\">隐私权政策</a>与<a href=\"{tos}\">使用条款</a>。",
       "hints": {
         "0": "账号/密码错误",
         "101": "请填写邮箱",
@@ -335,10 +334,7 @@
     "binding": {
       "title": "绑定账号",
       "docsLead": "若继续绑定，即表明您已阅读并同意下列条款与声明：",
-      "tos": "使用条款",
-      "privacy": "隐私权政策",
-      "dataCollection": "信息收集清单",
-      "disclaimer": "责任豁免声明",
+      "docsLinks": "<a href=\"{tos}\">使用条款</a> · <a href=\"{privacy}\">隐私权政策</a> · <a href=\"{data}\">信息收集清单</a> · <a href=\"{disclaimer}\">责任豁免声明</a>",
       "chinaTab": "国服 (Hypergryph)",
       "globalTab": "国际服 (Gryphline)",
       "CNStep0": "前往<a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>游戏官网</a>，登录一次或确保处于登录状态。",
@@ -380,8 +376,7 @@
       "trackPoints": "追踪点位",
       "centerOnPosition": "角色光标居中",
       "heatmap": "热力图",
-      "configNote1": "启用此功能表明您已接受我们的 ",
-      "configNote2": " 与其他条款。"
+      "configNote": "启用此功能表明您已接受我们的 <a href=\"{data}\">信息收集清单</a> 与其他条款。"
     },
     "errors": {
       "10000": "位置同步会话已过期，请重新绑定。",

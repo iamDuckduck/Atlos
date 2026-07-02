@@ -33,8 +33,7 @@
       "sub": "Sub"
     },
     "noInfo": "Tidak ada gambar. Gunakan {paste} / {click} untuk mengunggah.",
-    "communityRule1": "Sebelum mengunggah, pastikan Anda telah membaca dan mengikuti",
-    "communityRule2": "Panduan Komunitas",
+    "communityRule": "Sebelum mengunggah, pastikan Anda telah membaca dan mengikuti <a href=\"{link}\">Panduan Komunitas</a>",
     "uploading": "Mengunggah...",
     "uploadPending": "Terkirim. Akan ditampilkan setelah ditinjau.",
     "readFullText": "Klik untuk membaca teks lengkap.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "Sudah punya akun?",
       "switchToLoginAction": "Masuk di sini!",
       "ack": "Dengan melanjutkan, Anda menyetujui",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Kebijakan Privasi</a> dan <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Ketentuan Layanan</a>",
+      "ackLink": "<a href=\"{privacy}\">Kebijakan Privasi</a> dan <a href=\"{tos}\">Ketentuan Layanan</a>",
       "hints": {
         "0": "Kredensial tidak cocok",
         "101": "Email wajib",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "Tautkan Akun",
       "docsLead": "Dengan melanjutkan, Anda mengonfirmasi persetujuan terhadap syarat di bawah:",
-      "tos": "Syarat Layanan",
-      "privacy": "Kebijakan Privasi",
-      "dataCollection": "Daftar pengumpulan data",
-      "disclaimer": "Pernyataan penyangkalan",
+      "docsLinks": "<a href=\"{tos}\">Syarat Layanan</a> · <a href=\"{privacy}\">Kebijakan Privasi</a> · <a href=\"{data}\">Daftar pengumpulan data</a> · <a href=\"{disclaimer}\">Pernyataan penyangkalan</a>",
       "chinaTab": "China (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Buka <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>situs resmi</a> dan pastikan Anda sudah masuk.",
@@ -349,8 +345,7 @@
       "trackPoints": "Pelacakan",
       "centerOnPosition": "Di tengah",
       "heatmap": "Peta panas",
-      "configNote1": "Mengaktifkan fitur ini berarti Anda menerima ",
-      "configNote2": " dan syarat lainnya."
+      "configNote": "Mengaktifkan fitur ini berarti Anda menerima <a href=\"{data}\">Daftar pengumpulan data</a> dan syarat lainnya."
     },
     "errors": {
       "10000": "Sesi sinkronisasi lokasi kedaluwarsa. Tautkan lagi.",

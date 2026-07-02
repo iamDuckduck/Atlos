@@ -33,8 +33,7 @@
       "sub": "Sub"
     },
     "noInfo": "Sin imagen. Usa {paste} / {click} para subir.",
-    "communityRule1": "Antes de subir contenido, asegúrate de haber leído y seguir las",
-    "communityRule2": "Normas de la comunidad",
+    "communityRule": "Antes de subir contenido, asegúrate de haber leído y seguir las <a href=\"{link}\">Normas de la comunidad</a>",
     "uploading": "Subiendo...",
     "uploadPending": "Enviado. Se mostrará tras la revisión.",
     "readFullText": "Haz clic para leer el texto completo.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "Ya tienes una cuenta,",
       "switchToLoginAction": "Inicia sesión aquí.",
       "ack": "Al continuar, ha leído y acepta nuestras",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Política de privacidad</a> y <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Términos de servicio</a>.",
+      "ackLink": "<a href=\"{privacy}\">Política de privacidad</a> y <a href=\"{tos}\">Términos de servicio</a>.",
       "hints": {
         "0": "No coinciden las credenciales",
         "101": "Correo electrónico requerido",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "Vincular cuenta",
       "docsLead": "Al continuar, confirmas que aceptas los términos siguientes:",
-      "tos": "Términos de servicio",
-      "privacy": "Política de privacidad",
-      "dataCollection": "Lista de recopilación de datos",
-      "disclaimer": "Exención de responsabilidad",
+      "docsLinks": "<a href=\"{tos}\">Términos de servicio</a> · <a href=\"{privacy}\">Política de privacidad</a> · <a href=\"{data}\">Lista de recopilación de datos</a> · <a href=\"{disclaimer}\">Exención de responsabilidad</a>",
       "chinaTab": "China (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Ve al <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>sitio oficial</a> y asegúrate de haber iniciado sesión.",
@@ -349,8 +345,7 @@
       "trackPoints": "Rastreo",
       "centerOnPosition": "Mantener centrado",
       "heatmap": "Mapa de calor",
-      "configNote1": "Al habilitar esta función aceptas nuestras ",
-      "configNote2": " y otros términos."
+      "configNote": "Al habilitar esta función aceptas nuestras <a href=\"{data}\">Lista de recopilación de datos</a> y otros términos."
     },
     "errors": {
       "10000": "La sesión de sincronización de ubicación caducó. Vincula de nuevo.",

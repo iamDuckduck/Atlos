@@ -60,22 +60,6 @@ export const cleanToken = (raw: string): string => {
     return raw;
 };
 
-const docsLang = (locale: string): string => {
-    const normalized = locale.trim().toLowerCase();
-    if (normalized === 'zh-hk') return '';
-    if (normalized.startsWith('zh-cn')) return 'zh-cn';
-    if (normalized.startsWith('ja')) return 'ja';
-    if (normalized.startsWith('ko')) return 'ko';
-    if (normalized.startsWith('en')) return 'en';
-    return 'en';
-};
-
-export const docsUrl = (locale: string, slug: string): string => {
-    const lang = docsLang(locale);
-    const path = lang ? `/${encodeURIComponent(lang)}/docs/${slug}` : `/docs/${slug}`;
-    return `https://blog.opendfieldmap.org${path}`;
-};
-
 export const applyRole = (
     accountMode: LocatorAccountMode,
     role: EFRoleOption,

@@ -33,8 +33,7 @@
       "sub": "Sotto"
     },
     "noInfo": "Nessuna immagine. Usa {paste} / {click} per caricare.",
-    "communityRule1": "Prima di caricare, assicurati di aver letto e rispettare le",
-    "communityRule2": "Linee guida della community",
+    "communityRule": "Prima di caricare, assicurati di aver letto e rispettare le <a href=\"{link}\">Linee guida della community</a>",
     "uploading": "Caricamento...",
     "uploadPending": "Invio ricevuto. Verrà mostrato dopo la revisione.",
     "readFullText": "Clicca per leggere il testo completo.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "Hai già un account,",
       "switchToLoginAction": "Accedi qui.",
       "ack": "Procedendo dichiari di aver letto e accettato la ns",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Informativa sulla privacy</a> e <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Termini di servizio</a>.",
+      "ackLink": "<a href=\"{privacy}\">Informativa sulla privacy</a> e <a href=\"{tos}\">Termini di servizio</a>.",
       "hints": {
         "0": "Credenziali non valide",
         "101": "E-mail obbligatoria",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "Collega account",
       "docsLead": "Proseguendo, confermi di accettare i termini sotto indicati:",
-      "tos": "Termini di servizio",
-      "privacy": "Informativa sulla privacy",
-      "dataCollection": "Checklist raccolta dati",
-      "disclaimer": "Esclusione di responsabilità",
+      "docsLinks": "<a href=\"{tos}\">Termini di servizio</a> · <a href=\"{privacy}\">Informativa sulla privacy</a> · <a href=\"{data}\">Checklist raccolta dati</a> · <a href=\"{disclaimer}\">Esclusione di responsabilità</a>",
       "chinaTab": "Cina (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Vai al <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>sito ufficiale</a> e assicurati di essere loggato.",
@@ -349,8 +345,7 @@
       "trackPoints": "Tracciamento",
       "centerOnPosition": "Resta centrato",
       "heatmap": "Mappa di calore",
-      "configNote1": "Abilitando questa funzione accetti i nostri ",
-      "configNote2": " e altri termini."
+      "configNote": "Abilitando questa funzione accetti i nostri <a href=\"{data}\">Checklist raccolta dati</a> e altri termini."
     },
     "errors": {
       "10000": "Sessione di sincronizzazione scaduta. Collega di nuovo.",

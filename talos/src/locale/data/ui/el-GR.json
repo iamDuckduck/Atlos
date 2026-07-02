@@ -33,8 +33,7 @@
       "sub": "Υποπεριοχή"
     },
     "noInfo": "Δεν υπάρχει εικόνα. Χρησιμοποιήστε {paste} / {click} για μεταφόρτωση.",
-    "communityRule1": "Πριν από τη μεταφόρτωση, βεβαιωθείτε ότι έχετε διαβάσει και ακολουθείτε τις",
-    "communityRule2": "Οδηγίες κοινότητας",
+    "communityRule": "Πριν από τη μεταφόρτωση, βεβαιωθείτε ότι έχετε διαβάσει και ακολουθείτε τις <a href=\"{link}\">Οδηγίες κοινότητας</a>",
     "uploading": "Μεταφόρτωση...",
     "uploadPending": "Η υποβολή ελήφθη. Θα εμφανιστεί μετά τον έλεγχο.",
     "readFullText": "Κλικ για ανάγνωση ολόκληρου του κειμένου.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "Έχετε ήδη λογαριασμό;",
       "switchToLoginAction": "Συνδεθείτε εδώ.",
       "ack": "Συνεχίζοντας, αποδέχεστε",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Πολιτική Απορρήτου</a> και <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Όρους Χρήσης</a>.",
+      "ackLink": "<a href=\"{privacy}\">Πολιτική Απορρήτου</a> και <a href=\"{tos}\">Όρους Χρήσης</a>.",
       "hints": {
         "0": "Λάθος email ή κωδικός",
         "101": "Απαιτείται email",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "Σύνδεση λογαριασμού",
       "docsLead": "Συνεχίζοντας, επιβεβαιώνετε ότι αποδέχεστε τους παρακάτω όρους:",
-      "tos": "Όροι χρήσης",
-      "privacy": "Πολιτική απορρήτου",
-      "dataCollection": "Λίστα συλλογής δεδομένων",
-      "disclaimer": "Αποποίηση ευθύνης",
+      "docsLinks": "<a href=\"{tos}\">Όροι χρήσης</a> · <a href=\"{privacy}\">Πολιτική απορρήτου</a> · <a href=\"{data}\">Λίστα συλλογής δεδομένων</a> · <a href=\"{disclaimer}\">Αποποίηση ευθύνης</a>",
       "chinaTab": "Κίνα (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Μεταβείτε στον <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>επίσημο ιστότοπο</a> και βεβαιωθείτε ότι έχετε συνδεθεί.",
@@ -349,8 +345,7 @@
       "trackPoints": "Παρακολούθηση",
       "centerOnPosition": "Στο κέντρο",
       "heatmap": "Θερμικός χάρτης",
-      "configNote1": "Η ενεργοποίηση της λειτουργίας σημαίνει ότι αποδέχεστε τους ",
-      "configNote2": " και άλλους όρους."
+      "configNote": "Η ενεργοποίηση της λειτουργίας σημαίνει ότι αποδέχεστε τους <a href=\"{data}\">Λίστα συλλογής δεδομένων</a> και άλλους όρους."
     },
     "errors": {
       "10000": "Η συνεδρία συγχρονισμού τοποθεσίας έληξε. Συνδεθείτε ξανά.",

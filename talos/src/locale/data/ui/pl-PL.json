@@ -33,8 +33,7 @@
       "sub": "Podreg"
     },
     "noInfo": "Brak obrazu. Użyj {paste} / {click}, aby przesłać.",
-    "communityRule1": "Przed przesłaniem upewnij się, że przeczytałeś i przestrzegasz",
-    "communityRule2": "Wytycznych społeczności",
+    "communityRule": "Przed przesłaniem upewnij się, że przeczytałeś i przestrzegasz <a href=\"{link}\">Wytycznych społeczności</a>",
     "uploading": "Przesyłanie...",
     "uploadPending": "Przesłano. Zostanie wyświetlone po weryfikacji.",
     "readFullText": "Kliknij, aby przeczytać pełny tekst.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "Masz już konto?",
       "switchToLoginAction": "Zaloguj się tutaj.",
       "ack": "Kontynuując, potwierdzasz, że przeczytałeś i akceptujesz",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Politykę prywatności</a> oraz <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Warunki korzystania z usługi</a>.",
+      "ackLink": "<a href=\"{privacy}\">Politykę prywatności</a> oraz <a href=\"{tos}\">Warunki korzystania z usługi</a>.",
       "hints": {
         "0": "Błędny e-mail lub hasło",
         "101": "Wymagany adres e-mail",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "Powiąż konto",
       "docsLead": "Kontynuując, potwierdzasz zgodę na poniższe warunki:",
-      "tos": "Warunki korzystania",
-      "privacy": "Polityka prywatności",
-      "dataCollection": "Lista zbierania danych",
-      "disclaimer": "Wyłączenie odpowiedzialności",
+      "docsLinks": "<a href=\"{tos}\">Warunki korzystania</a> · <a href=\"{privacy}\">Polityka prywatności</a> · <a href=\"{data}\">Lista zbierania danych</a> · <a href=\"{disclaimer}\">Wyłączenie odpowiedzialności</a>",
       "chinaTab": "Chiny (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Wejdź na <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>oficjalną stronę</a> i upewnij się, że jesteś zalogowany.",
@@ -349,8 +345,7 @@
       "trackPoints": "Śledzenie",
       "centerOnPosition": "Wyśrodkuj gracza",
       "heatmap": "Mapa cieplna",
-      "configNote1": "Włączenie tej funkcji oznacza akceptację ",
-      "configNote2": " oraz innych warunków."
+      "configNote": "Włączenie tej funkcji oznacza akceptację <a href=\"{data}\">Lista zbierania danych</a> oraz innych warunków."
     },
     "errors": {
       "10000": "Sesja synchronizacji lokalizacji wygasła. Powiąż ponownie.",

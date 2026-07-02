@@ -33,8 +33,7 @@
       "sub": "서브"
     },
     "noInfo": "이미지 없음. {paste} / {click}하여 업로드하세요.",
-    "communityRule1": "업로드하기 전에 아래 내용을 읽고 준수해 주세요",
-    "communityRule2": "커뮤니티 가이드라인",
+    "communityRule": "업로드하기 전에 아래 내용을 읽고 준수해 주세요 <a href=\"{link}\">커뮤니티 가이드라인</a>",
     "uploading": "업로드 중…",
     "uploadPending": "제출되었습니다. 검토 후 표시됩니다.",
     "readFullText": "전체 내용을 보려면 클릭하세요.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "이미 계정이 있습니다.",
       "switchToLoginAction": "여기에서 로그인하세요.",
       "ack": "계속 진행하면 귀하는 당사의 내용을 읽고 동의하게 됩니다.",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">개인정보 보호정책</a> 및 <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">서비스 약관</a>.",
+      "ackLink": "<a href=\"{privacy}\">개인정보 보호정책</a> 및 <a href=\"{tos}\">서비스 약관</a>.",
       "hints": {
         "0": "자격 증명 불일치",
         "101": "이메일 필수",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "계정 연동",
       "docsLead": "계속 진행하면 아래의 모든 약관에 동의한 것으로 간주됩니다:",
-      "tos": "서비스 이용약관",
-      "privacy": "개인정보 처리방침",
-      "dataCollection": "개인정보 수집 및 이용 안내",
-      "disclaimer": "면책사항",
+      "docsLinks": "<a href=\"{tos}\">서비스 이용약관</a> · <a href=\"{privacy}\">개인정보 처리방침</a> · <a href=\"{data}\">개인정보 수집 및 이용 안내</a> · <a href=\"{disclaimer}\">면책사항</a>",
       "chinaTab": "중국 (Hypergryph)",
       "globalTab": "글로벌 (Gryphline)",
       "CNStep0": "<a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>공식 사이트</a>에 접속하여 로그인되어 있는지 확인해 주세요.",
@@ -349,8 +345,7 @@
       "trackPoints": "마커 추적",
       "centerOnPosition": "중앙 고정",
       "heatmap": "히트맵",
-      "configNote1": "이 기능을 활성화하면 ",
-      "configNote2": " 및 기타 약관에 동의한 것으로 간주됩니다."
+      "configNote": "이 기능을 활성화하면 <a href=\"{data}\">개인정보 수집 및 이용 안내</a> 및 기타 약관에 동의한 것으로 간주됩니다."
     },
     "errors": {
       "10000": "위치 동기화 세션이 만료되었습니다. 다시 연동해 주세요.",

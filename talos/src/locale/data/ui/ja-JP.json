@@ -33,8 +33,7 @@
       "sub": "サブエリア"
     },
     "noInfo": "画像なし。{paste} / {click} でアップロードしてください。",
-    "communityRule1": "アップロード前に、以下をよく読み遵守してください",
-    "communityRule2": "OEM コミュニティガイドライン",
+    "communityRule": "アップロード前に、以下をよく読み遵守してください <a href=\"{link}\">OEM コミュニティガイドライン</a>",
     "uploading": "アップロード中…",
     "uploadPending": "送信済みです。審査後に表示されます。",
     "readFullText": "クリックして全文を表示。",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "すでにアカウントをお持ちの方は、",
       "switchToLoginAction": "ログインはこちら。",
       "ack": "続行することで、以下の内容を確認し同意したものとみなされます：",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a> および <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">利用規約</a>。",
+      "ackLink": "<a href=\"{privacy}\">プライバシーポリシー</a> および <a href=\"{tos}\">利用規約</a>。",
       "hints": {
         "0": "認証エラー",
         "101": "メールを入力してください",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "アカウント連携",
       "docsLead": "続行すると、以下のすべての規約に同意したものとみなされます：",
-      "tos": "利用規約",
-      "privacy": "プライバシーポリシー",
-      "dataCollection": "個人情報収集および利用チェックリスト",
-      "disclaimer": "免責事項",
+      "docsLinks": "<a href=\"{tos}\">利用規約</a> · <a href=\"{privacy}\">プライバシーポリシー</a> · <a href=\"{data}\">個人情報収集および利用チェックリスト</a> · <a href=\"{disclaimer}\">免責事項</a>",
       "chinaTab": "中国 (Hypergryph)",
       "globalTab": "グローバル (Gryphline)",
       "CNStep0": "<a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>公式サイト</a>にアクセスし、ログイン済みであることを確認してください。",
@@ -349,8 +345,7 @@
       "trackPoints": "マーカー追跡",
       "centerOnPosition": "中央に固定",
       "heatmap": "ヒートマップ",
-      "configNote1": "この機能を有効にすると、",
-      "configNote2": "およびその他の規約に同意したものとみなされます。"
+      "configNote": "この機能を有効にすると、<a href=\"{data}\">個人情報収集および利用チェックリスト</a>およびその他の規約に同意したものとみなされます。"
     },
     "errors": {
       "10000": "位置同期セッションの有効期限が切れました。再連携してください。",

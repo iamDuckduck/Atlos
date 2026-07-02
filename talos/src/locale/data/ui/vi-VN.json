@@ -33,8 +33,7 @@
       "sub": "Phụ"
     },
     "noInfo": "Không có hình ảnh. Sử dụng {paste} / {click} để tải lên.",
-    "communityRule1": "Trước khi tải lên, hãy đảm bảo bạn đã đọc và tuân thủ",
-    "communityRule2": "Nguyên tắc cộng đồng",
+    "communityRule": "Trước khi tải lên, hãy đảm bảo bạn đã đọc và tuân thủ <a href=\"{link}\">Nguyên tắc cộng đồng</a>",
     "uploading": "Đang tải lên...",
     "uploadPending": "Đã gửi. Sẽ hiển thị sau khi được duyệt.",
     "readFullText": "Nhấn để đọc toàn bộ nội dung.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "Đã có tài khoản?",
       "switchToLoginAction": "Đăng nhập tại đây.",
       "ack": "Bằng việc tiếp tục, bạn xác nhận đã đọc và đồng ý với",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Chính sách bảo mật</a> và <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Điều khoản dịch vụ</a> của chúng tôi.",
+      "ackLink": "<a href=\"{privacy}\">Chính sách bảo mật</a> và <a href=\"{tos}\">Điều khoản dịch vụ</a> của chúng tôi.",
       "hints": {
         "0": "Email hoặc mật khẩu không đúng",
         "101": "Vui lòng nhập email",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "Liên kết tài khoản",
       "docsLead": "Khi tiếp tục, bạn xác nhận đồng ý với các điều khoản dưới đây:",
-      "tos": "Điều khoản dịch vụ",
-      "privacy": "Chính sách quyền riêng tư",
-      "dataCollection": "Danh sách thu thập dữ liệu",
-      "disclaimer": "Tuyên bố miễn trừ",
+      "docsLinks": "<a href=\"{tos}\">Điều khoản dịch vụ</a> · <a href=\"{privacy}\">Chính sách quyền riêng tư</a> · <a href=\"{data}\">Danh sách thu thập dữ liệu</a> · <a href=\"{disclaimer}\">Tuyên bố miễn trừ</a>",
       "chinaTab": "Trung Quốc (Hypergryph)",
       "globalTab": "Toàn cầu (Gryphline)",
       "CNStep0": "Vào <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>trang chính thức</a> và đảm bảo bạn đã đăng nhập.",
@@ -349,8 +345,7 @@
       "trackPoints": "Theo dõi",
       "centerOnPosition": "Giữ ở giữa",
       "heatmap": "Bản đồ nhiệt",
-      "configNote1": "Bật tính năng này đồng nghĩa bạn chấp nhận ",
-      "configNote2": " và các điều khoản khác."
+      "configNote": "Bật tính năng này đồng nghĩa bạn chấp nhận <a href=\"{data}\">Danh sách thu thập dữ liệu</a> và các điều khoản khác."
     },
     "errors": {
       "10000": "Phiên đồng bộ vị trí đã hết hạn. Vui lòng liên kết lại.",

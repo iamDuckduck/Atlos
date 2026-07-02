@@ -33,8 +33,7 @@
       "sub": "ย่อย"
     },
     "noInfo": "ไม่มีรูปภาพ ใช้ {paste} / {click} เพื่ออัปโหลด",
-    "communityRule1": "ก่อนอัปโหลด โปรดอ่านและปฏิบัติตาม",
-    "communityRule2": "แนวทางชุมชน",
+    "communityRule": "ก่อนอัปโหลด โปรดอ่านและปฏิบัติตาม <a href=\"{link}\">แนวทางชุมชน</a>",
     "uploading": "กำลังอัปโหลด...",
     "uploadPending": "ส่งเรียบร้อยแล้ว จะแสดงหลังการตรวจสอบ",
     "readFullText": "คลิกเพื่ออ่านข้อความเต็ม",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "มีบัญชีอยู่แล้ว?",
       "switchToLoginAction": "เข้าสู่ระบบที่นี่.",
       "ack": "การดำเนินการต่อ ถือว่าคุณได้อ่านและยอมรับ",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">นโยบายความเป็นส่วนตัว</a> และ <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">ข้อกำหนดในการให้บริการ</a> ของเรา",
+      "ackLink": "<a href=\"{privacy}\">นโยบายความเป็นส่วนตัว</a> และ <a href=\"{tos}\">ข้อกำหนดในการให้บริการ</a> ของเรา",
       "hints": {
         "0": "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
         "101": "โปรดระบุอีเมล",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "ผูกบัญชี",
       "docsLead": "หากดำเนินการต่อ แสดงว่าคุณยอมรับข้อกำหนดด้านล่าง:",
-      "tos": "ข้อกำหนดการให้บริการ",
-      "privacy": "นโยบายความเป็นส่วนตัว",
-      "dataCollection": "เช็กลิสต์การเก็บข้อมูล",
-      "disclaimer": "ข้อจำกัดความรับผิด",
+      "docsLinks": "<a href=\"{tos}\">ข้อกำหนดการให้บริการ</a> · <a href=\"{privacy}\">นโยบายความเป็นส่วนตัว</a> · <a href=\"{data}\">เช็กลิสต์การเก็บข้อมูล</a> · <a href=\"{disclaimer}\">ข้อจำกัดความรับผิด</a>",
       "chinaTab": "จีน (Hypergryph)",
       "globalTab": "โกลบอล (Gryphline)",
       "CNStep0": "ไปที่<a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>เว็บไซต์ทางการ</a> และตรวจสอบว่าได้ล็อกอินแล้ว",
@@ -349,8 +345,7 @@
       "trackPoints": "ติดตามจุด",
       "centerOnPosition": "ล็อกกึ่งกลาง",
       "heatmap": "ฮีตแมป",
-      "configNote1": "การเปิดฟีเจอร์นี้หมายถึงคุณยอมรับ ",
-      "configNote2": " และข้อกำหนดอื่นๆ"
+      "configNote": "การเปิดฟีเจอร์นี้หมายถึงคุณยอมรับ <a href=\"{data}\">เช็กลิสต์การเก็บข้อมูล</a> และข้อกำหนดอื่นๆ"
     },
     "errors": {
       "10000": "เซสชันซิงก์ตำแหน่งหมดอายุ กรุณาผูกใหม่",

@@ -33,8 +33,7 @@
       "sub": "Sub"
     },
     "noInfo": "Sem imagem. Use {paste} / {click} para fazer upload.",
-    "communityRule1": "Antes de enviar, confirme que você leu e segue as",
-    "communityRule2": "Diretrizes da Comunidade",
+    "communityRule": "Antes de enviar, confirme que você leu e segue as <a href=\"{link}\">Diretrizes da Comunidade</a>",
     "uploading": "Enviando...",
     "uploadPending": "Enviado. Será exibido após revisão.",
     "readFullText": "Clique para ler o texto completo.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "Já tem uma conta?",
       "switchToLoginAction": "Entrar!",
       "ack": "Ao continuar, você concorda com nossa",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Política de Privacidade</a> e <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Termos de Serviço</a>",
+      "ackLink": "<a href=\"{privacy}\">Política de Privacidade</a> e <a href=\"{tos}\">Termos de Serviço</a>",
       "hints": {
         "0": "Credenciais inválidas",
         "101": "Email obrigatório",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "Vincular conta",
       "docsLead": "Ao continuar, você confirma que concorda com os termos abaixo:",
-      "tos": "Termos de Serviço",
-      "privacy": "Política de Privacidade",
-      "dataCollection": "Checklist de coleta de dados",
-      "disclaimer": "Isenção de responsabilidade",
+      "docsLinks": "<a href=\"{tos}\">Termos de Serviço</a> · <a href=\"{privacy}\">Política de Privacidade</a> · <a href=\"{data}\">Checklist de coleta de dados</a> · <a href=\"{disclaimer}\">Isenção de responsabilidade</a>",
       "chinaTab": "China (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Acesse o <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>site oficial</a> e confirme que está logado.",
@@ -349,8 +345,7 @@
       "trackPoints": "Rastreio",
       "centerOnPosition": "Seguir jogador",
       "heatmap": "Mapa de calor",
-      "configNote1": "Ao ativar este recurso, você aceita nossos ",
-      "configNote2": " e outros termos."
+      "configNote": "Ao ativar este recurso, você aceita nossos <a href=\"{data}\">Checklist de coleta de dados</a> e outros termos."
     },
     "errors": {
       "10000": "Sessão de sincronização expirada. Vincule novamente.",

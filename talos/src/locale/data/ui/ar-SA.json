@@ -33,8 +33,7 @@
       "sub": "الفرعية"
     },
     "noInfo": "لا توجد صورة. استخدم {paste} / {click} للرفع.",
-    "communityRule1": "برفعك للصورة، أنت تؤكد قراءتك والتزامك بـ",
-    "communityRule2": "إرشادات المجتمع",
+    "communityRule": "برفعك للصورة، أنت تؤكد قراءتك والتزامك بـ <a href=\"{link}\">إرشادات المجتمع</a>",
     "uploading": "جاري الرفع...",
     "uploadPending": "تم الرفع. بانتظار المراجعة.",
     "readFullText": "انقر لقراءة النص الكامل.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "لديك حساب؟",
       "switchToLoginAction": "سجل دخولك.",
       "ack": "بمتابعتك، أنت توافق على",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">سياسة الخصوصية</a> و<a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">شروط الخدمة</a>.",
+      "ackLink": "<a href=\"{privacy}\">سياسة الخصوصية</a> و<a href=\"{tos}\">شروط الخدمة</a>.",
       "hints": {
         "0": "بيانات غير صحيحة",
         "101": "البريد مطلوب",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "ربط الحساب",
       "docsLead": "بمتابعتك، أنت توافق على الشروط التالية:",
-      "tos": "شروط الخدمة",
-      "privacy": "سياسة الخصوصية",
-      "dataCollection": "قائمة جمع البيانات",
-      "disclaimer": "إخلاء المسؤولية",
+      "docsLinks": "<a href=\"{tos}\">شروط الخدمة</a> · <a href=\"{privacy}\">سياسة الخصوصية</a> · <a href=\"{data}\">قائمة جمع البيانات</a> · <a href=\"{disclaimer}\">إخلاء المسؤولية</a>",
       "chinaTab": "الصين (Hypergryph)",
       "globalTab": "عالمي (Gryphline)",
       "CNStep0": "اذهب لـ <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>الموقع الرسمي</a> وسجل دخولك.",
@@ -349,8 +345,7 @@
       "trackPoints": "التتبع",
       "centerOnPosition": "إبقاء التوسيط",
       "heatmap": "خريطة حرارية",
-      "configNote1": "تفعيلك لهذه الميزة يعني موافقتك على ",
-      "configNote2": " والشروط الأخرى."
+      "configNote": "تفعيلك لهذه الميزة يعني موافقتك على <a href=\"{data}\">قائمة جمع البيانات</a> والشروط الأخرى."
     },
     "errors": {
       "10000": "انتهت جلسة المزامنة. يرجى الربط مجدداً.",

@@ -33,8 +33,7 @@
       "sub": "Sub"
     },
     "noInfo": "Tiada gambar. Guna {paste} / {click} untuk muat naik.",
-    "communityRule1": "Sebelum memuat naik, pastikan anda telah membaca dan mematuhi",
-    "communityRule2": "Garis Panduan Komuniti",
+    "communityRule": "Sebelum memuat naik, pastikan anda telah membaca dan mematuhi <a href=\"{link}\">Garis Panduan Komuniti</a>",
     "uploading": "Memuat naik...",
     "uploadPending": "Hantaran diterima. Akan dipaparkan selepas semakan.",
     "readFullText": "Klik untuk membaca teks penuh.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "Sudah mempunyai akaun?",
       "switchToLoginAction": "Log masuk di sini.",
       "ack": "Dengan meneruskan, anda bersetuju bahawa anda telah membaca dan menerima",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Dasar Privasi</a> dan <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Syarat Perkhidmatan</a> kami.",
+      "ackLink": "<a href=\"{privacy}\">Dasar Privasi</a> dan <a href=\"{tos}\">Syarat Perkhidmatan</a> kami.",
       "hints": {
         "0": "Emel/kata laluan tidak sah",
         "101": "Sila masukkan e-mel",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "Paut Akaun",
       "docsLead": "Dengan meneruskan, anda mengesahkan persetujuan terhadap syarat di bawah:",
-      "tos": "Terma Perkhidmatan",
-      "privacy": "Dasar Privasi",
-      "dataCollection": "Senarai semak pengumpulan data",
-      "disclaimer": "Penafian Liabiliti",
+      "docsLinks": "<a href=\"{tos}\">Terma Perkhidmatan</a> · <a href=\"{privacy}\">Dasar Privasi</a> · <a href=\"{data}\">Senarai semak pengumpulan data</a> · <a href=\"{disclaimer}\">Penafian Liabiliti</a>",
       "chinaTab": "China (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Pergi ke <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>laman rasmi</a> dan pastikan anda sudah log masuk.",
@@ -349,8 +345,7 @@
       "trackPoints": "Jejak",
       "centerOnPosition": "Di tengah",
       "heatmap": "Peta haba",
-      "configNote1": "Mengaktifkan ciri ini bermaksud anda menerima ",
-      "configNote2": " dan terma lain."
+      "configNote": "Mengaktifkan ciri ini bermaksud anda menerima <a href=\"{data}\">Senarai semak pengumpulan data</a> dan terma lain."
     },
     "errors": {
       "10000": "Sesi segerak lokasi tamat. Sila paut semula.",

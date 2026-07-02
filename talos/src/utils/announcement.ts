@@ -1,3 +1,5 @@
+import { DOCS_LOCALES, docsLocale, type DocsLocale } from './docsLink';
+
 export const getAnnouncementApiBase = (): string => {
     const envBase = (import.meta.env.VITE_ANNOUNCEMENT_API_BASE as string | undefined)?.trim();
     if (envBase) return envBase.replace(/\/$/, '');
@@ -38,8 +40,8 @@ const OLD_ANNOUNCEMENT_VERSION_KEY_PREFIX = 'announcement_version';
 const OLD_ANNOUNCEMENT_LAST_READ_DATE_KEY = 'announcement_last_read';
 const OLD_ANNOUNCEMENT_LAST_READ_ID_KEY = 'announcement_last_read_id';
 
-type ApiLocale = 'en' | 'zh-cn' | 'zh-hk' | 'ja' | 'ko';
-const API_LOCALES: ApiLocale[] = ['en', 'zh-cn', 'zh-hk', 'ja', 'ko'];
+type ApiLocale = DocsLocale;
+const API_LOCALES: ApiLocale[] = [...DOCS_LOCALES];
 
 type AnnouncementLocaleCache = {
     latestId?: string | null;
@@ -78,19 +80,6 @@ const parseAnnouncementBodyCache = (raw: string | null): AnnouncementApiItem[] |
     } catch {
         return undefined;
     }
-};
-
-const toApiLocale = (locale?: string): ApiLocale => {
-    const normalized = (locale || '').toLowerCase();
-    if (normalized.startsWith('zh-cn')) return 'zh-cn';
-    if (normalized.startsWith('zh-hk') || normalized.startsWith('zh-tw')) return 'zh-hk';
-    if (normalized.startsWith('ja')) return 'ja';
-    if (normalized.startsWith('ko')) return 'ko';
-    return 'en';
-};
-
-export const getAnnouncementLocaleKey = (locale?: string): ApiLocale => {
-    return toApiLocale(locale);
 };
 
 const normalizeStorageState = (raw: unknown): AnnouncementStorageState => {
@@ -187,7 +176,7 @@ const writeAnnouncementStorageState = (state: AnnouncementStorageState): void =>
 };
 
 export const getAnnouncementLocaleCache = (locale?: string): AnnouncementLocaleCache => {
-    const key = getAnnouncementLocaleKey(locale);
+    const key = docsLocale(locale);
     return readAnnouncementStorageState().locales?.[key] ?? {};
 };
 
@@ -195,7 +184,7 @@ export const setAnnouncementLocaleCache = (
     locale: string | undefined,
     patch: AnnouncementLocaleCache,
 ): void => {
-    const key = getAnnouncementLocaleKey(locale);
+    const key = docsLocale(locale);
     const state = readAnnouncementStorageState();
     const locales = state.locales ?? {};
     locales[key] = {
@@ -327,7 +316,7 @@ const normalizeAnnouncementLatestMeta = (raw: unknown): AnnouncementLatestMeta |
 };
 
 export const fetchAnnouncementLatestMeta = async (locale?: string): Promise<AnnouncementLatestMeta | null> => {
-    const currentLocale = toApiLocale(locale);
+    const currentLocale = docsLocale(locale);
     const localeCandidates: ApiLocale[] = currentLocale === 'en' ? ['en'] : [currentLocale, 'en'];
     const bases = getAnnouncementApiBases();
 
@@ -356,7 +345,7 @@ export const fetchAnnouncementLatestMeta = async (locale?: string): Promise<Anno
 };
 
 export const fetchAnnouncements = async (locale?: string): Promise<AnnouncementApiItem[]> => {
-    const currentLocale = toApiLocale(locale);
+    const currentLocale = docsLocale(locale);
     const localeCandidates: ApiLocale[] = currentLocale === 'en' ? ['en'] : [currentLocale, 'en'];
     const bases = getAnnouncementApiBases();
     let firstEmpty: AnnouncementApiItem[] | null = null;

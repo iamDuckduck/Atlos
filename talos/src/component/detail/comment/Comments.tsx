@@ -6,6 +6,7 @@ import { openOemAuthModal } from '@/component/login/authEvents';
 import { useAuthStore } from '@/store/auth';
 import { useLocale, useTranslateUI } from '@/locale';
 import { formatRelativeTime, parseDateLike } from '@/utils/timeFormat';
+import { docsLink, linkTpl } from '@/utils/docsLink';
 import type { IMarkerData } from '@/data/marker';
 import {
     listUGCComments,
@@ -416,9 +417,10 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         syncFlag(comment.id, Boolean(comment.flagged), nextFlagged);
     }, [patchComment, requireAuth, syncFlag]);
 
+    const ruleUrl = useMemo(() => docsLink(locale, 'communityGuidelines'), [locale]);
     const footerText = hasComments
-        ? tUI('detail.comments.ruleOnly')
-        : tUI('detail.comments.emptyWithRule');
+        ? linkTpl(tUI('detail.comments.ruleOnly'), ruleUrl)
+        : linkTpl(tUI('detail.comments.emptyWithRule'), ruleUrl);
     const displayComments = useMemo(() => flatDisplay(comments), [comments]);
     const replyQuoteShown = Boolean(renderedReply && replyVisible);
     const replyQuoteText = renderedReply

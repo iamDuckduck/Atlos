@@ -43,8 +43,7 @@
       "comments": "Comments"
     },
     "noInfo": "No image. Use {paste} / {click} to upload.",
-    "communityRule1": "By uploading, make sure you have read and follow the",
-    "communityRule2": "Community Guidelines",
+    "communityRule": "By uploading, make sure you have read and follow the <a href=\"{link}\">Community Guidelines</a>",
     "uploading": "Uploading...",
     "uploadPending": "Uploaded. Waiting for review.",
     "readFullText": "Click to read full text.",
@@ -75,8 +74,8 @@
       "downvote": "Downvote",
       "reply": "Reply",
       "anonymous": "Anonymous",
-      "emptyWithRule": "No comments yet. Please follow community guidelines when posting.",
-      "ruleOnly": "Please follow community guidelines when posting.",
+      "emptyWithRule": "No comments yet. Please follow <a href=\"{link}\">community guidelines</a> when posting.",
+      "ruleOnly": "Please follow <a href=\"{link}\">community guidelines</a> when posting.",
       "loadFailed": "Comments failed to load.",
       "submitFailed": "Comment failed to submit."
     },
@@ -277,7 +276,7 @@
       "switchToLoginPrefix": "Already have an account?",
       "switchToLoginAction": "Sign in here.",
       "ack": "By proceeding, you have read and agree to our ",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Privacy Policy</a> and <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Terms of Service</a>.",
+      "ackLink": "<a href=\"{privacy}\">Privacy Policy</a> and <a href=\"{tos}\">Terms of Service</a>.",
       "hints": {
         "0": "Credential Mismatch",
         "101": "Email Required",
@@ -335,10 +334,7 @@
     "binding": {
       "title": "Binding Account",
       "docsLead": "By proceeding, you confirm your agreement to all the terms below:",
-      "tos": "Terms of Service",
-      "privacy": "Privacy Policy",
-      "dataCollection": "Data Collection Checklist",
-      "disclaimer": "Disclaimer of Liability",
+      "docsLinks": "<a href=\"{tos}\">Terms of Service</a> · <a href=\"{privacy}\">Privacy Policy</a> · <a href=\"{data}\">Data Collection Checklist</a> · <a href=\"{disclaimer}\">Disclaimer of Liability</a>",
       "chinaTab": "China (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Go to <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>the official website</a>, make sure you have signed in.",
@@ -380,8 +376,7 @@
       "trackPoints": "Tracking",
       "centerOnPosition": "Keep centered",
       "heatmap": "Heatmap",
-      "configNote1": "Enabling this feature means you accept our ",
-      "configNote2": " and other terms."
+      "configNote": "Enabling this feature means you accept our <a href=\"{data}\">Data Collection Checklist</a> and other terms."
     },
     "errors": {
       "10000": "Location sync session expired. Please bind again.",

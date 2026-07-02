@@ -60,18 +60,17 @@
 }
 
 .replyNode {
-    margin-left: calc(var(--comment-display-depth, 1) * 1.25rem);
-    padding-left: 0.85rem;
+    margin-left: calc(calc(var(--comment-display-depth, 1) - 0.5) * 1.25rem);
+    padding-left: 0.75rem;
 
     &::before {
         content: '';
         position: absolute;
         left: 0;
-        top: 0.25rem;
-        bottom: 0.3rem;
-        width: 3px;
+        top: 0;
+        width: 2px;
+        height: 100%;
         background: var(--comment-line);
-        opacity: 0.9;
     }
 }
 
@@ -209,7 +208,7 @@
 
     &[data-translation-note]::after {
         display: inline-block;
-        content: ' (\2006' attr(data-translation-note) ')';
+        content: ' (\2006' attr(data-translation-note) '\2004)';
         color: var(--comment-muted);
         font-family: 'Fedra Sans Pro', "UD_ShinGo Regular", "Noto Sans Arabic", "Noto Sans Thai", sans-serif;
         font-style: italic;
@@ -247,7 +246,7 @@
 
 .commentDivider {
     position: relative;
-    width: 100%;
+    width: 95%;
     height: 1.5px;
     margin: 0.5rem auto 0.25rem;
     background: linear-gradient(
@@ -281,6 +280,15 @@
     text-align: center;
     color: var(--comment-muted);
     line-height: 1.2;
+
+    a {
+        color: $primary-accent-6;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
 }
 
 .commentBottomBlur {
@@ -369,7 +377,6 @@
 .commentReplyQuote {
     min-width: 0;
     min-height: 0;
-    max-width: 100%;
     color: inherit;
     line-height: inherit;
     opacity: 0.75;

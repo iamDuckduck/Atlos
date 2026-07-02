@@ -7,6 +7,7 @@ import profileStyles from '@/component/login/profile/profile.module.scss';
 import { Trigger } from '@/component/trigger/trigger';
 import { useAuthStore } from '@/store/auth';
 import { useLocale, useTranslateUI } from '@/locale';
+import { docsLink, linksTpl } from '@/utils/docsLink';
 import {
     getEFBindingStatus,
     unlinkEFBinding,
@@ -21,7 +22,7 @@ import {
 import { getCachedBinding, setCachedBinding } from '@/utils/backendCache';
 import ConfigIcon from '@/assets/images/UI/config.svg?react';
 import { LOCATOR_REMINDER_SCOPE_OPTIONS } from './proximityConfig';
-import { docsUrl, disableSession } from './session';
+import { disableSession } from './session';
 import styles from './Locator.module.scss';
 
 const SCOPES: EFTrackerScope[] = LOCATOR_REMINDER_SCOPE_OPTIONS;
@@ -222,7 +223,10 @@ const LocationConfig: React.FC<LocationConfigProps> = ({
         || (binding?.serverId !== undefined ? `${t('locator.config.server')} ${binding.serverId}` : '-');
     const name = binding?.nickname || binding?.roleId || '-';
     const roleId = binding?.roleId || '-';
-    const dataUrl = docsUrl(locale, 'data-collection');
+    const dataUrl = docsLink(locale, 'dataCollection');
+    const featureNote = useMemo(() => (
+        linksTpl(t('locator.config.configNote'), { data: dataUrl })
+    ), [dataUrl, t]);
 
     return (
         <Modal
@@ -310,11 +314,7 @@ const LocationConfig: React.FC<LocationConfigProps> = ({
                     />
                 </div>
                 <div className={styles.featureNote}>
-                    {t('locator.config.configNote1')}
-                    <a href={dataUrl} target="_blank" rel="noopener noreferrer">
-                        {t('locator.binding.dataCollection')}
-                    </a>
-                    {t('locator.config.configNote2')}
+                    {featureNote}
                 </div>
 
                 <div

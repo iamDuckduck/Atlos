@@ -6,6 +6,7 @@ import { AccessButton } from '@/component/login/access';
 import { TabView, type TabViewItem } from '@/component/tabView';
 import { useAuthStore } from '@/store/auth';
 import { useLocale, useTranslateUI } from '@/locale';
+import { docsLinks as makeDocsLinks, linksTpl } from '@/utils/docsLink';
 import {
     bindEFRole,
     exchangeEFToken,
@@ -23,7 +24,6 @@ import {
 import {
     applyRole,
     cleanToken,
-    docsUrl,
     extractToken,
 } from './session';
 import styles from './Locator.module.scss';
@@ -202,6 +202,18 @@ const LocationBinding: React.FC<LocationBindingProps> = ({
         : enableLocatorOnBound
             ? t('locator.binding.bind')
             : t('locator.binding.bindOnly');
+    const docLinks = useMemo(() => makeDocsLinks(locale), [locale]);
+    const docsText = useMemo(() => (
+        linksTpl(
+            t('locator.binding.docsLinks'),
+            {
+                tos: docLinks.tos,
+                privacy: docLinks.privacy,
+                data: docLinks.dataCollection,
+                disclaimer: docLinks.disclaimer,
+            },
+        )
+    ), [docLinks, t]);
 
     return (
         <Modal
@@ -266,23 +278,7 @@ const LocationBinding: React.FC<LocationBindingProps> = ({
                 <div className={styles.bindingFooter}>
                     <div className={styles.policyReminder}>
                         <span>{t('locator.binding.docsLead')}</span>
-                        <span>
-                            <a href={docsUrl(locale, 'tos')} target="_blank" rel="noopener noreferrer">
-                                {t('locator.binding.tos')}
-                            </a>
-                            {' · '}
-                            <a href={docsUrl(locale, 'privacy')} target="_blank" rel="noopener noreferrer">
-                                {t('locator.binding.privacy')}
-                            </a>
-                            {' · '}
-                            <a href={docsUrl(locale, 'data-collection')} target="_blank" rel="noopener noreferrer">
-                                {t('locator.binding.dataCollection')}
-                            </a>
-                            {' · '}
-                            <a href={docsUrl(locale, 'disclaimer')} target="_blank" rel="noopener noreferrer">
-                                {t('locator.binding.disclaimer')}
-                            </a>
-                        </span>
+                        <span>{docsText}</span>
                     </div>
                     <div className={classNames(styles.singleAction, profileStyles.profileActions)}>
                         <AccessButton

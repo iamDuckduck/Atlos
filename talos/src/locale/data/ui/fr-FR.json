@@ -33,8 +33,7 @@
       "sub": "Sous"
     },
     "noInfo": "Aucune image. Utilisez {paste} / {click} pour importer.",
-    "communityRule1": "Avant de téléverser, assurez-vous d’avoir lu et de respecter les",
-    "communityRule2": "Règles de la communauté",
+    "communityRule": "Avant de téléverser, assurez-vous d’avoir lu et de respecter les <a href=\"{link}\">Règles de la communauté</a>",
     "uploading": "Téléversement...",
     "uploadPending": "Envoi reçu. Affichage après vérification.",
     "readFullText": "Cliquez pour lire le texte complet.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "Vous avez déjà un compte ?",
       "switchToLoginAction": "Connectez-vous !",
       "ack": "En poursuivant, vous avez lu et accepté notre",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Politique de confidentialité</a> et <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Conditions d’utilisation</a>.",
+      "ackLink": "<a href=\"{privacy}\">Politique de confidentialité</a> et <a href=\"{tos}\">Conditions d’utilisation</a>.",
       "hints": {
         "0": "Identifiants incorrects",
         "101": "Email requis",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "Lier le compte",
       "docsLead": "En continuant, vous confirmez accepter les termes ci-dessous :",
-      "tos": "Conditions d'utilisation",
-      "privacy": "Politique de confidentialité",
-      "dataCollection": "Liste de collecte de données",
-      "disclaimer": "Clause de non-responsabilité",
+      "docsLinks": "<a href=\"{tos}\">Conditions d'utilisation</a> · <a href=\"{privacy}\">Politique de confidentialité</a> · <a href=\"{data}\">Liste de collecte de données</a> · <a href=\"{disclaimer}\">Clause de non-responsabilité</a>",
       "chinaTab": "Chine (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Rendez-vous sur le <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>site officiel</a> et assurez-vous d'être connecté.",
@@ -349,8 +345,7 @@
       "trackPoints": "Suivi",
       "centerOnPosition": "Maintenir centré",
       "heatmap": "Carte thermique",
-      "configNote1": "Activer cette fonctionnalité signifie que vous acceptez nos ",
-      "configNote2": " et autres conditions."
+      "configNote": "Activer cette fonctionnalité signifie que vous acceptez nos <a href=\"{data}\">Liste de collecte de données</a> et autres conditions."
     },
     "errors": {
       "10000": "La session de synchro de position a expiré. Veuillez lier à nouveau.",

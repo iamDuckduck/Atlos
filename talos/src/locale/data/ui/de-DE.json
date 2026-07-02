@@ -33,8 +33,7 @@
       "sub": "Unter"
     },
     "noInfo": "Kein Bild. Nutze {paste} / {click} zum Hochladen.",
-    "communityRule1": "Bitte lesen und befolgen Sie vor dem Hochladen die folgenden",
-    "communityRule2": "Community-Richtlinien",
+    "communityRule": "Bitte lesen und befolgen Sie vor dem Hochladen die folgenden <a href=\"{link}\">Community-Richtlinien</a>",
     "uploading": "Wird hochgeladen...",
     "uploadPending": "Eingereicht. Wird nach Prüfung angezeigt.",
     "readFullText": "Klicken Sie, um den vollständigen Text zu lesen.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "Bereits registriert?",
       "switchToLoginAction": "Hier anmelden.",
       "ack": "Durch die Fortsetzung bestätigen Sie, dass Sie unsere ",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Datenschutzerklärung</a> und <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Nutzungsbedingungen</a> gelesen haben und ihnen zustimmen.",
+      "ackLink": "<a href=\"{privacy}\">Datenschutzerklärung</a> und <a href=\"{tos}\">Nutzungsbedingungen</a> gelesen haben und ihnen zustimmen.",
       "hints": {
         "0": "Zugangsdaten falsch",
         "101": "E-Mail erforderlich",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "Konto verbinden",
       "docsLead": "Wenn Sie fortfahren, bestätigen Sie, dass Sie den folgenden Bedingungen zustimmen:",
-      "tos": "Nutzungsbedingungen",
-      "privacy": "Datenschutzerklärung",
-      "dataCollection": "Checkliste zur Datenerfassung",
-      "disclaimer": "Haftungsausschluss",
+      "docsLinks": "<a href=\"{tos}\">Nutzungsbedingungen</a> · <a href=\"{privacy}\">Datenschutzerklärung</a> · <a href=\"{data}\">Checkliste zur Datenerfassung</a> · <a href=\"{disclaimer}\">Haftungsausschluss</a>",
       "chinaTab": "China (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Gehen Sie auf die <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>offizielle Website</a> und stellen Sie sicher, dass Sie angemeldet sind.",
@@ -349,8 +345,7 @@
       "trackPoints": "Tracking",
       "centerOnPosition": "Zentriert bleiben",
       "heatmap": "Heatmap",
-      "configNote1": "Durch Aktivieren dieser Funktion akzeptieren Sie unsere ",
-      "configNote2": " und weitere Bedingungen."
+      "configNote": "Durch Aktivieren dieser Funktion akzeptieren Sie unsere <a href=\"{data}\">Checkliste zur Datenerfassung</a> und weitere Bedingungen."
     },
     "errors": {
       "10000": "Standortsync-Sitzung abgelaufen. Bitte erneut binden.",

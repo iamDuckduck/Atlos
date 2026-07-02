@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useAuthStore } from '@/store/auth';
 import { useLocale } from '@/locale';
-import { getAnnouncementLocaleKey } from '@/utils/announcement';
+import { docsLink } from '@/utils/docsLink';
 import { getUpvoteCount, type PointImagesState } from './useUGCPointImages';
 import type { UploadState } from './useUGCUpload';
 
@@ -45,7 +45,7 @@ const useImageUiState = (imageState: PointImagesState, uploadState: UploadState)
     const showRules = canUpload && state === 'noImage' && karma < 2;
 
     const rulesUrl = useMemo(
-        () => `https://blog.opendfieldmap.org/${getAnnouncementLocaleKey(locale)}/docs/community-guidelines`,
+        () => docsLink(locale, 'communityGuidelines'),
         [locale],
     );
 

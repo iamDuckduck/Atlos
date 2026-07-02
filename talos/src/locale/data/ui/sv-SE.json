@@ -33,8 +33,7 @@
       "sub": "Zon"
     },
     "noInfo": "Ingen bild. Använd {paste} / {click} för att ladda upp.",
-    "communityRule1": "Innan du laddar upp, se till att du har läst och följer",
-    "communityRule2": "Community-riktlinjer",
+    "communityRule": "Innan du laddar upp, se till att du har läst och följer <a href=\"{link}\">Community-riktlinjer</a>",
     "uploading": "Laddar upp...",
     "uploadPending": "Uppladdningen mottagen. Visas efter granskning.",
     "readFullText": "Klicka för att läsa hela texten.",
@@ -246,7 +245,7 @@
       "switchToLoginPrefix": "Har du redan ett konto?",
       "switchToLoginAction": "Logga in här.",
       "ack": "Genom att fortsätta godkänner du",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Sekretesspolicyn</a> och <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">användarvillkoren</a>.",
+      "ackLink": "<a href=\"{privacy}\">Sekretesspolicyn</a> och <a href=\"{tos}\">användarvillkoren</a>.",
       "hints": {
         "0": "Fel e-post eller lösenord",
         "101": "-post krävs",
@@ -304,10 +303,7 @@
     "binding": {
       "title": "Koppla konto",
       "docsLead": "Genom att fortsätta bekräftar du att du godkänner villkoren nedan:",
-      "tos": "Användarvillkor",
-      "privacy": "Integritetspolicy",
-      "dataCollection": "Checklista för datainsamling",
-      "disclaimer": "Ansvarsfriskrivning",
+      "docsLinks": "<a href=\"{tos}\">Användarvillkor</a> · <a href=\"{privacy}\">Integritetspolicy</a> · <a href=\"{data}\">Checklista för datainsamling</a> · <a href=\"{disclaimer}\">Ansvarsfriskrivning</a>",
       "chinaTab": "Kina (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Gå till <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>den officiella webbplatsen</a> och se till att du är inloggad.",
@@ -349,8 +345,7 @@
       "trackPoints": "Spårning",
       "centerOnPosition": "Håll centrerad",
       "heatmap": "Värmekarta",
-      "configNote1": "Att aktivera funktionen innebär att du accepterar våra ",
-      "configNote2": " och andra villkor."
+      "configNote": "Att aktivera funktionen innebär att du accepterar våra <a href=\"{data}\">Checklista för datainsamling</a> och andra villkor."
     },
     "errors": {
       "10000": "Plats-synkningen har löpt ut. Koppla igen.",

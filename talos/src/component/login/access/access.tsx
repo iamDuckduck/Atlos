@@ -6,8 +6,9 @@ import LoginIcon from '@/assets/logos/login.svg?react';
 import RegisterIcon from '@/assets/logos/register.svg?react';
 import parse from 'html-react-parser';
 import { type FormEvent, type KeyboardEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslateUI } from '@/locale';
+import { useLocale, useTranslateUI } from '@/locale';
 import { useDevice } from '@/utils/device';
+import { docsLinks, linksTpl } from '@/utils/docsLink';
 import {
   OTP_COOLDOWN_SECONDS,
   canShowSendVerificationButton,
@@ -118,6 +119,7 @@ const Access = ({
   onRequestPasswordReset,
 }: AccessProps) => {
   const t = useTranslateUI();
+  const locale = useLocale();
   const { isMobile } = useDevice();
   const [emailValue, setEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
@@ -135,6 +137,16 @@ const Access = ({
   const resetNoteText = isResetSubmitStage
     ? parse(t('idcard.auth.resetRequire'))
     : parse(t('idcard.auth.resetLink'));
+  const docLinks = useMemo(() => docsLinks(locale), [locale]);
+  const ackLinkText = useMemo(() => (
+    linksTpl(
+      t('idcard.auth.ackLink'),
+      {
+        privacy: docLinks.privacy,
+        tos: docLinks.tos,
+      },
+    )
+  ), [docLinks, t]);
 
   const authValues: AuthValues = {
     email: emailValue,
@@ -885,7 +897,7 @@ const Access = ({
           </p>
           <div className={styles.acknowledgement}>
             <span>{t('idcard.auth.ack')}</span>
-            <span>{parse(t('idcard.auth.ackLink'))}</span>
+            <span>{ackLinkText}</span>
           </div>
         </div>
       </div>

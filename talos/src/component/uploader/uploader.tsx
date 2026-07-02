@@ -7,6 +7,7 @@ import type { IMarkerData } from '@/data/marker';
 import { usePointShareLink } from '@/utils/shareLink';
 import { Shortcut, type KeyChip } from '@/component/shortcut';
 import { modKey } from '@/component/settings/shortcuts';
+import { linkTpl } from '@/utils/docsLink';
 import Carousel from '@/component/carousel';
 import ShortActions, { type ShortActionItem } from './shortActions';
 import LikeIcon from '@/assets/images/UI/like.svg?react';
@@ -92,6 +93,13 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
             return <span key={`${part}:${index}`}>{part}</span>;
         });
     }, [tUI, uploadPasteKeys]);
+    const communityRule = useMemo(() => (
+        linkTpl(
+            tUI('detail.communityRule'),
+            rulesUrl,
+            (event) => event.stopPropagation(),
+        )
+    ), [rulesUrl, tUI]);
     const shortActionLabels = useMemo(() => ({
         upvote: tUI('detail.viewer.upvote'),
         flag: tUI('detail.viewer.flag'),
@@ -238,16 +246,7 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
                                     )}
                         {showRules && !uploading && !loading && (
                             <div className={styles.communityRule}>
-                                <span>{tUI('detail.communityRule1')}</span>
-                                {' '}
-                                <a
-                                    href={rulesUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    onClick={(event) => event.stopPropagation()}
-                                >
-                                    {tUI('detail.communityRule2')}
-                                </a>
+                                {communityRule}
                             </div>
                         )}
                     </div>

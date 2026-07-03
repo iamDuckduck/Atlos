@@ -163,6 +163,7 @@
 
     .previewShortActions {
         --short-action-content-opacity: 0;
+        --short-action-disabled-bg: #{rgba($white-0, 0)};
         --short-action-disabled-content-opacity: 0;
         --short-action-bg: #{rgba($white-0, 0)};
         --short-action-blur: 0px;
@@ -188,6 +189,7 @@
     &:hover .previewShortActions,
     &:focus-within .previewShortActions {
         --short-action-content-opacity: 1;
+        --short-action-disabled-bg: #{rgba($white-0, 0.1)};
         --short-action-disabled-content-opacity: 0.42;
         --short-action-bg: var(--actionbtn-bg);
         --short-action-blur: 4px;

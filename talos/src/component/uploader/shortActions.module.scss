@@ -6,19 +6,21 @@
     --actionbtn-hover: #{rgba($primary-accent-4, 0.6)};
     --actionbtn-active: #{$primary-accent-4};
     --activebtn-active-hover: #{rgba($primary-accent-4, 0.3)};
-    --float-bg: #{rgba($black-1, 0.3)};
+    --float-bg: #{rgba($black-1, 0.05)};
 }
 :root[data-theme='dark'] {
     --actionbtn-bg: #{rgba($black-1, 0.1)};
     --actionbtn-hover: #{rgba($primary-accent-4, 0.6)};
     --actionbtn-active: #{$primary-accent-4};
     --activebtn-active-hover: #{rgba($primary-accent-4, 0.3)};
-    --float-bg: #{rgba($black-1, 0.3)};
+    --float-bg: #{rgba($black-1, 0.05)};
 }
 
 .shortActions {
+    --short-action-bg: var(--actionbtn-bg);
+    --short-action-disabled-bg: rgba($white-0, 0.1);
     --short-action-content-opacity: 1;
-    --short-action-disabled-content-opacity: 0.42;
+    --short-action-disabled-content-opacity: 0.4;
     --short-action-blur: 4px;
     --short-action-shadow: #{0 0 4px rgba($black-0, 0.4)};
 
@@ -82,27 +84,15 @@
     opacity: 0;
     overflow: visible;
     pointer-events: auto;
+    background-color: var(--float-bg);
+    backdrop-filter: blur(var(--short-action-blur));
     transform: translateY(-0.25rem) scale(0.96);
     transform-origin: top right;
     transition:
         opacity 0.16s $standard-curve,
-        transform 0.16s $standard-curve,
+        transform 0.16s $moderato-curve,
         overlay 0.16s $standard-curve allow-discrete,
         display 0.16s $standard-curve allow-discrete;
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        z-index: 0;
-        border-radius: inherit;
-        background-color: var(--actionbtn-bg);
-        backdrop-filter: blur(var(--short-action-blur));
-        pointer-events: none;
-        transform: translateZ(0);
-        transition: background-color 0.2s ease, opacity 0.16s $standard-curve;
-        will-change: opacity, backdrop-filter, transform;
-    }
 
     &:popover-open,
     &[data-open='true'] {
@@ -121,13 +111,13 @@
         opacity: 0;
         transform: translateY(-0.2rem) scale(0.98);
         transition:
-            opacity 0.12s $standard-curve,
-            transform 0.12s $standard-curve;
+            opacity 0.16s $standard-curve,
+            transform 0.16s $moderato-curve;
     }
 }
 
 .shortActionButton {
-    --short-action-button-bg: var(--actionbtn-bg);
+    --short-action-button-bg: var(--short-action-bg);
 
     position: relative;
     width: 1.5rem;
@@ -193,7 +183,7 @@
             opacity: var(--short-action-disabled-content-opacity);
         }
 
-        --short-action-button-bg: rgba($white-0, 0.1);
+        --short-action-button-bg: var(--short-action-disabled-bg);
     }
 
     &[data-active='true'] {

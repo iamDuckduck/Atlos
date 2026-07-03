@@ -168,10 +168,11 @@ const cleanDistSeoPointsPlugin = () => {
 
     return {
         name: 'clean-dist-seo-points',
+        enforce: 'post',
         configResolved(resolvedConfig) {
             distDir = resolve(resolvedConfig.root, resolvedConfig.build.outDir);
         },
-        closeBundle() {
+        writeBundle() {
             const pointsDir = resolve(distDir, 'seo/points');
             if (!existsSync(pointsDir)) return;
 
@@ -180,7 +181,7 @@ const cleanDistSeoPointsPlugin = () => {
                 const fullPath = resolve(pointsDir, entry.name);
                 if (entry.isDirectory()) {
                     if (entry.name !== buildTarget) {
-                        fs.rmSync(fullPath, { recursive: true, force: true });
+                        fs.rmSync(fullPath, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
                     }
                     continue;
                 }

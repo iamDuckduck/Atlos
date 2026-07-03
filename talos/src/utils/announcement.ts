@@ -284,16 +284,16 @@ const getAnnouncementApiBases = (): string[] => {
     return Array.from(new Set(bases));
 };
 
-const toApiUrl = (base: string, locale: ApiLocale): string => {
+const toApiUrl = (base: string, locale: ApiLocale, version?: string): string => {
     const url = `${base.replace(/\/$/, '')}/api/${locale}/announcements`;
+    if (!version) return url;
+
     const sep = url.includes('?') ? '&' : '?';
-    return `${url}${sep}_=${Date.now()}`;
+    return `${url}${sep}v=${encodeURIComponent(version)}`;
 };
 
 const toLatestApiUrl = (base: string, locale: ApiLocale): string => {
-    const url = `${base.replace(/\/$/, '')}/api/${locale}/announcements/latest`;
-    const sep = url.includes('?') ? '&' : '?';
-    return `${url}${sep}_=${Date.now()}`;
+    return `${base.replace(/\/$/, '')}/api/${locale}/announcements/latest`;
 };
 
 const isAnnouncementArray = (value: unknown): value is AnnouncementApiItem[] => {
@@ -326,7 +326,6 @@ export const fetchAnnouncementLatestMeta = async (locale?: string): Promise<Anno
                 const response = await fetch(toLatestApiUrl(base, targetLocale), {
                     method: 'GET',
                     headers: { Accept: 'application/json' },
-                    cache: 'no-store',
                 });
                 if (!response.ok) continue;
 
@@ -344,7 +343,7 @@ export const fetchAnnouncementLatestMeta = async (locale?: string): Promise<Anno
     return null;
 };
 
-export const fetchAnnouncements = async (locale?: string): Promise<AnnouncementApiItem[]> => {
+export const fetchAnnouncements = async (locale?: string, version?: string): Promise<AnnouncementApiItem[]> => {
     const currentLocale = docsLocale(locale);
     const localeCandidates: ApiLocale[] = currentLocale === 'en' ? ['en'] : [currentLocale, 'en'];
     const bases = getAnnouncementApiBases();
@@ -353,10 +352,9 @@ export const fetchAnnouncements = async (locale?: string): Promise<AnnouncementA
     for (const base of bases) {
         for (const targetLocale of localeCandidates) {
             try {
-                const response = await fetch(toApiUrl(base, targetLocale), {
+                const response = await fetch(toApiUrl(base, targetLocale, version), {
                     method: 'GET',
                     headers: { Accept: 'application/json' },
-                    cache: 'no-store',
                 });
                 if (!response.ok) continue;
 

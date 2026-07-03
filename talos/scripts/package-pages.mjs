@@ -50,7 +50,7 @@ const customDomain = getArgValue('--custom-domain', defaults.customDomain);
 
 const distDir = path.resolve(ROOT, 'dist');
 const outputDir = path.resolve(ROOT, outputDirArg);
-const seoPointsDir = path.resolve(distDir, 'seo/points');
+const seoPointsDir = path.resolve(distDir, 'seo/points/r2');
 const tokenPattern = /^[0-9a-zA-Z]{7}\.html$/;
 
 const copyIfExists = async (relativePath) => {
@@ -86,7 +86,7 @@ const copyRootFiles = async () => {
 
 const copySeoPointAliases = async () => {
   if (!(await fs.pathExists(seoPointsDir))) {
-    throw new Error('dist/seo/points does not exist. Run pnpm build:r2 first.');
+    throw new Error('dist/seo/points/r2 does not exist. Run pnpm build:r2 first.');
   }
 
   const files = (await fs.readdir(seoPointsDir))

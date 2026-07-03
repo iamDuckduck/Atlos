@@ -61,8 +61,8 @@ function getAllFiles(dirPath, arrayOfFiles) {
   return arrayOfFiles;
 }
 
-const listRemoteObjectKeys = async (prefixToList) => {
-  const keys = [];
+const listRemoteObjects = async (prefixToList) => {
+  const remoteObjects = [];
   let continuationToken;
 
   do {
@@ -75,15 +75,21 @@ const listRemoteObjectKeys = async (prefixToList) => {
     const objects = response.objects || [];
     for (const item of objects) {
       if (item?.name) {
-        keys.push(item.name);
+        remoteObjects.push({
+          key: item.name,
+          lastModified: item.lastModified,
+        });
       }
     }
 
     continuationToken = response.nextContinuationToken;
   } while (continuationToken);
 
-  return keys;
+  return remoteObjects;
 };
+
+const listRemoteObjectKeys = async (prefixToList) =>
+  (await listRemoteObjects(prefixToList)).map((object) => object.key);
 
 const deleteRemoteObjectKeys = async (keys) => {
   if (!keys.length) return;
@@ -100,6 +106,24 @@ const MULTIPART_THRESHOLD = 64 * 1024 * 1024;
 const MAX_RETRIES = 3;
 const shouldUploadSeoPointAliases = process.env.SEO_UPLOAD_POINT_ALIASES === '1';
 const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || '20', 10);
+const seoPointTarget = 'oss';
+const targetSeoPointPrefix = `seo/points/${seoPointTarget}/`;
+const targetSeoPointHtmlPattern = new RegExp(`^${targetSeoPointPrefix}[0-9a-zA-Z]{7}\\.html$`);
+const assetPruneRetentionDaysRaw = Number.parseInt(process.env.ASSET_PRUNE_RETENTION_DAYS || '14', 10);
+const assetPruneRetentionDays = Number.isFinite(assetPruneRetentionDaysRaw)
+  ? Math.max(0, assetPruneRetentionDaysRaw)
+  : 14;
+const assetPruneRetentionMs = assetPruneRetentionDays * 24 * 60 * 60 * 1000;
+
+console.log(`[publish-oss] assetPruneRetentionDays=${assetPruneRetentionDays}`);
+
+const shouldUploadLocalFile = (relativePath) => {
+  const normalizedPath = relativePath.replace(/\\/g, '/');
+  if (normalizedPath.startsWith('seo/points/') && !normalizedPath.startsWith(targetSeoPointPrefix)) {
+    return false;
+  }
+  return true;
+};
 
 const normalizeEtag = (etag) =>
   String(etag ?? '').replace(/^"|"$/g, '').toLowerCase();
@@ -191,6 +215,7 @@ const upload = async (relativePath, retryCount = 0) => {
       return upload(relativePath, retryCount + 1);
     }
     console.error(`Upload failed after ${MAX_RETRIES} retries: ${relativePath}`, e?.name || e?.code || e?.message || e);
+    throw e;
   }
 }
 
@@ -223,13 +248,14 @@ const uploadAlias = async (sourceRelativePath, aliasRelativePath, retryCount = 0
       return uploadAlias(sourceRelativePath, aliasRelativePath, retryCount + 1);
     }
     console.error(`Alias upload failed after ${MAX_RETRIES} retries: ${aliasRelativePath}`, e?.name || e?.code || e?.message || e);
+    throw e;
   }
 };
 
 const uploadSeoPointAliases = async (localFiles) => {
   const seoPointFiles = localFiles
     .map((relativePath) => relativePath.replace(/\\/g, '/'))
-    .filter((relativePath) => /^seo\/points\/[0-9a-zA-Z]{7}\.html$/.test(relativePath));
+    .filter((relativePath) => targetSeoPointHtmlPattern.test(relativePath));
 
   if (!seoPointFiles.length) return;
 
@@ -279,7 +305,7 @@ const reconcileAssetObjects = async (localFiles) => {
   }
 
   const assetPrefix = toPrefixedObjectKey(prefix, 'assets/');
-  const remoteAssetKeys = await listRemoteObjectKeys(assetPrefix);
+  const remoteAssetObjects = await listRemoteObjects(assetPrefix);
 
   const expectedSet = new Set(
     localFiles
@@ -287,15 +313,33 @@ const reconcileAssetObjects = async (localFiles) => {
       .map((relativePath) => toPrefixedObjectKey(prefix, relativePath))
   );
 
-  const staleKeys = remoteAssetKeys.filter((key) => !expectedSet.has(normalizeObjectKey(key)));
+  const staleObjects = remoteAssetObjects.filter((object) => !expectedSet.has(normalizeObjectKey(object.key)));
 
-  if (!staleKeys.length) {
+  if (!staleObjects.length) {
     console.log('[publish-oss] assets directory already consistent with local dist.');
     return;
   }
 
-  await deleteRemoteObjectKeys(staleKeys);
-  console.log(`[publish-oss] deleted ${staleKeys.length} stale assets objects.`);
+  const cutoffMs = Date.now() - assetPruneRetentionMs;
+  const staleKeysToDelete = staleObjects
+    .filter((object) => {
+      if (assetPruneRetentionMs === 0) return true;
+      const lastModifiedMs = new Date(object.lastModified).getTime();
+      return Number.isFinite(lastModifiedMs) && lastModifiedMs <= cutoffMs;
+    })
+    .map((object) => object.key);
+
+  if (!staleKeysToDelete.length) {
+    console.log(
+      `[publish-oss] retained ${staleObjects.length} stale assets younger than ${assetPruneRetentionDays} days.`
+    );
+    return;
+  }
+
+  await deleteRemoteObjectKeys(staleKeysToDelete);
+  console.log(
+    `[publish-oss] deleted ${staleKeysToDelete.length} stale assets objects, retained ${staleObjects.length - staleKeysToDelete.length}.`
+  );
 };
 
 const worker = async () => {
@@ -315,7 +359,7 @@ const run = async () => {
     console.log(`[publish-oss] clip index skipped: ${clipIndex.reason}`);
   }
 
-  allFiles = getAllFiles('./dist');
+  allFiles = getAllFiles('./dist').filter(shouldUploadLocalFile);
   const promises = [];
 
   for (let i = 0; i < concurrency; i++) {
@@ -343,4 +387,5 @@ run().then(() => {
   console.log('All files have been uploaded.');
 }).catch((err) => {
   console.error('Error uploading files:', err);
+  process.exitCode = 1;
 });

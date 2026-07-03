@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import { resolve } from 'path';
+import { execSync } from 'node:child_process';
 import eslint from 'vite-plugin-eslint';
 import fs, { existsSync } from 'fs';
 import Inspect from 'vite-plugin-inspect';
@@ -62,7 +63,16 @@ const metaInfo = buildTarget === 'r2'
       };
 
 const isProd = process.env.NODE_ENV === 'production';
-const buildAssetVersion = process.env.BUILD_ASSET_VERSION || Date.now().toString(36);
+const getGitAssetVersion = () => {
+    try {
+        return execSync('git rev-parse --short=12 HEAD', {
+            stdio: ['ignore', 'pipe', 'ignore'],
+        }).toString().trim();
+    } catch {
+        return '';
+    }
+};
+const buildAssetVersion = process.env.BUILD_ASSET_VERSION || getGitAssetVersion() || Date.now().toString(36);
 const assetsHost = isProd
     ? joinCdnPath(config?.web?.build?.cdn, resolvedPrefix)
     : '';
@@ -153,6 +163,36 @@ const cleanDistClipsPlugin = () => {
     };
 };
 
+const cleanDistSeoPointsPlugin = () => {
+    let distDir = resolve(__dirname, 'dist');
+
+    return {
+        name: 'clean-dist-seo-points',
+        configResolved(resolvedConfig) {
+            distDir = resolve(resolvedConfig.root, resolvedConfig.build.outDir);
+        },
+        closeBundle() {
+            const pointsDir = resolve(distDir, 'seo/points');
+            if (!existsSync(pointsDir)) return;
+
+            const entries = fs.readdirSync(pointsDir, { withFileTypes: true });
+            for (const entry of entries) {
+                const fullPath = resolve(pointsDir, entry.name);
+                if (entry.isDirectory()) {
+                    if (entry.name !== buildTarget) {
+                        fs.rmSync(fullPath, { recursive: true, force: true });
+                    }
+                    continue;
+                }
+
+                if (/^[0-9a-zA-Z]{7}\.html$/.test(entry.name)) {
+                    fs.rmSync(fullPath, { force: true });
+                }
+            }
+        },
+    };
+};
+
 // https://vite.dev/config/
 export default defineConfig({
     // publicDir: false, // Disabled to allow standard Vite public directory behavior
@@ -191,6 +231,7 @@ export default defineConfig({
                 .concat(getMapClipTargets()), // 只包含存在的源路径
         }),
         cleanDistClipsPlugin(),
+        cleanDistSeoPointsPlugin(),
         eslint({
             failOnWarning: false,
             failOnError: true,

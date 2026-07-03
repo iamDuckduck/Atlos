@@ -42,7 +42,7 @@ const NOVECENTO_SLAB_BOLD_FONT_FILE = path.resolve(LOCAL_FONT_DIR, 'Novecento Sl
 const PUBLIC_OUT_DIR = path.resolve(ROOT, 'public');
 const LEGACY_POINTS_OUT_DIR = path.resolve(PUBLIC_OUT_DIR, 'points');
 const SEO_OUT_DIR = path.resolve(PUBLIC_OUT_DIR, 'seo');
-const SEO_POINTS_OUT_DIR = path.resolve(SEO_OUT_DIR, 'points');
+const SEO_POINTS_ROOT_DIR = path.resolve(SEO_OUT_DIR, 'points');
 const SEO_OG_OUT_DIR = path.resolve(SEO_OUT_DIR, 'og');
 const DEFAULT_WORKER_PREVIEW_FILE = path.resolve(ROOT, 'oem-relink/src/seo-preview.generated.ts');
 const OSS_CONFIG_FILE = path.resolve(ROOT, 'config/config.json');
@@ -70,6 +70,7 @@ const POINT_ID_PERMUTATION_MULTIPLIER = 25214903917n;
 const POINT_ID_PERMUTATION_OFFSET = 11n;
 const POINT_ID_TOKEN_LENGTH = 7;
 const POINT_TOKEN_PATTERN = /^[0-9a-zA-Z]{7}$/;
+const POINT_HTML_FILE_PATTERN = /^[0-9a-zA-Z]{7}\.html$/;
 
 const INDEXABLE_MAIN_CATEGORIES = new Set(['files']);
 const INDEXABLE_SUB_CATEGORIES = new Set(['archives', 'boss', 'valuable', 'facility']);
@@ -77,6 +78,7 @@ const INDEXABLE_SUB_CATEGORIES = new Set(['archives', 'boss', 'valuable', 'facil
 let sharp;
 
 const buildTarget = process.env.BUILD_TARGET === 'r2' ? 'r2' : 'oss';
+const SEO_POINTS_OUT_DIR = path.resolve(SEO_POINTS_ROOT_DIR, buildTarget);
 const deployChannel = getDeployChannel();
 const defaultSiteUrl = buildTarget === 'r2'
   ? deployChannel === 'beta'
@@ -1442,6 +1444,13 @@ async function pruneStaleFiles(dir, extension, activeTokens, previousTokens) {
   }));
 }
 
+async function removeLegacyFlatPointFiles() {
+  const files = await safeReaddir(SEO_POINTS_ROOT_DIR);
+  await Promise.all(files
+    .filter((file) => POINT_HTML_FILE_PATTERN.test(file))
+    .map((file) => fs.rm(path.resolve(SEO_POINTS_ROOT_DIR, file), { force: true })));
+}
+
 function buildTilePathsForPoint(point) {
   const region = point.region;
   const tileZoom = getOgTileZoom(region);
@@ -1606,6 +1615,7 @@ async function build() {
 
   if (!shouldBuildImagesOnly) {
     await fs.mkdir(SEO_OUT_DIR, { recursive: true });
+    await removeLegacyFlatPointFiles();
     await fs.mkdir(SEO_POINTS_OUT_DIR, { recursive: true });
   }
   if (shouldBuildPointImages) {

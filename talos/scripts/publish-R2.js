@@ -72,8 +72,8 @@ function getAllFiles(dirPath, arrayOfFiles) {
   return arrayOfFiles;
 }
 
-const listRemoteObjectKeys = async (prefixToList) => {
-  const keys = [];
+const listRemoteObjects = async (prefixToList) => {
+  const objects = [];
   let continuationToken;
 
   do {
@@ -88,15 +88,21 @@ const listRemoteObjectKeys = async (prefixToList) => {
 
     for (const item of response.Contents ?? []) {
       if (item.Key) {
-        keys.push(item.Key);
+        objects.push({
+          key: item.Key,
+          lastModified: item.LastModified,
+        });
       }
     }
 
     continuationToken = response.IsTruncated ? response.NextContinuationToken : undefined;
   } while (continuationToken);
 
-  return keys;
+  return objects;
 };
+
+const listRemoteObjectKeys = async (prefixToList) =>
+  (await listRemoteObjects(prefixToList)).map((object) => object.key);
 
 const deleteRemoteObjectKeys = async (keys) => {
   if (!keys.length) return;
@@ -169,12 +175,24 @@ const shouldUploadSeoPointAliases = process.env.SEO_UPLOAD_POINT_ALIASES === "1"
 const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || "40", 10);
 const uploadProfile = process.env.R2_UPLOAD_PROFILE === "resources" ? "resources" : "full";
 const resourceUploadPrefixes = ["assets/", "files/", "search/", "clips/"];
+const seoPointTarget = "r2";
+const targetSeoPointPrefix = `seo/points/${seoPointTarget}/`;
+const targetSeoPointHtmlPattern = new RegExp(`^${targetSeoPointPrefix}[0-9a-zA-Z]{7}\\.html$`);
+const assetPruneRetentionDaysRaw = Number.parseInt(process.env.ASSET_PRUNE_RETENTION_DAYS || "14", 10);
+const assetPruneRetentionDays = Number.isFinite(assetPruneRetentionDaysRaw)
+  ? Math.max(0, assetPruneRetentionDaysRaw)
+  : 14;
+const assetPruneRetentionMs = assetPruneRetentionDays * 24 * 60 * 60 * 1000;
 
 console.log(`[publish-R2] uploadProfile=${uploadProfile}`);
+console.log(`[publish-R2] assetPruneRetentionDays=${assetPruneRetentionDays}`);
 
 const shouldUploadLocalFile = (relativePath) => {
-  if (uploadProfile === "full") return true;
   const normalizedPath = relativePath.replace(/\\/g, "/");
+  if (normalizedPath.startsWith("seo/points/") && !normalizedPath.startsWith(targetSeoPointPrefix)) {
+    return false;
+  }
+  if (uploadProfile === "full") return true;
   return resourceUploadPrefixes.some((prefix) => normalizedPath.startsWith(prefix));
 };
 
@@ -303,6 +321,7 @@ const upload = async (relativePath, retryCount = 0) => {
       `Upload failed after ${MAX_RETRIES} retries: ${relativePath}`,
       e?.name || e?.code || e?.message || e
     );
+    throw e;
   }
 };
 
@@ -347,13 +366,14 @@ const uploadAlias = async (sourceRelativePath, aliasRelativePath, retryCount = 0
       `Alias upload failed after ${MAX_RETRIES} retries: ${aliasRelativePath}`,
       e?.name || e?.code || e?.message || e
     );
+    throw e;
   }
 };
 
 const uploadSeoPointAliases = async (localFiles) => {
   const seoPointFiles = localFiles
     .map((relativePath) => relativePath.replace(/\\/g, "/"))
-    .filter((relativePath) => /^seo\/points\/[0-9a-zA-Z]{7}\.html$/.test(relativePath));
+    .filter((relativePath) => targetSeoPointHtmlPattern.test(relativePath));
 
   if (!seoPointFiles.length) return;
 
@@ -397,13 +417,18 @@ const reconcileClipObjects = async (expectedClipFiles) => {
 };
 
 const reconcileAssetObjects = async (localFiles) => {
+  if (uploadProfile !== "full") {
+    console.log("[publish-R2] assets reconciliation skipped for resources upload profile.");
+    return;
+  }
+
   if (!(await fs.pathExists("./dist/assets"))) {
     console.log("[publish-R2] assets directory skipped: dist/assets does not exist.");
     return;
   }
 
   const assetPrefix = toPrefixedObjectKey(prefix, "assets/");
-  const remoteAssetKeys = await listRemoteObjectKeys(assetPrefix);
+  const remoteAssetObjects = await listRemoteObjects(assetPrefix);
 
   const expectedSet = new Set(
     localFiles
@@ -411,15 +436,33 @@ const reconcileAssetObjects = async (localFiles) => {
       .map((relativePath) => toPrefixedObjectKey(prefix, relativePath))
   );
 
-  const staleKeys = remoteAssetKeys.filter((key) => !expectedSet.has(normalizeObjectKey(key)));
+  const staleObjects = remoteAssetObjects.filter((object) => !expectedSet.has(normalizeObjectKey(object.key)));
 
-  if (!staleKeys.length) {
+  if (!staleObjects.length) {
     console.log("[publish-R2] assets directory already consistent with local dist.");
     return;
   }
 
-  await deleteRemoteObjectKeys(staleKeys);
-  console.log(`[publish-R2] deleted ${staleKeys.length} stale assets objects.`);
+  const cutoffMs = Date.now() - assetPruneRetentionMs;
+  const staleKeysToDelete = staleObjects
+    .filter((object) => {
+      if (assetPruneRetentionMs === 0) return true;
+      const lastModifiedMs = new Date(object.lastModified).getTime();
+      return Number.isFinite(lastModifiedMs) && lastModifiedMs <= cutoffMs;
+    })
+    .map((object) => object.key);
+
+  if (!staleKeysToDelete.length) {
+    console.log(
+      `[publish-R2] retained ${staleObjects.length} stale assets younger than ${assetPruneRetentionDays} days.`
+    );
+    return;
+  }
+
+  await deleteRemoteObjectKeys(staleKeysToDelete);
+  console.log(
+    `[publish-R2] deleted ${staleKeysToDelete.length} stale assets objects, retained ${staleObjects.length - staleKeysToDelete.length}.`
+  );
 };
 
 const uploadExternalSeoOgImages = async () => {
@@ -490,4 +533,5 @@ run()
   })
   .catch((err) => {
     console.error("Error uploading files to R2:", err);
+    process.exitCode = 1;
 });

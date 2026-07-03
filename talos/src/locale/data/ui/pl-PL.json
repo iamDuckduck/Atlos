@@ -72,6 +72,7 @@
       "upvote": "Lubię to",
       "downvote": "Nie lubię",
       "reply": "Odpowiedz",
+      "recall": "Poproś o usunięcie komentarza",
       "emptyWithRule": "Nie ma jeszcze komentarzy. Podczas publikowania przestrzegaj <a href=\"{link}\">zasad społeczności</a>.",
       "ruleOnly": "Podczas publikowania przestrzegaj <a href=\"{link}\">zasad społeczności</a>.",
       "loadFailed": "Nie udało się wczytać komentarzy.",

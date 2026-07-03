@@ -72,6 +72,7 @@
       "upvote": "Curtir",
       "downvote": "Não curtir",
       "reply": "Responder",
+      "recall": "Solicitar remoção do comentário",
       "emptyWithRule": "Ainda não há comentários. Ao publicar, siga as <a href=\"{link}\">diretrizes da comunidade</a>.",
       "ruleOnly": "Ao publicar, siga as <a href=\"{link}\">diretrizes da comunidade</a>.",
       "loadFailed": "Falha ao carregar comentários.",

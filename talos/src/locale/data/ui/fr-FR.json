@@ -72,6 +72,7 @@
       "upvote": "J’aime",
       "downvote": "Je n’aime pas",
       "reply": "Répondre",
+      "recall": "Demander le retrait du commentaire",
       "emptyWithRule": "Aucun commentaire pour le moment. Veuillez respecter les <a href=\"{link}\">règles de la communauté</a> lors de la publication.",
       "ruleOnly": "Veuillez respecter les <a href=\"{link}\">règles de la communauté</a> lors de la publication.",
       "loadFailed": "Échec du chargement des commentaires.",

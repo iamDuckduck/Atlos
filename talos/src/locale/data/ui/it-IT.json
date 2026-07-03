@@ -72,6 +72,7 @@
       "upvote": "Mi piace",
       "downvote": "Non mi piace",
       "reply": "Rispondi",
+      "recall": "Richiedi rimozione commento",
       "emptyWithRule": "Non ci sono ancora commenti. Quando pubblichi, segui le <a href=\"{link}\">linee guida della community</a>.",
       "ruleOnly": "Quando pubblichi, segui le <a href=\"{link}\">linee guida della community</a>.",
       "loadFailed": "Caricamento dei commenti non riuscito.",

@@ -72,6 +72,7 @@
       "upvote": "Suka",
       "downvote": "Tidak suka",
       "reply": "Balas",
+      "recall": "Minta pemadaman komen",
       "emptyWithRule": "Belum ada komen. Sila ikut <a href=\"{link}\">garis panduan komuniti</a> semasa menyiarkan.",
       "ruleOnly": "Sila ikut <a href=\"{link}\">garis panduan komuniti</a> semasa menyiarkan.",
       "loadFailed": "Komen gagal dimuatkan.",

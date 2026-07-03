@@ -35,12 +35,12 @@
     "label": {
       "note": "注记",
       "url": "相关链接",
-      "comments": "留言"
+      "comments": "热门讨论"
     },
     "tabs": {
       "collectAll": "一键收集同类点",
       "general": "点位详情",
-      "comments": "留言区"
+      "comments": "讨论区"
     },
     "noInfo": "暂无信息，使用 {paste} / {click} 上传点位截图",
     "communityRule": "上传前，请您详阅并遵循 <a href=\"{link}\">OEM 社区守则</a>",
@@ -57,7 +57,7 @@
       "unflag": "取消标记",
       "uploadAno": "上传另一张图片",
       "share": "分享",
-      "recall": "申请撤回此图片",
+      "recall": "撤回此图片",
       "unrecall": "取消撤回"
     },
     "comments": {
@@ -72,6 +72,7 @@
       "upvote": "点赞",
       "downvote": "不喜欢",
       "reply": "回复帖文",
+      "recall": "撤回此留言",
       "emptyWithRule": "暂无留言。发布内容请遵循<a href=\"{link}\">社区守则</a>。",
       "ruleOnly": "发布内容请遵循<a href=\"{link}\">社区守则</a>。",
       "loadFailed": "留言加载失败。",

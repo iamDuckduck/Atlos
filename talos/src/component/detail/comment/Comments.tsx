@@ -179,7 +179,7 @@ const CommentItem = memo(({
         if (isOwn) {
             items.push({
                 id: 'recall',
-                label: tUI('detail.viewer.recall'),
+                label: tUI('detail.comments.recall'),
                 icon: <RecallIcon />,
                 active: Boolean(comment.recallRequested || comment.status === 'remove_request'),
                 disabled: !canInteract || actionPending || comment.status === 'stale',

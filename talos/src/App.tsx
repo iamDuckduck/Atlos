@@ -8,6 +8,9 @@ import UIOverlay from './component/uiOverlay/UIOverlay';
 import SideBar from './component/sideBar/sideBar';
 import DomainBanner from './component/domain/domain';
 import LocatorBanner from '@/component/locator/LocatorBanner';
+// Critical locator recovery UI: keep it in the entry bundle so policy errors cannot be blocked by a missing chunk.
+import LocationAuth from '@/component/locator/LocationAuth';
+import EndfieldBindingHost from '@/component/locator/EndfieldBindingHost';
 // import SupportAutoPopup from '@/component/support/SupportAutoPopup';
 import { MetaHelper } from './component/MetaHelper';
 
@@ -21,8 +24,6 @@ import { useLocatorStore } from '@/component/locator/state';
 import { getAppDocument, subscribePictureInPictureState } from '@/component/scale/pip';
 
 const UserGuide = lazy(() => import('@/component/userGuide/UserGuide'));
-const LocationAuth = lazy(() => import('@/component/locator/LocationAuth'));
-const EndfieldBindingHost = lazy(() => import('@/component/locator/EndfieldBindingHost'));
 
 declare global {
     interface Window {
@@ -163,13 +164,9 @@ function App() {
             <DomainBanner />
             <LocatorBanner />
             {locatorAuthOpen && (
-                <Suspense fallback={null}>
-                    <LocationAuth />
-                </Suspense>
+                <LocationAuth />
             )}
-            <Suspense fallback={null}>
-                <EndfieldBindingHost />
-            </Suspense>
+            <EndfieldBindingHost />
             {/*<SupportAutoPopup />*/}
             <div className='app theme-transition-scope' style={{ '--sidebar-width': `${sidebarWidth}px` } as CSSProperties}>
                 {shouldLoadUserGuide && (

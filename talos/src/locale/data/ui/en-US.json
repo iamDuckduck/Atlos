@@ -72,6 +72,7 @@
       "upvote": "Upvote",
       "downvote": "Downvote",
       "reply": "Reply",
+      "recall": "Recall",
       "emptyWithRule": "No comments yet. Please follow <a href=\"{link}\">community guidelines</a> when posting.",
       "ruleOnly": "Please follow <a href=\"{link}\">community guidelines</a> when posting.",
       "loadFailed": "Comments failed to load.",

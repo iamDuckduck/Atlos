@@ -72,6 +72,7 @@
       "upvote": "Upvote",
       "downvote": "Downvote",
       "reply": "Antworten",
+      "recall": "Entfernung des Kommentars beantragen",
       "emptyWithRule": "Noch keine Kommentare. Bitte beachte beim Posten die <a href=\"{link}\">Community-Richtlinien</a>.",
       "ruleOnly": "Bitte beachte beim Posten die <a href=\"{link}\">Community-Richtlinien</a>.",
       "loadFailed": "Kommentare konnten nicht geladen werden.",

@@ -57,8 +57,8 @@
       "unflag": "取消標記",
       "uploadAno": "上載另一張圖片",
       "share": "分享此點位",
-      "recall": "申請撤回此圖片",
-      "unrecall": "取消撤回申請"
+      "recall": "撤回此圖片",
+      "unrecall": "取消撤回"
     },
     "comments": {
       "placeholder": "傾兩句？",
@@ -72,6 +72,7 @@
       "upvote": "讚好",
       "downvote": "反對",
       "reply": "回覆帖文",
+      "recall": "撤回此留言",
       "emptyWithRule": "暫無留言。發布內容請遵循<a href=\"{link}\">社群守則</a>。",
       "ruleOnly": "發布內容請遵循<a href=\"{link}\">社群守則</a>。",
       "loadFailed": "留言載入失敗。",

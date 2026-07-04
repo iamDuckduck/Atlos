@@ -73,6 +73,7 @@
       "downvote": "低評価",
       "reply": "返信",
       "recall": "コメントの削除を申請",
+      "reviewing": "審査中",
       "emptyWithRule": "まだコメントはありません。投稿時は<a href=\"{link}\">コミュニティガイドライン</a>に従ってください。",
       "ruleOnly": "投稿時は<a href=\"{link}\">コミュニティガイドライン</a>に従ってください。",
       "loadFailed": "コメントの読み込みに失敗しました。",

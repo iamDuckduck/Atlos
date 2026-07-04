@@ -73,6 +73,7 @@
       "downvote": "Beğenme",
       "reply": "Yanıtla",
       "recall": "Yorumu kaldırma isteği",
+      "reviewing": "İnceleniyor",
       "emptyWithRule": "Henüz yorum yok. Gönderi paylaşırken lütfen <a href=\"{link}\">topluluk kurallarına</a> uyun.",
       "ruleOnly": "Gönderi paylaşırken lütfen <a href=\"{link}\">topluluk kurallarına</a> uyun.",
       "loadFailed": "Yorumlar yüklenemedi.",

@@ -73,6 +73,7 @@
       "downvote": "Tidak suka",
       "reply": "Balas",
       "recall": "Minta penghapusan komentar",
+      "reviewing": "Ditinjau",
       "emptyWithRule": "Belum ada komentar. Harap ikuti <a href=\"{link}\">pedoman komunitas</a> saat memposting.",
       "ruleOnly": "Harap ikuti <a href=\"{link}\">pedoman komunitas</a> saat memposting.",
       "loadFailed": "Komentar gagal dimuat.",

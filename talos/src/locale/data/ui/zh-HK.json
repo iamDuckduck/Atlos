@@ -73,6 +73,7 @@
       "downvote": "反對",
       "reply": "回覆帖文",
       "recall": "撤回此留言",
+      "reviewing": "審核中",
       "emptyWithRule": "暫無留言。發布內容請遵循<a href=\"{link}\">社群守則</a>。",
       "ruleOnly": "發布內容請遵循<a href=\"{link}\">社群守則</a>。",
       "loadFailed": "留言載入失敗。",

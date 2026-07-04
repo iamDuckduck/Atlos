@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import classNames from 'classnames';
 import { LinearBlur } from 'progressive-blur';
 import styles from './comments.module.scss';
@@ -10,7 +10,6 @@ import { docsLink, linkTpl } from '@/utils/docsLink';
 import type { IMarkerData } from '@/data/marker';
 import {
     listUGCComments,
-    submitUGCComment,
     type UGCComment,
     type UGCCommentVoteValue,
 } from '@/utils/ugcClient';
@@ -22,14 +21,19 @@ import RecallIcon from '@/assets/images/UI/recall.svg?react';
 import SubmitIcon from '@/assets/logos/submit.svg?react';
 import ReplyIcon from '@/assets/logos/reply.svg?react';
 import {
-    appendItem,
     flatDisplay,
     isReviewing,
     isVisible,
-    makePending,
     patchTree,
     voteDelta,
 } from './commentsTree';
+import {
+    getCommentSubmissionSnapshot,
+    mergeCommentSubmissions,
+    submitCommentOptimistic,
+    subscribeCommentSubmissions,
+    syncCommentSubmissions,
+} from './commentSubmissionStore';
 import {
     avatarIndex,
     commentText,
@@ -73,7 +77,7 @@ export const CommentExcerpt = memo(({
     const timeLabel = createdAt
         ? formatRelativeTime(createdAt, { precision: 'dateTime', agoDisplay: 'hover', agoLabel: tUI('idcard.ago') }).agoText
         : '';
-    const status = statusLabel(comment, timeLabel);
+    const status = statusLabel(comment, timeLabel, tUI);
     const authorName = comment.author?.nickname;
     const note = transNote(comment, tUI);
 
@@ -236,13 +240,18 @@ const Comments = ({ point, pointName, active = true }: Props) => {
     const [comments, setComments] = useState<UGCComment[]>([]);
     const [loading, setLoading] = useState(false);
     const [inputValue, setInputValue] = useState('');
-    const [submitting, setSubmitting] = useState(false);
     const [actionPendingIds, setActionPendingIds] = useState<Set<string>>(() => new Set());
     const [error, setError] = useState('');
     const inputRef = useRef<HTMLTextAreaElement | null>(null);
     const inputBarRef = useRef<HTMLDivElement | null>(null);
     const commentsPanelRef = useRef<HTMLElement | null>(null);
     const commentListRef = useRef<HTMLDivElement | null>(null);
+    const handledSubmissionErrorRef = useRef(0);
+    const submissionSnapshot = useSyncExternalStore(
+        subscribeCommentSubmissions,
+        () => getCommentSubmissionSnapshot(point.id),
+        () => getCommentSubmissionSnapshot(''),
+    );
     const {
         target: replyTarget,
         setTarget: setReplyTarget,
@@ -281,8 +290,14 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         clearVote(commentIds);
         clearFlag(commentIds);
     }, [clearFlag, clearVote]);
+    const commentsWithSubmissions = useMemo(() => (
+        mergeCommentSubmissions(comments, submissionSnapshot)
+    ), [comments, submissionSnapshot]);
+    const submittingCommentIds = useMemo(() => (
+        new Set(submissionSnapshot.submittingIds)
+    ), [submissionSnapshot]);
     const { blurVisible, updateBlur } = useInputLayout({
-        comments,
+        comments: commentsWithSubmissions,
         error,
         inputValue,
         loading,
@@ -314,8 +329,8 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         clearSync,
     });
 
-    const hasComments = comments.length > 0;
-    const inputDisabled = !active || submitting;
+    const hasComments = commentsWithSubmissions.length > 0;
+    const inputDisabled = !active;
     const userUid = user?.uid;
 
     useEffect(() => {
@@ -326,7 +341,10 @@ const Comments = ({ point, pointName, active = true }: Props) => {
 
         void listUGCComments(point.id)
             .then((nextComments) => {
-                if (!disposed) setComments(nextComments);
+                if (!disposed) {
+                    syncCommentSubmissions(point.id, nextComments);
+                    setComments(nextComments);
+                }
             })
             .catch(() => {
                 if (!disposed) {
@@ -347,6 +365,14 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         clearReply();
     }, [clearReply, point.id]);
 
+    useEffect(() => {
+        const lastError = submissionSnapshot.lastError;
+        if (!lastError || lastError.id === handledSubmissionErrorRef.current) return;
+
+        handledSubmissionErrorRef.current = lastError.id;
+        setError(tUI('detail.comments.submitFailed'));
+    }, [submissionSnapshot.lastError, tUI]);
+
     const handleReply = useCallback((comment: UGCComment) => {
         setReplyTarget(comment);
         window.requestAnimationFrame(() => {
@@ -354,28 +380,16 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         });
     }, [setReplyTarget]);
 
-    const handleSubmit = useCallback(async () => {
+    const handleSubmit = useCallback(() => {
         const content = inputValue.trim();
-        if (!content || submitting) return;
+        if (!content) return;
         if (!requireAuth()) return;
-        const parentId = replyTarget?.id ?? null;
 
-        setSubmitting(true);
         setError('');
-        try {
-            const submission = await submitUGCComment(point, content, parentId);
-            setComments((current) => appendItem(
-                current,
-                makePending(point, content, submission, user),
-            ));
-            setInputValue('');
-            clearReply();
-        } catch {
-            setError(tUI('detail.comments.submitFailed'));
-        } finally {
-            setSubmitting(false);
-        }
-    }, [clearReply, inputValue, point, replyTarget, requireAuth, submitting, tUI, user]);
+        submitCommentOptimistic(point, content, replyTarget, user);
+        setInputValue('');
+        clearReply();
+    }, [clearReply, inputValue, point, replyTarget, requireAuth, user]);
 
     const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (
@@ -391,7 +405,7 @@ const Comments = ({ point, pointName, active = true }: Props) => {
 
         if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) return;
         event.preventDefault();
-        void handleSubmit();
+        handleSubmit();
     }, [clearReply, handleSubmit, inputValue.length, replyTarget]);
 
     const handleVote = useCallback((comment: UGCComment, value: 1 | -1) => {
@@ -421,7 +435,7 @@ const Comments = ({ point, pointName, active = true }: Props) => {
     const footerText = hasComments
         ? linkTpl(tUI('detail.comments.ruleOnly'), ruleUrl)
         : linkTpl(tUI('detail.comments.emptyWithRule'), ruleUrl);
-    const displayComments = useMemo(() => flatDisplay(comments), [comments]);
+    const displayComments = useMemo(() => flatDisplay(commentsWithSubmissions), [commentsWithSubmissions]);
     const replyQuoteShown = Boolean(renderedReply && replyVisible);
     const replyQuoteText = renderedReply
         ? commentText(renderedReply)
@@ -448,7 +462,7 @@ const Comments = ({ point, pointName, active = true }: Props) => {
                         displayDepth={displayDepth}
                         isOwn={comment.author?.publicUid === userUid}
                         canInteract={active}
-                        actionPending={actionPendingIds.has(comment.id)}
+                        actionPending={actionPendingIds.has(comment.id) || submittingCommentIds.has(comment.id)}
                         onVote={handleVote}
                         onFlag={handleFlag}
                         onRecall={handleRecall}
@@ -508,7 +522,7 @@ const Comments = ({ point, pointName, active = true }: Props) => {
                             type="button"
                             className={styles.commentSubmit}
                             disabled={inputDisabled || inputValue.trim().length === 0}
-                            onClick={() => void handleSubmit()}
+                            onClick={handleSubmit}
                             aria-label={tUI('detail.comments.submit')}
                         >
                             <SubmitIcon />

@@ -358,7 +358,7 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.625rem;
     min-width: 0;
 }
 
@@ -402,6 +402,7 @@
 
 .commentInput {
     font-family: 'Fedra Sans Pro', 'Noto Sans SC', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
+    font-size: 0.9125rem;
     letter-spacing: -.2px;
     font-weight: 500;
     width: 100%;

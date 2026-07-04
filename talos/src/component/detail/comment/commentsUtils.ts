@@ -7,8 +7,14 @@ export const avatarIndex = (comment: UGCComment): number | undefined => {
     return index >= 1 ? index : undefined;
 };
 
-export const statusLabel = (comment: UGCComment, timeLabel: string): string => {
-    if (isReviewing(comment.status)) return 'Reviewing';
+export const statusLabel = (
+    comment: UGCComment,
+    timeLabel: string,
+    tUI: (key: string) => string,
+): string => {
+    if (isReviewing(comment.status)) {
+        return tUI('detail.comments.reviewing')
+    }
     return timeLabel;
 };
 

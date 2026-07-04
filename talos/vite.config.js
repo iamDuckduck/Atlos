@@ -82,6 +82,40 @@ const historicalMarkerDataPattern = /src\/data\/marker\/data\/\d{8}\//;
 
 const isExcludedClipDir = (name) => excludedClipDirNames.has(name.toLowerCase());
 
+const stableFontAssetFamilies = new Set(['Fedra', 'Novecento']);
+const fontAssetExtPattern = /\.(?:woff2?|otf|ttf)$/i;
+
+const getStableFontAssetFamily = (assetInfo) => {
+    const sources = [
+        ...(assetInfo.originalFileNames || []),
+        ...(assetInfo.names || []),
+        assetInfo.name,
+    ].filter(Boolean);
+
+    for (const source of sources) {
+        const normalized = String(source).replace(/\\/g, '/');
+        if (!fontAssetExtPattern.test(normalized)) continue;
+
+        const fontPathMatch = normalized.match(/(?:^|\/)(?:src\/)?assets\/fonts\/([^/]+)\//);
+        if (fontPathMatch && stableFontAssetFamilies.has(fontPathMatch[1])) {
+            return fontPathMatch[1];
+        }
+
+        const filename = normalized.split('/').pop() || '';
+        if (filename.startsWith('FedraSansPro-')) return 'Fedra';
+        if (
+            filename.startsWith('Novecento-') ||
+            filename.startsWith('NWBold+') ||
+            filename.startsWith('NWDemiBold+') ||
+            filename.startsWith('NWMed+')
+        ) {
+            return 'Novecento';
+        }
+    }
+
+    return undefined;
+};
+
 if (isProd) {
     console.log(
         `[vite] target=${buildTarget} channel=${deployChannel} prefix=${resolvedPrefix || '/'} source=${prefixSource} siteUrl=${siteUrl}`,
@@ -314,7 +348,14 @@ export default defineConfig({
             output: {
                 entryFileNames: `assets/[name]-[hash]-${buildAssetVersion}.js`,
                 chunkFileNames: `assets/[name]-[hash]-${buildAssetVersion}.js`,
-                assetFileNames: `assets/[name]-[hash]-${buildAssetVersion}[extname]`,
+                assetFileNames(assetInfo) {
+                    const stableFontFamily = getStableFontAssetFamily(assetInfo);
+                    if (stableFontFamily) {
+                        return `assets/fonts/${stableFontFamily}/[name]-[hash][extname]`;
+                    }
+
+                    return `assets/[name]-[hash]-${buildAssetVersion}[extname]`;
+                },
                 manualChunks(id) {
                     if (!id.includes('/node_modules/')) return undefined;
 

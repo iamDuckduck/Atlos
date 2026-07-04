@@ -73,6 +73,7 @@
       "downvote": "不喜欢",
       "reply": "回复帖文",
       "recall": "撤回此留言",
+      "reviewing": "审核中",
       "emptyWithRule": "暂无留言。发布内容请遵循<a href=\"{link}\">社区守则</a>。",
       "ruleOnly": "发布内容请遵循<a href=\"{link}\">社区守则</a>。",
       "loadFailed": "留言加载失败。",

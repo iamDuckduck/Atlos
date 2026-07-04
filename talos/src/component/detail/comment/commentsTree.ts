@@ -9,6 +9,7 @@ import type {
 import type { SessionUser } from '@/component/login/authTypes';
 
 const MAX_DEPTH = 2;
+export const LOCAL_PENDING_COMMENT_PREFIX = 'local-comment:';
 
 export type DisplayItem = {
     comment: UGCComment;
@@ -73,6 +74,36 @@ export const makePending = (
     replies: [],
 });
 
+export const makeLocalPending = (
+    point: IMarkerData,
+    content: string,
+    parent: UGCComment | null,
+    localId: string,
+    user: SessionUser | null,
+): UGCComment => ({
+    id: localId,
+    markerId: point.id,
+    poiType: point.type,
+    parentId: parent?.id ?? null,
+    depth: parent ? parent.depth + 1 : 0,
+    content,
+    author: user
+        ? {
+            nickname: user.nickname,
+            publicUid: user.uid,
+            avatar: user.avatar,
+        }
+        : null,
+    createdAt: new Date().toISOString(),
+    score: 0,
+    viewerVote: 0,
+    flagged: false,
+    recallRequested: false,
+    status: 'pending_audit',
+    replyCount: 0,
+    replies: [],
+});
+
 export const appendItem = (comments: UGCComment[], comment: UGCComment): UGCComment[] => {
     if (!comment.parentId) {
         return [comment, ...comments];
@@ -86,7 +117,7 @@ export const appendItem = (comments: UGCComment[], comment: UGCComment): UGCComm
                 return {
                     ...item,
                     replyCount: item.replyCount + 1,
-            replies: [...item.replies, comment],
+                    replies: [...item.replies, comment],
                 };
             }
 

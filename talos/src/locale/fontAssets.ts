@@ -9,10 +9,13 @@ const normalizeRelPath = (p: string): string => {
     return p.replace(/^\.\.\/assets\/fonts\//, '').replace(/^\.\/assets\/fonts\//, '');
 };
 
-// Eagerly collect available font assets at build-time.
+// Eagerly collect available dynamic font assets at build-time.
 // If some font files are missing in the repo/CI, they simply won't appear here (no hard build failure).
 const fontAssetUrlModules = import.meta.glob(
-    '../assets/fonts/**/*.{woff2,woff,otf,ttf}',
+    [
+        '../assets/fonts/UD_ShinGo/*.{woff2,woff,otf,ttf}',
+        '../assets/fonts/Harmony/*.{woff2,woff,otf,ttf}',
+    ],
     { eager: true, query: '?url', import: 'default' }
 ) as UrlModuleMap;
 

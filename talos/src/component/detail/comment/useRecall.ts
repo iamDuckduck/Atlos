@@ -5,7 +5,8 @@ import {
     requestUGCCommentRemoval,
     type UGCComment,
 } from '@/utils/ugcClient';
-import { isReviewing, removeTree } from './commentsTree';
+import { collectIds, isReviewing, removeTree } from './commentsTree';
+import { removeCommentSubmission, restoreCommentSubmission } from './commentSubmissionStore';
 
 type Args = {
     markerId: string;
@@ -34,12 +35,20 @@ export const useRecall = ({
         if (!requireAuth() || busyIds.has(comment.id)) return;
         const previousComments = comments;
         const previousReplyTarget = replyTarget;
+        const displayRemovedIds = new Set(collectIds(comment));
+        const removedSubmissions = [...displayRemovedIds]
+            .map((commentId) => removeCommentSubmission(markerId, commentId))
+            .filter((item): item is UGCComment => Boolean(item));
         const removal = removeTree(comments, comment.id);
+        const removedIds = new Set([
+            ...removal.removedIds,
+            ...displayRemovedIds,
+        ]);
 
         setComments(removal.comments);
-        setReply((current) => (current && removal.removedIds.has(current.id) ? null : current));
+        setReply((current) => (current && removedIds.has(current.id) ? null : current));
         invalidateUGCCommentCache(markerId);
-        clearSync(removal.removedIds);
+        clearSync(removedIds);
         setBusy(comment.id, true);
         const request = isReviewing(comment.status)
             ? recallUGCComment(comment.id)
@@ -47,6 +56,7 @@ export const useRecall = ({
         void request
             .then(() => undefined)
             .catch(() => {
+                removedSubmissions.forEach((submission) => restoreCommentSubmission(markerId, submission));
                 setComments(previousComments);
                 setReply(previousReplyTarget);
             })

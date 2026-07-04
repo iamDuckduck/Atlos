@@ -73,6 +73,7 @@
       "downvote": "Ogilla",
       "reply": "Svara",
       "recall": "Begär borttagning av kommentar",
+      "reviewing": "Granskas",
       "emptyWithRule": "Inga kommentarer ännu. Följ <a href=\"{link}\">communityriktlinjerna</a> när du publicerar.",
       "ruleOnly": "Följ <a href=\"{link}\">communityriktlinjerna</a> när du publicerar.",
       "loadFailed": "Kommentarer kunde inte läsas in.",

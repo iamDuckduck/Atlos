@@ -4,10 +4,28 @@ import { transUGCComments, type UGCComment } from '@/utils/ugcClient';
 import { flatList, isVisible } from './commentsTree';
 
 const AUTO_TRANS_TARGET_LANGS = new Set(['zh-cn', 'en-us', 'ru-ru', 'ja-jp', 'ko-kr']);
+const ZH_HANT_AUTO_DISPLAY_TARGET_LANG = 'zh-cn';
 
-const shouldAutoTrans = (locale: string): boolean => (
-    AUTO_TRANS_TARGET_LANGS.has(getTargetLang(locale))
+const isTraditionalChineseTarget = (targetLang: string): boolean => (
+    targetLang === 'zh-hk'
+    || targetLang === 'zh-tw'
+    || targetLang.startsWith('zh-hant')
 );
+
+const getAutoTransRequest = (locale: string): { cachedOnly: boolean; targetLang: string } | null => {
+    const targetLang = getTargetLang(locale);
+    if (isTraditionalChineseTarget(targetLang)) {
+        return {
+            cachedOnly: true,
+            targetLang: ZH_HANT_AUTO_DISPLAY_TARGET_LANG,
+        };
+    }
+    if (!AUTO_TRANS_TARGET_LANGS.has(targetLang)) return null;
+    return {
+        cachedOnly: false,
+        targetLang,
+    };
+};
 
 const applyAutoTrans = (
     comments: UGCComment[],
@@ -59,9 +77,12 @@ export const useAutoTrans = ({
     const requestRef = useRef('');
 
     useEffect(() => {
-        if (!enabled || !scopeKey || !shouldAutoTrans(locale)) return;
+        if (!enabled || !scopeKey) return;
 
-        const targetLang = getTargetLang(locale);
+        const request = getAutoTransRequest(locale);
+        if (!request) return;
+
+        const { cachedOnly, targetLang } = request;
         const commentIds = flatList(comments)
             .filter((comment) => isVisible(comment.status))
             .filter((comment) => !(
@@ -71,12 +92,12 @@ export const useAutoTrans = ({
             .map((comment) => comment.id);
         if (commentIds.length === 0) return;
 
-        const requestKey = `${scopeKey}:${targetLang}:${commentIds.join(',')}`;
+        const requestKey = `${scopeKey}:${targetLang}:${cachedOnly ? 'cache' : 'translate'}:${commentIds.join(',')}`;
         if (requestRef.current === requestKey) return;
         requestRef.current = requestKey;
 
         let disposed = false;
-        void transUGCComments(commentIds, targetLang)
+        void transUGCComments(commentIds, targetLang, { cachedOnly })
             .then((items) => {
                 if (disposed) return;
                 setComments((current) => applyAutoTrans(current, items));

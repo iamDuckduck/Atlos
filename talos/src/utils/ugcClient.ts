@@ -465,6 +465,11 @@ export type UGCCommentTrans = {
     error?: string;
 };
 
+export type UGCCommentTransOptions = {
+    cachedOnly?: boolean;
+    sourceLang?: string;
+};
+
 export async function toggleUGCImageUpvote(imageId: string, upvoted: boolean): Promise<UGCImageActionPatch> {
     return updateUGCImageAction(imageId, upvoted ? 'upvote' : 'unvote');
 }
@@ -500,17 +505,21 @@ export async function recallUGCComment(commentId: string): Promise<UGCCommentAct
 export async function transUGCComments(
     commentIds: string[],
     targetLang: string,
-    sourceLang?: string,
+    sourceLangOrOptions?: string | UGCCommentTransOptions,
 ): Promise<UGCCommentTrans[]> {
     const normalizedIds = [...new Set(commentIds.map((id) => id.trim()).filter(Boolean))];
     if (normalizedIds.length === 0) return [];
+    const options = typeof sourceLangOrOptions === 'string'
+        ? { sourceLang: sourceLangOrOptions }
+        : sourceLangOrOptions;
 
     const payload = await postJson<{ items?: UGCCommentTrans[] }>(
         `${UGC_API_BASE}/comments/translations`,
         {
             commentIds: normalizedIds,
             targetLanguage: targetLang,
-            ...(sourceLang ? { sourceLanguage: sourceLang } : {}),
+            ...(options?.sourceLang ? { sourceLanguage: options.sourceLang } : {}),
+            ...(options?.cachedOnly ? { cachedOnly: true } : {}),
         },
         false,
     );

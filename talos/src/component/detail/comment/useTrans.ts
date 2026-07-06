@@ -47,6 +47,14 @@ export const useTrans = ({
             }));
             return;
         }
+        if (comment.translatedContent && !comment.translationHidden) {
+            patch(comment.id, (current) => ({
+                ...current,
+                translationHidden: true,
+                translationStatus: undefined,
+            }));
+            return;
+        }
 
         patch(comment.id, (current) => ({
             ...current,

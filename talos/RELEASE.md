@@ -136,6 +136,23 @@ For prod:
 DEPLOY_CHANNEL=prod pnpm publish:web
 ```
 
+`publish:web` uploads point-page aliases like `<token>/index.html` by default so
+root point URLs such as `https://opendfieldmap.cn/0Q2NtmS` resolve on the OSS
+host. Set `SEO_UPLOAD_POINT_ALIASES=0` only for resource-only recovery uploads
+where those aliases should be left untouched.
+
+The `opendfieldmap.cn` nginx host must also route point-token URLs before its
+generic 404/static fallback. If the host already serves
+`/seo/points/oss/<token>.html`, the simplest rule is an internal rewrite:
+
+```nginx
+rewrite ^/([0-9A-Za-z]{7})/?$ /seo/points/oss/$1.html last;
+rewrite ^/([0-9A-Za-z]{7})/index\.html$ /seo/points/oss/$1.html last;
+```
+
+Place these rules in the `server` block before the catch-all `location /` or
+inside `location /` before `try_files`.
+
 ## 6) Verification Checklist
 
 After each publish, verify:

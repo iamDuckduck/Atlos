@@ -6,6 +6,7 @@ import PopoverTooltip from '@/component/popover/popover';
 import Uploader from '../uploader/uploader';
 import Comments, { CommentExcerpt } from './comment/Comments';
 import { flatList } from './comment/commentsTree';
+import { useAutoTrans } from './comment/useAutoTrans';
 
 import parse from 'html-react-parser';
 import { getItemIconUrl, getFileContentUrl, fetchArchiveFile } from '@/utils/resource.ts';
@@ -130,6 +131,21 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
     const [fullTextContent, setFullTextContent] = useState<string | null>(null);
     const [isLoadingFullText, setIsLoadingFullText] = useState(false);
     const [highlightComment, setHighlightComment] = useState<UGCComment | null>(null);
+    const setHighlightComments = useCallback((action: React.SetStateAction<UGCComment[]>) => {
+        setHighlightComment((current) => {
+            const currentItems = current ? [current] : [];
+            const nextItems = typeof action === 'function' ? action(currentItems) : action;
+            return nextItems[0] ?? null;
+        });
+    }, []);
+
+    useAutoTrans({
+        comments: highlightComment ? [highlightComment] : [],
+        enabled: Boolean(highlightComment),
+        locale,
+        scopeKey: currentPointId ? `general:${currentPointId}` : '',
+        setComments: setHighlightComments,
+    });
 
     // GET + validate JSON (HEAD is unreliable: Vite may return 200 + index.html for missing paths)
     useEffect(() => {

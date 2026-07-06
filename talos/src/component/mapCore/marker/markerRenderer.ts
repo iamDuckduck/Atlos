@@ -40,7 +40,7 @@ export const MARKER_ICON_DICT = Object.values(MARKER_TYPE_DICT).reduce<
         acc[typeInfo.key] = divIcon({
             // iconUrl,
             iconSize: [32, 32],
-            iconAnchor: [16, 16],
+            iconAnchor: [16, 32],
             popupAnchor: [0, 0],
             tooltipAnchor: [0, 0],
             className: styles.FrameMarkerIcon,
@@ -270,7 +270,7 @@ const RENDERER_DICT: Record<
         // - 需要pointer-events: none 使 subIcon 不接收鼠标事件
         const markerIcon = divIcon({
             iconSize: [32, 32],
-            iconAnchor: [16, 16],
+            iconAnchor: [16, 32],
             popupAnchor: [0, 0],
             tooltipAnchor: [0, 0],
             className: styles.FrameMarkerIcon,

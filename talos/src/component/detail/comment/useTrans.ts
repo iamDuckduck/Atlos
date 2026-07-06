@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, type Dispatch, type SetStateAction } from 'react';
-import { getTranslationTargetLanguage } from '@/locale';
-import { translateUGCComments, type UGCComment } from '@/utils/ugcClient';
+import { getTargetLang } from '@/locale';
+import { transUGCComments, type UGCComment } from '@/utils/ugcClient';
 import { clearAllTrans, clearTrans } from './commentsTree';
 import { isSameLangErr } from './commentsUtils';
 
@@ -23,7 +23,7 @@ export const useTrans = ({
     setReply,
     setRendered,
 }: Args) => {
-    const targetLang = getTranslationTargetLanguage(locale);
+    const targetLang = getTargetLang(locale);
     const targetRef = useRef(targetLang);
 
     useEffect(() => {
@@ -57,7 +57,7 @@ export const useTrans = ({
             translationStatus: 'translating',
         }));
         setBusy(comment.id, true);
-        void translateUGCComments([comment.id], targetLang)
+        void transUGCComments([comment.id], targetLang)
             .then((items) => {
                 const item = items.find((entry) => entry.commentId === comment.id);
                 if (!item?.translatedContent) {

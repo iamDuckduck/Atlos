@@ -46,6 +46,7 @@ import { useInputLayout } from './useInputLayout';
 import { useRecall } from './useRecall';
 import { useReplyQuote } from './useReplyQuote';
 import { useTrans } from './useTrans';
+import { useAutoTrans } from './useAutoTrans';
 
 type Props = {
     point: IMarkerData;
@@ -327,6 +328,12 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         setComments,
         setReply: setReplyTarget,
         clearSync,
+    });
+    useAutoTrans({
+        comments,
+        locale,
+        scopeKey: point.id,
+        setComments,
     });
 
     const hasComments = commentsWithSubmissions.length > 0;

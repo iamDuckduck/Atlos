@@ -104,7 +104,7 @@ const deleteRemoteObjectKeys = async (keys) => {
 // Keep search index docs as single PUT objects so OSS ETag remains the file MD5.
 const MULTIPART_THRESHOLD = 64 * 1024 * 1024;
 const MAX_RETRIES = 3;
-const shouldUploadSeoPointAliases = process.env.SEO_UPLOAD_POINT_ALIASES === '1';
+const shouldUploadSeoPointAliases = process.env.SEO_UPLOAD_POINT_ALIASES !== '0';
 const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || '20', 10);
 const seoPointTarget = 'oss';
 const targetSeoPointPrefix = `seo/points/${seoPointTarget}/`;
@@ -371,7 +371,7 @@ const run = async () => {
   if (shouldUploadSeoPointAliases) {
     await uploadSeoPointAliases(allFiles);
   } else {
-    console.log('[publish-oss] SEO point alias upload skipped. Set SEO_UPLOAD_POINT_ALIASES=1 to upload token/index.html aliases.');
+    console.log('[publish-oss] SEO point alias upload skipped. Unset SEO_UPLOAD_POINT_ALIASES or set it to a value other than 0 to upload token/index.html aliases.');
   }
 
   if (clipIndex.generated) {

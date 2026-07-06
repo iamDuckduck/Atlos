@@ -85,7 +85,7 @@ export class ClusterLayer {
                                </div>`,
                         className: `${styles.FrameMarkerIcon} marker-cluster-custom`,
                         iconSize: [32, 32],
-                        iconAnchor: [16, 16],
+                        iconAnchor: [16, 32],
                     });
                 }
 
@@ -96,7 +96,7 @@ export class ClusterLayer {
                            </div>`,
                     className: `${styles.FrameMarkerIcon} marker-cluster-custom`,
                     iconSize: [32, 32],
-                    iconAnchor: [16, 16],
+                    iconAnchor: [16, 32],
                 });
             },
         });

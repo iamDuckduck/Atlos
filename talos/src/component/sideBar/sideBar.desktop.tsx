@@ -40,6 +40,7 @@ import MarkBinder from '../markBinder/markBinder';
 import { useTranslateGame, useTranslateUI } from '@/locale';
 import {
     SIDEBAR_MIN_WIDTH,
+    SIDEBAR_THREE_COLUMN_MIN_WIDTH,
     clampSidebarWidth,
     getSidebarMaxWidth,
     useDesktopDrawerSnapIndex,
@@ -86,7 +87,6 @@ interface SideBarProps {
     visible?: boolean;
 }
 
-const WIDE_THRESHOLD = 400;
 const FOUR_COLUMN_THRESHOLD = 700;
 
 const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProps) => {
@@ -160,7 +160,7 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
 
     const filterColumns: 2 | 3 | 4 =
         sidebarWidth >= FOUR_COLUMN_THRESHOLD ? 4 :
-        sidebarWidth >= WIDE_THRESHOLD ? 3 :
+        sidebarWidth >= SIDEBAR_THREE_COLUMN_MIN_WIDTH ? 3 :
         2;
 
     const binderTypeKeys = useMemo(

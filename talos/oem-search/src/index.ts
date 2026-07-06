@@ -243,7 +243,7 @@ const loadDocsFromLocale = async (env: Env, locale: string): Promise<SearchDoc[]
 
   if (!res.ok) return null;
 
-  const data = (await res.json()) as unknown;
+  const data = await res.json();
   const docs = parseSearchDocs(data);
   return docs.length > 0 ? docs : null;
 };

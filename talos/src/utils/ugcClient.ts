@@ -454,7 +454,7 @@ type UGCCommentActionResponse = {
     status?: UGCSubmissionStatus;
 };
 
-export type UGCCommentTranslation = {
+export type UGCCommentTrans = {
     commentId: string;
     translatedContent?: string;
     sourceLanguage?: string;
@@ -497,20 +497,20 @@ export async function recallUGCComment(commentId: string): Promise<UGCCommentAct
     return updateUGCCommentAction(commentId, 'recall');
 }
 
-export async function translateUGCComments(
+export async function transUGCComments(
     commentIds: string[],
-    targetLanguage: string,
-    sourceLanguage?: string,
-): Promise<UGCCommentTranslation[]> {
+    targetLang: string,
+    sourceLang?: string,
+): Promise<UGCCommentTrans[]> {
     const normalizedIds = [...new Set(commentIds.map((id) => id.trim()).filter(Boolean))];
     if (normalizedIds.length === 0) return [];
 
-    const payload = await postJson<{ items?: UGCCommentTranslation[] }>(
+    const payload = await postJson<{ items?: UGCCommentTrans[] }>(
         `${UGC_API_BASE}/comments/translations`,
         {
             commentIds: normalizedIds,
-            targetLanguage,
-            ...(sourceLanguage ? { sourceLanguage } : {}),
+            targetLanguage: targetLang,
+            ...(sourceLang ? { sourceLanguage: sourceLang } : {}),
         },
         false,
     );

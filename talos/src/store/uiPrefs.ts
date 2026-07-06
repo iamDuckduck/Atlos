@@ -6,6 +6,7 @@ type ThemeMode = 'light' | 'dark' | 'auto';
 
 export const SIDEBAR_MIN_WIDTH = 300;
 export const SIDEBAR_DEFAULT_WIDTH = 500;
+export const SIDEBAR_THREE_COLUMN_MIN_WIDTH = 400;
 export const SIDEBAR_DESKTOP_MAX_WIDTH = 500;
 export const SIDEBAR_DESKTOPER_MAX_WIDTH = 600;
 export const SIDEBAR_DESKTOPEST_MAX_WIDTH = 800;
@@ -96,6 +97,27 @@ interface IUiPrefsStore {
   setPrefsPerformanceModeEnabled: (value: boolean) => void;
 }
 
+type UiPrefsPersistedState = Partial<IUiPrefsStore> & {
+  sidebarWidthV2?: number;
+};
+
+const migrateSidebarWidthV2 = (state: UiPrefsPersistedState): UiPrefsPersistedState => {
+  if (typeof state.sidebarWidthV2 === 'number') return state;
+
+  const nextWidth =
+    typeof state.sidebarWidth === 'number' && state.sidebarWidth >= SIDEBAR_THREE_COLUMN_MIN_WIDTH
+      ? state.sidebarWidth
+      : SIDEBAR_DEFAULT_WIDTH;
+
+  const { sidebarWidth, ...nextState } = state;
+  void sidebarWidth;
+
+  return {
+    ...nextState,
+    sidebarWidthV2: nextWidth,
+  };
+};
+
 export const useUiPrefsStore = create<IUiPrefsStore>()(
   persist(
     (set, get) => ({
@@ -178,9 +200,18 @@ export const useUiPrefsStore = create<IUiPrefsStore>()(
     }),
     {
       name: 'ui-prefs',
+      version: 1,
+      migrate: (persistedState: unknown, version: number): UiPrefsPersistedState => {
+        const persisted =
+          typeof persistedState === 'object' && persistedState !== null
+            ? (persistedState as UiPrefsPersistedState)
+            : {};
+
+        return version < 1 ? migrateSidebarWidthV2(persisted) : persisted;
+      },
       partialize: (state) => ({
         sidebarOpen: state.sidebarOpen,
-        sidebarWidth: state.sidebarWidth,
+        sidebarWidthV2: state.sidebarWidth,
         markFilterExpanded: state.markFilterExpanded,
         markFilterOrder: state.markFilterOrder,
         triggerCluster: state.triggerCluster,
@@ -201,7 +232,7 @@ export const useUiPrefsStore = create<IUiPrefsStore>()(
         prefsPerformanceModeEnabled: state.prefsPerformanceModeEnabled,
       }),
       merge: (persistedState, currentState) => {
-        const persisted = persistedState as Partial<IUiPrefsStore>;
+        const persisted = persistedState as UiPrefsPersistedState;
         const merged = { ...currentState };
         
         // Always restore preference flags
@@ -220,8 +251,8 @@ export const useUiPrefsStore = create<IUiPrefsStore>()(
         if (persisted.prefsSidebarEnabled && persisted.sidebarOpen !== undefined) {
           merged.sidebarOpen = persisted.sidebarOpen;
         }
-        if (persisted.prefsSidebarEnabled && persisted.sidebarWidth !== undefined) {
-          merged.sidebarWidth = clampSidebarWidth(persisted.sidebarWidth);
+        if (persisted.prefsSidebarEnabled && persisted.sidebarWidthV2 !== undefined) {
+          merged.sidebarWidth = clampSidebarWidth(persisted.sidebarWidthV2);
         }
         if (persisted.prefsSidebarEnabled && persisted.markFilterExpanded !== undefined) {
           merged.markFilterExpanded = persisted.markFilterExpanded;

@@ -1,4 +1,4 @@
-import { getProjectLanguageNameKey } from '@/locale';
+import { getProjectLangNameKey } from '@/locale';
 import type { UGCComment } from '@/utils/ugcClient';
 import { isReviewing } from './commentsTree';
 
@@ -19,10 +19,10 @@ export const statusLabel = (
 };
 
 const langLabel = (
-    sourceLanguage: string | undefined,
+    sourceLang: string | undefined,
     tUI: (key: string) => string,
 ): string => {
-    const key = getProjectLanguageNameKey(sourceLanguage);
+    const key = getProjectLangNameKey(sourceLang);
     if (!key) return '';
 
     return tUI(key) || key.replace(/^language\.names\./, '');

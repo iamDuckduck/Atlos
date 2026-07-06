@@ -6,7 +6,7 @@ import {
   FULL_LANGS,
   LANG_NATIVE_LABELS,
   UI_ONLY_LANGS,
-  getLanguageDisplayCode,
+  getLangDisplayCode,
   preloadAllLanguages,
   setLocale,
   toBCP47,
@@ -90,7 +90,7 @@ const LanguageModal: React.FC<LanguageProps> = ({ open, onClose, onChange, onSel
         {t(`language.names.${it.key}`) || it.label}
       </div>
       <div className={styles.langTag}>
-        {getLanguageDisplayCode(it.key)}
+        {getLangDisplayCode(it.key)}
         <span className={styles.currentLang} lang={toBCP47(it.key)}>
           {freeze && it.key === freeze.from
             ? freeze.currentText

@@ -71,12 +71,12 @@ const LANG_URL_CODE_OVERRIDES: Partial<Record<Lang, string>> = {
     'vi-VN': 'vn',
 };
 
-const getDefaultLanguageUrlCode = (lang: string): string => (
+const getDefaultLangUrlCode = (lang: string): string => (
     lang.toLowerCase().split('-')[0] || lang
 );
 
 const LANG_URL_CODES: Record<Lang, string> = Object.fromEntries(
-    SUPPORTED_LANGS.map((lang) => [lang, LANG_URL_CODE_OVERRIDES[lang] ?? getDefaultLanguageUrlCode(lang)])
+    SUPPORTED_LANGS.map((lang) => [lang, LANG_URL_CODE_OVERRIDES[lang] ?? getDefaultLangUrlCode(lang)])
 ) as Record<Lang, string>;
 
 const LANG_URL_CODE_REVERSE: Record<string, Lang> = Object.fromEntries(
@@ -84,7 +84,7 @@ const LANG_URL_CODE_REVERSE: Record<string, Lang> = Object.fromEntries(
 ) as Record<string, Lang>;
 
 const GOOGLE_LANGUAGE_ALIASES: Record<string, Lang> = {
-    ...Object.fromEntries(SUPPORTED_LANGS.map((lang) => [getDefaultLanguageUrlCode(lang), lang])),
+    ...Object.fromEntries(SUPPORTED_LANGS.map((lang) => [getDefaultLangUrlCode(lang), lang])),
     zh: 'zh-CN',
     'zh-tw': 'zh-HK',
     'zh-hk': 'zh-HK',
@@ -150,7 +150,7 @@ export const resolveFileContentLocale = (locale: string): string => (
     getLocaleContentCandidates(locale)[1] ?? canonicalizeLocaleAlias(locale)
 );
 
-export const getLanguageDisplayCode = (lang: string): string => {
+export const getLangDisplayCode = (lang: string): string => {
     const lower = lang.toLowerCase().replace('_', '-');
     if (lower.startsWith('zh-hk') || lower.startsWith('zh-tw') || lower.startsWith('zh-hant')) return 'HK';
     if (lower.startsWith('zh-cn') || lower.startsWith('zh-hans')) return 'CN';
@@ -159,22 +159,22 @@ export const getLanguageDisplayCode = (lang: string): string => {
     return base.toUpperCase();
 };
 
-export const getLanguageUrlCode = (lang: string): string => {
+export const getLangUrlCode = (lang: string): string => {
     const supported = pickSupportedLang(lang);
     return supported ? LANG_URL_CODES[supported] : lang;
 };
 
-export const getLanguageFromUrlCode = (code: string): Lang | null => {
+export const getLangFromUrlCode = (code: string): Lang | null => {
     const normalized = code.trim().toLowerCase();
     return LANG_URL_CODE_REVERSE[normalized] ?? pickSupportedLang(code);
 };
 
-export const getTranslationTargetLanguage = (locale: string): string => (
+export const getTargetLang = (locale: string): string => (
     toBCP47(locale).toLowerCase()
 );
 
-export const normalizeProjectLanguageKey = (sourceLanguage: string | undefined): string => {
-    const normalized = sourceLanguage?.trim().replace('_', '-');
+export const normalizeProjectLangKey = (sourceLang: string | undefined): string => {
+    const normalized = sourceLang?.trim().replace('_', '-');
     if (!normalized || normalized.toLowerCase() === 'auto') return '';
     const exactMatch = pickSupportedLang(normalized);
     if (exactMatch) return exactMatch;
@@ -186,7 +186,7 @@ export const normalizeProjectLanguageKey = (sourceLanguage: string | undefined):
     return GOOGLE_LANGUAGE_ALIASES[normalized.toLowerCase()] ?? normalized;
 };
 
-export const getProjectLanguageNameKey = (sourceLanguage: string | undefined): string => {
-    const languageKey = normalizeProjectLanguageKey(sourceLanguage);
-    return languageKey ? `language.names.${languageKey}` : '';
+export const getProjectLangNameKey = (sourceLang: string | undefined): string => {
+    const langKey = normalizeProjectLangKey(sourceLang);
+    return langKey ? `language.names.${langKey}` : '';
 };

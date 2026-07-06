@@ -15,7 +15,7 @@ import {
     type IMarkerData,
 } from '@/data/marker';
 import { REGION_DICT } from '@/data/map';
-import { getLanguageFromUrlCode, getLanguageUrlCode } from '@/utils/lang';
+import { getLangFromUrlCode, getLangUrlCode } from '@/utils/lang';
 import { navigateToSharedPoint } from '@/utils/navigation';
 
 // URL 參數名稱
@@ -470,7 +470,7 @@ export const generateShareUrl = (): string => {
     // 語言（簡化為2字符代碼）
     const locale = getCurrentLocale();
     if (locale) {
-        const shortCode = getLanguageUrlCode(locale);
+        const shortCode = getLangUrlCode(locale);
         params.set(PARAM_LANG, shortCode);
     }
 
@@ -573,7 +573,7 @@ export const applyUrlParams = async (): Promise<void> => {
         const currentLocale = getCurrentLocale();
         // 只有当本地没有设置语言时，才应用 URL 参数
         if (!currentLocale) {
-            const fullLocale = getLanguageFromUrlCode(langParam);
+            const fullLocale = getLangFromUrlCode(langParam);
             if (fullLocale) {
                 await setLocale(fullLocale);
             }

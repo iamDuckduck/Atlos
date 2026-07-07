@@ -76,6 +76,9 @@
 }
 
 .floatingLayer {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
     margin: 0;
     border: 0;
     background: transparent;
@@ -86,16 +89,17 @@
     left: auto;
     padding: 0.125rem;
     box-sizing: border-box;
-    width: fit-content;
-    height: fit-content;
-    inline-size: fit-content;
-    block-size: fit-content;
+    width: max-content;
+    height: auto;
+    inline-size: max-content;
+    block-size: auto;
     min-width: 0;
     min-height: 0;
     max-width: calc(100vw - 8px);
-    max-height: calc(100vh - 8px);
     max-inline-size: calc(100dvw - 8px);
-    max-block-size: calc(100dvh - 8px);
+    max-height: none;
+    max-block-size: none;
+    flex-wrap: nowrap;
     opacity: 0;
     overflow: visible;
     pointer-events: auto;

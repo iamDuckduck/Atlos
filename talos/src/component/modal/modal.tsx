@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import styles from './modal.module.scss'; 
 import Button from '@/component/button/button';
 import { getOpenerDocument, getPictureInPictureDocument } from '@/component/scale/pip';
+import OverflowPopoverText from '@/component/popover/OverflowPopoverText';
 
 import { useTranslateUI } from '@/locale';
 import { LinearBlur } from 'progressive-blur';
@@ -212,6 +213,7 @@ const Modal: React.FC<ModalProps> = ({
   };
 
   const root = getModalDocument(size)?.body ?? document.body;
+  const titleText = typeof title === 'string' ? title : '';
   return ReactDOM.createPortal(
     <div
       className={styles.modalMask}
@@ -234,7 +236,18 @@ const Modal: React.FC<ModalProps> = ({
         {(title || icon || showClose) && (
           <div className={styles.modalHeader}>
             {icon && <span className={styles.modalIcon} style={{ transform: `scale(${iconScale})` }}>{icon}</span>}
-            {title && <div id={titleId} className={styles.modalTitle}>{title}</div>}
+            {title && (
+              titleText ? (
+                <OverflowPopoverText
+                  id={titleId}
+                  text={titleText}
+                  className={styles.modalTitle}
+                  element="div"
+                />
+              ) : (
+                <div id={titleId} className={styles.modalTitle}>{title}</div>
+              )
+            )}
             {showClose && (
               <Button
                 text={tUI('common.close')}

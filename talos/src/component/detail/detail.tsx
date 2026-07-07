@@ -3,6 +3,7 @@ import styles from './detail.module.scss';
 import Button from '@/component/button/button';
 import Modal from '@/component/modal/modal';
 import PopoverTooltip from '@/component/popover/popover';
+import OverflowPopoverText from '@/component/popover/OverflowPopoverText';
 import Uploader from '../uploader/uploader';
 import Comments, { CommentExcerpt } from './comment/Comments';
 import { flatList } from './comment/commentsTree';
@@ -430,7 +431,10 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
                                     <CategoryIcon className={styles.icon} />
                                 </span>
                             )}
-                            <span className={styles.pointName}>{pointName}</span>
+                            <OverflowPopoverText
+                                text={pointName}
+                                className={styles.pointName}
+                            />
                         </div>
                         <div className={styles.headerActions}>
                             <Button

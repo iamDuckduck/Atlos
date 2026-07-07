@@ -171,7 +171,7 @@ const getMimeType = (filePath) => {
 // Keep search docs on single PUT so the remote ETag stays comparable to local MD5.
 const MULTIPART_THRESHOLD = 64 * 1024 * 1024;
 const MAX_RETRIES = 3;
-const shouldUploadSeoPointAliases = process.env.SEO_UPLOAD_POINT_ALIASES !== "0";
+const shouldUploadSeoPointAliases = process.env.SEO_UPLOAD_POINT_ALIASES === "1";
 const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || "40", 10);
 const uploadProfile = process.env.R2_UPLOAD_PROFILE === "resources" ? "resources" : "full";
 const resourceUploadPrefixes = ["assets/", "files/", "search/", "clips/"];
@@ -515,7 +515,7 @@ const run = async () => {
   if (shouldUploadSeoPointAliases) {
     await uploadSeoPointAliases(allFiles);
   } else {
-    console.log("[publish-R2] SEO point alias upload skipped. Unset SEO_UPLOAD_POINT_ALIASES or set it to a value other than 0 to upload token/index.html aliases.");
+    console.log("[publish-R2] SEO point alias upload skipped by default for R2. Set SEO_UPLOAD_POINT_ALIASES=1 only for manual alias backfills.");
   }
 
   if (clipIndex.generated) {

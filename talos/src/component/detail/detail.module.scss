@@ -55,6 +55,7 @@
         height 0.28s $standard-curve,
         transform 0.3s $standard-curve;
     will-change: height, transform;
+    user-select: none;
 
     &[data-state='open'] {
         transform: translate3d(0, 0, 0);

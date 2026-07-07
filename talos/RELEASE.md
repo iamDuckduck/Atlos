@@ -82,6 +82,10 @@ For prod:
 DEPLOY_CHANNEL=prod node ./scripts/publish-R2.js
 ```
 
+`publish-R2.js` does not upload point-page aliases like `<token>/index.html` by
+default because org root point pages are served by Pages. Set
+`SEO_UPLOAD_POINT_ALIASES=1` only for a manual R2 alias backfill.
+
 ## 4) Publish Pages (org / Cloudflare Pages)
 
 Pages is used for the root SEO entry pages under the org domain. Build the R2 target first, then package the reduced Pages artifact:

@@ -8,6 +8,7 @@ type Side = 'top' | 'bottom' | 'left' | 'right';
 
 const INTERACTIVE_SELECTOR = 'button, a, input, textarea, select, label, [role="button"], [role="link"], [contenteditable="true"]';
 const FILTER_ICON_SELECTOR = '[class*="filterIcon"]';
+const DRAG_IGNORE_SELECTOR = '[data-drawer-drag-ignore="true"]';
 
 export interface DrawerProps {
 	side?: Side;
@@ -266,6 +267,12 @@ export const Drawer: React.FC<DrawerProps> = ({
 			
 			if (target?.closest(INTERACTIVE_SELECTOR)) {
 				logger.logGestureCancel('interactive element');
+				cancel();
+				return;
+			}
+
+			if (target?.closest(DRAG_IGNORE_SELECTOR)) {
+				logger.logGestureCancel('drag ignore region');
 				cancel();
 				return;
 			}

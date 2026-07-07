@@ -35,6 +35,12 @@ const clamp = (value: number, min: number, max: number): number => (
     Math.min(Math.max(value, min), max)
 );
 
+const isTouchLikePointer = (event: Pick<PointerEvent, 'pointerType'> | Pick<React.PointerEvent, 'pointerType'>): boolean => (
+    event.pointerType === 'touch'
+    || event.pointerType === 'pen'
+    || (event.pointerType === '' && Boolean(window.matchMedia?.('(hover: none)')?.matches))
+);
+
 const isPopoverOpen = (popover: HTMLElement): boolean => {
     try {
         return popover.matches(':popover-open');
@@ -63,6 +69,7 @@ const ShortActions = memo(({
     const layerHoverRef = useRef(false);
     const rootFocusRef = useRef(false);
     const layerFocusRef = useRef(false);
+    const touchPinnedRef = useRef(false);
     const isFloating = variant === 'floating';
 
     const getRootElement = useCallback(() => (
@@ -124,6 +131,7 @@ const ShortActions = memo(({
             layerHoverRef.current = false;
             rootFocusRef.current = false;
             layerFocusRef.current = false;
+            touchPinnedRef.current = false;
         };
 
         if (immediate || !isPopoverOpen(layer)) {
@@ -137,7 +145,7 @@ const ShortActions = memo(({
     }, [clearTimers]);
 
     const shouldKeepLayerOpen = useCallback(() => (
-        rootHoverRef.current || layerHoverRef.current || rootFocusRef.current || layerFocusRef.current
+        touchPinnedRef.current || rootHoverRef.current || layerHoverRef.current || rootFocusRef.current || layerFocusRef.current
     ), []);
 
     const syncHoverState = useCallback((target?: EventTarget | null, point?: { x: number; y: number }) => {
@@ -188,11 +196,22 @@ const ShortActions = memo(({
         const root = getRootElement();
         if (!root) return undefined;
 
-        const handleRootEnter = () => {
+        const handleRootPointerDown = (event: PointerEvent) => {
+            if (!isTouchLikePointer(event)) return;
+            touchPinnedRef.current = true;
+            rootHoverRef.current = true;
+            layerHoverRef.current = false;
+            rootFocusRef.current = false;
+            layerFocusRef.current = false;
+            showLayer();
+        };
+        const handleRootEnter = (event: PointerEvent) => {
+            if (isTouchLikePointer(event)) return;
             rootHoverRef.current = true;
             showLayer();
         };
         const handleRootLeave = (event: PointerEvent) => {
+            if (isTouchLikePointer(event)) return;
             rootHoverRef.current = false;
             const nextTarget = event.relatedTarget;
             if (nextTarget instanceof Node && layerRef.current?.contains(nextTarget)) return;
@@ -213,12 +232,14 @@ const ShortActions = memo(({
             }, 0);
         };
 
+        root.addEventListener('pointerdown', handleRootPointerDown);
         root.addEventListener('pointerenter', handleRootEnter);
         root.addEventListener('pointerleave', handleRootLeave);
         root.addEventListener('focusin', handleFocusIn);
         root.addEventListener('focusout', handleFocusOut);
 
         return () => {
+            root.removeEventListener('pointerdown', handleRootPointerDown);
             root.removeEventListener('pointerenter', handleRootEnter);
             root.removeEventListener('pointerleave', handleRootLeave);
             root.removeEventListener('focusin', handleFocusIn);
@@ -232,6 +253,7 @@ const ShortActions = memo(({
         const closeIfPointerOutside = (event: PointerEvent) => {
             const layer = layerRef.current;
             if (!layer || !isPopoverOpen(layer)) return;
+            if (touchPinnedRef.current && isTouchLikePointer(event)) return;
             const inside = syncHoverState(event.target, { x: event.clientX, y: event.clientY });
             if (!inside && !rootFocusRef.current && !layerFocusRef.current) {
                 scheduleHideLayer();
@@ -298,18 +320,22 @@ const ShortActions = memo(({
             {...(isFloating ? { popover: 'manual' } : {})}
             onClick={(event) => event.stopPropagation()}
             onPointerDown={(event) => event.stopPropagation()}
-            onPointerEnter={isFloating ? () => {
+            onPointerEnter={isFloating ? (event) => {
+                if (isTouchLikePointer(event)) return;
+                touchPinnedRef.current = false;
                 layerHoverRef.current = true;
                 showLayer();
             } : undefined}
             onPointerLeave={isFloating ? (event) => {
+                if (isTouchLikePointer(event)) return;
                 layerHoverRef.current = false;
                 const root = anchorRef.current?.closest('[data-short-actions-root="true"]');
                 const nextTarget = event.relatedTarget;
                 if (nextTarget instanceof Node && root?.contains(nextTarget)) return;
                 scheduleHideLayer();
             } : undefined}
-            onPointerMove={isFloating ? () => {
+            onPointerMove={isFloating ? (event) => {
+                if (isTouchLikePointer(event)) return;
                 layerHoverRef.current = true;
             } : undefined}
             onFocus={isFloating ? () => {

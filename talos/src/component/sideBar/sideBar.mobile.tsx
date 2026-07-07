@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LinearBlur } from "progressive-blur";
 import mobileStyles from './sideBar.mobile.module.scss';
 
@@ -29,6 +29,7 @@ import CollectionIcon from '../../assets/images/category/collection.svg?react';
 import CombatIcon from '../../assets/images/category/combat.svg?react';
 import NpcIcon from '../../assets/images/category/npc.svg?react';
 import FacilityIcon from '../../assets/images/category/facility.svg?react';
+import ArchivesIcon from '../../assets/images/category/archives.svg?react';
 
 import { DEFAULT_SUBCATEGORY_ORDER, MARKER_TYPE_DICT, MARKER_TYPE_TREE, REGION_TYPE_COUNT_MAP, type IMarkerType } from '@/data/marker';
 import { VERSION_NEW_FILTER_GROUPS, useVersionNewMarkerCounts } from '@/data/marker/versionNew';
@@ -43,7 +44,7 @@ const CATEGORY_ICON_MAP: Record<string, React.FC<React.SVGProps<SVGSVGElement>>>
     natural: NaturalIcon,
     valuable: ValuableIcon,
     collection: CollectionIcon,
-    archives: CollectionIcon,
+    archives: ArchivesIcon,
     combat: CombatIcon,
     npc: NpcIcon,
     facility: FacilityIcon,
@@ -111,7 +112,6 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
   const [topRowBaseHeight, setTopRowBaseHeight] = useState(0);
   const [rightContentWidth, setRightContentWidth] = useState(0);
   const prevHasSearchQueryRef = useRef(false);
-  const preSearchSnapIndexRef = useRef<number | null>(null);
   const hasSearchQuery = searchString.trim().length > 0;
 
   const snap0 = useMemo(() => {
@@ -170,13 +170,12 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
     return () => scroller.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Sync currentSnap to store for UIOverlay to use
-  useEffect(() => {
-    if (hasSearchQuery) return;
-    if (drawerSnapIndex !== currentSnap) {
-      setDrawerSnapIndex(currentSnap);
+  const handleSnapChange = useCallback((index: number) => {
+    setCurrentSnap(index);
+    if (drawerSnapIndex !== index) {
+      setDrawerSnapIndex(index);
     }
-  }, [currentSnap, drawerSnapIndex, hasSearchQuery, setDrawerSnapIndex]);
+  }, [drawerSnapIndex, setDrawerSnapIndex]);
 
   const snapsNormalized = snaps;
   const minSnap = snaps[0] ?? 0;
@@ -188,24 +187,15 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
     const maxIndex = Math.max(0, snaps.length - 1);
 
     if (!wasSearching && hasSearchQuery) {
-      preSearchSnapIndexRef.current = drawerSnapIndex;
-      if (drawerSnapIndex !== maxIndex) {
-        setDrawerSnapIndex(maxIndex);
-      }
-    }
-
-    if (wasSearching && !hasSearchQuery) {
-      const prevIndex = preSearchSnapIndexRef.current;
-      if (typeof prevIndex === 'number') {
-        const restored = Math.max(0, Math.min(maxIndex, prevIndex));
-        if (drawerSnapIndex !== restored) {
-          setDrawerSnapIndex(restored);
-        }
+      const targetIndex = Math.min(1, maxIndex);
+      const currentIndex = drawerSnapIndex ?? currentSnap;
+      if (currentIndex < targetIndex) {
+        setDrawerSnapIndex(targetIndex);
       }
     }
 
     prevHasSearchQueryRef.current = hasSearchQuery;
-  }, [hasSearchQuery, snaps.length, drawerSnapIndex, setDrawerSnapIndex]);
+  }, [currentSnap, hasSearchQuery, snaps.length, drawerSnapIndex, setDrawerSnapIndex]);
 
   const hasFilterList = useMemo(
     () => filterList.some((item) => MARKER_TYPE_DICT[item]?.category?.main !== 'files'),
@@ -361,13 +351,13 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
         snap={snaps}
         snapThreshold={[50, 50, 50]}
         handleSize={16}
-        dragDisabled={hasSearchQuery}
         fullWidth={true}
         className={mobileStyles.mobileDrawer}
         handleClassName={mobileStyles.mobileDrawerHandle}
         contentClassName={mobileStyles.mobileDrawerContent}
         backdropClassName={mobileStyles.mobileDrawerBackdrop}
         onProgressChange={handleProgress}
+        onSnapChange={handleSnapChange}
         style={{ bottom: 0 }}
         snapToIndex={drawerSnapIndex}
       >

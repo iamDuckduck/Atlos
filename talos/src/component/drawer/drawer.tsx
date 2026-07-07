@@ -6,7 +6,7 @@ import styles from './drawer.module.scss';
 
 type Side = 'top' | 'bottom' | 'left' | 'right';
 
-const INTERACTIVE_SELECTOR = 'button, a, select, label, [role="button"], [role="link"], [contenteditable="true"]';
+const INTERACTIVE_SELECTOR = 'button, a, input, textarea, select, label, [role="button"], [role="link"], [contenteditable="true"]';
 const FILTER_ICON_SELECTOR = '[class*="filterIcon"]';
 
 export interface DrawerProps {
@@ -18,6 +18,7 @@ export interface DrawerProps {
 	dragDisabled?: boolean;
 	debug?: boolean;
 	onProgressChange?: (progress: number) => void;
+	onSnapChange?: (index: number) => void;
 	className?: string;
 	handleClassName?: string;
 	contentClassName?: string;
@@ -101,6 +102,7 @@ export const Drawer: React.FC<DrawerProps> = ({
 	dragDisabled = false,
 	debug = false,
 	onProgressChange,
+	onSnapChange,
 	className,
 	handleClassName,
 	contentClassName,
@@ -162,6 +164,7 @@ export const Drawer: React.FC<DrawerProps> = ({
 				const newSnap = String(idx);
 				if (prevSnap !== newSnap) {
 					container.setAttribute('data-snap', newSnap);
+					onSnapChange?.(idx);
 					logger.logDataSnapChange(prevSnap, idx, v);
 				}
 			} else if (prevSnap !== null) {
@@ -172,7 +175,7 @@ export const Drawer: React.FC<DrawerProps> = ({
 			logger.logSizeChange(v, p);
 		});
 		return () => unsub();
-	}, [onProgressChange, size, progress, safeRange, minSnap, snapsNormalized, logger]);
+	}, [onProgressChange, onSnapChange, size, progress, safeRange, minSnap, snapsNormalized, logger]);
 	
 	// Initialize on mount only
 	useEffect(() => {
@@ -251,7 +254,7 @@ export const Drawer: React.FC<DrawerProps> = ({
 				cancel();
 				return;
 			}
-			
+
 			if (target?.closest(FILTER_ICON_SELECTOR)) {
 				logger.logGestureCancel('filterIcon drag');
 				cancel();

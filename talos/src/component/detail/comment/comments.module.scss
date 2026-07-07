@@ -35,6 +35,7 @@
     min-height: 15rem;
     color: var(--comment-text);
     overflow: hidden;
+    overscroll-behavior-y: auto;
 }
 
 .commentList {
@@ -46,7 +47,7 @@
     flex-direction: column;
     gap: 0.5rem;
     padding: var(--comment-panel-inset) var(--comment-panel-inset) 50%;
-    overscroll-behavior: contain;
+    overscroll-behavior-y: auto;
     -webkit-overflow-scrolling: touch;
 
     &::-webkit-scrollbar {

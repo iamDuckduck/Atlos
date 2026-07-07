@@ -396,8 +396,7 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
               )}
             </div>
 
-            {/* Detail slot between top row and filters */}
-            <div className={mobileStyles.detailSlot}><Detail inline /></div>
+            <Detail inline className={mobileStyles.mobileDetail} />
 
             <div className={mobileStyles.filters}>
               <MarkFilterDragProvider>
@@ -522,7 +521,7 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
         {/* Top blur: visible when not at snap-0 and not scrolled to top */}
         <LinearBlur
           side='top'
-          strength={32}
+          strength={8}
           falloffPercentage={80}
           className={`${mobileStyles.topBlur} ${currentSnap > 0 && !isScrolledTop ? mobileStyles.visible : ''}`}
         />
@@ -530,7 +529,7 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
         {/* Bottom blur: visible when not at snap-0 and not scrolled to bottom */}
         <LinearBlur
           side='bottom'
-          strength={16}
+          strength={2}
           falloffPercentage={100}
           className={`${mobileStyles.bottomBlur} ${currentSnap > 0 && !isScrolledBottom ? mobileStyles.visible : ''}`}
         />

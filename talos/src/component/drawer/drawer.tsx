@@ -77,20 +77,33 @@ const findSnapTarget = (
 	return null;
 };
 
-// Find scrollable ancestor
-const findScrollable = (el: Element | null, container: HTMLElement | null): HTMLElement | null => {
+const isVerticallyScrollable = (element: HTMLElement): boolean => {
+	const { overflowY } = getComputedStyle(element);
+	return (
+		(overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay')
+		&& element.scrollHeight > element.clientHeight + 1
+	);
+};
+
+const canScrollInDirection = (element: HTMLElement, movementY: number): boolean => {
+	if (movementY > 0) return element.scrollTop > 1;
+	if (movementY < 0) return element.scrollTop + element.clientHeight < element.scrollHeight - 1;
+	return false;
+};
+
+// Find scrollable ancestors from the gesture target outward to the drawer container.
+const findScrollables = (el: Element | null, container: HTMLElement | null): HTMLElement[] => {
+	const scrollables: HTMLElement[] = [];
 	let cur = el;
 	while (cur && container && cur !== container) {
 		if (cur instanceof HTMLElement) {
-			const { overflowY } = getComputedStyle(cur);
-			if ((overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay') && 
-			    cur.scrollHeight > cur.clientHeight + 1) {
-				return cur;
+			if (isVerticallyScrollable(cur)) {
+				scrollables.push(cur);
 			}
 		}
 		cur = cur.parentElement;
 	}
-	return null;
+	return scrollables;
 };
 
 export const Drawer: React.FC<DrawerProps> = ({
@@ -137,7 +150,7 @@ export const Drawer: React.FC<DrawerProps> = ({
 	const dragStartSizeRef = useRef(initSize);
 	const lastSizeRef = useRef(initSize);
 	const isDraggingRef = useRef(false);
-	const scrollElRef = useRef<HTMLElement | null>(null);
+	const scrollElsRef = useRef<HTMLElement[]>([]);
 	
 	// Debug: track renders
 	logger.logRender(++renderCount.current, { side, initialSize, snapToIndex, handleSize, fullWidth });
@@ -239,11 +252,13 @@ export const Drawer: React.FC<DrawerProps> = ({
 			return;
 		}
 		
-		logger.logGesture(first ? 'START' : last ? 'END' : 'MOVE', {
-			intentional,
-			movement: { mx, my },
-			size: size.get(),
-		});
+		if (first || last) {
+			logger.logGesture(first ? 'START' : 'END', {
+				intentional,
+				movement: { mx, my },
+				size: size.get(),
+			});
+		}
 		
 		// First touch: initialize and check cancellation conditions
 		if (first) {
@@ -263,9 +278,9 @@ export const Drawer: React.FC<DrawerProps> = ({
 			
 			dragStartSizeRef.current = size.get();
 			isDraggingRef.current = false;
-			scrollElRef.current = findScrollable(target, containerRef.current);
+			scrollElsRef.current = findScrollables(target, containerRef.current);
 			
-			if (scrollElRef.current) logger.logScrollableDetected(scrollElRef.current);
+			if (scrollElsRef.current.length > 0) logger.logScrollableDetected(scrollElsRef.current[0]);
 		}
 		
 		// Not intentional yet: wait for threshold
@@ -277,12 +292,10 @@ export const Drawer: React.FC<DrawerProps> = ({
 		}
 		
 		// Check scroll conflict
-		const scrollEl = scrollElRef.current;
-		if (scrollEl && axis === 'y') {
-			const atTop = scrollEl.scrollTop <= 1;
-			const atBottom = scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 1;
-			
-			if ((my > 0 && !atTop) || (my < 0 && !atBottom)) {
+		const scrollEls = scrollElsRef.current;
+		if (scrollEls.length > 0 && axis === 'y') {
+			const scrollOwner = scrollEls.find((scrollEl) => canScrollInDirection(scrollEl, my));
+			if (scrollOwner) {
 				logger.logGestureCancel('content scroll priority');
 				cancel();
 				return;

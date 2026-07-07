@@ -238,13 +238,14 @@ html:not(:lang(zh-CN), :lang(zh-HK)) {
         overflow-x: hidden;
         overflow-y: auto;
         touch-action: pan-y;
+        overscroll-behavior-y: auto;
         height: 100%;
         position: relative;
 
         &.searchMode {
             overflow-x: visible;
             overflow-y: auto;
-            overscroll-behavior-y: contain;
+            overscroll-behavior-y: auto;
         }
     }
 
@@ -357,8 +358,14 @@ html:not(:lang(zh-CN), :lang(zh-HK)) {
     padding: 0.25rem 0;
 }
 
+.mobileDetail {
+    --detail-max-height: 50dvh;
+
+    width: 100%;
+}
+
 .mobileDrawer[data-snap="0"] .sidebarContent > .filters,
-.mobileDrawer[data-snap="0"] .detailSlot,
+.mobileDrawer[data-snap="0"] .mobileDetail,
 .mobileDrawer[data-snap="0"] .mobileTriggerBar,
 .mobileDrawer[data-snap="0"] .copyright {
     display: none;

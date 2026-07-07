@@ -26,6 +26,8 @@
         0 0 4px 0.5px rgba($black-0, 0.6),
         0 0 4px 2px rgba($light-2, 0.6) inset;
     overflow: hidden;
+    overscroll-behavior-y: auto;
+    touch-action: pan-y;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -125,6 +127,8 @@
         display: grid;
         grid-template-columns: minmax(3rem, 24%) 1fr minmax(3rem, 24%);
         pointer-events: auto;
+        touch-action: pan-y;
+        overscroll-behavior-y: auto;
         cursor: pointer;
         opacity: 0;
         transition: opacity 0.2s ease;

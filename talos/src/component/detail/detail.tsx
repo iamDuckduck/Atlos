@@ -44,7 +44,6 @@ import {
 } from '@/store/userRecord.ts';
 import classNames from 'classnames';
 import { useTranslateGame, useTranslateUI, useLocale } from '@/locale';
-import { useForceDetailOpen } from '@/store/uiPrefs';
 
 // Category icon mapping
 const CATEGORY_ICON_MAP: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
@@ -63,11 +62,23 @@ const CATEGORY_ICON_MAP: Record<string, React.FC<React.SVGProps<SVGSVGElement>>>
 type DetailPhase = 'hidden' | 'entering' | 'open' | 'exiting';
 type DetailTab = 'general' | 'comments';
 
+interface DetailProps {
+    inline?: boolean;
+    className?: string;
+}
+
 const DETAIL_EXIT_DURATION_MS = 300;
 
 const parseCssPixelValue = (value: string): number => {
     const parsed = Number.parseFloat(value);
     return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const getElementMaxHeight = (element: HTMLElement): number => {
+    const { maxHeight } = window.getComputedStyle(element);
+    if (!maxHeight || maxHeight === 'none') return Number.POSITIVE_INFINITY;
+    const parsed = parseCssPixelValue(maxHeight);
+    return parsed > 0 ? parsed : Number.POSITIVE_INFINITY;
 };
 
 const getElementNaturalHeight = (element: HTMLElement): number => {
@@ -93,7 +104,7 @@ const getTopRatedComment = (comments: UGCComment[]): UGCComment | null => {
     ));
 };
 
-export const Detail = ({ inline = false }: { inline?: boolean }) => {
+export const Detail = ({ inline = false, className }: DetailProps) => {
     /**
      * @type {import('../mapContainer/store/marker.type').IMarkerData}
      */
@@ -218,7 +229,6 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
 
     // const noteContent = currentPoint?.status?.user?.localNote;
     const [detailPhase, setDetailPhase] = useState<DetailPhase>('hidden');
-    const forceDetailOpen = useForceDetailOpen();
     const ref = useRef<HTMLDivElement | null>(null);
     const headerRef = useRef<HTMLDivElement | null>(null);
     const tabsRef = useRef<HTMLDivElement | null>(null);
@@ -247,7 +257,7 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
             ? Math.max(getElementNaturalHeight(commentsList), commentsPanelMinHeight)
             : activePanel.scrollHeight;
         const naturalHeight = headerHeight + tabsHeight + activePanelHeight;
-        const maxHeight = Math.max(0, window.innerHeight * 0.8);
+        const maxHeight = Math.max(0, Math.min(window.innerHeight * 0.8, getElementMaxHeight(container)));
         const nextHeight = Math.ceil(Math.min(naturalHeight, maxHeight));
         container.style.setProperty('--detail-panel-height', `${nextHeight}px`);
         container.style.setProperty('--detail-content-height', `${Math.max(0, nextHeight - headerHeight - tabsHeight)}px`);
@@ -256,10 +266,9 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
     // 当 currentPoint 更新时，显示 detail
     useEffect(() => {
         if (currentPoint) {
-            console.log('[Detail] currentPoint changed:', currentPoint, 'forceDetailOpen:', forceDetailOpen);
             setDetailPhase((phase) => (phase === 'hidden' || phase === 'exiting' ? 'entering' : phase));
         }
-    }, [currentPoint, forceDetailOpen]);
+    }, [currentPoint]);
 
     // const handleNextPoint = () => addPoint(currentPoint.id);
 
@@ -403,9 +412,13 @@ export const Detail = ({ inline = false }: { inline?: boolean }) => {
             {detailPhase !== 'hidden' && currentPoint && (
                 <div
                     data-state={detailPhase === 'open' ? 'open' : 'closed'}
-                    className={classNames(styles.detailContainer, {
-                        [styles.inline]: inline,
-                    })}
+                    className={classNames(
+                        styles.detailContainer,
+                        {
+                            [styles.inline]: inline,
+                        },
+                        className,
+                    )}
                     ref={ref}
                 >
                     {/* Head */}

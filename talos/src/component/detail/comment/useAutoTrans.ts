@@ -6,23 +6,36 @@ import { flatList, isVisible } from './commentsTree';
 const AUTO_TRANS_TARGET_LANGS = new Set(['zh-cn', 'en-us', 'ru-ru', 'ja-jp', 'ko-kr']);
 const ZH_HANT_AUTO_DISPLAY_TARGET_LANG = 'zh-cn';
 
+type AutoTransRequest = {
+    cachedOnly: boolean;
+    skipChineseSource: boolean;
+    targetLang: string;
+};
+
 const isTraditionalChineseTarget = (targetLang: string): boolean => (
     targetLang === 'zh-hk'
     || targetLang === 'zh-tw'
     || targetLang.startsWith('zh-hant')
 );
 
-const getAutoTransRequest = (locale: string): { cachedOnly: boolean; targetLang: string } | null => {
+const isChineseSource = (sourceLang?: string): boolean => {
+    const normalized = sourceLang?.trim().replace('_', '-').toLowerCase();
+    return Boolean(normalized && (normalized === 'zh' || normalized.startsWith('zh-')));
+};
+
+const getAutoTransRequest = (locale: string): AutoTransRequest | null => {
     const targetLang = getTargetLang(locale);
     if (isTraditionalChineseTarget(targetLang)) {
         return {
             cachedOnly: true,
+            skipChineseSource: true,
             targetLang: ZH_HANT_AUTO_DISPLAY_TARGET_LANG,
         };
     }
     if (!AUTO_TRANS_TARGET_LANGS.has(targetLang)) return null;
     return {
         cachedOnly: false,
+        skipChineseSource: false,
         targetLang,
     };
 };
@@ -30,10 +43,14 @@ const getAutoTransRequest = (locale: string): { cachedOnly: boolean; targetLang:
 const applyAutoTrans = (
     comments: UGCComment[],
     trans: Awaited<ReturnType<typeof transUGCComments>>,
+    request: AutoTransRequest,
 ): UGCComment[] => {
     const transById = new Map(
         trans
-            .filter((item) => item.translatedContent)
+            .filter((item) => (
+                item.translatedContent
+                && !(request.skipChineseSource && isChineseSource(item.sourceLanguage))
+            ))
             .map((item) => [item.commentId, item] as const),
     );
     if (transById.size === 0) return comments;
@@ -61,6 +78,43 @@ const applyAutoTrans = (
     return applyTo(comments);
 };
 
+const clearSkippedAutoTrans = (
+    comments: UGCComment[],
+    request: AutoTransRequest,
+): UGCComment[] => {
+    if (!request.skipChineseSource) return comments;
+
+    let changed = false;
+    const applyTo = (items: UGCComment[]): UGCComment[] => (
+        items.map((comment) => {
+            const replies = comment.replies.length > 0 ? applyTo(comment.replies) : comment.replies;
+            const shouldClear = (
+                comment.translationTargetLanguage?.toLowerCase() === request.targetLang
+                && isChineseSource(comment.translationSourceLanguage)
+            );
+            if (!shouldClear) {
+                if (replies === comment.replies) return comment;
+                changed = true;
+                return { ...comment, replies };
+            }
+
+            changed = true;
+            return {
+                ...comment,
+                replies,
+                translatedContent: undefined,
+                translationSourceLanguage: undefined,
+                translationTargetLanguage: undefined,
+                translationHidden: undefined,
+                translationStatus: undefined,
+            };
+        })
+    );
+
+    const nextComments = applyTo(comments);
+    return changed ? nextComments : comments;
+};
+
 export const useAutoTrans = ({
     comments,
     enabled = true,
@@ -82,6 +136,8 @@ export const useAutoTrans = ({
         const request = getAutoTransRequest(locale);
         if (!request) return;
 
+        setComments((current) => clearSkippedAutoTrans(current, request));
+
         const { cachedOnly, targetLang } = request;
         const commentIds = flatList(comments)
             .filter((comment) => isVisible(comment.status))
@@ -100,7 +156,7 @@ export const useAutoTrans = ({
         void transUGCComments(commentIds, targetLang, { cachedOnly })
             .then((items) => {
                 if (disposed) return;
-                setComments((current) => applyAutoTrans(current, items));
+                setComments((current) => applyAutoTrans(current, items, request));
             })
             .catch(() => {
                 // Auto translation is opportunistic; keep original comments on failure.

@@ -17,6 +17,7 @@ import GithubIcon from '../../assets/images/UI/media/ghicon.svg?react';
 import DiscordIcon from '../../assets/images/UI/media/discordicon.svg?react';
 import QQIcon from '../../assets/images/UI/media/qqicon.svg?react';
 import BskyIcon from '../../assets/images/UI/media/bluesky.svg?react';
+import XIcon from '../../assets/images/UI/media/x.svg?react';
 
 // Category icons
 import BossIcon from '../../assets/images/category/boss.svg?react';
@@ -492,6 +493,16 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
               aria-label="Bluesky"
             >
               <BskyIcon />
+            </a>
+            <a
+                href="https://x.com/OpenEndfieldMap"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={mobileStyles.socialLink}
+                data-platform="X/Twitter"
+                aria-label="X/Twitter"
+            >
+                <XIcon />
             </a>
             <a
               href="https://qm.qq.com/q/BVsCJgzBL2"

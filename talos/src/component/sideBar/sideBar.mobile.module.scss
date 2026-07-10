@@ -137,6 +137,23 @@
                         }
                     }
                 }
+                &[data-platform="X/Twitter"] {
+                    > svg {
+                        width: 0.92rem;
+                        height: 0.92rem;
+                    }
+                    &::after {
+                        content: "Twitter";
+                    }
+                    &:hover {
+                        svg {
+                            fill: var(--twitter);
+                        }
+                        &::after {
+                            color: var(--twitter)
+                        }
+                    }
+                }
                 &[data-platform="qq"] {
                     transform: translateX(-2px);
                     > svg {

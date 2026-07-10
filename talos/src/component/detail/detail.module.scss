@@ -31,7 +31,6 @@
     --detail-tab-collect-bg: #{$secondary-accent-3};
     --detail-tab-disabled-bg: #{$grey-3};
 }
-
 .detailContainer {
     --detail-panel-height: 0px;
     --detail-content-height: 0px;
@@ -39,7 +38,7 @@
     position: absolute;
     bottom: 1rem;
     right: 1rem;
-    width: 25rem;
+    width: 25.5rem;
     height: var(--detail-panel-height);
     max-height: var(--detail-max-height, min(80dvh, calc(100dvh - 2rem)));
     background-color: var(--detail-bg);
@@ -175,6 +174,10 @@
             pointer-events: none;
             transition: left var(--detail-tab-transition-duration) $standard-curve;
             filter: drop-shadow(0 1px 2px rgba($black-0, .25))
+        }
+
+        &[data-swiping='true']::after {
+            transition: none;
         }
     }
 
@@ -319,6 +322,7 @@
         min-height: 0;
         overscroll-behavior-y: auto;
         -webkit-overflow-scrolling: touch;
+
         &::-webkit-scrollbar {
             width: 0;
         }
@@ -514,6 +518,11 @@
             }
         }
     }
+
+    &.inline .detailContent {
+        touch-action: pan-y;
+    }
+
     .detailDivider {
         display: flex;
         align-items: center;

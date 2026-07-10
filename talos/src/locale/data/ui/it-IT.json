@@ -226,10 +226,6 @@
       "selectorSelect": "<span class=\"keyword\">Selettore di marker</span>. Tocca per attivare/disattivare; i marker selezionati appaiono sulla mappa. Puoi vedere il totale e quanti ne hai segnati nell'area attuale."
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">Nota:</span> Quando la versione del gioco è <span class=\"keyword\">1.0.13</span>, la versione dei dati della mappa è <span class=\"keyword\">0.8.25</span>. Abbiamo bisogno di tempo per aggiornare i dati, quindi l'aggiornamento potrebbe arrivare dopo la patch del gioco. Grazie per la pazienza. Per seguire i nostri aggiornamenti, unisciti al nostro <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Unisciti a Discord'>server Discord</a>.<br><br>Consigliamo anche i seguenti strumenti:<ul><li><span class=\"keyword\">Wiki del gioco: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Visita la Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Progetti (Blueprint):</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Visita Talos Pioneers'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "Il set di dati corrente è aggiornato.<br><br>Se è necessario segnalare problemi, unisciti al nostro <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Unisciti a Discord'>server Discord</a>.<br><br>Consigliamo anche i seguenti strumenti:<ul><li><span class=\"keyword\">Wiki del gioco: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Visita la Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Progetti (Blueprint):</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Visita Talos Pioneers'>https://talospioneers.com</a></li></ul>"
-  },
   "idcard": {
     "group": "Gruppo: ",
     "since": "Dal",

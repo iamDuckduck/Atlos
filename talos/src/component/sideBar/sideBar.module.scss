@@ -21,6 +21,7 @@ $transition-speed: 0.3s;
     --github: #24292f;
     --qq: #4397F7;
     --bsky: #007fff;
+    --twitter: #000000;
     --support: #{$primary-accent-6};
 }
 :root[data-theme='dark'] {
@@ -39,6 +40,7 @@ $transition-speed: 0.3s;
     --github: #{$primary-accent-4};
     --qq: #8ab8ec;
     --bsky: #66b2ff;
+    --twitter: #{$light-2};
     --support: #{$primary-accent-5};
 }
 
@@ -248,6 +250,23 @@ $transition-speed: 0.3s;
                         }
                         &::after {
                             color: var(--bsky)
+                        }
+                    }
+                }
+                &[data-platform="X/Twitter"] {
+                    > svg {
+                        width: 0.95rem;
+                        height: 0.95rem;
+                    }
+                    &::after {
+                        content: "Twitter";
+                    }
+                    &:hover {
+                        svg {
+                            fill: var(--twitter);
+                        }
+                        &::after {
+                            color: var(--twitter)
                         }
                     }
                 }

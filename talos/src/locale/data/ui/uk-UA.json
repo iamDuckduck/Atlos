@@ -226,10 +226,6 @@
       "selectorSelect": "Конкретний <span class=\"keyword\">селектор маркера</span>."
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">Примітка:</span> Версія датасету карти оновлюється з затримкою відносно гри. Дякуємо за терпіння. Приєднуйтесь до нашого <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener'>Discord</a>.",
-    "uptodate": "Поточний датасет актуальний.<br><br>Якщо потрібно повідомити про помилки, приєднуйтесь до <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener'>Discord</a>."
-  },
   "idcard": {
     "group": "Група: ",
     "since": "З",

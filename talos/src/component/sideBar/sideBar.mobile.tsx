@@ -9,7 +9,6 @@ import { Trigger } from '../trigger/trigger';
 import MarkFilter from '../markFilter/markFilter';
 import { MarkFilterDragProvider } from '../markFilter/reorderContext';
 import MarkSelector from '../markSelector/markSelector';
-import Notice from '../notice/notice';
 import Detail from '../detail/detail';
 import SupportModal from '../support/support';
 
@@ -447,7 +446,6 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
                   })}
               </MarkFilterDragProvider>
             </div>
-            <Notice />
             <div className={mobileStyles.idCardContainer}>
                 <Suspense fallback={null}>
                   <IDCard />

@@ -23,7 +23,6 @@ import { Trigger, TriggerBar } from '../trigger/trigger';
 import MarkFilter from '../markFilter/markFilter';
 import { MarkFilterDragProvider } from '../markFilter/reorderContext';
 import MarkSelector from '../markSelector/markSelector';
-import Notice from '../notice/notice';
 import SupportModal from '../support/support';
 
 // Social media icons
@@ -31,6 +30,7 @@ import GithubIcon from '../../assets/images/UI/media/ghicon.svg?react';
 import DiscordIcon from '../../assets/images/UI/media/discordicon.svg?react';
 import QQIcon from '../../assets/images/UI/media/qqicon.svg?react';
 import BskyIcon from '../../assets/images/UI/media/bluesky.svg?react';
+import XIcon from '../../assets/images/UI/media/x.svg?react';
 
 import { DEFAULT_SUBCATEGORY_ORDER, MARKER_TYPE_TREE, REGION_TYPE_COUNT_MAP, type IMarkerType } from '@/data/marker';
 import { VERSION_NEW_FILTER_GROUPS, useVersionNewMarkerCounts } from '@/data/marker/versionNew';
@@ -336,7 +336,6 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                                 })}
                         </MarkFilterDragProvider>
                     </div>
-                    <Notice />
                     <div className={styles.idCardContainer}>
                         <Suspense fallback={null}>
                             <IDCard />
@@ -377,7 +376,17 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                         data-platform="bluesky"
                         aria-label="Bluesky"
                     >
-                    <BskyIcon />
+                        <BskyIcon />
+                    </a>
+                    <a
+                        href="https://x.com/OpenEndfieldMap"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.socialLink}
+                        data-platform="X/Twitter"
+                        aria-label="X/Twitter"
+                    >
+                        <XIcon />
                     </a>
                     <a
                         href="https://qm.qq.com/q/BVsCJgzBL2"

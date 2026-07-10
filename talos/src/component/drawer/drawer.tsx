@@ -151,7 +151,9 @@ export const Drawer: React.FC<DrawerProps> = ({
 	const dragStartSizeRef = useRef(initSize);
 	const lastSizeRef = useRef(initSize);
 	const isDraggingRef = useRef(false);
+	const isGestureRejectedRef = useRef(false);
 	const scrollElsRef = useRef<HTMLElement[]>([]);
+	const lastSnapCommandRef = useRef<number | null | undefined>(undefined);
 	
 	// Debug: track renders
 	logger.logRender(++renderCount.current, { side, initialSize, snapToIndex, handleSize, fullWidth });
@@ -209,6 +211,11 @@ export const Drawer: React.FC<DrawerProps> = ({
 	
 	// Imperative snap via prop
 	useEffect(() => {
+		// snapToIndex is an imperative command, not continuously controlled state.
+		// Recalculating snap sizes (for example after a mobile viewport resize) must
+		// not replay an old command and unexpectedly collapse the drawer.
+		if (Object.is(lastSnapCommandRef.current, snapToIndex)) return;
+		lastSnapCommandRef.current = snapToIndex;
 		if (snapToIndex == null) return;
 		if (isDraggingRef.current) return;
 		const idx = Math.trunc(snapToIndex);
@@ -247,11 +254,19 @@ export const Drawer: React.FC<DrawerProps> = ({
 	}) => {
 		const { first, last, movement, cancel, event, intentional } = state;
 		const [mx, my] = movement;
+		if (first) isGestureRejectedRef.current = false;
 
 		if (dragDisabled) {
-			if (first) cancel();
+			if (first) {
+				isGestureRejectedRef.current = true;
+				cancel();
+			}
 			return;
 		}
+
+		// cancel() synchronously emits a final callback. Keep the whole rejected
+		// sequence inert so that callback cannot reuse a stale dragStartSize.
+		if (isGestureRejectedRef.current) return;
 		
 		if (first || last) {
 			logger.logGesture(first ? 'START' : 'END', {
@@ -267,18 +282,21 @@ export const Drawer: React.FC<DrawerProps> = ({
 			
 			if (target?.closest(INTERACTIVE_SELECTOR)) {
 				logger.logGestureCancel('interactive element');
+				isGestureRejectedRef.current = true;
 				cancel();
 				return;
 			}
 
 			if (target?.closest(DRAG_IGNORE_SELECTOR)) {
 				logger.logGestureCancel('drag ignore region');
+				isGestureRejectedRef.current = true;
 				cancel();
 				return;
 			}
 
 			if (target?.closest(FILTER_ICON_SELECTOR)) {
 				logger.logGestureCancel('filterIcon drag');
+				isGestureRejectedRef.current = true;
 				cancel();
 				return;
 			}
@@ -304,6 +322,7 @@ export const Drawer: React.FC<DrawerProps> = ({
 			const scrollOwner = scrollEls.find((scrollEl) => canScrollInDirection(scrollEl, my));
 			if (scrollOwner) {
 				logger.logGestureCancel('content scroll priority');
+				isGestureRejectedRef.current = true;
 				cancel();
 				return;
 			}
@@ -341,9 +360,6 @@ export const Drawer: React.FC<DrawerProps> = ({
 			
 			if (snapResult && Math.abs(snapResult.target - cur) > 0.5) {
 				animate(size, snapResult.target, { duration: 0.25 });
-				if (containerRef.current) {
-					containerRef.current.setAttribute('data-snap', String(snapResult.index));
-				}
 				logger.logSnapTarget(cur, snapResult.target, snapResult.index);
 			}
 			

@@ -226,10 +226,6 @@
       "selectorSelect": "<span class=\"keyword\">مُحدِّد العلامات</span>. اضغط لتفعيله؛ ستظهر العلامات المحددة على الخريطة، مع عرض إجمالي العلامات المكتملة."
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">ملاحظة:</span> إصدار اللعبة الحالي هو <span class=\"keyword\">1.0.13</span>، وإصدار بيانات الخريطة هو <span class=\"keyword\">0.8.25</span>. نحتاج لبعض الوقت لتحديث البيانات، لذا قد يتأخر التحديث مقارنة باللعبة. شكراً لتفهمكم. لمتابعة أحدث تطوراتنا، انضم لـ <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Discord'>سيرفر Discord</a>.<br><br>كما نرشح لك الأدوات التالية:<ul><li><span class=\"keyword\">ويكي اللعبة: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener'>https://warfarin.wiki</a></li><li><span class=\"keyword\">مجتمع التصاميم:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "بيانات الخريطة محدثة لآخر إصدار.<br><br>للإبلاغ عن أي خطأ، يسعدنا انضمامك لـ <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Discord'>سيرفر Discord</a>.<br><br>كما نرشح لك الأدوات التالية:<ul><li><span class=\"keyword\">ويكي اللعبة: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener'>https://warfarin.wiki</a></li><li><span class=\"keyword\">مجتمع التصاميم:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener'>https://talospioneers.com</a></li></ul>"
-  },
   "idcard": {
     "group": "المجموعة:",
     "since": "عضو منذ",

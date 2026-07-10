@@ -226,10 +226,6 @@
       "selectorSelect": "Belirli bir <span class=\"keyword\">işaretçi seçici</span>."
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">Not:</span> Harita veri seti oyundan sonra güncellenir. Güncellemelerimizi takip etmek için lütfen <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener'>Discord Sunucumuza</a> katılın.",
-    "uptodate": "Mevcut veri seti güncel.<br><br>Sorun bildirmek için lütfen <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener'>Discord sunucusuna</a> katılın."
-  },
   "idcard": {
     "group": "Grup: ",
     "since": "Katılım",

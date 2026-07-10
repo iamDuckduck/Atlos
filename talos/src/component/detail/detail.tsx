@@ -69,6 +69,24 @@ interface DetailProps {
 }
 
 const DETAIL_EXIT_DURATION_MS = 300;
+const TAB_INDICATOR_SETTLE_MS = 400;
+
+interface TabSwipeBounds {
+    startCenter: number;
+    targetTab: DetailTab;
+    targetStart: number;
+    targetEnd: number;
+    minCenter: number;
+    maxCenter: number;
+}
+
+interface TabTouchGesture {
+    identifier: number;
+    startX: number;
+    startY: number;
+    intent: 'pending' | 'horizontal' | 'vertical';
+    indicatorLeft: number;
+}
 
 const parseCssPixelValue = (value: string): number => {
     const parsed = Number.parseFloat(value);
@@ -236,6 +254,9 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
     const contentRef = useRef<HTMLDivElement | null>(null);
     const generalPanelRef = useRef<HTMLDivElement | null>(null);
     const commentsPanelRef = useRef<HTMLDivElement | null>(null);
+    const tabSwipeBoundsRef = useRef<TabSwipeBounds | null>(null);
+    const tabTouchGestureRef = useRef<TabTouchGesture | null>(null);
+    const indicatorResetTimerRef = useRef<number | undefined>(undefined);
     const [hasOpenedComments, setHasOpenedComments] = useState(false);
     const updateDetailHeight = useCallback(() => {
         const container = ref.current;
@@ -378,6 +399,149 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
     const openCommentsTab = useCallback(() => {
         setHasOpenedComments(true);
         setActiveTab('comments');
+    }, []);
+
+    const getTabSwipeBounds = useCallback((startTab: DetailTab): TabSwipeBounds | null => {
+        const tabs = tabsRef.current;
+        const generalTab = tabs?.querySelector<HTMLElement>('[data-tab="general"]');
+        const commentsTab = tabs?.querySelector<HTMLElement>('[data-tab="comments"]');
+        if (!tabs || !generalTab || !commentsTab) return null;
+
+        const tabsRect = tabs.getBoundingClientRect();
+        const generalRect = generalTab.getBoundingClientRect();
+        const commentsRect = commentsTab.getBoundingClientRect();
+        const relativeCenter = (rect: DOMRect) => rect.left - tabsRect.left + rect.width / 2;
+        const generalCenter = relativeCenter(generalRect);
+        const commentsCenter = relativeCenter(commentsRect);
+        const targetTab: DetailTab = startTab === 'general' ? 'comments' : 'general';
+        const targetRect = targetTab === 'comments' ? commentsRect : generalRect;
+
+        return {
+            startCenter: startTab === 'general' ? generalCenter : commentsCenter,
+            targetTab,
+            targetStart: targetRect.left - tabsRect.left,
+            targetEnd: targetRect.right - tabsRect.left,
+            minCenter: Math.min(generalCenter, commentsCenter),
+            maxCenter: Math.max(generalCenter, commentsCenter),
+        };
+    }, []);
+
+    const settleTabIndicator = useCallback((targetTab: DetailTab) => {
+        const tabs = tabsRef.current;
+        const target = tabs?.querySelector<HTMLElement>(`[data-tab="${targetTab}"]`);
+        if (!tabs || !target) return;
+
+        if (indicatorResetTimerRef.current) window.clearTimeout(indicatorResetTimerRef.current);
+        const tabsRect = tabs.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        const targetCenter = targetRect.left - tabsRect.left + targetRect.width / 2;
+        delete tabs.dataset.swiping;
+        tabs.style.setProperty('--detail-tab-indicator-left', `${targetCenter}px`);
+        indicatorResetTimerRef.current = window.setTimeout(() => {
+            tabs.style.removeProperty('--detail-tab-indicator-left');
+            indicatorResetTimerRef.current = undefined;
+        }, TAB_INDICATOR_SETTLE_MS);
+    }, []);
+
+    useEffect(() => {
+        const content = contentRef.current;
+        if (!inline || detailPhase !== 'open' || !content) return undefined;
+
+        const findTouch = (touches: TouchList, identifier: number): Touch | null => {
+            for (let index = 0; index < touches.length; index += 1) {
+                const touch = touches.item(index);
+                if (touch?.identifier === identifier) return touch;
+            }
+            return null;
+        };
+
+        const handleTouchStart = (event: TouchEvent) => {
+            if (event.touches.length !== 1) return;
+            const touch = event.touches.item(0);
+            const bounds = getTabSwipeBounds(activeTab);
+            if (!touch || !bounds) return;
+
+            if (indicatorResetTimerRef.current) window.clearTimeout(indicatorResetTimerRef.current);
+            tabsRef.current?.style.removeProperty('--detail-tab-indicator-left');
+            tabSwipeBoundsRef.current = bounds;
+            tabTouchGestureRef.current = {
+                identifier: touch.identifier,
+                startX: touch.clientX,
+                startY: touch.clientY,
+                intent: 'pending',
+                indicatorLeft: bounds.startCenter,
+            };
+        };
+
+        const handleTouchMove = (event: TouchEvent) => {
+            const gesture = tabTouchGestureRef.current;
+            const bounds = tabSwipeBoundsRef.current;
+            const tabs = tabsRef.current;
+            if (!gesture || !bounds || !tabs) return;
+
+            const touch = findTouch(event.touches, gesture.identifier);
+            if (!touch) return;
+            const movementX = touch.clientX - gesture.startX;
+            const movementY = touch.clientY - gesture.startY;
+
+            if (gesture.intent === 'pending') {
+                if (Math.max(Math.abs(movementX), Math.abs(movementY)) < 10) return;
+                gesture.intent = Math.abs(movementX) > Math.abs(movementY) * 1.15
+                    ? 'horizontal'
+                    : 'vertical';
+            }
+            if (gesture.intent !== 'horizontal') return;
+
+            gesture.indicatorLeft = Math.max(
+                bounds.minCenter,
+                Math.min(bounds.maxCenter, bounds.startCenter - movementX),
+            );
+            tabs.dataset.swiping = 'true';
+            tabs.style.setProperty('--detail-tab-indicator-left', `${gesture.indicatorLeft}px`);
+        };
+
+        const finishTouch = (event: TouchEvent, allowSwitch: boolean) => {
+            const gesture = tabTouchGestureRef.current;
+            const bounds = tabSwipeBoundsRef.current;
+            if (!gesture || findTouch(event.changedTouches, gesture.identifier) === null) return;
+
+            tabTouchGestureRef.current = null;
+            tabSwipeBoundsRef.current = null;
+            if (gesture.intent !== 'horizontal' || !bounds) return;
+
+            const reachedTarget = allowSwitch
+                && gesture.indicatorLeft >= bounds.targetStart
+                && gesture.indicatorLeft <= bounds.targetEnd;
+            const settledTab = reachedTarget ? bounds.targetTab : activeTab;
+            settleTabIndicator(settledTab);
+
+            if (!reachedTarget) return;
+            if (settledTab === 'comments') {
+                openCommentsTab();
+            } else {
+                setActiveTab('general');
+            }
+        };
+
+        const handleTouchEnd = (event: TouchEvent) => finishTouch(event, true);
+        const handleTouchCancel = (event: TouchEvent) => finishTouch(event, false);
+        content.addEventListener('touchstart', handleTouchStart, { capture: true, passive: true });
+        content.addEventListener('touchmove', handleTouchMove, { capture: true, passive: true });
+        content.addEventListener('touchend', handleTouchEnd, { capture: true, passive: true });
+        content.addEventListener('touchcancel', handleTouchCancel, { capture: true, passive: true });
+
+        return () => {
+            content.removeEventListener('touchstart', handleTouchStart, true);
+            content.removeEventListener('touchmove', handleTouchMove, true);
+            content.removeEventListener('touchend', handleTouchEnd, true);
+            content.removeEventListener('touchcancel', handleTouchCancel, true);
+            tabTouchGestureRef.current = null;
+            tabSwipeBoundsRef.current = null;
+        };
+    }, [activeTab, detailPhase, getTabSwipeBounds, inline, openCommentsTab, settleTabIndicator]);
+
+    useEffect(() => () => {
+        if (indicatorResetTimerRef.current) window.clearTimeout(indicatorResetTimerRef.current);
     }, []);
 
     const handleHighlightCommentKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {

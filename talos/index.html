@@ -57,8 +57,6 @@
     <!-- Font preconnects for faster handshake -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-    <link rel="preconnect" href="https://c.webfontfree.com" />
     <% if (cdnHost) { %>
     <link rel="preconnect" href="<%= cdnHost %>" crossorigin />
     <% } %>
@@ -66,7 +64,7 @@
     <!-- Load external font styles/scripts (migrated from SCSS @import) -->
     <link 
       rel="preload"
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100..900&family=Noto+Sans+SC:wght@100..900&family=Noto+Sans+Thai:wght@100..900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300..900&family=Noto+Sans+SC:wght@400..900&family=Noto+Sans+Thai:wght@300..900&family=Raleway:ital,wght@0,400;0,700;1,300;1,500&family=Roboto+Slab:wght@400;700&display=swap"
       as="style"
       onload="this.rel='stylesheet'"
     >

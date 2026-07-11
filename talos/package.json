@@ -12,7 +12,8 @@
     "worker:relink:deploy": "pnpm -F oem-relink deploy",
     "lint:js": "eslint \"**/*.{js,ts,tsx,jsx,html,md}\"",
     "lint:css": "stylelint \"**/*.{css,scss}\"",
-    "lint": "run-s lint:js lint:css -c",
+    "lint:style-contracts": "node ./scripts/check-style-contracts.mjs",
+    "lint": "run-s lint:js lint:css lint:style-contracts -c",
     "lint:fix:js": "prettier --write \"**/*.{js,ts,tsx,jsx,html,md}\" && eslint --fix \"**/*.{js,ts,tsx,jsx,html,md}\"",
     "lint:fix:css": "prettier --write \"**/*.{css,scss}\" && stylelint --fix \"**/*.{css,scss}\"",
     "lint:fix": "run-s lint:fix:js lint:fix:css -c",
@@ -30,7 +31,7 @@
     "build:seo:og:oss": "cross-env BUILD_TARGET=oss SEO_IMAGE_ONLY=1 SEO_OG_OUTPUT_DIR=../seo-og/oss node ./scripts/build-seo-pages.mjs",
     "build:seo:og:r2": "cross-env BUILD_TARGET=r2 SEO_IMAGE_ONLY=1 SEO_OG_OUTPUT_DIR=../seo-og/r2 node ./scripts/build-seo-pages.mjs",
 
-    "build:check": "tsc --noEmit",
+    "build:check": "run-s type-check lint:style-contracts",
 
     "build": "node ./scripts/build-oss.mjs",
     "build:beta": "cross-env DEPLOY_CHANNEL=beta node ./scripts/build-oss.mjs",

@@ -100,6 +100,11 @@ type NodeLike = {
     ownerDocument?: Document | null;
 };
 
+type MirroredStyleElement = HTMLLinkElement | HTMLStyleElement;
+type FontFaceSetLoadEventLike = Event & {
+    fontfaces?: readonly FontFace[];
+};
+
 const isElement = (value: unknown): value is Element => (
     typeof Element !== 'undefined' && value instanceof Element
 );
@@ -117,6 +122,8 @@ let restoreAnchor: Comment | null = null;
 let originalParent: Node | null = null;
 let placeholderCleanup: (() => void) | null = null;
 let rootAttributeObserver: MutationObserver | null = null;
+let documentResourceMirrorCleanup: (() => void) | null = null;
+let waitForMirroredStyles: (() => Promise<void>) | null = null;
 const listeners = new Set<StateListener>();
 const viewportListeners = new Set<ViewportListener>();
 
@@ -182,6 +189,10 @@ export const getPictureInPictureDocument = () => getPictureInPictureWindow()?.do
 export const getOpenerDocument = () => openerDocument;
 
 export const getAppDocument = () => getPictureInPictureDocument() ?? openerDocument ?? document;
+
+export const waitForPictureInPictureStyles = (): Promise<void> => (
+    waitForMirroredStyles?.() ?? Promise.resolve()
+);
 
 export const getAppViewport = () => {
     const pipWindow = activePipWindow && !activePipWindow.closed ? activePipWindow : null;
@@ -259,14 +270,131 @@ const schedulePictureInPictureViewportSync = (targetWindow: Window) => {
     targetWindow.setTimeout(() => syncPictureInPictureViewport(targetWindow), 120);
 };
 
-const cloneAppStyles = (source: Document, target: Document) => {
-    const nodes = source.head.querySelectorAll<HTMLLinkElement | HTMLStyleElement>(
-        'link[rel="stylesheet"], style',
-    );
+const STYLE_SOURCE_SELECTOR = 'link[rel="stylesheet"], style';
 
-    nodes.forEach((node) => {
-        target.head.append(node.cloneNode(true));
+const cloneStyleElement = (source: MirroredStyleElement): MirroredStyleElement => {
+    const clone = source.cloneNode(true) as MirroredStyleElement;
+    if (source instanceof HTMLLinkElement && clone instanceof HTMLLinkElement) {
+        clone.href = source.href;
+        clone.disabled = source.disabled;
+    }
+    return clone;
+};
+
+const syncStyleElement = (source: MirroredStyleElement, clone: MirroredStyleElement) => {
+    for (const attribute of Array.from(clone.attributes)) {
+        if (!source.hasAttribute(attribute.name)) clone.removeAttribute(attribute.name);
+    }
+    for (const attribute of Array.from(source.attributes)) {
+        if (source instanceof HTMLLinkElement && attribute.name === 'href') continue;
+        if (clone.getAttribute(attribute.name) !== attribute.value) {
+            clone.setAttribute(attribute.name, attribute.value);
+        }
+    }
+
+    if (source instanceof HTMLLinkElement && clone instanceof HTMLLinkElement) {
+        if (clone.href !== source.href) clone.href = source.href;
+        clone.disabled = source.disabled;
+    } else if (source instanceof HTMLStyleElement && clone instanceof HTMLStyleElement
+        && clone.textContent !== source.textContent) {
+        clone.textContent = source.textContent;
+    }
+};
+
+const mirrorDocumentStyles = (source: Document, target: Document) => {
+    const clones = new Map<MirroredStyleElement, MirroredStyleElement>();
+    const pendingLinks = new Map<HTMLLinkElement, Promise<void>>();
+
+    const trackLink = (link: HTMLLinkElement) => {
+        const ready = new Promise<void>((resolve) => {
+            const settle = () => {
+                link.removeEventListener('load', settle);
+                link.removeEventListener('error', settle);
+                resolve();
+            };
+            link.addEventListener('load', settle, { once: true });
+            link.addEventListener('error', settle, { once: true });
+            queueMicrotask(() => {
+                if (link.sheet || link.disabled) settle();
+            });
+        });
+        pendingLinks.set(link, ready);
+    };
+
+    const reconcile = () => {
+        const sources = Array.from(
+            source.head.querySelectorAll<MirroredStyleElement>(STYLE_SOURCE_SELECTOR),
+        );
+        const currentSources = new Set(sources);
+
+        for (const [sourceNode, clone] of clones) {
+            if (!currentSources.has(sourceNode)) {
+                clone.remove();
+                if (clone instanceof HTMLLinkElement) pendingLinks.delete(clone);
+                clones.delete(sourceNode);
+            }
+        }
+
+        sources.forEach((sourceNode, index) => {
+            let clone = clones.get(sourceNode);
+            if (!clone) {
+                clone = cloneStyleElement(sourceNode);
+                clones.set(sourceNode, clone);
+                if (clone instanceof HTMLLinkElement) trackLink(clone);
+            } else {
+                syncStyleElement(sourceNode, clone);
+            }
+
+            const nextClone = sources
+                .slice(index + 1)
+                .map((candidate) => clones.get(candidate))
+                .find((candidate): candidate is MirroredStyleElement => Boolean(candidate));
+            if (!clone.isConnected || (nextClone && clone.nextElementSibling !== nextClone)) {
+                target.head.insertBefore(clone, nextClone ?? null);
+            }
+        });
+    };
+
+    const observer = new MutationObserver(reconcile);
+    observer.observe(source.head, {
+        attributes: true,
+        characterData: true,
+        childList: true,
+        subtree: true,
     });
+    reconcile();
+
+    return {
+        cleanup: () => {
+            observer.disconnect();
+            clones.forEach((clone) => clone.remove());
+            clones.clear();
+            pendingLinks.clear();
+        },
+        waitForReady: async () => {
+            reconcile();
+            await Promise.all(pendingLinks.values());
+        },
+    };
+};
+
+const mirrorDocumentFonts = (source: Document, target: Document): (() => void) => {
+    const addFaces = (faces: Iterable<FontFace>) => {
+        for (const face of faces) {
+            try {
+                target.fonts.add(face);
+            } catch {
+                // CSS-connected faces are supplied by the mirrored stylesheets.
+            }
+        }
+    };
+    const handleLoadingDone = (event: Event) => {
+        addFaces((event as FontFaceSetLoadEventLike).fontfaces ?? []);
+    };
+
+    addFaces(source.fonts);
+    source.fonts.addEventListener('loadingdone', handleLoadingDone);
+    return () => source.fonts.removeEventListener('loadingdone', handleLoadingDone);
 };
 
 const preparePictureInPictureDocument = (pipWindow: Window) => {
@@ -276,7 +404,18 @@ const preparePictureInPictureDocument = (pipWindow: Window) => {
     pipDocument.body.replaceChildren();
     pipDocument.body.style.margin = '0';
     pipDocument.body.style.overflow = 'hidden';
-    cloneAppStyles(document, pipDocument);
+    const base = pipDocument.createElement('base');
+    base.href = document.baseURI;
+    pipDocument.head.append(base);
+    documentResourceMirrorCleanup?.();
+    const styleMirror = mirrorDocumentStyles(document, pipDocument);
+    const cleanupFonts = mirrorDocumentFonts(document, pipDocument);
+    waitForMirroredStyles = styleMirror.waitForReady;
+    documentResourceMirrorCleanup = () => {
+        styleMirror.cleanup();
+        cleanupFonts();
+        waitForMirroredStyles = null;
+    };
     syncRootAttributes(document, pipDocument);
     pipDocument.documentElement.setAttribute('data-pip-window', 'true');
     syncPipViewportAttributes(pipWindow);
@@ -591,6 +730,9 @@ export const closeAppPictureInPicture = () => {
 
     rootAttributeObserver?.disconnect();
     rootAttributeObserver = null;
+    documentResourceMirrorCleanup?.();
+    documentResourceMirrorCleanup = null;
+    waitForMirroredStyles = null;
     resetLeafletDragState();
     pipWindow?.removeEventListener('resize', handlePictureInPictureResize);
 

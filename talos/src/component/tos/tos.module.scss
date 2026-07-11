@@ -3,6 +3,7 @@
 
 :root, :root[data-theme='light'] {
     --tos-text: #{$grey-1};
+    --tos-divider: #{$black-0};
 
     --warning-bg: #{$grey-1};
     --warning-text: #{$light-2};
@@ -13,6 +14,7 @@
 
 :root[data-theme='dark'] {
     --tos-text: #{$light-2};
+    --tos-divider: #{$white-1};
 
     --warning-bg: #{$light-1};
     --warning-text: #{$black-1};
@@ -167,7 +169,7 @@
         left: 0;
         width: 100%;
         height: 2px;
-        background: linear-gradient(to right, transparent, var(--ug-tooltip-header-color), transparent);
+        background: linear-gradient(to right, transparent, var(--tos-divider), transparent);
         opacity: 0.3;
   }
 }

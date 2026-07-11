@@ -16,6 +16,7 @@
     --detail-tab-active-bg: #{$secondary-accent-0};
     --detail-tab-collect-bg: #{$secondary-accent-3};
     --detail-tab-disabled-bg: #{$grey-3};
+    --detail-full-text: #{$grey-1};
 }
 :root[data-theme='dark'] {
     --detail-bg: #{$light-1};
@@ -30,6 +31,7 @@
     --detail-tab-active-bg: #{$secondary-accent-0};
     --detail-tab-collect-bg: #{$secondary-accent-3};
     --detail-tab-disabled-bg: #{$grey-3};
+    --detail-full-text: #{$light-2};
 }
 .detailContainer {
     --detail-panel-height: 0px;
@@ -573,7 +575,7 @@
     display: flex;
     flex-direction: column;
     font-size: .925rem;
-    color: var(--tos-text);
+    color: var(--detail-full-text);
     font-family: "HMSans_EN", HMSans, "UD_ShinGo Regular", "Noto Sans Arabic", "Noto Sans Thai", sans-serif;
     letter-spacing: -0.2px;
     font-weight: 600;
@@ -594,7 +596,7 @@
                 display: inline-block;
                 width: 2px;
                 height: .925rem;
-                background-color: var(--tos-text);
+                background-color: var(--detail-full-text);
                 margin: 0 6px 0 12px;
                 transform: translateY(1.5px);
             }

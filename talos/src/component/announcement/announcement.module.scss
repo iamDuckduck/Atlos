@@ -8,6 +8,7 @@
     --ann-content-text: #{$grey-1};
     --ann-content-heading: #{$black-1};
     --ann-border: #{$mid};
+    --ann-image-border: #{$light-2};
 
     --ann-link: #{$primary-accent-6};
 }
@@ -17,6 +18,7 @@
     --ann-content-text: #{$light-1};
     --ann-content-heading: #{$white-1};
     --ann-border: #{$mid};
+    --ann-image-border: #{$light-2};
 
     --ann-link: #{$primary-accent-4};
 }
@@ -30,7 +32,7 @@
     overflow: hidden;
     min-height: 0;
     transition: background-color 0.35s $adagio-curve;
-    .emptyStates {
+    .emptyState {
         color: var(--ann-content-text);
     }
 }
@@ -117,7 +119,7 @@
     img {
         max-width: 60%;
         margin: 0.5rem auto;
-        border: 2px solid var(--detail-image-border);
+        border: 2px solid var(--ann-image-border);
         box-shadow:
                 0 0 4px 0.5px rgba($black-0, 0.6),
                 0 0 4px 2px rgba($light-2, 0.6) inset;

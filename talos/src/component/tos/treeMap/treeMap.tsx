@@ -142,7 +142,7 @@ const TreeMap: React.FC<TreeMapProps> = ({ onSelect, refreshTrigger = 0 }) => {
 
       // Add click handler for leaf nodes (items that can be deleted)
       node.filter(d => !d.children && d !== root)
-          .attr("class", `${styles.node} ${styles.leaf}`)
+          .attr("class", styles.node)
           .style("cursor", "pointer")
           .on("click", (_event, d) => { handleNodeClick(d); });
 
@@ -152,7 +152,7 @@ const TreeMap: React.FC<TreeMapProps> = ({ onSelect, refreshTrigger = 0 }) => {
       node.append("rect")
           .attr("id", d => (d.leafUid = `leaf-${Math.random().toString(36).substr(2, 9)}`))
           .attr("class", d => {
-             if (d === root) return `${styles.rect} ${styles.rectRoot}`;
+             if (d === root) return styles.rect;
              if (d.children) return `${styles.rect} ${styles.rectParent}`;
              return `${styles.rect} ${styles.rectLeaf}`;
           });
@@ -164,7 +164,7 @@ const TreeMap: React.FC<TreeMapProps> = ({ onSelect, refreshTrigger = 0 }) => {
 
       node.append("text")
           .attr("clip-path", d => `url(#${d.clipUid})`)
-          .attr("class", d => d === root ? `${styles.text} ${styles.textRoot}` : styles.text)
+          .attr("class", d => d === root ? styles.textRoot : null)
         .selectAll("tspan")
         .data(d => [d === root ? name(d) : formatName(d.data.name), formatSize(d.realValue || 0)])
         .join("tspan")

@@ -490,6 +490,14 @@ const worker = async () => {
   }
 };
 
+const uploadFiles = async (files) => {
+  allFiles = files;
+  index = 0;
+  const workers = [];
+  for (let i = 0; i < concurrency; i++) workers.push(worker());
+  await Promise.all(workers);
+};
+
 const run = async () => {
   const clipIndex = await buildClipIndex({ distDir: "./dist" });
   if (clipIndex.generated) {
@@ -500,31 +508,33 @@ const run = async () => {
     console.log(`[publish-R2] clip index skipped: ${clipIndex.reason}`);
   }
 
-  allFiles = getAllFiles("./dist").filter(shouldUploadLocalFile);
+  const localFiles = getAllFiles("./dist").filter(shouldUploadLocalFile);
   if (uploadProfile === "resources") {
-    console.log(`[publish-R2] resources profile selected; uploading ${allFiles.length} resource files from dist.`);
+    console.log(`[publish-R2] resources profile selected; uploading ${localFiles.length} resource files from dist.`);
   }
-  const promises = [];
+  const htmlFiles = localFiles.filter((file) => file.replace(/\\/g, "/").endsWith(".html"));
+  const shellFiles = htmlFiles.filter((file) => file.replace(/\\/g, "/") === "index.html");
+  const documentFiles = htmlFiles.filter((file) => !shellFiles.includes(file));
+  const resourceFiles = localFiles.filter((file) => !htmlFiles.includes(file));
 
-  for (let i = 0; i < concurrency; i++) {
-    promises.push(worker());
-  }
-
-  await Promise.all(promises);
-
-  if (shouldUploadSeoPointAliases) {
-    await uploadSeoPointAliases(allFiles);
-  } else {
-    console.log("[publish-R2] SEO point alias upload skipped by default for R2. Set SEO_UPLOAD_POINT_ALIASES=1 only for manual alias backfills.");
-  }
+  await uploadFiles(resourceFiles);
 
   if (clipIndex.generated) {
     await reconcileClipObjects(clipIndex.expectedClipFiles);
   }
 
-  await reconcileAssetObjects(allFiles);
+  await reconcileAssetObjects(localFiles);
 
   await uploadExternalSeoOgImages();
+
+  await uploadFiles(documentFiles);
+  if (shouldUploadSeoPointAliases) {
+    await uploadSeoPointAliases(localFiles);
+  } else {
+    console.log("[publish-R2] SEO point alias upload skipped by default for R2. Set SEO_UPLOAD_POINT_ALIASES=1 only for manual alias backfills.");
+  }
+
+  for (const shellFile of shellFiles) await upload(shellFile);
 };
 
 run()

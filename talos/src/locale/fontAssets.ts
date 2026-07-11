@@ -13,8 +13,8 @@ const normalizeRelPath = (p: string): string => {
 // If some font files are missing in the repo/CI, they simply won't appear here (no hard build failure).
 const fontAssetUrlModules = import.meta.glob(
     [
-        '../assets/fonts/UD_ShinGo/*.{woff2,woff,otf,ttf}',
-        '../assets/fonts/Harmony/*.{woff2,woff,otf,ttf}',
+        '../assets/fonts/UD_ShinGo/*.woff2',
+        '../assets/fonts/Harmony/*.woff2',
     ],
     { eager: true, query: '?url', import: 'default' }
 ) as UrlModuleMap;

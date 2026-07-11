@@ -8,6 +8,18 @@
     --locator-card-text: #{$black-1};
     --locator-card-muted: #{$grey-1};
     --locator-card-bar: #{$grey-1};
+    --locator-scope-bg: #{$white-1};
+    --locator-scope-hover-bg: #{$white-3};
+    --locator-scope-active-bg: #{$dim-1};
+    --locator-scope-text: #{$grey-1};
+    --locator-scope-active-text: #{$white-1};
+    --locator-scope-bar: #{$grey-1};
+    --locator-scope-active-bar: #{$primary-accent-4};
+    --locator-scope-hover-bar: #{$primary-accent-1};
+    --locator-field-text: #{$grey-1};
+    --locator-field-border: #{rgba($grey-1, 0.75)};
+    --locator-field-active-bg: #{rgba($grey-1, 0.75)};
+    --locator-field-active-text: #{$black-1};
 }
 
 :root[data-theme='dark'] {
@@ -15,6 +27,18 @@
     --locator-card-text: #{$light-1};
     --locator-card-muted: #{$light-1};
     --locator-card-bar: #{$light-1};
+    --locator-scope-bg: #{$black-1};
+    --locator-scope-hover-bg: #{$grey-2};
+    --locator-scope-active-bg: #{$light-1};
+    --locator-scope-text: #{$light-1};
+    --locator-scope-active-text: #{$black-1};
+    --locator-scope-bar: #{$light-1};
+    --locator-scope-active-bar: #{$primary-accent-5};
+    --locator-scope-hover-bar: #{$primary-accent-2};
+    --locator-field-text: #{$light-1};
+    --locator-field-border: #{rgba($light-1, 0.75)};
+    --locator-field-active-bg: #{rgba($light-1, 0.75)};
+    --locator-field-active-text: #{$light-2};
 }
 
 .locatorButton {
@@ -187,7 +211,7 @@ ol.bindStep {
     }
 
     &::placeholder {
-        color: var(--settings-section-text, $grey-1);
+        color: var(--locator-field-text);
         opacity: 0.65;
     }
     &:focus-visible {
@@ -199,25 +223,25 @@ ol.bindStep {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
-    border: 1px solid var(--settings-trigger-border, rgba($grey-1, 0.75));
+    border: 1px solid var(--locator-field-border);
     border-radius: 4px;
     background: rgba($black-0, 0.05);
     padding: 0.5rem;
 }
 
 .roleOption {
-    border: 1px solid var(--settings-trigger-border, rgba($grey-1, 0.75));
+    border: 1px solid var(--locator-field-border);
     border-radius: 4px;
     background: transparent;
-    color: var(--settings-section-text, $grey-1);
+    color: var(--locator-field-text);
     padding: 0.55rem 0.65rem;
     text-align: left;
     cursor: pointer;
 
     &:hover,
     &.roleOptionActive {
-        background: var(--settings-trigger-border, rgba($grey-1, 0.75));
-        color: var(--settings-title-text, $black-1);
+        background: var(--locator-field-active-bg);
+        color: var(--locator-field-active-text);
     }
 }
 .roleOptionName {
@@ -384,6 +408,16 @@ ol.bindStep {
     }
 }
 
+.roleCard > .roleName {
+    grid-column: 1 / -1;
+    color: var(--locator-card-text);
+    font-family: 'Novecento DemiBold', 'Novecento Cyrillic DemiBold', 'Novecento Vietnamese DemiBold', 'HMSans_EN', 'UD_ShinGo DemiBold', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 900;
+    line-height: 1;
+    overflow-wrap: anywhere;
+}
+
 .configActions {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     padding: 0 0.1rem;
@@ -421,8 +455,8 @@ ol.bindStep {
     border: 0;
     border-radius: 3px;
     padding: 0.5rem 0.75rem 0.55rem 1.25rem;
-    background: var(--lang-bg);
-    color: var(--lang-text);
+    background: var(--locator-scope-bg);
+    color: var(--locator-scope-text);
     box-shadow: 0 0 4px 1px rgba($black-0, 0.25);
     cursor: pointer;
     text-align: left;
@@ -436,31 +470,31 @@ ol.bindStep {
         width: 4px;
         height: 75%;
         border-radius: 1px;
-        background: var(--lang-bar);
+        background: var(--locator-scope-bar);
         transition: background-color .4s ease;
     }
 
     &:hover {
-        background-color: var(--lang-hover-bg);
+        background-color: var(--locator-scope-hover-bg);
         box-shadow: 0 0 5px 1px rgba($black-0, 0.35);
         &::before {
-            background-color: var(--lang-hover-bar);
+            background-color: var(--locator-scope-hover-bar);
             transition: background-color .2s ease;
         }
     }
     &.active {
-        background-color: var(--lang-actived-bg);
-        color: var(--lang-actived-text);
+        background-color: var(--locator-scope-active-bg);
+        color: var(--locator-scope-active-text);
         &::before {
-            background-color: var(--lang-active-bar);
+            background-color: var(--locator-scope-active-bar);
             transition: background-color .4s ease-in, box-shadow .5s ease;
             box-shadow: 0 0 3px 0 $primary-accent-4;
         }
         &:hover {
-            background-color: var(--lang-text);
+            background-color: var(--locator-scope-text);
         }
         :global(.keyword) {
-            color: var(--lang-active-bar);
+            color: var(--locator-scope-active-bar);
         }
     }
     &:disabled {

@@ -23,7 +23,7 @@
     will-change: box-shadow, transform, background-color;
     border-radius: 0 0 2px 2px;
     color: var(--mark-text);
-    background-color: var(--mark-bg);
+    background-color: transparent;
     cursor: pointer;
     box-shadow: 0 0 3px 1px rgba($black-0, 0);
     transition:
@@ -86,7 +86,7 @@
         }
     }
     &.active[data-active='false'] {
-        background-color: var(--mark-bg);
+        background-color: transparent;
         color: var(--mark-text);
         box-shadow: 0 0 3px 1px rgba($black-0, 0);
         &::before {

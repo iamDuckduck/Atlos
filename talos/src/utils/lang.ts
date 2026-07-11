@@ -1,6 +1,6 @@
 import ALP from 'accept-language-parser';
 
-export type FontRegion = 'CN' | 'HK' | 'JP';
+export type FontRegion = 'CN' | 'HK' | 'JP' | null;
 
 export const FULL_LANGS = [
     'en-US',
@@ -138,7 +138,7 @@ export const getFontRegionForLocale = (locale?: string | null): FontRegion => {
     if (lower.includes('zh-cn') || lower.includes('zh-hans')) return 'CN';
     if (lower.includes('ja') || lower.includes('jp')) return 'JP';
     if (lower.includes('zh-tw') || lower.includes('zh-hk') || lower.includes('zh-hant')) return 'HK';
-    return 'HK';
+    return null;
 };
 
 export const getLocaleContentCandidates = (locale: string): string[] => {

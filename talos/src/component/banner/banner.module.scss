@@ -7,7 +7,7 @@
     --banner-text: #{$black-1};
     --banner-bar: #{$grey-1};
     --banner-bar-active: #{$primary-accent-6};
-    --invert-bg: 1;
+    --banner-image-invert: 1;
 }
 
 :root[data-theme='dark'] {
@@ -15,7 +15,7 @@
     --banner-text: #{$light-1};
     --banner-bar: #{$light-2};
     --banner-bar-active: #{$primary-accent-4};
-    --invert-bg: 0;
+    --banner-image-invert: 0;
 }
 
 $banner-desktop-width: 42vw;
@@ -58,7 +58,7 @@ $banner-mobile-width: 80vw;
         inset: 0.1rem;
         z-index: -1;
         opacity: .4;
-        filter: invert(var(--invert-bg));
+        filter: invert(var(--banner-image-invert));
         transition: filter .3s $adagio-curve;
     }
 }

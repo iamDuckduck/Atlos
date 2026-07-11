@@ -1,15 +1,13 @@
 import { create } from 'zustand';
 import type { UseBoundStore, StoreApi } from 'zustand';
 import LOGGER from '@/utils/log';
-import ALP from 'accept-language-parser';
-import { preloadFonts, getFontUrlsForRegion } from '@/locale/fontCache';
+import { switchFontRegion } from '@/locale/fontLoader';
 import {
     SUPPORTED_LANGS,
     getFontRegionForLocale,
     getLocaleContentCandidates,
     hasFullSupport,
     normalizeLang,
-    pickSupportedLang,
     toBCP47,
     type Lang,
 } from '@/utils/lang';
@@ -36,26 +34,6 @@ export {
     type FontRegion,
     type Lang,
 } from '@/utils/lang';
-
-// Build CDN URL for fonts (same logic as fontLoader)
-const toCdnUrl = (p: string): string => {
-    const str = String(p);
-    if (str.indexOf('://') !== -1 || str.startsWith('//')) return str;
-
-    // eslint-disable-next-line no-undef
-    const base = (typeof __ASSETS_HOST !== 'undefined' && __ASSETS_HOST) ? String(__ASSETS_HOST) : '';
-    
-    if (base && str.startsWith(base)) return str;
-
-    // Dev: keep /src/ prefix; Prod: normalize to /assets/ and prepend CDN
-    if (!base) return p; // Dev mode: return original path as-is
-    const normalized = p.replace(/^\/src\/assets/i, '/assets');
-    const baseEnds = base.endsWith('/');
-    const pathStarts = normalized.startsWith('/');
-    if (baseEnds && pathStarts) return base + normalized.slice(1);
-    if (!baseEnds && !pathStarts) return `${base}/${normalized}`;
-    return base + normalized;
-};
 
 export interface II18nBundle {
     game: Record<string, unknown>; // Game stuff(point, category, etc)
@@ -207,75 +185,7 @@ function loadLocaleCached(locale: Lang): Promise<II18nBundle> {
 
 const wait = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
-const ACCEPT_LANGUAGE_PRELOAD_LIMIT = 4;
 const PRELOAD_BATCH_SIZE = 3;
-
-const parseAcceptLanguageHeader = (header?: string | null): string[] => {
-    if (!header) return [];
-    return ALP.parse(header)
-        .map((item, index) => ({
-            tag: item.region ? `${item.code}-${item.region}` : item.code,
-            quality: item.quality ?? 1,
-            index,
-        }))
-        .filter(item => item.tag)
-        .sort((a, b) => b.quality - a.quality || a.index - b.index)
-        .map(item => item.tag);
-};
-
-const getInjectedAcceptLanguage = (): string | null => {
-    try {
-        if (typeof window !== 'undefined' && typeof window.__OEM_ACCEPT_LANGUAGE__ === 'string') {
-            return window.__OEM_ACCEPT_LANGUAGE__;
-        }
-        if (typeof document !== 'undefined') {
-            return document.querySelector<HTMLMetaElement>('meta[name="accept-language"]')?.content || null;
-        }
-    } catch {
-        // ignore unavailable browser globals
-    }
-    return null;
-};
-
-const getBrowserLanguageCandidates = (): string[] => {
-    if (typeof navigator === 'undefined') return [];
-    const browserLanguages: readonly string[] | undefined = navigator.languages;
-    const languages = browserLanguages ? [...browserLanguages] : [];
-    if (navigator.language) languages.push(navigator.language);
-    return languages;
-};
-
-const getSystemLanguageCandidates = (): string[] => {
-    try {
-        const locale = Intl.DateTimeFormat().resolvedOptions().locale;
-        return locale ? [locale] : [];
-    } catch {
-        return [];
-    }
-};
-
-const toSupportedLanguageList = (candidates: string[]): Lang[] => {
-    const seen = new Set<Lang>();
-    const result: Lang[] = [];
-    for (const candidate of candidates) {
-        const lang = pickSupportedLang(candidate);
-        if (!lang || seen.has(lang)) continue;
-        seen.add(lang);
-        result.push(lang);
-    }
-    return result;
-};
-
-const getPriorityPreloadLanguages = (current: Lang): Lang[] => {
-    const acceptLanguageCandidates = parseAcceptLanguageHeader(getInjectedAcceptLanguage())
-        .slice(0, ACCEPT_LANGUAGE_PRELOAD_LIMIT);
-    const candidates = [
-        ...acceptLanguageCandidates,
-        ...getBrowserLanguageCandidates(),
-        ...getSystemLanguageCandidates(),
-    ];
-    return toSupportedLanguageList(candidates).filter(lang => lang !== current);
-};
 
 async function preloadLocales(locales: readonly Lang[]) {
     for (let i = 0; i < locales.length; i += PRELOAD_BATCH_SIZE) {
@@ -285,18 +195,7 @@ async function preloadLocales(locales: readonly Lang[]) {
     }
 }
 
-let priorityPreloadingStarted = false;
 let allPreloadingStarted = false;
-
-async function preloadPriorityLanguages(current: Lang) {
-    if (priorityPreloadingStarted) return;
-    priorityPreloadingStarted = true;
-
-    // Delay to let main thread settle
-    await wait(2000);
-
-    await preloadLocales(getPriorityPreloadLanguages(current));
-}
 
 export async function preloadAllLanguages(current: Lang = getCurrentLocale()) {
     if (allPreloadingStarted) return;
@@ -305,27 +204,13 @@ export async function preloadAllLanguages(current: Lang = getCurrentLocale()) {
 }
 
 async function loadAndSet(locale: Lang) {
-    let ui: Record<string, unknown> = {};
-    let game: Record<string, unknown> = {};
-
-    // Start font preloading in parallel (non-blocking)
     const fontRegion = getFontRegionForLocale(locale);
-    const fontUrls = getFontUrlsForRegion(fontRegion).map(toCdnUrl);
-    const safePreloadFonts = (urls: string[]): Promise<void> => {
-        return (preloadFonts as unknown as (u: string[]) => Promise<void>)(urls);
-    };
-    // Fire and forget - don't block language switch
-    safePreloadFonts(fontUrls).catch((err: unknown) => {
-        LOGGER.warn('Font preload failed:', err);
-    });
+    const [data] = await Promise.all([
+        loadLocaleCached(locale),
+        switchFontRegion(fontRegion),
+    ]);
 
-    // Load on main thread using build-safe module graph
-    const data = await loadLocaleCached(locale);
-    ui = data.ui;
-    game = data.game;
-
-    // Update state immediately without waiting for fonts
-    useI18nStore.setState({ locale, data: { game, ui } });
+    useI18nStore.setState({ locale, data });
     
     // Sync document language tag for :lang() or [lang] based styles/fonts switching
     try {
@@ -336,9 +221,6 @@ async function loadAndSet(locale: Lang) {
     } catch {
         // ignore envs without document
     }
-
-    // Warm likely languages first; the complete language list is deferred until the language modal opens.
-    void preloadPriorityLanguages(locale);
 }
 
 async function init() {

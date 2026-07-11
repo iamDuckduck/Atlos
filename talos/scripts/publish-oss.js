@@ -349,6 +349,14 @@ const worker = async () => {
   }
 };
 
+const uploadFiles = async (files) => {
+  allFiles = files;
+  index = 0;
+  const workers = [];
+  for (let i = 0; i < concurrency; i++) workers.push(worker());
+  await Promise.all(workers);
+};
+
 const run = async () => {
   const clipIndex = await buildClipIndex({ distDir: './dist' });
   if (clipIndex.generated) {
@@ -359,26 +367,28 @@ const run = async () => {
     console.log(`[publish-oss] clip index skipped: ${clipIndex.reason}`);
   }
 
-  allFiles = getAllFiles('./dist').filter(shouldUploadLocalFile);
-  const promises = [];
+  const localFiles = getAllFiles('./dist').filter(shouldUploadLocalFile);
+  const htmlFiles = localFiles.filter((file) => file.replace(/\\/g, '/').endsWith('.html'));
+  const shellFiles = htmlFiles.filter((file) => file.replace(/\\/g, '/') === 'index.html');
+  const documentFiles = htmlFiles.filter((file) => !shellFiles.includes(file));
+  const resourceFiles = localFiles.filter((file) => !htmlFiles.includes(file));
 
-  for (let i = 0; i < concurrency; i++) {
-    promises.push(worker());
-  }
-
-  await Promise.all(promises);
-
-  if (shouldUploadSeoPointAliases) {
-    await uploadSeoPointAliases(allFiles);
-  } else {
-    console.log('[publish-oss] SEO point alias upload skipped. Unset SEO_UPLOAD_POINT_ALIASES or set it to a value other than 0 to upload token/index.html aliases.');
-  }
+  await uploadFiles(resourceFiles);
 
   if (clipIndex.generated) {
     await reconcileClipObjects(clipIndex.expectedClipFiles);
   }
 
-  await reconcileAssetObjects(allFiles);
+  await reconcileAssetObjects(localFiles);
+
+  await uploadFiles(documentFiles);
+  if (shouldUploadSeoPointAliases) {
+    await uploadSeoPointAliases(localFiles);
+  } else {
+    console.log('[publish-oss] SEO point alias upload skipped. Unset SEO_UPLOAD_POINT_ALIASES or set it to a value other than 0 to upload token/index.html aliases.');
+  }
+
+  for (const shellFile of shellFiles) await upload(shellFile);
 };
 
 

@@ -58,6 +58,7 @@
       "uploadAno": "Загрузить другое",
       "share": "Поделиться",
       "recall": "Запросить удаление",
+      "confirmRecall": "",
       "unrecall": "Отменить удаление"
     },
     "comments": {
@@ -72,12 +73,18 @@
       "upvote": "Нравится",
       "downvote": "Не нравится",
       "reply": "Ответить",
+      "edit": "",
+      "submitEdit": "",
+      "undoEdit": "",
+      "confirmUndoEdit": "",
       "recall": "Запросить удаление комментария",
+      "confirmRecall": "",
       "reviewing": "На проверке",
       "emptyWithRule": "Комментариев пока нет. При публикации соблюдайте <a href=\"{link}\">правила сообщества</a>.",
       "ruleOnly": "При публикации соблюдайте <a href=\"{link}\">правила сообщества</a>.",
       "loadFailed": "Не удалось загрузить комментарии.",
-      "submitFailed": "Не удалось отправить комментарий."
+      "submitFailed": "Не удалось отправить комментарий.",
+      "editFailed": ""
     },
     "errors": {
       "unsupportedType": "Поддерживаются только изображения JPEG/PNG/WebP/AVIF/HEIC.",

@@ -9,6 +9,7 @@ import { formatRelativeTime, parseDateLike } from '@/utils/timeFormat';
 import { docsLink, linkTpl } from '@/utils/docsLink';
 import type { IMarkerData } from '@/data/marker';
 import {
+    editUGCComment,
     listUGCComments,
     type UGCComment,
     type UGCCommentVoteValue,
@@ -20,6 +21,8 @@ import FlagIcon from '@/assets/images/UI/flag.svg?react';
 import RecallIcon from '@/assets/images/UI/recall.svg?react';
 import SubmitIcon from '@/assets/logos/submit.svg?react';
 import ReplyIcon from '@/assets/logos/reply.svg?react';
+import EditIcon from '@/assets/images/UI/edit.svg?react';
+
 import {
     flatDisplay,
     isReviewing,
@@ -30,6 +33,8 @@ import {
 import {
     getCommentSubmissionSnapshot,
     mergeCommentSubmissions,
+    removeCommentSubmission,
+    restoreCommentSubmission,
     submitCommentOptimistic,
     subscribeCommentSubmissions,
     syncCommentSubmissions,
@@ -57,6 +62,8 @@ type Props = {
 const COMMENT_MAX_LENGTH = 200;
 const COMMENT_TOGGLE_SYNC_DELAY_MS = 300;
 const COMMENT_REPLY_QUOTE_TRANSITION_MS = 180;
+const RECALL_CONFIRM_MIN_DELAY_MS = 1_000;
+const RECALL_CONFIRM_EXPIRE_MS = 5_000;
 
 const CommentAvatar = memo(({ comment }: { comment: UGCComment }) => (
     <span className={styles.commentAvatar} data-avt={avatarIndex(comment)} aria-hidden="true"></span>
@@ -119,11 +126,15 @@ type CommentItemProps = {
     isOwn: boolean;
     canInteract: boolean;
     actionPending: boolean;
+    isEditing: boolean;
+    recallConfirming: boolean;
     onVote: (comment: UGCComment, value: 1 | -1) => void;
     onFlag: (comment: UGCComment) => void;
+    onEdit: (comment: UGCComment) => void;
     onRecall: (comment: UGCComment) => void;
     onTranslate: (comment: UGCComment) => void;
     onReply: (comment: UGCComment) => void;
+    onToolbarDismiss: () => void;
 };
 
 const CommentItem = memo(({
@@ -132,14 +143,19 @@ const CommentItem = memo(({
     isOwn,
     canInteract,
     actionPending,
+    isEditing,
+    recallConfirming,
     onVote,
     onFlag,
+    onEdit,
     onRecall,
     onTranslate,
     onReply,
+    onToolbarDismiss,
 }: CommentItemProps) => {
     const tUI = useTranslateUI();
     const canModerate = isVisible(comment.status);
+    const canEdit = canModerate || isReviewing(comment.status);
     const translationVisible = isTransShown(comment);
     const actions = useMemo<ShortActionItem[]>(() => {
         const items: ShortActionItem[] = [
@@ -183,10 +199,24 @@ const CommentItem = memo(({
 
         if (isOwn) {
             items.push({
+                id: 'edit',
+                label: tUI('detail.comments.edit'),
+                icon: <EditIcon />,
+                disabled: !canInteract || !canEdit || actionPending,
+                onClick: () => onEdit(comment),
+            });
+            items.push({
                 id: 'recall',
-                label: tUI('detail.comments.recall'),
+                label: tUI(recallConfirming
+                    ? (isEditing || comment.editUndoAvailable
+                        ? 'detail.comments.confirmUndoEdit'
+                        : 'detail.comments.confirmRecall')
+                    : (isEditing || comment.editUndoAvailable
+                        ? 'detail.comments.undoEdit'
+                        : 'detail.comments.recall')),
                 icon: <RecallIcon />,
                 active: Boolean(comment.recallRequested || comment.status === 'remove_request'),
+                confirming: recallConfirming,
                 disabled: !canInteract || actionPending || comment.status === 'stale',
                 onClick: () => onRecall(comment),
             });
@@ -204,10 +234,14 @@ const CommentItem = memo(({
     }, [
         actionPending,
         canInteract,
+        canEdit,
         canModerate,
         comment,
+        isEditing,
         isOwn,
+        recallConfirming,
         onFlag,
+        onEdit,
         onRecall,
         onReply,
         onTranslate,
@@ -227,6 +261,7 @@ const CommentItem = memo(({
                     items={actions}
                     ariaLabel={tUI('detail.comments.actions')}
                     variant="floating"
+                    onFloatingDismiss={onToolbarDismiss}
                 />
             )}
         />
@@ -241,8 +276,14 @@ const Comments = ({ point, pointName, active = true }: Props) => {
     const [comments, setComments] = useState<UGCComment[]>([]);
     const [loading, setLoading] = useState(false);
     const [inputValue, setInputValue] = useState('');
+    const [editTarget, setEditTarget] = useState<UGCComment | null>(null);
+    const [recallConfirmation, setRecallConfirmation] = useState<{
+        key: string;
+        armedAt: number;
+    } | null>(null);
     const [actionPendingIds, setActionPendingIds] = useState<Set<string>>(() => new Set());
     const [error, setError] = useState('');
+    const clearRecallConfirmation = useCallback(() => setRecallConfirmation(null), []);
     const inputRef = useRef<HTMLTextAreaElement | null>(null);
     const inputBarRef = useRef<HTMLDivElement | null>(null);
     const commentsPanelRef = useRef<HTMLElement | null>(null);
@@ -318,7 +359,7 @@ const Comments = ({ point, pointName, active = true }: Props) => {
         setReply: setReplyTarget,
         setRendered: setRenderedReply,
     });
-    const handleRecall = useRecall({
+    const recallComment = useRecall({
         markerId: point.id,
         comments,
         busyIds: actionPendingIds,
@@ -370,7 +411,20 @@ const Comments = ({ point, pointName, active = true }: Props) => {
 
     useEffect(() => {
         clearReply();
+        setEditTarget(null);
+        setInputValue('');
+        setRecallConfirmation(null);
     }, [clearReply, point.id]);
+
+    useEffect(() => {
+        if (!recallConfirmation) return undefined;
+        const remaining = RECALL_CONFIRM_EXPIRE_MS - (Date.now() - recallConfirmation.armedAt);
+        const timer = window.setTimeout(
+            () => setRecallConfirmation(null),
+            Math.max(0, remaining),
+        );
+        return () => window.clearTimeout(timer);
+    }, [recallConfirmation]);
 
     useEffect(() => {
         const lastError = submissionSnapshot.lastError;
@@ -381,39 +435,127 @@ const Comments = ({ point, pointName, active = true }: Props) => {
     }, [submissionSnapshot.lastError, tUI]);
 
     const handleReply = useCallback((comment: UGCComment) => {
+        setEditTarget(null);
+        setInputValue('');
         setReplyTarget(comment);
         window.requestAnimationFrame(() => {
             inputRef.current?.focus();
         });
     }, [setReplyTarget]);
 
-    const handleSubmit = useCallback(() => {
+    const handleEdit = useCallback((comment: UGCComment) => {
+        clearReply();
+        setEditTarget(comment);
+        setInputValue(comment.content);
+        window.requestAnimationFrame(() => {
+            inputRef.current?.focus();
+            inputRef.current?.setSelectionRange(comment.content.length, comment.content.length);
+        });
+    }, [clearReply]);
+
+    const executeRecall = useCallback((comment: UGCComment) => {
+        if (editTarget?.id === comment.id) {
+            setEditTarget(null);
+            setInputValue('');
+            return;
+        }
+        recallComment(comment);
+    }, [editTarget, recallComment]);
+
+    const handleRecall = useCallback((comment: UGCComment) => {
+        const mode = editTarget?.id === comment.id || comment.editUndoAvailable ? 'undo' : 'recall';
+        const key = `${comment.id}:${mode}`;
+        const now = Date.now();
+        if (recallConfirmation?.key !== key) {
+            setRecallConfirmation({ key, armedAt: now });
+            return;
+        }
+        if (now - recallConfirmation.armedAt < RECALL_CONFIRM_MIN_DELAY_MS) return;
+
+        setRecallConfirmation(null);
+        executeRecall(comment);
+    }, [editTarget, executeRecall, recallConfirmation]);
+
+    const handleSubmit = useCallback(async () => {
         const content = inputValue.trim();
         if (!content) return;
         if (!requireAuth()) return;
 
         setError('');
+        if (editTarget) {
+            if (content === editTarget.content) {
+                setEditTarget(null);
+                setInputValue('');
+                return;
+            }
+
+            const previousComments = comments;
+            const pendingComment: UGCComment = {
+                ...editTarget,
+                content,
+                translatedContent: undefined,
+                translationSourceLanguage: undefined,
+                translationTargetLanguage: undefined,
+                translationHidden: undefined,
+                translationStatus: undefined,
+                flagged: false,
+                recallRequested: false,
+                status: 'pending_openai',
+                editUndoAvailable: true,
+            };
+            const previousSubmission = removeCommentSubmission(point.id, editTarget.id);
+            restoreCommentSubmission(point.id, pendingComment);
+            patchComment(editTarget.id, () => pendingComment);
+            setCommentActionPending(editTarget.id, true);
+            setEditTarget(null);
+            setInputValue('');
+            try {
+                const submission = await editUGCComment(editTarget.id, content);
+                removeCommentSubmission(point.id, editTarget.id);
+                restoreCommentSubmission(point.id, {
+                    ...pendingComment,
+                    status: submission.status,
+                });
+            } catch {
+                removeCommentSubmission(point.id, editTarget.id);
+                if (previousSubmission) {
+                    restoreCommentSubmission(point.id, previousSubmission);
+                }
+                setComments(previousComments);
+                setEditTarget(editTarget);
+                setInputValue(content);
+                setError(tUI('detail.comments.editFailed'));
+            } finally {
+                setCommentActionPending(editTarget.id, false);
+            }
+            return;
+        }
+
         submitCommentOptimistic(point, content, replyTarget, user);
         setInputValue('');
         clearReply();
-    }, [clearReply, inputValue, point, replyTarget, requireAuth, user]);
+    }, [clearReply, comments, editTarget, inputValue, patchComment, point, replyTarget, requireAuth, setCommentActionPending, tUI, user]);
 
     const handleKeyDown = useCallback((event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (
             event.key === 'Backspace'
             && !event.nativeEvent.isComposing
             && inputValue.length === 0
-            && replyTarget
+            && (replyTarget || editTarget)
         ) {
             event.preventDefault();
-            clearReply();
+            if (editTarget) {
+                setEditTarget(null);
+            } else {
+                clearReply();
+            }
             return;
         }
 
         if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) return;
         event.preventDefault();
-        handleSubmit();
-    }, [clearReply, handleSubmit, inputValue.length, replyTarget]);
+        void handleSubmit();
+    }, [clearReply, editTarget, handleSubmit, inputValue.length, replyTarget]);
 
     const handleVote = useCallback((comment: UGCComment, value: 1 | -1) => {
         if (!requireAuth()) return;
@@ -470,11 +612,17 @@ const Comments = ({ point, pointName, active = true }: Props) => {
                         isOwn={comment.author?.publicUid === userUid}
                         canInteract={active}
                         actionPending={actionPendingIds.has(comment.id) || submittingCommentIds.has(comment.id)}
+                        isEditing={editTarget?.id === comment.id}
+                        recallConfirming={recallConfirmation?.key === `${comment.id}:${
+                            editTarget?.id === comment.id || comment.editUndoAvailable ? 'undo' : 'recall'
+                        }`}
                         onVote={handleVote}
                         onFlag={handleFlag}
+                        onEdit={handleEdit}
                         onRecall={handleRecall}
                         onTranslate={handleTranslate}
                         onReply={handleReply}
+                        onToolbarDismiss={clearRecallConfirmation}
                     />
                 ))}
                 {loading && comments.length === 0 && (
@@ -529,8 +677,8 @@ const Comments = ({ point, pointName, active = true }: Props) => {
                             type="button"
                             className={styles.commentSubmit}
                             disabled={inputDisabled || inputValue.trim().length === 0}
-                            onClick={handleSubmit}
-                            aria-label={tUI('detail.comments.submit')}
+                            onClick={() => void handleSubmit()}
+                            aria-label={tUI(editTarget ? 'detail.comments.submitEdit' : 'detail.comments.submit')}
                         >
                             <SubmitIcon />
                         </button>

@@ -58,6 +58,7 @@
       "uploadAno": "Ladda upp",
       "share": "Dela",
       "recall": "Begär borttagning",
+      "confirmRecall": "",
       "unrecall": "Avbryt borttagning"
     },
     "comments": {
@@ -72,12 +73,18 @@
       "upvote": "Gilla",
       "downvote": "Ogilla",
       "reply": "Svara",
+      "edit": "",
+      "submitEdit": "",
+      "undoEdit": "",
+      "confirmUndoEdit": "",
       "recall": "Begär borttagning av kommentar",
+      "confirmRecall": "",
       "reviewing": "Granskas",
       "emptyWithRule": "Inga kommentarer ännu. Följ <a href=\"{link}\">communityriktlinjerna</a> när du publicerar.",
       "ruleOnly": "Följ <a href=\"{link}\">communityriktlinjerna</a> när du publicerar.",
       "loadFailed": "Kommentarer kunde inte läsas in.",
-      "submitFailed": "Kommentaren kunde inte skickas."
+      "submitFailed": "Kommentaren kunde inte skickas.",
+      "editFailed": ""
     },
     "errors": {
       "unsupportedType": "Endast JPEG/PNG/WebP/AVIF/HEIC-bilder stöds.",

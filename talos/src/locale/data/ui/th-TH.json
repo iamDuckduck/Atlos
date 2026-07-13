@@ -58,6 +58,7 @@
       "uploadAno": "อัปโหลดเพิ่ม",
       "share": "แชร์",
       "recall": "ขอถอนรูปภาพ",
+      "confirmRecall": "",
       "unrecall": "ยกเลิกคำขอถอน"
     },
     "comments": {
@@ -72,12 +73,18 @@
       "upvote": "ถูกใจ",
       "downvote": "ไม่ถูกใจ",
       "reply": "ตอบกลับ",
+      "edit": "",
+      "submitEdit": "",
+      "undoEdit": "",
+      "confirmUndoEdit": "",
       "recall": "ขอลบความคิดเห็น",
+      "confirmRecall": "",
       "reviewing": "รอตรวจสอบ",
       "emptyWithRule": "ยังไม่มีความคิดเห็น โปรดปฏิบัติตาม<a href=\"{link}\">แนวทางชุมชน</a>เมื่อโพสต์",
       "ruleOnly": "โปรดปฏิบัติตาม<a href=\"{link}\">แนวทางชุมชน</a>เมื่อโพสต์",
       "loadFailed": "โหลดความคิดเห็นไม่สำเร็จ",
-      "submitFailed": "ส่งความคิดเห็นไม่สำเร็จ"
+      "submitFailed": "ส่งความคิดเห็นไม่สำเร็จ",
+      "editFailed": ""
     },
     "errors": {
       "unsupportedType": "รองรับเฉพาะรูปภาพ JPEG/PNG/WebP/AVIF/HEIC",

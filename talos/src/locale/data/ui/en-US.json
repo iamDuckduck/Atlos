@@ -58,6 +58,7 @@
       "uploadAno": "Upload Another",
       "share": "Share",
       "recall": "Recall",
+      "confirmRecall": "Confirm recall?",
       "unrecall": "Cancel Recall"
     },
     "comments": {
@@ -72,12 +73,18 @@
       "upvote": "Upvote",
       "downvote": "Downvote",
       "reply": "Reply",
+      "edit": "Edit",
+      "submitEdit": "Submit edit",
+      "undoEdit": "Undo edit",
+      "confirmUndoEdit": "Confirm undo?",
       "recall": "Recall",
+      "confirmRecall": "Confirm recall?",
       "reviewing": "Reviewing",
       "emptyWithRule": "No comments yet. Please follow <a href=\"{link}\">community guidelines</a> when posting.",
       "ruleOnly": "Please follow <a href=\"{link}\">community guidelines</a> when posting.",
       "loadFailed": "Comments failed to load.",
-      "submitFailed": "Comment failed to submit."
+      "submitFailed": "Comment failed to submit.",
+      "editFailed": "Comment failed to update."
     },
     "errors": {
       "unsupportedType": "Only JPEG/PNG/WebP/AVIF/HEIC images are supported.",

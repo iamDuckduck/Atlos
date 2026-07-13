@@ -55,6 +55,7 @@ export type UGCComment = {
     translationTargetLanguage?: string;
     translationHidden?: boolean;
     translationStatus?: 'translating' | 'failed';
+    editUndoAvailable?: boolean;
     author?: UGCCommentAuthor | null;
     createdAt: string;
     score: number;
@@ -429,12 +430,29 @@ export async function submitUGCComment(
     return payload.submission;
 }
 
+export async function editUGCComment(
+    commentId: string,
+    content: string,
+): Promise<UGCCommentSubmission> {
+    const payload = await postJson<{
+        submission?: UGCCommentSubmission;
+    }>(`${UGC_API_BASE}/comments/${encodeURIComponent(commentId)}/edit`, { content });
+
+    if (!payload.submission) {
+        throw new UGCClientError('Comment edit response missing submission.', 'commentInvalidResponse');
+    }
+
+    invalidateUGCCommentCache(payload.submission.markerId);
+    return payload.submission;
+}
+
 export type UGCImageActionPatch = Partial<Pick<UGCImage, 'upvoteCount' | 'upvotes' | 'upvoted' | 'flagged' | 'recallRequested' | 'status'>> & {
     id: string;
 };
 
-export type UGCCommentActionPatch = Partial<Pick<UGCComment, 'score' | 'viewerVote' | 'flagged' | 'recallRequested' | 'status'>> & {
+export type UGCCommentActionPatch = Partial<Pick<UGCComment, 'content' | 'score' | 'viewerVote' | 'flagged' | 'recallRequested' | 'status' | 'editUndoAvailable'>> & {
     id: string;
+    editReverted?: boolean;
 };
 
 type UGCImageActionResponse = {
@@ -452,6 +470,8 @@ type UGCCommentActionResponse = {
     score?: number;
     flagCount?: number;
     status?: UGCSubmissionStatus;
+    content?: string;
+    editReverted?: boolean;
 };
 
 export type UGCCommentTrans = {
@@ -608,6 +628,11 @@ async function updateUGCCommentAction(commentId: string, action: string): Promis
         if (payload.status === 'active' && action === 'unflag') {
             patch.flagged = false;
         }
+    }
+    if (payload.editReverted && typeof payload.content === 'string') {
+        patch.content = payload.content;
+        patch.editReverted = true;
+        patch.editUndoAvailable = false;
     }
     return patch;
 }

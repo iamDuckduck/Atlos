@@ -58,6 +58,7 @@
       "uploadAno": "Weiteres hochladen",
       "share": "Teilen",
       "recall": "Bildrücknahme beantragen",
+      "confirmRecall": "",
       "unrecall": "Rücknahme abbrechen"
     },
     "comments": {
@@ -72,12 +73,18 @@
       "upvote": "Upvote",
       "downvote": "Downvote",
       "reply": "Antworten",
+      "edit": "",
+      "submitEdit": "",
+      "undoEdit": "",
+      "confirmUndoEdit": "",
       "recall": "Entfernung des Kommentars beantragen",
+      "confirmRecall": "",
       "reviewing": "In Prüfung",
       "emptyWithRule": "Noch keine Kommentare. Bitte beachte beim Posten die <a href=\"{link}\">Community-Richtlinien</a>.",
       "ruleOnly": "Bitte beachte beim Posten die <a href=\"{link}\">Community-Richtlinien</a>.",
       "loadFailed": "Kommentare konnten nicht geladen werden.",
-      "submitFailed": "Kommentar konnte nicht gesendet werden."
+      "submitFailed": "Kommentar konnte nicht gesendet werden.",
+      "editFailed": ""
     },
     "errors": {
       "unsupportedType": "Nur JPEG-/PNG-/WebP-/AVIF-Bilder werden unterstützt.",

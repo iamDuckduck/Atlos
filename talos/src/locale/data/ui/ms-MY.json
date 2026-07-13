@@ -58,6 +58,7 @@
       "uploadAno": "Muat naik lain",
       "share": "Kongsi",
       "recall": "Minta pemadaman",
+      "confirmRecall": "",
       "unrecall": "Batalkan pemadaman"
     },
     "comments": {
@@ -72,12 +73,18 @@
       "upvote": "Suka",
       "downvote": "Tidak suka",
       "reply": "Balas",
+      "edit": "",
+      "submitEdit": "",
+      "undoEdit": "",
+      "confirmUndoEdit": "",
       "recall": "Minta pemadaman komen",
+      "confirmRecall": "",
       "reviewing": "Disemak",
       "emptyWithRule": "Belum ada komen. Sila ikut <a href=\"{link}\">garis panduan komuniti</a> semasa menyiarkan.",
       "ruleOnly": "Sila ikut <a href=\"{link}\">garis panduan komuniti</a> semasa menyiarkan.",
       "loadFailed": "Komen gagal dimuatkan.",
-      "submitFailed": "Komen gagal dihantar."
+      "submitFailed": "Komen gagal dihantar.",
+      "editFailed": ""
     },
     "errors": {
       "unsupportedType": "Hanya imej JPEG/PNG/WebP/AVIF/HEIC disokong.",

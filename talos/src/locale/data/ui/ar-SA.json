@@ -58,6 +58,7 @@
       "uploadAno": "رفع صورة أخرى",
       "share": "مشاركة",
       "recall": "تراجع",
+      "confirmRecall": "",
       "unrecall": "إلغاء التراجع"
     },
     "comments": {
@@ -72,12 +73,18 @@
       "upvote": "إعجاب",
       "downvote": "عدم إعجاب",
       "reply": "رد",
+      "edit": "",
+      "submitEdit": "",
+      "undoEdit": "",
+      "confirmUndoEdit": "",
       "recall": "طلب إزالة التعليق",
+      "confirmRecall": "",
       "reviewing": "قيد المراجعة",
       "emptyWithRule": "لا توجد تعليقات بعد. يرجى الالتزام بـ<a href=\"{link}\">إرشادات المجتمع</a> عند النشر.",
       "ruleOnly": "يرجى الالتزام بـ<a href=\"{link}\">إرشادات المجتمع</a> عند النشر.",
       "loadFailed": "فشل تحميل التعليقات.",
-      "submitFailed": "فشل إرسال التعليق."
+      "submitFailed": "فشل إرسال التعليق.",
+      "editFailed": ""
     },
     "errors": {
       "unsupportedType": "يُدعم فقط صيغ JPEG/PNG/WebP/AVIF.",

@@ -58,6 +58,7 @@
       "uploadAno": "上传另一张图片",
       "share": "分享",
       "recall": "撤回此图片",
+      "confirmRecall": "确认撤回此图片？",
       "unrecall": "取消撤回"
     },
     "comments": {
@@ -72,17 +73,23 @@
       "upvote": "点赞",
       "downvote": "不喜欢",
       "reply": "回复帖文",
+      "edit": "修改留言",
+      "submitEdit": "提交修改",
+      "undoEdit": "撤销修改",
+      "confirmUndoEdit": "确认撤销修改？",
       "recall": "撤回此留言",
+      "confirmRecall": "确认撤回此留言？",
       "reviewing": "审核中",
       "emptyWithRule": "暂无留言。发布内容请遵循<a href=\"{link}\">社区守则</a>。",
       "ruleOnly": "发布内容请遵循<a href=\"{link}\">社区守则</a>。",
       "loadFailed": "留言加载失败。",
-      "submitFailed": "留言发布失败。"
+      "submitFailed": "留言发布失败。",
+      "editFailed": "留言修改失败。"
     },
     "errors": {
       "unsupportedType": "仅支持 JPEG/PNG/WebP/AVIF/HEIC 图片",
       "fileTooLarge": "图片文件过大",
-      "imageDecodeFailed": "浏d览器无法读取此图片",
+      "imageDecodeFailed": "浏览器无法读取此图片",
       "imageProcessingUnavailable": "本地图片处理不可用",
       "processedTooLarge": "处理后的图片仍然过大",
       "uploadInvalidResponse": "上传接口返回异常",

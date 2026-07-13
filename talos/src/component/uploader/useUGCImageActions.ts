@@ -4,9 +4,7 @@ import { openOemAuthModal } from '@/component/login/authEvents';
 import {
     recallUGCImage,
     toggleUGCImageFlag,
-    toggleUGCImageRecall,
     toggleUGCImageUpvote,
-    UGCClientError,
     type UGCImage,
     type UGCImageActionPatch,
     type UGCSubmissionImage,
@@ -15,10 +13,8 @@ import { getUpvoteCount, type PointImagesState } from './useUGCPointImages';
 import type { UploadState } from './useUGCUpload';
 
 const TOGGLE_SYNC_DELAY_MS = 300;
-
-const isActionConflict = (err: unknown): boolean => (
-    err instanceof UGCClientError && err.status === 409
-);
+const RECALL_CONFIRM_MIN_DELAY_MS = 1_000;
+const RECALL_CONFIRM_EXPIRE_MS = 5_000;
 
 type ToggleTask = {
     desired: boolean;
@@ -45,6 +41,8 @@ const getToggleTask = (
 
 export type ImageActionsState = {
     actionPending: boolean;
+    recallConfirming: boolean;
+    cancelRecallConfirmation: () => void;
     viewerOpen: boolean;
     setViewerOpen: React.Dispatch<React.SetStateAction<boolean>>;
     handleToggleUpvote: () => void;
@@ -56,15 +54,18 @@ const useUGCImageActions = (imageState: PointImagesState, uploadState: UploadSta
     const user = useAuthStore((state) => state.sessionUser);
     const isAuthenticated = Boolean(user);
     const [actionPending, setActionPending] = useState(false);
+    const [recallConfirmation, setRecallConfirmation] = useState<{
+        imageId: string;
+        armedAt: number;
+    } | null>(null);
     const [viewerOpen, setViewerOpen] = useState(false);
+    const cancelRecallConfirmation = useCallback(() => setRecallConfirmation(null), []);
     const upvoteTasksRef = useRef(new Map<string, ToggleTask>());
     const flagTasksRef = useRef(new Map<string, ToggleTask>());
 
     const {
         active,
         isOwnActive,
-        isActivePending,
-        patchActiveImage,
         applyServerImage,
         setImages,
         setMyImages,
@@ -172,6 +173,24 @@ const useUGCImageActions = (imageState: PointImagesState, uploadState: UploadSta
         });
     }, []);
 
+    useEffect(() => {
+        cancelRecallConfirmation();
+    }, [active?.id, cancelRecallConfirmation]);
+
+    useEffect(() => {
+        if (!viewerOpen) cancelRecallConfirmation();
+    }, [cancelRecallConfirmation, viewerOpen]);
+
+    useEffect(() => {
+        if (!recallConfirmation) return undefined;
+        const remaining = RECALL_CONFIRM_EXPIRE_MS - (Date.now() - recallConfirmation.armedAt);
+        const timer = window.setTimeout(
+            () => setRecallConfirmation(null),
+            Math.max(0, remaining),
+        );
+        return () => window.clearTimeout(timer);
+    }, [recallConfirmation]);
+
     const handleToggleUpvote = useCallback(() => {
         if (!active) return;
         if (!isAuthenticated) {
@@ -216,62 +235,42 @@ const useUGCImageActions = (imageState: PointImagesState, uploadState: UploadSta
             openOemAuthModal('login');
             return;
         }
-        if (isActivePending) {
-            const previousSubmission = lastSubmission;
-            const previousImages = images;
-            const previousMyImages = myImages;
-            const previousSelectedImageId = selectedImageId;
-            const previousViewerOpen = viewerOpen;
-            setLastSubmission(null);
-            setImages((current) => current.filter((image) => image.id !== active.id));
-            setMyImages((current) => current.filter((image) => image.id !== active.id));
-            setSelectedImageId(null);
-            setViewerOpen(false);
-            setActionPending(true);
-            try {
-                const serverImage = await recallUGCImage(active.id);
-                applyServerImage(serverImage);
-            } catch {
-                setLastSubmission(previousSubmission);
-                setImages(previousImages);
-                setMyImages(previousMyImages);
-                setSelectedImageId(previousSelectedImageId);
-                setViewerOpen(previousViewerOpen);
-            } finally {
-                setActionPending(false);
-            }
+        const now = Date.now();
+        if (recallConfirmation?.imageId !== active.id) {
+            setRecallConfirmation({ imageId: active.id, armedAt: now });
             return;
         }
-        const nextRecallRequested = !active.recallRequested && active.status !== 'remove_request';
-        patchActiveImage((image) => ({
-            ...image,
-            recallRequested: nextRecallRequested,
-            status: nextRecallRequested ? 'remove_request' : image.status === 'remove_request' ? 'active' : image.status,
-        }));
+        if (now - recallConfirmation.armedAt < RECALL_CONFIRM_MIN_DELAY_MS) return;
+        setRecallConfirmation(null);
+
+        const previousSubmission = lastSubmission;
+        const previousImages = images;
+        const previousMyImages = myImages;
+        const previousSelectedImageId = selectedImageId;
+        const previousViewerOpen = viewerOpen;
+        setLastSubmission(null);
+        setImages((current) => current.filter((image) => image.id !== active.id));
+        setMyImages((current) => current.filter((image) => image.id !== active.id));
+        setSelectedImageId(null);
+        setViewerOpen(false);
         setActionPending(true);
         try {
-            applyServerImage(await toggleUGCImageRecall(active.id, nextRecallRequested));
-        } catch (err) {
-            if (nextRecallRequested && isActionConflict(err)) {
-                patchActiveImage((image) => ({
-                    ...image,
-                    recallRequested: true,
-                    status: 'remove_request',
-                }));
-                return;
-            }
-            patchActiveImage((image) => ({
-                ...image,
-                recallRequested: !nextRecallRequested,
-                status: !nextRecallRequested ? 'remove_request' : image.status === 'remove_request' ? 'active' : image.status,
-            }));
+            await recallUGCImage(active.id);
+        } catch {
+            setLastSubmission(previousSubmission);
+            setImages(previousImages);
+            setMyImages(previousMyImages);
+            setSelectedImageId(previousSelectedImageId);
+            setViewerOpen(previousViewerOpen);
         } finally {
             setActionPending(false);
         }
-    }, [actionPending, active, applyServerImage, images, isActivePending, isAuthenticated, isOwnActive, lastSubmission, myImages, patchActiveImage, selectedImageId, setImages, setLastSubmission, setMyImages, setSelectedImageId, viewerOpen]);
+    }, [actionPending, active, images, isAuthenticated, isOwnActive, lastSubmission, myImages, recallConfirmation, selectedImageId, setImages, setLastSubmission, setMyImages, setSelectedImageId, viewerOpen]);
 
     return {
         actionPending,
+        recallConfirming: Boolean(active && recallConfirmation?.imageId === active.id),
+        cancelRecallConfirmation,
         viewerOpen,
         setViewerOpen,
         handleToggleUpvote,

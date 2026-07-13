@@ -58,6 +58,7 @@
       "uploadAno": "上載另一張圖片",
       "share": "分享此點位",
       "recall": "撤回此圖片",
+      "confirmRecall": "確認撤回此圖片？",
       "unrecall": "取消撤回"
     },
     "comments": {
@@ -72,12 +73,18 @@
       "upvote": "讚好",
       "downvote": "反對",
       "reply": "回覆帖文",
+      "edit": "編輯留言",
+      "submitEdit": "提交編輯內容",
+      "undoEdit": "撤銷編輯",
+      "confirmUndoEdit": "確認撤銷編輯？",
       "recall": "撤回此留言",
+      "confirmRecall": "確認撤回留言？",
       "reviewing": "審核中",
       "emptyWithRule": "暫無留言。發布內容請遵循<a href=\"{link}\">社群守則</a>。",
       "ruleOnly": "發布內容請遵循<a href=\"{link}\">社群守則</a>。",
       "loadFailed": "留言載入失敗。",
-      "submitFailed": "留言發布失敗。"
+      "submitFailed": "留言發布失敗。",
+      "editFailed": "留言編輯失敗。"
     },
     "errors": {
       "unsupportedType": "僅接收 JPEG/PNG/WebP/AVIF/HEIC 檔案",

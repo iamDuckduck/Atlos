@@ -58,6 +58,7 @@
       "uploadAno": "Carica altro",
       "share": "Condividi",
       "recall": "Richiedi rimozione",
+      "confirmRecall": "",
       "unrecall": "Annulla rimozione"
     },
     "comments": {
@@ -72,12 +73,18 @@
       "upvote": "Mi piace",
       "downvote": "Non mi piace",
       "reply": "Rispondi",
+      "edit": "",
+      "submitEdit": "",
+      "undoEdit": "",
+      "confirmUndoEdit": "",
       "recall": "Richiedi rimozione commento",
+      "confirmRecall": "",
       "reviewing": "In revisione",
       "emptyWithRule": "Non ci sono ancora commenti. Quando pubblichi, segui le <a href=\"{link}\">linee guida della community</a>.",
       "ruleOnly": "Quando pubblichi, segui le <a href=\"{link}\">linee guida della community</a>.",
       "loadFailed": "Caricamento dei commenti non riuscito.",
-      "submitFailed": "Invio del commento non riuscito."
+      "submitFailed": "Invio del commento non riuscito.",
+      "editFailed": ""
     },
     "errors": {
       "unsupportedType": "Sono supportate solo immagini JPEG/PNG/WebP/AVIF/HEIC.",

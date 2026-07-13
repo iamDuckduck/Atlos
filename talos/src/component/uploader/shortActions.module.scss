@@ -215,4 +215,8 @@
             color: var(--actionbtn-active);
         }
     }
+    &[data-confirming='true'] .shortActionIcon {
+        color: $primary-accent-4;
+        opacity: 0.75;
+    }
 }

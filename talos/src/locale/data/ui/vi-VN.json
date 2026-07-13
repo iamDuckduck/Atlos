@@ -58,6 +58,7 @@
       "uploadAno": "Tải lên khác",
       "share": "Chia sẻ",
       "recall": "Yêu cầu gỡ",
+      "confirmRecall": "",
       "unrecall": "Hủy yêu cầu gỡ"
     },
     "comments": {
@@ -72,12 +73,18 @@
       "upvote": "Thích",
       "downvote": "Không thích",
       "reply": "Trả lời",
+      "edit": "",
+      "submitEdit": "",
+      "undoEdit": "",
+      "confirmUndoEdit": "",
       "recall": "Yêu cầu gỡ bình luận",
+      "confirmRecall": "",
       "reviewing": "Đang duyệt",
       "emptyWithRule": "Chưa có bình luận nào. Vui lòng tuân thủ <a href=\"{link}\">nguyên tắc cộng đồng</a> khi đăng.",
       "ruleOnly": "Vui lòng tuân thủ <a href=\"{link}\">nguyên tắc cộng đồng</a> khi đăng.",
       "loadFailed": "Không tải được bình luận.",
-      "submitFailed": "Không gửi được bình luận."
+      "submitFailed": "Không gửi được bình luận.",
+      "editFailed": ""
     },
     "errors": {
       "unsupportedType": "Chỉ hỗ trợ ảnh JPEG/PNG/WebP/AVIF/HEIC.",

@@ -53,7 +53,16 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
         requestAppendUpload,
         canAppendUpload,
     } = uploadState;
-    const { actionPending, viewerOpen, setViewerOpen, handleToggleUpvote, handleToggleFlag, handleToggleRecall } = actionsState;
+    const {
+        actionPending,
+        recallConfirming,
+        cancelRecallConfirmation,
+        viewerOpen,
+        setViewerOpen,
+        handleToggleUpvote,
+        handleToggleFlag,
+        handleToggleRecall,
+    } = actionsState;
     const {
         state, canPreview, interactive, showRules, rulesUrl,
         authorNickname, authorPublicUid, createdAt,
@@ -280,6 +289,8 @@ const Uploader = memo(({ point, pointName, active: activeDetail = true }: Props)
                 canRecall={canRecall}
                 recallOnly={recallOnly}
                 actionPending={actionPending}
+                recallConfirming={recallConfirming}
+                onRecallBlur={cancelRecallConfirmation}
                 shareCopied={copiedPopupVisible}
                 onToggleUpvote={() => void handleToggleUpvote()}
                 onToggleFlag={() => void handleToggleFlag()}

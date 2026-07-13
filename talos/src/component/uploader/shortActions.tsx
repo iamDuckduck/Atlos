@@ -11,6 +11,7 @@ export type ShortActionItem = {
     onClick?: () => void;
     disabled?: boolean;
     active?: boolean;
+    confirming?: boolean;
     iconClassName?: string;
     tooltipKey?: string;
 };
@@ -21,6 +22,7 @@ type Props = {
     anchorClassName?: string;
     ariaLabel?: string;
     variant?: 'separate' | 'grouped' | 'floating';
+    onFloatingDismiss?: () => void;
 };
 
 type PopoverElement = HTMLDivElement & {
@@ -59,6 +61,7 @@ const ShortActions = memo(({
     anchorClassName,
     ariaLabel = 'Actions',
     variant = 'separate',
+    onFloatingDismiss,
 }: Props) => {
     const [mounted, setMounted] = useState(false);
     const anchorRef = useRef<HTMLSpanElement | null>(null);
@@ -114,10 +117,13 @@ const ShortActions = memo(({
         });
     }, [positionLayer]);
 
-    const hideLayer = useCallback((immediate = false) => {
+    const hideLayer = useCallback((immediate = false, notifyDismiss = true) => {
         clearTimers();
         const layer = layerRef.current;
         if (!layer) return;
+        if (notifyDismiss && layer.dataset.open === 'true') {
+            onFloatingDismiss?.();
+        }
 
         const finish = () => {
             try {
@@ -142,7 +148,7 @@ const ShortActions = memo(({
         layer.dataset.open = 'false';
         layer.classList.add(styles.floatingLayerClosing);
         closeTimerRef.current = window.setTimeout(finish, CLOSE_MS);
-    }, [clearTimers]);
+    }, [clearTimers, onFloatingDismiss]);
 
     const shouldKeepLayerOpen = useCallback(() => (
         touchPinnedRef.current || rootHoverRef.current || layerHoverRef.current || rootFocusRef.current || layerFocusRef.current
@@ -186,7 +192,7 @@ const ShortActions = memo(({
         return () => {
             clearTimers();
             if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
-            hideLayer(true);
+            hideLayer(true, false);
         };
     }, [clearTimers, hideLayer]);
 
@@ -362,6 +368,7 @@ const ShortActions = memo(({
                         data-action={item.id}
                         data-label={item.id}
                         data-active={item.active ? 'true' : 'false'}
+                        data-confirming={item.confirming ? 'true' : 'false'}
                         disabled={item.disabled}
                         onPointerDown={isFloating ? (event) => {
                             event.stopPropagation();

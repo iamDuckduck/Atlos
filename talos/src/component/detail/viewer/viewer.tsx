@@ -61,11 +61,13 @@ interface ViewerProps {
     canRecall?: boolean;
     recallOnly?: boolean;
     actionPending?: boolean;
+    recallConfirming?: boolean;
     shareCopied?: boolean;
     onToggleUpvote?: () => void;
     onToggleFlag?: () => void;
     onShare?: () => void;
     onToggleRecall?: () => void;
+    onRecallBlur?: () => void;
     onSelectedImageIdChange?: (imageId: string) => void;
     canAppendUpload?: boolean;
     onRequestUpload?: () => void;
@@ -90,11 +92,13 @@ const Viewer: React.FC<ViewerProps> = ({
     canRecall = false,
     recallOnly = false,
     actionPending = false,
+    recallConfirming = false,
     shareCopied = false,
     onToggleUpvote,
     onToggleFlag,
     onShare,
     onToggleRecall,
+    onRecallBlur,
     onSelectedImageIdChange,
     canAppendUpload = false,
     onRequestUpload,
@@ -144,7 +148,9 @@ const Viewer: React.FC<ViewerProps> = ({
             : '');
     }, [createdAtDate, tUI]);
     const flagLabel = currentFlagged ? tUI('detail.viewer.unflag') : tUI('detail.viewer.flag');
-    const recallLabel = currentRecallRequested ? tUI('detail.viewer.unrecall') : tUI('detail.viewer.recall');
+    const recallLabel = recallConfirming
+        ? tUI('detail.viewer.confirmRecall')
+        : currentRecallRequested ? tUI('detail.viewer.unrecall') : tUI('detail.viewer.recall');
     const uploadLabel = tUI('detail.viewer.uploadAno');
     const viewerShortActions = useMemo<ShortActionItem[]>(() => (
         [{
@@ -400,11 +406,14 @@ const Viewer: React.FC<ViewerProps> = ({
                                     <button
                                         type="button"
                                         className={styles.viewerActionButton}
+                                        data-action="recall"
                                         data-active={currentRecallRequested ? 'true' : 'false'}
+                                        data-confirming={recallConfirming ? 'true' : 'false'}
                                         disabled={actionPending || !onToggleRecall}
                                         onClick={onToggleRecall}
+                                        onBlur={onRecallBlur}
                                         aria-pressed={currentRecallRequested}
-                                        aria-label='Recall'
+                                        aria-label={recallLabel}
                                     >
                                         <RecallIcon />
                                     </button>

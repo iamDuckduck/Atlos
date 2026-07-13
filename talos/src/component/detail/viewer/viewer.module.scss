@@ -290,6 +290,7 @@
 }
 
 .viewerActionButton {
+    position: relative;
     width: 36px;
     height: 36px;
     padding: 0;
@@ -323,7 +324,7 @@
         height: 30px;
         transform: translateY(-2px);
     }
-    &[aria-label='Recall'] > svg {
+    &[data-action='recall'] > svg {
         width: 26px;
         height: 26px;
     }
@@ -337,6 +338,10 @@
     }
     &[data-active='true'] {
         color: var(--viewer-action-active);
+    }
+    &[data-confirming='true'] {
+        color: $primary-accent-4;
+        opacity: 0.75;
     }
 }
 .viewerActionDivider {

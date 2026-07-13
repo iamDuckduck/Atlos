@@ -402,7 +402,12 @@ const Viewer: React.FC<ViewerProps> = ({
                         {canRecall && (
                             <>
                                 {!recallOnly && <span className={styles.viewerActionDivider} aria-hidden="true"></span>}
-                                <PopoverTooltip content={recallLabel} placement="top" gap={4}>
+                                <PopoverTooltip
+                                    key={`recall:${recallConfirming ? 'confirm' : 'idle'}`}
+                                    content={recallLabel}
+                                    placement="top"
+                                    gap={4}
+                                >
                                     <button
                                         type="button"
                                         className={styles.viewerActionButton}

@@ -58,7 +58,7 @@
       "uploadAno": "Téléverser autre",
       "share": "Partager",
       "recall": "Demander le retrait",
-      "confirmRecall": "",
+      "confirmRecall": "Confirmer le retrait ?",
       "unrecall": "Annuler le retrait"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "J’aime",
       "downvote": "Je n’aime pas",
       "reply": "Répondre",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "Modifier",
+      "submitEdit": "Enregistrer les modifications",
+      "undoEdit": "Annuler les modifications",
+      "confirmUndoEdit": "Annuler les modifications ?",
       "recall": "Demander le retrait du commentaire",
-      "confirmRecall": "",
+      "confirmRecall": "Confirmer le retrait du commentaire ?",
       "reviewing": "En examen",
       "emptyWithRule": "Aucun commentaire pour le moment. Veuillez respecter les <a href=\"{link}\">règles de la communauté</a> lors de la publication.",
       "ruleOnly": "Veuillez respecter les <a href=\"{link}\">règles de la communauté</a> lors de la publication.",
       "loadFailed": "Échec du chargement des commentaires.",
       "submitFailed": "Échec de l’envoi du commentaire.",
-      "editFailed": ""
+      "editFailed": "Échec de la mise à jour du commentaire."
     },
     "errors": {
       "unsupportedType": "Seules les images JPEG/PNG/WebP/AVIF/HEIC sont prises en charge.",
@@ -286,7 +286,7 @@
         "102": "Email invalide",
         "103": "Email occupé",
         "104": "Email non enregistré",
-        "105": "Email Not Supported",
+        "105": "E-mail non pris en charge",
         "111": "Mot de passe requis",
         "112": "Mot de passe invalide",
         "113": "Mots de passe différents",

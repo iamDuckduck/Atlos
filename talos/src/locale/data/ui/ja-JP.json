@@ -58,7 +58,7 @@
       "uploadAno": "別の画像をアップロード",
       "share": "共有",
       "recall": "削除申請",
-      "confirmRecall": "",
+      "confirmRecall": "削除申請を確認しますか？",
       "unrecall": "削除申請を取り消す"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "高評価",
       "downvote": "低評価",
       "reply": "返信",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "編集",
+      "submitEdit": "変更を保存",
+      "undoEdit": "編集を取り消す",
+      "confirmUndoEdit": "編集を取り消しますか？",
       "recall": "コメントの削除を申請",
-      "confirmRecall": "",
+      "confirmRecall": "コメントの削除を申請しますか？",
       "reviewing": "審査中",
       "emptyWithRule": "まだコメントはありません。投稿時は<a href=\"{link}\">コミュニティガイドライン</a>に従ってください。",
       "ruleOnly": "投稿時は<a href=\"{link}\">コミュニティガイドライン</a>に従ってください。",
       "loadFailed": "コメントの読み込みに失敗しました。",
       "submitFailed": "コメントの投稿に失敗しました。",
-      "editFailed": ""
+      "editFailed": "コメントの更新に失敗しました。"
     },
     "errors": {
       "unsupportedType": "JPEG/PNG/WebP/AVIF/HEIC 画像のみ対応しています。",
@@ -286,7 +286,7 @@
         "102": "メール形式が不正です",
         "103": "登録済みのメールです",
         "104": "メールアドレスが未登録です",
-        "105": "Email Not Supported",
+        "105": "メールアドレスはサポートされていません",
         "111": "パスワードを入力",
         "112": "パスワードが正しくない",
         "113": "パスワードが一致しない",

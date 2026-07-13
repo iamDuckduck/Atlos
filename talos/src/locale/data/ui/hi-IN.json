@@ -58,7 +58,7 @@
       "uploadAno": "एक और अपलोड करें",
       "share": "साझा करें",
       "recall": "हटाने का अनुरोध करें",
-      "confirmRecall": "",
+      "confirmRecall": "हटाने की पुष्टि करें?",
       "unrecall": "अनुरोध रद्द करें"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "पसंद करें",
       "downvote": "नापसंद करें",
       "reply": "जवाब दें",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "संपादित करें",
+      "submitEdit": "परिवर्तन सहेजें",
+      "undoEdit": "परिवर्तन रद्द करें",
+      "confirmUndoEdit": "क्या परिवर्तन रद्द करें?",
       "recall": "टिप्पणी हटाने का अनुरोध करें",
-      "confirmRecall": "",
+      "confirmRecall": "टिप्पणी हटाने की पुष्टि करें?",
       "reviewing": "समीक्षा में",
       "emptyWithRule": "अभी कोई टिप्पणी नहीं है। पोस्ट करते समय कृपया <a href=\"{link}\">समुदाय दिशानिर्देशों</a> का पालन करें।",
       "ruleOnly": "पोस्ट करते समय कृपया <a href=\"{link}\">समुदाय दिशानिर्देशों</a> का पालन करें।",
       "loadFailed": "टिप्पणियाँ लोड नहीं हो सकीं।",
       "submitFailed": "टिप्पणी पोस्ट नहीं हो सकी।",
-      "editFailed": ""
+      "editFailed": "टिप्पणी अपडेट नहीं हो सकी।"
     },
     "errors": {
       "unsupportedType": "केवल JPEG/PNG/WebP/AVIF/HEIC छवियाँ समर्थित हैं।",

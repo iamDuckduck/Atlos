@@ -58,7 +58,7 @@
       "uploadAno": "Carica altro",
       "share": "Condividi",
       "recall": "Richiedi rimozione",
-      "confirmRecall": "",
+      "confirmRecall": "Confermi la rimozione?",
       "unrecall": "Annulla rimozione"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "Mi piace",
       "downvote": "Non mi piace",
       "reply": "Rispondi",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "Modifica",
+      "submitEdit": "Salva modifiche",
+      "undoEdit": "Annulla modifiche",
+      "confirmUndoEdit": "Annullare le modifiche?",
       "recall": "Richiedi rimozione commento",
-      "confirmRecall": "",
+      "confirmRecall": "Confermi la rimozione del commento?",
       "reviewing": "In revisione",
       "emptyWithRule": "Non ci sono ancora commenti. Quando pubblichi, segui le <a href=\"{link}\">linee guida della community</a>.",
       "ruleOnly": "Quando pubblichi, segui le <a href=\"{link}\">linee guida della community</a>.",
       "loadFailed": "Caricamento dei commenti non riuscito.",
       "submitFailed": "Invio del commento non riuscito.",
-      "editFailed": ""
+      "editFailed": "Impossibile aggiornare il commento."
     },
     "errors": {
       "unsupportedType": "Sono supportate solo immagini JPEG/PNG/WebP/AVIF/HEIC.",
@@ -286,7 +286,7 @@
         "102": "E-mail non valida",
         "103": "E-mail occupata",
         "104": "E-mail nulla",
-        "105": "Email Not Supported",
+        "105": "E-mail non supportata",
         "111": "Password richiesta",
         "112": "Password non valida",
         "113": "Password non corrispondenti",

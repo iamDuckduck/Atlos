@@ -58,7 +58,7 @@
       "uploadAno": "Tải lên khác",
       "share": "Chia sẻ",
       "recall": "Yêu cầu gỡ",
-      "confirmRecall": "",
+      "confirmRecall": "Xác nhận yêu cầu gỡ?",
       "unrecall": "Hủy yêu cầu gỡ"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "Thích",
       "downvote": "Không thích",
       "reply": "Trả lời",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "Chỉnh sửa",
+      "submitEdit": "Lưu chỉnh sửa",
+      "undoEdit": "Hoàn tác chỉnh sửa",
+      "confirmUndoEdit": "Hoàn tác chỉnh sửa?",
       "recall": "Yêu cầu gỡ bình luận",
-      "confirmRecall": "",
+      "confirmRecall": "Xác nhận yêu cầu gỡ bình luận?",
       "reviewing": "Đang duyệt",
       "emptyWithRule": "Chưa có bình luận nào. Vui lòng tuân thủ <a href=\"{link}\">nguyên tắc cộng đồng</a> khi đăng.",
       "ruleOnly": "Vui lòng tuân thủ <a href=\"{link}\">nguyên tắc cộng đồng</a> khi đăng.",
       "loadFailed": "Không tải được bình luận.",
       "submitFailed": "Không gửi được bình luận.",
-      "editFailed": ""
+      "editFailed": "Không thể cập nhật bình luận."
     },
     "errors": {
       "unsupportedType": "Chỉ hỗ trợ ảnh JPEG/PNG/WebP/AVIF/HEIC.",
@@ -286,7 +286,7 @@
         "102": "Email không hợp lệ",
         "103": "Email đã được sử dụng",
         "104": "Không tìm thấy email",
-        "105": "Email Not Supported",
+        "105": "Email không được hỗ trợ",
         "111": "Vui lòng nhập mật khẩu",
         "112": "Mật khẩu không hợp lệ",
         "113": "Mật khẩu không khớp",

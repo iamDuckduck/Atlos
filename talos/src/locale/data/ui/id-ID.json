@@ -58,7 +58,7 @@
       "uploadAno": "Unggah lainnya",
       "share": "Bagikan",
       "recall": "Minta penghapusan",
-      "confirmRecall": "",
+      "confirmRecall": "Konfirmasi penghapusan?",
       "unrecall": "Batalkan penghapusan"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "Suka",
       "downvote": "Tidak suka",
       "reply": "Balas",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "Edit",
+      "submitEdit": "Simpan perubahan",
+      "undoEdit": "Batalkan perubahan",
+      "confirmUndoEdit": "Batalkan perubahan?",
       "recall": "Minta penghapusan komentar",
-      "confirmRecall": "",
+      "confirmRecall": "Konfirmasi penghapusan komentar?",
       "reviewing": "Ditinjau",
       "emptyWithRule": "Belum ada komentar. Harap ikuti <a href=\"{link}\">pedoman komunitas</a> saat memposting.",
       "ruleOnly": "Harap ikuti <a href=\"{link}\">pedoman komunitas</a> saat memposting.",
       "loadFailed": "Komentar gagal dimuat.",
       "submitFailed": "Komentar gagal dikirim.",
-      "editFailed": ""
+      "editFailed": "Komentar gagal diperbarui."
     },
     "errors": {
       "unsupportedType": "Hanya gambar JPEG/PNG/WebP/AVIF/HEIC yang didukung.",
@@ -286,7 +286,7 @@
         "102": "Email tidak valid",
         "103": "Email sudah digunakan",
         "104": "Email tidak terdaftar",
-        "105": "Email Not Supported",
+        "105": "Email tidak didukung",
         "111": "Password wajib",
         "112": "Password tidak valid",
         "113": "Password tidak cocok",

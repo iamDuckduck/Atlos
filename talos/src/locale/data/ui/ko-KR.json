@@ -58,7 +58,7 @@
       "uploadAno": "다른 이미지 업로드",
       "share": "공유",
       "recall": "철회 요청",
-      "confirmRecall": "",
+      "confirmRecall": "철회 요청을 확인하시겠습니까?",
       "unrecall": "철회 요청 취소"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "추천",
       "downvote": "비추천",
       "reply": "답글",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "수정",
+      "submitEdit": "수정 내용 저장",
+      "undoEdit": "수정 취소",
+      "confirmUndoEdit": "수정을 취소하시겠습니까?",
       "recall": "댓글 철회 요청",
-      "confirmRecall": "",
+      "confirmRecall": "댓글 철회 요청을 확인하시겠습니까?",
       "reviewing": "검토 중",
       "emptyWithRule": "아직 댓글이 없습니다. 게시 시 <a href=\"{link}\">커뮤니티 가이드라인</a>을 따라 주세요.",
       "ruleOnly": "게시 시 <a href=\"{link}\">커뮤니티 가이드라인</a>을 따라 주세요.",
       "loadFailed": "댓글을 불러오지 못했습니다.",
       "submitFailed": "댓글을 게시하지 못했습니다.",
-      "editFailed": ""
+      "editFailed": "댓글을 수정하지 못했습니다."
     },
     "errors": {
       "unsupportedType": "JPEG/PNG/WebP/AVIF/HEIC 이미지만 지원됩니다.",
@@ -286,7 +286,7 @@
         "102": "이메일이 잘못되었습니다",
         "103": "이메일 사용 중",
         "104": "미등록 이메일",
-        "105": "Email Not Supported",
+        "105": "지원되지 않는 이메일입니다",
         "111": "비밀번호 필수",
         "112": "비밀번호가 잘못되었습니다.",
         "113": "장애인 불일치",

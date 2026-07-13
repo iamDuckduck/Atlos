@@ -58,7 +58,7 @@
       "uploadAno": "Subir otra",
       "share": "Compartir",
       "recall": "Solicitar retirada",
-      "confirmRecall": "",
+      "confirmRecall": "¿Confirmar retirada?",
       "unrecall": "Cancelar retirada"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "Votar a favor",
       "downvote": "Votar en contra",
       "reply": "Responder",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "Editar",
+      "submitEdit": "Guardar cambios",
+      "undoEdit": "Deshacer cambios",
+      "confirmUndoEdit": "¿Deshacer los cambios?",
       "recall": "Solicitar retirada",
-      "confirmRecall": "",
+      "confirmRecall": "¿Confirmar retirada?",
       "reviewing": "En revisión",
       "emptyWithRule": "Aún no hay comentarios. Al publicar, sigue las <a href=\"{link}\">normas de la comunidad</a>.",
       "ruleOnly": "Al publicar, sigue las <a href=\"{link}\">normas de la comunidad</a>.",
       "loadFailed": "No se pudieron cargar los comentarios.",
       "submitFailed": "No se pudo publicar el comentario.",
-      "editFailed": ""
+      "editFailed": "No se pudo actualizar el comentario."
     },
     "errors": {
       "unsupportedType": "Solo se admiten imágenes JPEG/PNG/WebP/AVIF/HEIC.",
@@ -286,7 +286,7 @@
         "102": "Correo electrónico no válido",
         "103": "Correo electrónico ocupado",
         "104": "Correo no registrado",
-        "105": "Email Not Supported",
+        "105": "Correo electrónico no compatible",
         "111": "Contraseña requerida",
         "112": "Contraseña no válida",
         "113": "Las contraseñas no coinciden",

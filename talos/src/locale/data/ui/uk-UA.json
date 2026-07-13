@@ -58,7 +58,7 @@
       "uploadAno": "Завантажити інше",
       "share": "Поділитися",
       "recall": "Відкликати",
-      "confirmRecall": "",
+      "confirmRecall": "Підтвердити відкликання?",
       "unrecall": "Скасувати відкликання"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "Подобається",
       "downvote": "Не подобається",
       "reply": "Відповісти",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "Редагувати",
+      "submitEdit": "Зберегти зміни",
+      "undoEdit": "Скасувати зміни",
+      "confirmUndoEdit": "Скасувати зміни?",
       "recall": "Запросити видалення коментаря",
-      "confirmRecall": "",
+      "confirmRecall": "Підтвердити видалення коментаря?",
       "reviewing": "На перевірці",
       "emptyWithRule": "Коментарів поки немає. Під час публікації дотримуйтеся <a href=\"{link}\">правил спільноти</a>.",
       "ruleOnly": "Під час публікації дотримуйтеся <a href=\"{link}\">правил спільноти</a>.",
       "loadFailed": "Не вдалося завантажити коментарі.",
       "submitFailed": "Не вдалося надіслати коментар.",
-      "editFailed": ""
+      "editFailed": "Не вдалося оновити коментар."
     },
     "errors": {
       "unsupportedType": "Підтримуються лише зображення JPEG/PNG/WebP/AVIF/HEIC.",

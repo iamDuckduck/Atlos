@@ -217,6 +217,7 @@ const CommentItem = memo(({
                 icon: <RecallIcon />,
                 active: Boolean(comment.recallRequested || comment.status === 'remove_request'),
                 confirming: recallConfirming,
+                tooltipKey: `recall:${recallConfirming ? 'confirm' : 'idle'}:${comment.id}`,
                 disabled: !canInteract || actionPending || comment.status === 'stale',
                 onClick: () => onRecall(comment),
             });

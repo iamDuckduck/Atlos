@@ -58,7 +58,7 @@
       "uploadAno": "رفع صورة أخرى",
       "share": "مشاركة",
       "recall": "تراجع",
-      "confirmRecall": "",
+      "confirmRecall": "تأكيد التراجع؟",
       "unrecall": "إلغاء التراجع"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "إعجاب",
       "downvote": "عدم إعجاب",
       "reply": "رد",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "تعديل",
+      "submitEdit": "حفظ التعديل",
+      "undoEdit": "التراجع عن التعديل",
+      "confirmUndoEdit": "تأكيد التراجع عن التعديل؟",
       "recall": "طلب إزالة التعليق",
-      "confirmRecall": "",
+      "confirmRecall": "تأكيد طلب إزالة التعليق؟",
       "reviewing": "قيد المراجعة",
       "emptyWithRule": "لا توجد تعليقات بعد. يرجى الالتزام بـ<a href=\"{link}\">إرشادات المجتمع</a> عند النشر.",
       "ruleOnly": "يرجى الالتزام بـ<a href=\"{link}\">إرشادات المجتمع</a> عند النشر.",
       "loadFailed": "فشل تحميل التعليقات.",
       "submitFailed": "فشل إرسال التعليق.",
-      "editFailed": ""
+      "editFailed": "تعذر تحديث التعليق."
     },
     "errors": {
       "unsupportedType": "يُدعم فقط صيغ JPEG/PNG/WebP/AVIF.",
@@ -286,7 +286,7 @@
         "102": "بريد غير صالح",
         "103": "البريد مستخدم",
         "104": "البريد غير مسجل",
-        "105": "Email Not Supported",
+        "105": "البريد غير مسموح",
         "111": "كلمة المرور مطلوبة",
         "112": "كلمة مرور غير صالحة",
         "113": "كلمتا المرور غير متطابقتين",

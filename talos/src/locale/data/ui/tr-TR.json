@@ -58,7 +58,7 @@
       "uploadAno": "Başka Yükle",
       "share": "Paylaş",
       "recall": "Geri Çek",
-      "confirmRecall": "",
+      "confirmRecall": "Geri Çekmeyi Onayla?",
       "unrecall": "Geri Çekmeyi İptal Et"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "Beğen",
       "downvote": "Beğenme",
       "reply": "Yanıtla",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "Düzenle",
+      "submitEdit": "Düzenlemeyi Kaydet",
+      "undoEdit": "Düzenlemeyi Geri Al",
+      "confirmUndoEdit": "Düzenleme Geri Alınsın mı?",
       "recall": "Yorumu kaldırma isteği",
-      "confirmRecall": "",
+      "confirmRecall": "Yorumu Kaldırmayı Onayla?",
       "reviewing": "İnceleniyor",
       "emptyWithRule": "Henüz yorum yok. Gönderi paylaşırken lütfen <a href=\"{link}\">topluluk kurallarına</a> uyun.",
       "ruleOnly": "Gönderi paylaşırken lütfen <a href=\"{link}\">topluluk kurallarına</a> uyun.",
       "loadFailed": "Yorumlar yüklenemedi.",
       "submitFailed": "Yorum gönderilemedi.",
-      "editFailed": ""
+      "editFailed": "Yorum güncellenemedi."
     },
     "errors": {
       "unsupportedType": "Yalnızca JPEG/PNG/WebP/AVIF/HEIC görselleri desteklenir.",

@@ -58,7 +58,7 @@
       "uploadAno": "Enviar outro",
       "share": "Compartilhar",
       "recall": "Solicitar remoção",
-      "confirmRecall": "",
+      "confirmRecall": "Confirmar remoção?",
       "unrecall": "Cancelar remoção"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "Curtir",
       "downvote": "Não curtir",
       "reply": "Responder",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "Editar",
+      "submitEdit": "Salvar alterações",
+      "undoEdit": "Desfazer alterações",
+      "confirmUndoEdit": "Desfazer as alterações?",
       "recall": "Solicitar remoção do comentário",
-      "confirmRecall": "",
+      "confirmRecall": "Confirmar remoção do comentário?",
       "reviewing": "Em análise",
       "emptyWithRule": "Ainda não há comentários. Ao publicar, siga as <a href=\"{link}\">diretrizes da comunidade</a>.",
       "ruleOnly": "Ao publicar, siga as <a href=\"{link}\">diretrizes da comunidade</a>.",
       "loadFailed": "Falha ao carregar comentários.",
       "submitFailed": "Falha ao enviar comentário.",
-      "editFailed": ""
+      "editFailed": "Não foi possível atualizar o comentário."
     },
     "errors": {
       "unsupportedType": "Apenas imagens JPEG/PNG/WebP/AVIF/HEIC são suportadas.",
@@ -286,7 +286,7 @@
         "102": "Email inválido",
         "103": "Email já em uso",
         "104": "Email não registrado",
-        "105": "Email Not Supported",
+        "105": "E-mail não compatível",
         "111": "Senha obrigatória",
         "112": "Senha inválida",
         "113": "Senhas não conferem",

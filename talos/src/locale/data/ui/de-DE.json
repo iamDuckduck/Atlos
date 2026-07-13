@@ -58,7 +58,7 @@
       "uploadAno": "Weiteres hochladen",
       "share": "Teilen",
       "recall": "Bildrücknahme beantragen",
-      "confirmRecall": "",
+      "confirmRecall": "Rücknahme bestätigen?",
       "unrecall": "Rücknahme abbrechen"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "Upvote",
       "downvote": "Downvote",
       "reply": "Antworten",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "Bearbeiten",
+      "submitEdit": "Bearbeitung speichern",
+      "undoEdit": "Bearbeitung verwerfen",
+      "confirmUndoEdit": "Bearbeitung verwerfen?",
       "recall": "Entfernung des Kommentars beantragen",
-      "confirmRecall": "",
+      "confirmRecall": "Rücknahme bestätigen?",
       "reviewing": "In Prüfung",
       "emptyWithRule": "Noch keine Kommentare. Bitte beachte beim Posten die <a href=\"{link}\">Community-Richtlinien</a>.",
       "ruleOnly": "Bitte beachte beim Posten die <a href=\"{link}\">Community-Richtlinien</a>.",
       "loadFailed": "Kommentare konnten nicht geladen werden.",
       "submitFailed": "Kommentar konnte nicht gesendet werden.",
-      "editFailed": ""
+      "editFailed": "Kommentar konnte nicht aktualisiert werden."
     },
     "errors": {
       "unsupportedType": "Nur JPEG-/PNG-/WebP-/AVIF-Bilder werden unterstützt.",
@@ -286,7 +286,7 @@
         "102": "E-Mail ungültig",
         "103": "E-Mail bereits vergeben",
         "104": "E-Mail nicht registriert",
-        "105": "Email Not Supported",
+        "105": "E-Mail wird nicht unterstützt",
         "111": "Passwort erforderlich",
         "112": "Passwort ungültig",
         "113": "Passwörter nicht überein",

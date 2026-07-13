@@ -58,7 +58,7 @@
       "uploadAno": "Ladda upp",
       "share": "Dela",
       "recall": "Begär borttagning",
-      "confirmRecall": "",
+      "confirmRecall": "Bekräfta borttagning?",
       "unrecall": "Avbryt borttagning"
     },
     "comments": {
@@ -73,18 +73,18 @@
       "upvote": "Gilla",
       "downvote": "Ogilla",
       "reply": "Svara",
-      "edit": "",
-      "submitEdit": "",
-      "undoEdit": "",
-      "confirmUndoEdit": "",
+      "edit": "Redigera",
+      "submitEdit": "Spara ändringar",
+      "undoEdit": "Ångra ändringar",
+      "confirmUndoEdit": "Ångra ändringarna?",
       "recall": "Begär borttagning av kommentar",
-      "confirmRecall": "",
+      "confirmRecall": "Bekräfta borttagning av kommentar?",
       "reviewing": "Granskas",
       "emptyWithRule": "Inga kommentarer ännu. Följ <a href=\"{link}\">communityriktlinjerna</a> när du publicerar.",
       "ruleOnly": "Följ <a href=\"{link}\">communityriktlinjerna</a> när du publicerar.",
       "loadFailed": "Kommentarer kunde inte läsas in.",
       "submitFailed": "Kommentaren kunde inte skickas.",
-      "editFailed": ""
+      "editFailed": "Kommentaren kunde inte uppdateras."
     },
     "errors": {
       "unsupportedType": "Endast JPEG/PNG/WebP/AVIF/HEIC-bilder stöds.",
@@ -286,7 +286,7 @@
         "102": "Ogiltig e-postadress",
         "103": "E-posten används redan",
         "104": "E-posten hittades inte",
-        "105": "Email Not Supported",
+        "105": "E-post stöds inte",
         "111": "Lösenord krävs",
         "112": "Ogiltigt lösenord",
         "113": "Lösenorden matchar inte",

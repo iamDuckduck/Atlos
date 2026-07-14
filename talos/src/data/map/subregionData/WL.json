@@ -5088,5 +5088,23 @@
         ]
       ]
     ]
+  },
+  {
+    "id": "WL_7",
+    "name": "YL",
+    "bounds": [
+    ],
+    "tiles": 0,
+    "tileCoords": [],
+    "polygon": []
+  },
+  {
+    "id": "WL_8",
+    "name": "EZ",
+    "bounds": [
+    ],
+    "tiles": 0,
+    "tileCoords": [],
+    "polygon": []
   }
 ]

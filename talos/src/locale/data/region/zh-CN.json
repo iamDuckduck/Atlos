@@ -220,13 +220,25 @@
           "old_blade_precipice": "古剑崖",
           "gorge_overhang": "悬谷台"
         }
+      },
+      "YL": {
+        "name": "应龙关",
+        "short": "龙",
+        "site": {
+        }
+      },
+      "EZ": {
+        "name": "北部禁区",
+        "short": "禁",
+        "site": {
+        }
       }
     }
   },
   "DJ": {
     "main": "O.M.V.帝江号",
     "sub": {
-      "name": "OMV Dijiang",
+      "name": "O.M.V.帝江号",
       "site": {
         "bridge": "舰桥",
         "reception_room": "会客室",

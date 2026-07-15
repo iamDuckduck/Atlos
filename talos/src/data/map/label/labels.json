@@ -79,8 +79,8 @@
           "region": "WL",
           "sub": "JY",
           "point": [
-            4720,
-            6080
+            4717,
+            12488.5
           ]
         },
         "WL/WL": {
@@ -89,8 +89,8 @@
           "region": "WL",
           "sub": "WL",
           "point": [
-            4152,
-            2344
+            4149.5,
+            8747
           ]
         },
         "WL/JY/burdosnout_hill": {
@@ -100,8 +100,8 @@
           "sub": "JY",
           "site": "burdosnout_hill",
           "point": [
-            5266,
-            6521
+            5262.5,
+            12930
           ]
         },
         "WL/JY/stragglers_ford": {
@@ -111,8 +111,8 @@
           "sub": "JY",
           "site": "stragglers_ford",
           "point": [
-            4703,
-            6252
+            4700,
+            12661
           ]
         },
         "WL/JY/stragglers_grove": {
@@ -122,8 +122,8 @@
           "sub": "JY",
           "site": "stragglers_grove",
           "point": [
-            4660,
-            6631
+            4657,
+            13040.5
           ]
         },
         "WL/JY/treadway": {
@@ -133,8 +133,8 @@
           "sub": "JY",
           "site": "treadway",
           "point": [
-            5289,
-            4785
+            5285.5,
+            11191.5
           ]
         },
         "WL/JY/ecological_research_station": {
@@ -144,8 +144,8 @@
           "sub": "JY",
           "site": "ecological_research_station",
           "point": [
-            4605,
-            4982
+            4602.5,
+            11389
           ]
         },
         "WL/JY/qingbo_bailey": {
@@ -155,8 +155,8 @@
           "sub": "JY",
           "site": "qingbo_bailey",
           "point": [
-            5396,
-            5377
+            5392.5,
+            11784.5
           ]
         },
         "WL/JY/sky_king_flats": {
@@ -166,8 +166,8 @@
           "sub": "JY",
           "site": "sky_king_flats",
           "point": [
-            4931,
-            5660
+            4928,
+            12068
           ]
         },
         "WL/JY/gloomvale": {
@@ -177,8 +177,8 @@
           "sub": "JY",
           "site": "gloomvale",
           "point": [
-            4599,
-            6972
+            4596.5,
+            13382
           ]
         },
         "WL/JY/south_hill": {
@@ -188,8 +188,8 @@
           "sub": "JY",
           "site": "south_hill",
           "point": [
-            4663,
-            7265
+            4660,
+            13675.5
           ]
         },
         "WL/JY/everwater_brook": {
@@ -199,8 +199,8 @@
           "sub": "JY",
           "site": "everwater_brook",
           "point": [
-            3815,
-            7551
+            3813,
+            13962
           ]
         },
         "WL/JY/sword_quenching_marsh": {
@@ -210,8 +210,8 @@
           "sub": "JY",
           "site": "sword_quenching_marsh",
           "point": [
-            4026,
-            7289
+            4024,
+            13699.5
           ]
         },
         "WL/JY/zhailing_islet": {
@@ -221,8 +221,8 @@
           "sub": "JY",
           "site": "zhailing_islet",
           "point": [
-            3945,
-            6695
+            3943,
+            13104.5
           ]
         },
         "WL/JY/treasure_grotto": {
@@ -232,8 +232,8 @@
           "sub": "JY",
           "site": "treasure_grotto",
           "point": [
-            4172,
-            5499
+            4160.5,
+            11902
           ]
         },
         "WL/WL/sanku_ridge": {
@@ -243,8 +243,8 @@
           "sub": "WL",
           "site": "sanku_ridge",
           "point": [
-            3766,
-            3492
+            3764,
+            9896.5
           ]
         },
         "WL/WL/field_logistics_depot": {
@@ -254,8 +254,8 @@
           "sub": "WL",
           "site": "field_logistics_depot",
           "point": [
-            4980,
-            3690
+            4977,
+            10095
           ]
         },
         "WL/WL/hulu_cave": {
@@ -265,8 +265,8 @@
           "sub": "WL",
           "site": "hulu_cave",
           "point": [
-            3882,
-            4017
+            3869.5,
+            10420
           ]
         },
         "WL/WL/lingshui_way": {
@@ -276,8 +276,8 @@
           "sub": "WL",
           "site": "lingshui_way",
           "point": [
-            3095,
-            3796
+            3094,
+            10201
           ]
         },
         "WL/WL/guhou_marsh": {
@@ -287,8 +287,8 @@
           "sub": "WL",
           "site": "guhou_marsh",
           "point": [
-            4209,
-            3711
+            4195.5,
+            10101
           ]
         },
         "WL/WL/outskirt_barrens": {
@@ -298,8 +298,8 @@
           "sub": "WL",
           "site": "outskirt_barrens",
           "point": [
-            4442,
-            3298
+            4439.5,
+            9702.5
           ]
         },
         "WL/WL/tianjing_courtyard": {
@@ -309,8 +309,8 @@
           "sub": "WL",
           "site": "tianjing_courtyard",
           "point": [
-            4931,
-            2979
+            4928,
+            9383
           ]
         },
         "WL/WL/riverbank_grotto": {
@@ -320,8 +320,8 @@
           "sub": "WL",
           "site": "riverbank_grotto",
           "point": [
-            5371,
-            2963
+            5367.5,
+            9367
           ]
         },
         "WL/WL/restricted_area": {
@@ -331,8 +331,8 @@
           "sub": "WL",
           "site": "restricted_area",
           "point": [
-            4491,
-            2689
+            4488.5,
+            9092.5
           ]
         },
         "WL/WL/maintenance_zone": {
@@ -342,8 +342,8 @@
           "sub": "WL",
           "site": "maintenance_zone",
           "point": [
-            5074,
-            2350
+            5071,
+            8753
           ]
         },
         "WL/WL/monitoring_center": {
@@ -353,8 +353,8 @@
           "sub": "WL",
           "site": "monitoring_center",
           "point": [
-            5018,
-            1409
+            5015,
+            7810.5
           ]
         },
         "WL/WL/residential_area": {
@@ -364,8 +364,8 @@
           "sub": "WL",
           "site": "residential_area",
           "point": [
-            3802,
-            1905
+            3800,
+            8307
           ]
         },
         "WL/WL/bugui_grove": {
@@ -375,8 +375,8 @@
           "sub": "WL",
           "site": "bugui_grove",
           "point": [
-            3642,
-            710
+            3640.5,
+            7110.5
           ]
         },
         "WL/WL/technological_production_office": {
@@ -386,8 +386,8 @@
           "sub": "WL",
           "site": "technological_production_office",
           "point": [
-            3304,
-            808
+            3302.5,
+            7208.5
           ]
         },
         "WL/WL/agricultural_test_site": {
@@ -397,8 +397,8 @@
           "sub": "WL",
           "site": "agricultural_test_site",
           "point": [
-            4006,
-            770
+            4003,
+            7159
           ]
         },
         "WL/WL/core_aic_area": {
@@ -408,8 +408,8 @@
           "sub": "WL",
           "site": "core_aic_area",
           "point": [
-            3675,
-            1134
+            3670,
+            7527.5
           ]
         },
         "WL/WL/chenshan_way": {
@@ -419,8 +419,8 @@
           "sub": "WL",
           "site": "chenshan_way",
           "point": [
-            3255,
-            1336
+            3253.5,
+            7737.5
           ]
         },
         "WL/WL/bureau_of_swordmancers": {
@@ -430,8 +430,8 @@
           "sub": "WL",
           "site": "bureau_of_swordmancers",
           "point": [
-            3278,
-            1927
+            3276.5,
+            8329.5
           ]
         },
         "WL/WL/tianshi_pillar_array": {
@@ -441,8 +441,8 @@
           "sub": "WL",
           "site": "tianshi_pillar_array",
           "point": [
-            4336,
-            2351
+            4332.5,
+            8751.5
           ]
         },
         "WL/WL/fangxing_avenue": {
@@ -452,8 +452,8 @@
           "sub": "WL",
           "site": "fangxing_avenue",
           "point": [
-            3767,
-            2351
+            3762.5,
+            8750
           ]
         },
         "WL/WL/xiranflow_channel": {
@@ -463,8 +463,8 @@
           "sub": "WL",
           "site": "xiranflow_channel",
           "point": [
-            3255,
-            2352
+            3256,
+            8752.5
           ]
         },
         "WL/WL/marker_stone_flats": {
@@ -474,8 +474,8 @@
           "sub": "WL",
           "site": "marker_stone_flats",
           "point": [
-            2914,
-            2350
+            2912.5,
+            8750
           ]
         },
         "WL/WL/institute_of_materials_science": {
@@ -485,8 +485,8 @@
           "sub": "WL",
           "site": "institute_of_materials_science",
           "point": [
-            2839,
-            2896
+            2838,
+            9299.5
           ]
         },
         "WL/WL/tianshi_bureau_academy": {
@@ -496,8 +496,8 @@
           "sub": "WL",
           "site": "tianshi_bureau_academy",
           "point": [
-            3221,
-            2882
+            3219.5,
+            9285.5
           ]
         },
         "WL/WL/citizen_square": {
@@ -507,8 +507,8 @@
           "sub": "WL",
           "site": "citizen_square",
           "point": [
-            3745,
-            2845
+            3743,
+            9248.5
           ]
         },
         "WL/QB/ancestral_spring": {
@@ -518,8 +518,8 @@
           "sub": "QB",
           "site": "ancestral_spring",
           "point": [
-            6909,
-            4610.5
+            6904,
+            11017
           ]
         },
         "WL/QB/main_fort": {
@@ -529,8 +529,8 @@
           "sub": "QB",
           "site": "main_fort",
           "point": [
-            6857.168010556544,
-            5585.0829112019455
+            6852,
+            11993
           ]
         },
         "WL/QB/bladewoods": {
@@ -540,8 +540,8 @@
           "sub": "QB",
           "site": "bladewoods",
           "point": [
-            6281.229537280101,
-            6098.795987733972
+            6277,
+            12507.5
           ]
         },
         "WL/QB/causeway_trail": {
@@ -551,8 +551,8 @@
           "sub": "QB",
           "site": "causeway_trail",
           "point": [
-            6250.82394568908,
-            5353.505440363351
+            6246.5,
+            11761
           ]
         },
         "WL/QB/skyhold_ridge": {
@@ -562,8 +562,8 @@
           "sub": "QB",
           "site": "skyhold_ridge",
           "point": [
-            6048.567914919969,
-            4841.040662615635
+            6044.5,
+            11247.5
           ]
         },
         "WL/QB": {
@@ -572,8 +572,8 @@
           "region": "WL",
           "sub": "QB",
           "point": [
-            6624,
-            5416
+            6619.5,
+            11823.5
           ]
         },
         "WL/WL/qijian_dais": {
@@ -583,8 +583,8 @@
           "sub": "WL",
           "site": "qijian_dais",
           "point": [
-            5625.741551120172,
-            865.4987001723341
+            5622,
+            7266
           ]
         },
         "WL/WL/bureau_of_applied_technologies": {
@@ -594,8 +594,8 @@
           "sub": "WL",
           "site": "bureau_of_applied_technologies",
           "point": [
-            2792.616995057586,
-            1833.9950816683515
+            2794.5,
+            8229.5
           ]
         },
         "WL/MS": {
@@ -604,8 +604,8 @@
           "region": "WL",
           "sub": "MS",
           "point": [
-            2608,
-            5216
+            2607.5,
+            11623
           ]
         },
         "WL/TA": {
@@ -614,8 +614,8 @@
           "region": "WL",
           "sub": "TA",
           "point": [
-            6520,
-            2400
+            6515.5,
+            8803
           ]
         },
         "WL/MS/watchtower_reservoir_station": {
@@ -625,8 +625,8 @@
           "sub": "MS",
           "site": "watchtower_reservoir_station",
           "point": [
-            3205.49713494716,
-            4739.2921963699355
+            3203.5,
+            11116.5
           ]
         },
         "WL/MS/restricted_area": {
@@ -636,8 +636,8 @@
           "sub": "MS",
           "site": "restricted_area",
           "point": [
-            3436.7436491419317,
-            5102.979895967167
+            3432,
+            11502
           ]
         },
         "WL/MS/cloudrest_woods": {
@@ -647,8 +647,8 @@
           "sub": "MS",
           "site": "cloudrest_woods",
           "point": [
-            2858.5,
-            5806.5
+            2857.5,
+            12214.5
           ]
         },
         "WL/MS/serenity_garden": {
@@ -658,8 +658,8 @@
           "sub": "MS",
           "site": "serenity_garden",
           "point": [
-            2274,
-            5532
+            2269,
+            11930
           ]
         },
         "WL/MS/urban_development_hall": {
@@ -669,8 +669,8 @@
           "sub": "MS",
           "site": "urban_development_hall",
           "point": [
-            2273.7839068460444,
-            4814.9728737427695
+            2271.5,
+            11216.5
           ]
         },
         "WL/MS/lake_islet": {
@@ -680,8 +680,8 @@
           "sub": "MS",
           "site": "lake_islet",
           "point": [
-            2273.3483015147503,
-            5172.4861043795945
+            2265.5,
+            11574
           ]
         },
         "WL/WL/main_pillar_office": {
@@ -691,8 +691,8 @@
           "sub": "WL",
           "site": "main_pillar_office",
           "point": [
-            2608.4606801170225,
-            2349.4645842188784
+            2609,
+            8748
           ]
         },
         "WL/TA/type_c_auxiliary_pillar_area_1": {
@@ -702,8 +702,8 @@
           "sub": "TA",
           "site": "type_c_auxiliary_pillar_area_1",
           "point": [
-            5727.221465853105,
-            1676.7820321538368
+            5723.5,
+            8078.5
           ]
         },
         "WL/TA/type_c_auxiliary_pillar_area_2": {
@@ -713,8 +713,8 @@
           "sub": "TA",
           "site": "type_c_auxiliary_pillar_area_2",
           "point": [
-            6369.393307954574,
-            1698.1877602238858
+            6365,
+            8100
           ]
         },
         "WL/TA/type_c_auxiliary_pillar_area_3": {
@@ -724,8 +724,8 @@
           "sub": "TA",
           "site": "type_c_auxiliary_pillar_area_3",
           "point": [
-            6880.752367405745,
-            1829.0005428741852
+            6876,
+            8231
           ]
         },
         "WL/TA/test_area_peripheries": {
@@ -735,8 +735,8 @@
           "sub": "TA",
           "site": "test_area_peripheries",
           "point": [
-            6319.44660912446,
-            2166.7353635349577
+            6315,
+            8569.5
           ]
         },
         "WL/TA/meridian_grid_area": {
@@ -746,8 +746,8 @@
           "sub": "TA",
           "site": "meridian_grid_area",
           "point": [
-            6507.34133329489,
-            2390.3063011554696
+            6502.5,
+            8793.5
           ]
         },
         "WL/TA/water_treatment_sector": {
@@ -757,8 +757,8 @@
           "sub": "TA",
           "site": "water_treatment_sector",
           "point": [
-            6129.173470724025,
-            2635.28296684603
+            6125,
+            9038.5
           ]
         },
         "WL/TA/integrated_rd_area": {
@@ -768,8 +768,8 @@
           "sub": "TA",
           "site": "integrated_rd_area",
           "point": [
-            6555.5,
-            2725.5
+            6551,
+            9129
           ]
         },
         "WL/SV": {
@@ -778,8 +778,8 @@
           "region": "WL",
           "sub": "SV",
           "point": [
-            8213.876184198283,
-            7278.799370436153
+            8207.5,
+            13689
           ]
         },
         "WL/SV/east_gorge_ruins": {
@@ -789,8 +789,8 @@
           "sub": "SV",
           "site": "east_gorge_ruins",
           "point": [
-            8714,
-            7430
+            8707,
+            13840.5
           ]
         },
         "WL/SV/gorge_overhang": {
@@ -800,8 +800,8 @@
           "sub": "SV",
           "site": "gorge_overhang",
           "point": [
-            9079.99949190961,
-            7850.608932808679
+            9071,
+            14256.5
           ]
         },
         "WL/SV/west_gorge_path": {
@@ -811,8 +811,8 @@
           "sub": "SV",
           "site": "west_gorge_path",
           "point": [
-            7436,
-            7112
+            7430.5,
+            13522
           ]
         },
         "WL/SV/south_gorge_rampart": {
@@ -822,8 +822,8 @@
           "sub": "SV",
           "site": "south_gorge_rampart",
           "point": [
-            7858,
-            7498
+            7852,
+            13908.5
           ]
         },
         "WL/SV/north_gorge_crag": {
@@ -833,8 +833,8 @@
           "sub": "SV",
           "site": "north_gorge_crag",
           "point": [
-            8420,
-            6732
+            8413.5,
+            13141.5
           ]
         },
         "WL/SV/deep_gorge_vault": {
@@ -844,8 +844,8 @@
           "sub": "SV",
           "site": "deep_gorge_vault",
           "point": [
-            8111.286821537331,
-            7241.79992816499
+            8096,
+            13632.5
           ]
         },
         "WL/SV/old_blade_precipice": {
@@ -855,8 +855,8 @@
           "sub": "SV",
           "site": "old_blade_precipice",
           "point": [
-            7560,
-            7706
+            7585,
+            14156.5
           ]
         },
         "WL/SV/leeward_trail": {
@@ -866,8 +866,8 @@
           "sub": "SV",
           "site": "leeward_trail",
           "point": [
-            6892.876903006465,
-            6871.663699570869
+            6888,
+            13281.5
           ]
         },
         "WL/SV/shadow_tunnel": {
@@ -877,8 +877,8 @@
           "sub": "SV",
           "site": "shadow_tunnel",
           "point": [
-            9186,
-            7196
+            9178.5,
+            13606
           ]
         }
       }

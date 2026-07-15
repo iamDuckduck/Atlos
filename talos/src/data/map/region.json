@@ -21,12 +21,16 @@
         ],
         "layers": ["L2", "L1", "B1", "B2"]
     },
-    "Wuling": {
-        "dimensions": [
-            15000,
-            15000
-        ],
-        "maxZoom": 3,
+  "Wuling": {
+    "dimensions": [
+      15000,
+      15000
+    ],
+    "boundsOffset": {
+      "x": -2000,
+      "y": 0
+    },
+    "maxZoom": 3,
         "tileSize": 200,
         "initialOffset": {
             "x": 0,

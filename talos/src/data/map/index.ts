@@ -5,6 +5,11 @@ import WL_SUBREGIONS from './subregionData/WL.json';
 
 export interface IMapRegion {
     dimensions: number[];
+    /** Temporary max-zoom pixel offset for shifting the visible map bounds. */
+    boundsOffset?: {
+        x: number;
+        y: number;
+    };
     maxZoom: number;
     tileSize: number;
     initialOffset: {
@@ -21,7 +26,6 @@ export interface IMapSubregionAreaData {
     name: string;
     bounds?: number[][];
     tiles?: number;
-    tileCoords?: number[][];
     polygon?: number[][][];
 }
 

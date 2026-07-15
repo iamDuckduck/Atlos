@@ -1,4 +1,4 @@
-import { REGION_DICT } from '@/data/map';
+import { REGION_DICT, type IMapRegion } from '@/data/map';
 import L from 'leaflet';
 import { MarkerLayer } from './marker/markerLayer';
 import { IMapView } from './type';
@@ -23,6 +23,15 @@ const getMaxZoomOffset = (regionId: string): number => {
         return 1.5;
     }
     return 1;
+};
+
+const getRegionPixelBounds = (config: IMapRegion): [[number, number], [number, number]] => {
+    const offsetX = config.boundsOffset?.x ?? 0;
+    const offsetY = config.boundsOffset?.y ?? 0;
+    return [
+        [offsetX, offsetY],
+        [offsetX + config.dimensions[0], offsetY + config.dimensions[1]],
+    ];
 };
 
 export class MapCore {
@@ -125,6 +134,7 @@ export class MapCore {
         this.map.setMaxZoom(maxZoom);
 
         const view = useViewState.getState().getViewState(regionId);
+        const [[minPixelX, minPixelY], [maxPixelX, maxPixelY]] = getRegionPixelBounds(config);
         if (
             view &&
             view.lat !== undefined &&
@@ -148,8 +158,8 @@ export class MapCore {
             }
             const center = this.map.unproject(
                 [
-                    config.dimensions[0] / 2 + config.initialOffset.x,
-                    config.dimensions[1] / 2 + config.initialOffset.y,
+                    minPixelX + config.dimensions[0] / 2 + config.initialOffset.x,
+                    minPixelY + config.dimensions[1] / 2 + config.initialOffset.y,
                 ],
                 config.maxZoom,
             );
@@ -169,11 +179,11 @@ export class MapCore {
         }
 
         const southWest = this.map.unproject(
-            [0, config.dimensions[1]],
+            [minPixelX, maxPixelY],
             config.maxZoom,
         );
         const northEast = this.map.unproject(
-            [config.dimensions[0], 0],
+            [maxPixelX, minPixelY],
             config.maxZoom,
         );
 
@@ -294,12 +304,13 @@ export class MapCore {
 
                 // Add layer tile layer
                 const suffix = getLayerTileSuffix(layer);
+                const [[minPixelX, minPixelY], [maxPixelX, maxPixelY]] = getRegionPixelBounds(config);
                 const southWest = this.map.unproject(
-                    [0, config.dimensions[1]],
+                    [minPixelX, maxPixelY],
                     config.maxZoom,
                 );
                 const northEast = this.map.unproject(
-                    [config.dimensions[0], 0],
+                    [maxPixelX, minPixelY],
                     config.maxZoom,
                 );
                 const mapBounds = L.latLngBounds(southWest, northEast);

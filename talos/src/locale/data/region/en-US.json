@@ -220,6 +220,18 @@
           "old_blade_precipice": "Old Blade Precipice",
           "gorge_overhang": "Gorge Overhang"
         }
+      },
+      "YL": {
+        "name": "Yinglung Pass",
+        "short": "YL",
+        "site": {
+        }
+      },
+      "EZ": {
+        "name": "Northern Wuling Exclusive Zone",
+        "short": "EZ",
+        "site": {
+        }
       }
     }
   },

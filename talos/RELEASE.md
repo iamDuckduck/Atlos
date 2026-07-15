@@ -125,6 +125,100 @@ Cloudflare-side settings:
 
 ## 5) Transfer and Publish on OSS Host (cn / OSS)
 
+### One-command CN dist transfer
+
+Configure an SSH host alias named `atlos-cn` in `~/.ssh/config` (configuration
+example below), then run from `Atlos/talos`:
+
+```bash
+pnpm deploy:cn:server
+```
+
+The command runs `pnpm build` and packages `dist/`. It then runs
+`pnpm publish:web` locally while uploading the archive to
+`workspace/atlos-assets/_WORK_DIR/Atlos/talos/`, validating it, and replacing
+the remote `dist/`. The command finishes only after both the OSS publish and
+the server `dist/` deployment succeed.
+
+To upload an already-built local `dist/`:
+
+```bash
+pnpm deploy:cn:server --skip-build
+```
+
+Optional overrides:
+
+```bash
+ATLOS_CN_SSH_HOST=atlos-cn \
+ATLOS_CN_REMOTE_DIR=workspace/atlos-assets/_WORK_DIR/Atlos/talos \
+pnpm deploy:cn:server
+```
+
+The equivalent CLI options are `--host` and `--remote-dir`.
+`publish:web` uses the `prod` channel by default. To publish beta instead, set
+`DEPLOY_CHANNEL=beta` for the whole command so the build and publish use the
+same channel:
+
+```bash
+DEPLOY_CHANNEL=beta pnpm deploy:cn:server
+```
+
+### SSH configuration
+
+Use a dedicated SSH key. Do not put the server password in this repository,
+the deploy script, package.json, or an environment variable.
+
+Generate a key locally:
+
+```bash
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_atlos_cn -C "atlos-cn-deploy"
+```
+
+Install the public key on the server. This command asks for the server password
+once:
+
+```bash
+cat ~/.ssh/id_ed25519_atlos_cn.pub | \
+  ssh <remote-user>@<server-ip> \
+  'umask 077; mkdir -p ~/.ssh; cat >> ~/.ssh/authorized_keys'
+```
+
+Add the connection to `~/.ssh/config`:
+
+```sshconfig
+Host atlos-cn
+    HostName <server-ip>
+    User <remote-user>
+    Port 22
+    IdentityFile ~/.ssh/id_ed25519_atlos_cn
+    IdentitiesOnly yes
+```
+
+Protect the local SSH files and test the alias:
+
+```bash
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/config ~/.ssh/id_ed25519_atlos_cn
+ssh atlos-cn
+```
+
+If the server only permits password authentication, omit `IdentityFile` and
+`IdentitiesOnly`. `scp`/`ssh` will prompt interactively; never store the
+password in a file. To reuse one password-authenticated connection during the
+upload, add these optional lines to the same host entry:
+
+```sshconfig
+    ControlMaster auto
+    ControlPersist 10m
+    ControlPath ~/.ssh/control-%C
+```
+
+The remote account needs write permission for
+`workspace/atlos-assets/_WORK_DIR/Atlos/talos/` and the server needs `bash` and
+`unzip`.
+
+### Manual fallback
+
 Upload package to the OSS publishing host as `dist.zip` (FileZilla or SCP), then:
 
 ```bash

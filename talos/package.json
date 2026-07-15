@@ -57,6 +57,7 @@
     "release:package:cn:prod": "node ./scripts/package-dist.mjs --target cn --channel prod",
     "release:package:org:beta": "node ./scripts/package-dist.mjs --target org --channel beta",
     "release:package:org:prod": "node ./scripts/package-dist.mjs --target org --channel prod",
+    "deploy:cn:server": "bash ./scripts/deploy-cn-server.sh",
     "preview": "vite preview",
     "format": "prettier --write 'src/**/*.{js,ts,tsx,jsx,css,scss,html,md}'"
   },

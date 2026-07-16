@@ -158,10 +158,10 @@
                 "subIcon": "ore_spot"
             },
             "Inergen Spot": {
-                "subIcon": "ore_spot"
+                "subIcon": "gas_spot"
             },
             "Xiragen Spot": {
-                "subIcon": "ore_spot"
+                "subIcon": "gas_spot"
             },
             "Clean Water": {
                 "tier": "1"

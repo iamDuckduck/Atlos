@@ -639,7 +639,7 @@
             "main": "resource",
             "sub": "natural"
         },
-        "subIcon": "ore_spot"
+        "subIcon": "gas_spot"
     },
     "xiragen_spot": {
         "key": "xiragen_spot",
@@ -648,7 +648,7 @@
             "main": "resource",
             "sub": "natural"
         },
-        "subIcon": "ore_spot"
+        "subIcon": "gas_spot"
     },
     "clean_water": {
         "key": "clean_water",

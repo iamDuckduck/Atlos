@@ -20,6 +20,9 @@
             "Delta Bot": {
                 "noFrame": true
             },
+            "Talosite": {
+                "noFrame": true
+            },
             "Protocol DL": {
                 "noFrame": true
             },
@@ -32,13 +35,10 @@
             "Repair Logic": {
                 "noFrame": true
             },
-            "Talosite": {
-                "noFrame": true
-            },
-            "Balloon": {
-                "noFrame": true
-            },
             "Gather": {
+                "noFrame": true
+            },
+            "Aero-Salvage": {
                 "noFrame": true
             },
             "Athletic Race": {
@@ -89,13 +89,16 @@
             "Guiding Butterflies": {
                 "noFrame": true
             },
-            "Aero-Salvage": {
-                "noFrame": true
-            },
             "Pressure Plate": {},
-            "Wooden Box": {}
+            "Wooden Box": {},
+            "Blight Core": {
+                "noFrame": true
+            }
         },
         "combat": {
+            "Rift: Pillar's Brace": {
+                "noFrame": true
+            },
             "Temporary Energy Alluvium": {
                 "noFrame": true
             },
@@ -612,37 +615,37 @@
             "Tuskbeast Blightshade": {
                 "tier": "Common",
                 "faction": "Blightshade",
-                "drop": ""
+                "drop": "Blightshade Bezoar"
             },
             "YSTF Vanguard Blightshade": {
                 "tier": "Common",
                 "faction": "Blightshade",
-                "drop": ""
+                "drop": "Shadow Dew"
             },
             "YSTF Elite Blightshade": {
                 "tier": "Elite",
                 "faction": "Blightshade",
-                "drop": ""
+                "drop": "Shadow Dew"
             },
             "Quillbeast Blightshade": {
                 "tier": "Common",
                 "faction": "Blightshade",
-                "drop": ""
+                "drop": "Blightshade Bezoar"
             },
             "Rakerbeast Blightshade": {
                 "tier": "Common",
                 "faction": "Blightshade",
-                "drop": ""
+                "drop": "Blightshade Bezoar"
             },
             "YSTF Glaiver Blightshade": {
                 "tier": "Common",
                 "faction": "Blightshade",
-                "drop": ""
+                "drop": "Glaive Fragment"
             },
             "YSTF Captain Blightshade": {
                 "tier": "Elite",
                 "faction": "Blightshade",
-                "drop": ""
+                "drop": "Glaive Fragment"
             },
             "Blitzcrash Blightshade": {
                 "tier": "Elite",

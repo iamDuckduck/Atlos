@@ -880,6 +880,290 @@
             9178.5,
             13606
           ]
+        },
+        "WL/YL": {
+          "id": "WL/YL",
+          "type": "sub",
+          "region": "WL",
+          "sub": "YL",
+          "point": [
+            5616,
+            5520.005057955743
+          ]
+        },
+        "WL/EZ": {
+          "id": "WL/EZ",
+          "type": "sub",
+          "region": "WL",
+          "sub": "EZ",
+          "point": [
+            6776,
+            3615.3424657534247
+          ]
+        },
+        "WL/YL/pass_side_canal": {
+          "id": "WL/YL/pass_side_canal",
+          "type": "site",
+          "region": "WL",
+          "sub": "YL",
+          "site": "pass_side_canal",
+          "point": [
+            4734.787006825122,
+            6225.365717223161
+          ]
+        },
+        "WL/YL/odd_pine_ridge": {
+          "id": "WL/YL/odd_pine_ridge",
+          "type": "site",
+          "region": "WL",
+          "sub": "YL",
+          "site": "odd_pine_ridge",
+          "point": [
+            5492.735384437264,
+            5921.591138477707
+          ]
+        },
+        "WL/YL/balepyre_dais": {
+          "id": "WL/YL/balepyre_dais",
+          "type": "site",
+          "region": "WL",
+          "sub": "YL",
+          "site": "balepyre_dais",
+          "point": [
+            5576.825025962635,
+            5613.824468233798
+          ]
+        },
+        "WL/EZ/miasmas_end": {
+          "id": "WL/EZ/miasmas_end",
+          "type": "site",
+          "region": "WL",
+          "sub": "EZ",
+          "site": "miasmas_end",
+          "point": [
+            5652.50570333547,
+            4586.249048793759
+          ]
+        },
+        "WL/YL/stonepond_cliff": {
+          "id": "WL/YL/stonepond_cliff",
+          "type": "site",
+          "region": "WL",
+          "sub": "YL",
+          "site": "stonepond_cliff",
+          "point": [
+            6030.909090199641,
+            6012.4015714998295
+          ]
+        },
+        "WL/YL/cloudscraper_flats": {
+          "id": "WL/YL/cloudscraper_flats",
+          "type": "site",
+          "region": "WL",
+          "sub": "YL",
+          "site": "cloudscraper_flats",
+          "point": [
+            6199.0883732503835,
+            5411.972467360183
+          ]
+        },
+        "WL/YL/ystf_filing_room": {
+          "id": "WL/YL/ystf_filing_room",
+          "type": "site",
+          "region": "WL",
+          "sub": "YL",
+          "site": "ystf_filing_room",
+          "point": [
+            6318.495664216412,
+            5630.428672392024
+          ]
+        },
+        "WL/YL/device_pavilion": {
+          "id": "WL/YL/device_pavilion",
+          "type": "site",
+          "region": "WL",
+          "sub": "YL",
+          "site": "device_pavilion",
+          "point": [
+            6209.179130233429,
+            5232.056077969662
+          ]
+        },
+        "WL/YL/ystf_main_camp": {
+          "id": "WL/YL/ystf_main_camp",
+          "type": "site",
+          "region": "WL",
+          "sub": "YL",
+          "site": "ystf_main_camp",
+          "point": [
+            5891.320285267524,
+            5216.921360234045
+          ]
+        },
+        "WL/YL/exclusion_gate": {
+          "id": "WL/YL/exclusion_gate",
+          "type": "site",
+          "region": "WL",
+          "sub": "YL",
+          "site": "exclusion_gate",
+          "point": [
+            5578.506818793143,
+            4959.60528499272
+          ]
+        },
+        "WL/YL/abandoned_side_building": {
+          "id": "WL/YL/abandoned_side_building",
+          "type": "site",
+          "region": "WL",
+          "sub": "YL",
+          "site": "abandoned_side_building",
+          "point": [
+            5324.556101386521,
+            4989.878619246067
+          ]
+        },
+        "WL/EZ/sentry_base": {
+          "id": "WL/EZ/sentry_base",
+          "type": "site",
+          "region": "WL",
+          "sub": "EZ",
+          "site": "sentry_base",
+          "point": [
+            5886.274906776002,
+            4241.485062887114
+          ]
+        },
+        "WL/EZ/waterworks_hub": {
+          "id": "WL/EZ/waterworks_hub",
+          "type": "site",
+          "region": "WL",
+          "sub": "EZ",
+          "site": "waterworks_hub",
+          "point": [
+            5764,
+            3324.003793466807
+          ]
+        },
+        "WL/EZ/tanjian_hall": {
+          "id": "WL/EZ/tanjian_hall",
+          "type": "site",
+          "region": "WL",
+          "sub": "EZ",
+          "site": "tanjian_hall",
+          "point": [
+            6513.583632555273,
+            2944.8164107406064
+          ]
+        },
+        "WL/EZ/xiranite_research_labs": {
+          "id": "WL/EZ/xiranite_research_labs",
+          "type": "site",
+          "region": "WL",
+          "sub": "EZ",
+          "site": "xiranite_research_labs",
+          "point": [
+            7206.482278724334,
+            3099.542768886241
+          ]
+        },
+        "WL/EZ/ghost_mesa_test_site": {
+          "id": "WL/EZ/ghost_mesa_test_site",
+          "type": "site",
+          "region": "WL",
+          "sub": "EZ",
+          "site": "ghost_mesa_test_site",
+          "point": [
+            7716.065506368085,
+            2806.9118796821617
+          ]
+        },
+        "WL/EZ/celestial_column": {
+          "id": "WL/EZ/celestial_column",
+          "type": "site",
+          "region": "WL",
+          "sub": "EZ",
+          "site": "celestial_column",
+          "point": [
+            7850,
+            3461.9940990516334
+          ]
+        },
+        "WL/EZ/wuling_vlr_upper_area": {
+          "id": "WL/EZ/wuling_vlr_upper_area",
+          "type": "site",
+          "region": "WL",
+          "sub": "EZ",
+          "site": "wuling_vlr_upper_area",
+          "point": [
+            8084,
+            3907.9755532139093
+          ]
+        },
+        "WL/EZ/tianshi_pillar_rd_center": {
+          "id": "WL/EZ/tianshi_pillar_rd_center",
+          "type": "site",
+          "region": "WL",
+          "sub": "EZ",
+          "site": "tianshi_pillar_rd_center",
+          "point": [
+            7615.157936537639,
+            4080.029406811023
+          ]
+        },
+        "WL/EZ/quelltide_levee": {
+          "id": "WL/EZ/quelltide_levee",
+          "type": "site",
+          "region": "WL",
+          "sub": "EZ",
+          "site": "quelltide_levee",
+          "point": [
+            6807.8973778940735,
+            4012.7938459339744
+          ]
+        },
+        "WL/EZ/cliffside_courtyard": {
+          "id": "WL/EZ/cliffside_courtyard",
+          "type": "site",
+          "region": "WL",
+          "sub": "EZ",
+          "site": "cliffside_courtyard",
+          "point": [
+            7208.164071554841,
+            4352.501820306965
+          ]
+        },
+        "WL/EZ/designated_urban_area": {
+          "id": "WL/EZ/designated_urban_area",
+          "type": "site",
+          "region": "WL",
+          "sub": "EZ",
+          "site": "designated_urban_area",
+          "point": [
+            6384.085584606201,
+            3928.6666343264037
+          ]
+        },
+        "WL/YL/xiranflow_cloudseeder_station": {
+          "id": "WL/YL/xiranflow_cloudseeder_station",
+          "type": "site",
+          "region": "WL",
+          "sub": "YL",
+          "site": "xiranflow_cloudseeder_station",
+          "point": [
+            5881.714205909702,
+            4917.220556371251
+          ]
+        },
+        "WL/YL/detention_facility": {
+          "id": "WL/YL/detention_facility",
+          "type": "site",
+          "region": "WL",
+          "sub": "YL",
+          "site": "detention_facility",
+          "point": [
+            6068.3903961429505,
+            5212.791190907228
+          ]
         }
       }
     },

@@ -61,6 +61,15 @@
         },
         "noFrame": true
     },
+    "talosite": {
+        "key": "talosite",
+        "name": "Talosite",
+        "category": {
+            "main": "poi",
+            "sub": "collection"
+        },
+        "noFrame": true
+    },
     "protocol_dl": {
         "key": "protocol_dl",
         "name": "Protocol DL",
@@ -97,27 +106,18 @@
         },
         "noFrame": true
     },
-    "talosite": {
-        "key": "talosite",
-        "name": "Talosite",
-        "category": {
-            "main": "poi",
-            "sub": "collection"
-        },
-        "noFrame": true
-    },
-    "balloon": {
-        "key": "balloon",
-        "name": "Balloon",
-        "category": {
-            "main": "poi",
-            "sub": "collection"
-        },
-        "noFrame": true
-    },
     "gather": {
         "key": "gather",
         "name": "Gather",
+        "category": {
+            "main": "poi",
+            "sub": "collection"
+        },
+        "noFrame": true
+    },
+    "aero_salvage": {
+        "key": "aero_salvage",
+        "name": "Aero-Salvage",
         "category": {
             "main": "poi",
             "sub": "collection"
@@ -415,15 +415,6 @@
         },
         "noFrame": true
     },
-    "aero_salvage": {
-        "key": "aero_salvage",
-        "name": "Aero-Salvage",
-        "category": {
-            "main": "poi",
-            "sub": "exploration"
-        },
-        "noFrame": true
-    },
     "pressure_plate": {
         "key": "pressure_plate",
         "name": "Pressure Plate",
@@ -439,6 +430,24 @@
             "main": "poi",
             "sub": "exploration"
         }
+    },
+    "blight_core": {
+        "key": "blight_core",
+        "name": "Blight Core",
+        "category": {
+            "main": "poi",
+            "sub": "exploration"
+        },
+        "noFrame": true
+    },
+    "rift_pillars_brace": {
+        "key": "rift_pillars_brace",
+        "name": "Rift: Pillar's Brace",
+        "category": {
+            "main": "poi",
+            "sub": "combat"
+        },
+        "noFrame": true
     },
     "temporary_energy_alluvium": {
         "key": "temporary_energy_alluvium",
@@ -1723,7 +1732,7 @@
         },
         "tier": "Common",
         "faction": "Blightshade",
-        "drop": ""
+        "drop": "Blightshade Bezoar"
     },
     "ystf_vanguard_blightshade": {
         "key": "ystf_vanguard_blightshade",
@@ -1734,7 +1743,7 @@
         },
         "tier": "Common",
         "faction": "Blightshade",
-        "drop": ""
+        "drop": "Shadow Dew"
     },
     "ystf_elite_blightshade": {
         "key": "ystf_elite_blightshade",
@@ -1743,9 +1752,9 @@
             "main": "enemy",
             "sub": "mob"
         },
-        "tier": "Elite",
+        "tier": "Common",
         "faction": "Blightshade",
-        "drop": ""
+        "drop": "Shadow Dew"
     },
     "quillbeast_blightshade": {
         "key": "quillbeast_blightshade",
@@ -1754,9 +1763,9 @@
             "main": "enemy",
             "sub": "mob"
         },
-        "tier": "Common",
+        "tier": "Advanced",
         "faction": "Blightshade",
-        "drop": ""
+        "drop": "Blightshade Bezoar"
     },
     "rakerbeast_blightshade": {
         "key": "rakerbeast_blightshade",
@@ -1765,9 +1774,9 @@
             "main": "enemy",
             "sub": "mob"
         },
-        "tier": "Common",
+        "tier": "Elite",
         "faction": "Blightshade",
-        "drop": ""
+        "drop": "Blightshade Bezoar"
     },
     "ystf_glaiver_blightshade": {
         "key": "ystf_glaiver_blightshade",
@@ -1776,9 +1785,9 @@
             "main": "enemy",
             "sub": "mob"
         },
-        "tier": "Common",
+        "tier": "Elite",
         "faction": "Blightshade",
-        "drop": ""
+        "drop": "Glaive Fragment"
     },
     "ystf_captain_blightshade": {
         "key": "ystf_captain_blightshade",
@@ -1789,7 +1798,7 @@
         },
         "tier": "Elite",
         "faction": "Blightshade",
-        "drop": ""
+        "drop": "Glaive Fragment"
     },
     "blitzcrash_blightshade": {
         "key": "blitzcrash_blightshade",
@@ -1809,7 +1818,7 @@
             "main": "enemy",
             "sub": "mob"
         },
-        "tier": "Common",
+        "tier": "Elite",
         "faction": "Blightshade",
         "drop": ""
     },
@@ -2468,7 +2477,7 @@
             "sub": "archives"
         },
         "ctgr": "digital",
-        "icon": "prts_read_electronicscreen",
+        "icon": "pad",
         "rsch": "research_008prts"
     },
     "nar_digital_map02_17_1": {

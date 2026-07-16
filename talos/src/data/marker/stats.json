@@ -458,7 +458,7 @@
     "nar_paper_map02_14013_2": 1,
     "nar_paper_map02_14014_1": 1,
     "nar_digital_map02_14016_1": 1,
-    "balloon": 22,
+    "aero_salvage": 26,
     "ystf_glaiver_blightshade": 1,
     "tuskbeast_blightshade": 12,
     "ystf_vanguard_blightshade": 45,
@@ -488,7 +488,7 @@
     "xiragen_spot": 5,
     "protocolith_spot": 8,
     "crimson_spearleaf_spot": 10,
-    "aero_salvage": 4
+    "rift_pillars_brace": 5
   },
   "subregion": {
     "DJ_1": {
@@ -1459,7 +1459,7 @@
       "gather": 46,
       "mudflow": 16,
       "hedron": 5,
-      "balloon": 5,
+      "aero_salvage": 5,
       "crate_ii": 10,
       "crate_i": 12,
       "pressure_plate": 7,
@@ -1509,7 +1509,7 @@
       "ystf_captain_blightshade": 2,
       "ystf_elite_blightshade": 23,
       "crate_iii": 14,
-      "balloon": 17,
+      "aero_salvage": 21,
       "ystf_vanguard_blightshade": 43,
       "aurylene": 28,
       "crate_i": 24,
@@ -1531,8 +1531,8 @@
       "re_crisis": 2,
       "energy_alluvium": 1,
       "temporary_energy_alluvium": 2,
-      "aero_salvage": 4,
-      "cratelocked": 2
+      "cratelocked": 2,
+      "rift_pillars_brace": 5
     }
   },
   "region": {
@@ -1982,7 +1982,7 @@
       "nar_paper_map02_14013_2": 1,
       "nar_paper_map02_14014_1": 1,
       "nar_digital_map02_14016_1": 1,
-      "balloon": 22,
+      "aero_salvage": 26,
       "ystf_glaiver_blightshade": 1,
       "tuskbeast_blightshade": 12,
       "ystf_vanguard_blightshade": 45,
@@ -2012,7 +2012,7 @@
       "xiragen_spot": 5,
       "protocolith_spot": 8,
       "crimson_spearleaf_spot": 10,
-      "aero_salvage": 4
+      "rift_pillars_brace": 5
     },
     "Dijiang": {
       "tp_point": 2,

@@ -207,7 +207,7 @@
                 "ctgr": "digital"
             },
             "nar_digital_map02_14024_1": {
-                "icon": "prts_read_electronicscreen",
+                "icon": "pad",
                 "ctgr": "digital",
                 "rsch": "research_008prts"
             },

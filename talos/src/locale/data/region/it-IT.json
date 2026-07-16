@@ -244,7 +244,7 @@
       },
       "EZ": {
         "name": "Area interdetta di Wuling Nord",
-        "short": "EZ",
+        "short": "AI",
         "site": {
           "sentry_base": "Base sentinella",
           "tanjian_hall": "Accademia Tanjian",

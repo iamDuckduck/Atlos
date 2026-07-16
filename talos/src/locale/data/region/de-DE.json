@@ -244,7 +244,7 @@
       },
       "EZ": {
         "name": "Sperrzone Nord-Wuling",
-        "short": "EZ",
+        "short": "SZ",
         "site": {
           "sentry_base": "Wachstation",
           "tanjian_hall": "Tanjian-Halle",

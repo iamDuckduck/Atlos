@@ -244,7 +244,7 @@
       },
       "EZ": {
         "name": "Zona Eksklusi Wuling Utara",
-        "short": "EZ",
+        "short": "ZE",
         "site": {
           "sentry_base": "Pangkalan Jaga",
           "tanjian_hall": "Balai Tanjian",

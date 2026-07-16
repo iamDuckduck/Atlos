@@ -244,7 +244,7 @@
       },
       "EZ": {
         "name": "Zona de exclusión norte de Wuling",
-        "short": "EZ",
+        "short": "ZE",
         "site": {
           "sentry_base": "Base Centinela",
           "tanjian_hall": "Salón tanjian",

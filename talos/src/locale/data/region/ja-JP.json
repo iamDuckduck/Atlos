@@ -223,7 +223,7 @@
       },
       "YL": {
         "name": "応龍関",
-        "short": "YL",
+        "short": "龍",
         "site": {
           "pass_side_canal": "臨関水路",
           "odd_pine_ridge": "怪松山脈",
@@ -244,7 +244,7 @@
       },
       "EZ": {
         "name": "北部封鎖区域",
-        "short": "EZ",
+        "short": "鎖",
         "site": {
           "sentry_base": "前進拠点",
           "tanjian_hall": "談剣堂",

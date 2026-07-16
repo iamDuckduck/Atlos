@@ -4,7 +4,7 @@
     "sub": {
       "PL": {
         "name": "Cao Nguyên Năng Lượng",
-        "short": "NL",
+        "short": "PL",
         "site": {
           "old_dorms": "KTX Cũ",
           "originium_power_plant": "Nhà Máy Năng Lượng Originium",
@@ -21,7 +21,7 @@
       },
       "OL": {
         "name": "Khởi Nguồn Lodespring",
-        "short": "KN",
+        "short": "OL",
         "site": {
           "originium_passage": "Lối Đi Originium",
           "cradle_of_the_ages": "Chiếc Nôi Cổ Đại",
@@ -41,7 +41,7 @@
       },
       "OP": {
         "name": "Công Viên Khoa Học Originium",
-        "short": "CV",
+        "short": "OP",
         "site": {
           "control_center": "Trung Tâm Điều Khiển",
           "route_5": "Tuyến 5",
@@ -58,7 +58,7 @@
       },
       "AQ": {
         "name": "Mỏ Đá Aburrey",
-        "short": "MĐ",
+        "short": "AQ",
         "site": {
           "quarry_entrance": "Cổng Vào Mỏ Đá",
           "refuse_stockpile": "Khu Xử Lý Phế Liệu",
@@ -74,7 +74,7 @@
       },
       "VP": {
         "name": "Đèo Thung Lũng",
-        "short": "ĐT",
+        "short": "VP",
         "site": {
           "valley_fort": "Pháo Đài Thung Lũng",
           "arsenal": "Kho Vũ Khí",
@@ -86,7 +86,7 @@
       },
       "HB": {
         "name": "Trung Tâm",
-        "short": "TT",
+        "short": "HB",
         "site": {
           "logistics_platform": "Cảng Vận Chuyển",
           "rockhill_passage": "Lối Đi Đồi Đá",
@@ -116,7 +116,7 @@
     "sub": {
       "WL": {
         "name": "Thành Phố Võ Lăng",
-        "short": "VL",
+        "short": "WL",
         "site": {
           "bugui_grove": "Rừng Bất Quy",
           "agricultural_test_site": "Khu Thử Nghiệm Nông Nghiệp",
@@ -132,11 +132,12 @@
           "tianshi_pillar_array": "Trận Cột Thiên Sư",
           "maintenance_zone": "Khu Vực Bảo Trì",
           "institute_of_materials_science": "Viện Khoa Học Vật Liệu",
-          "bureau_of_applied_technologies": "Cục Phát Triển Công Nghệ",
           "tianshi_bureau_academy": "Học Viện Cục Thiên Sư",
+          "bureau_of_applied_technologies": "Cục Phát Triển Công Nghệ",
           "citizen_square": "Quảng Trường Công Dân",
           "qijian_dais": "Khí Kiếm Đài",
           "long_pavilion": "Trường Đình",
+          "wuling_north": "Bắc Võ Lăng",
           "main_pillar_office": "Trụ Sở Cột Chính",
           "restricted_area": "Khu Vực Hạn Chế",
           "tianjing_courtyard": "Thiên Tỉnh Viện",
@@ -150,8 +151,8 @@
         }
       },
       "JY": {
-        "name": "Cảnh Ngọc Cốc",
-        "short": "NC",
+        "name": "Jingyu Valley",
+        "short": "JY",
         "site": {
           "treadway": "Lối Mòn",
           "ecological_research_station": "Trạm Nghiên Cứu Sinh Thái",
@@ -170,7 +171,7 @@
       },
       "QB": {
         "name": "Trại Thanh Ba",
-        "short": "TB",
+        "short": "QB",
         "site": {
           "skyhold_ridge": "Xà Chống Trời",
           "ancestral_spring": "Suối Tiền Nhân",
@@ -181,7 +182,7 @@
       },
       "TA": {
         "name": "Khu Thử Nghiệm",
-        "short": "KT",
+        "short": "TA",
         "site": {
           "test_area_entrance": "Lối Vào Khu Thử Nghiệm",
           "type_c_auxiliary_pillar_area_1": "Cột Phụ Loại C Khu 1",
@@ -219,13 +220,58 @@
           "old_blade_precipice": "Vách Đao Cổ",
           "gorge_overhang": "Mỏm Cheo Leo Hẻm Núi"
         }
+      },
+      "YL": {
+        "name": "Đèo Yinglung",
+        "short": "YL",
+        "site": {
+          "pass_side_canal": "Kênh Dẫn Bên Sườn Đèo",
+          "odd_pine_ridge": "Đồi Thông Kỳ Dị",
+          "stonepond_cliff": "Vách Đá Ao Thạch",
+          "cloudscraper_flats": "Bãi Đất Cạo Mây",
+          "balepyre_dais": "Bệ Phong Hỏa",
+          "exclusion_gate": "Cổng Khu Cấm",
+          "ystf_main_camp": "Trại Chính ĐĐNY",
+          "detention_facility": "Khu Tạm Giam",
+          "xiranflow_cloudseeder_station": "Trạm Gieo Mây Xiranflow",
+          "abandoned_side_building": "Tòa Nhà Phụ Bị Bỏ Hoang",
+          "ystf_filing_room": "Phòng Lưu Trữ ĐĐNY",
+          "xunlung_ford": "Bến Cạn Xunlung",
+          "yinglung_pass_raft_station": "Trạm Bè Đèo Yinglung",
+          "xiranflow_cloudseeder": "Trạm Gieo Mây Xiranflow",
+          "device_pavilion": "Khu Thiết Bị"
+        }
+      },
+      "EZ": {
+        "name": "Khu Cấm Bắc Võ Lăng",
+        "short": "EZ",
+        "site": {
+          "sentry_base": "Căn Cứ Canh Gác",
+          "tanjian_hall": "Đàm Kiếm Đường",
+          "xiranite_research_labs": "Phòng Nghiên Cứu Xiranite",
+          "celestial_column": "Thiên Trụ",
+          "designated_urban_area": "Khu Đô Thị Chỉ Định",
+          "quelltide_levee": "Đê Sóng Lặng",
+          "prep_zone": "Khu Chuẩn Bị",
+          "observation_deck_1": "Bàn Quan Sát 1",
+          "tianshi_pillar_rd_center": "Trung Tâm NC&PT Cột Thiên Sư",
+          "pillars_brace": "Bệ Đỡ Cột",
+          "cliffside_courtyard": "Sân Trong Bên Vách Núi",
+          "waterworks_hub": "Đầu Mối Cấp Nước",
+          "ghost_mesa_test_site": "Khu Thử Nghiệm Cao Nguyên U Linh",
+          "building_supplies_factory": "Xưởng Vật Liệu Xây Dựng",
+          "miasmas_end": "Điểm Cuối Sương Mù",
+          "wuling_vlr_upper_area": "KNCL Võ Lăng, Khu Trên",
+          "bureau_arsenal": "Cục Kho Vũ Khí",
+          "rust_mound": "Gò Rỉ Sét"
+        }
       }
     }
   },
   "DJ": {
     "main": "Tàu Vũ Trụ Originium Dijiang",
     "sub": {
-      "name": "T.V.T Dijiang",
+      "name": "OMV Dijiang",
       "site": {
         "bridge": "Cầu Tàu",
         "reception_room": "Phòng Tiếp Khách",

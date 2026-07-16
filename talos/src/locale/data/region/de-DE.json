@@ -4,7 +4,7 @@
     "sub": {
       "PL": {
         "name": "Energieplateau",
-        "short": "EP",
+        "short": "PL",
         "site": {
           "old_dorms": "Alte Schlafsäle",
           "originium_power_plant": "Originium-Kraftwerk",
@@ -21,7 +21,7 @@
       },
       "OL": {
         "name": "Mineralquell",
-        "short": "MQ",
+        "short": "OL",
         "site": {
           "originium_passage": "Originium-Durchgang",
           "cradle_of_the_ages": "Wiege der Generationen",
@@ -41,7 +41,7 @@
       },
       "OP": {
         "name": "Originium-Wissenschaftspark",
-        "short": "OW",
+        "short": "OP",
         "site": {
           "control_center": "Kontrollzentrum",
           "route_5": "Strecke 5",
@@ -58,7 +58,7 @@
       },
       "AQ": {
         "name": "Aburrey-Steinbruch",
-        "short": "AS",
+        "short": "AQ",
         "site": {
           "quarry_entrance": "Steinbruch-Eingang",
           "refuse_stockpile": "Müllvorrat",
@@ -74,7 +74,7 @@
       },
       "VP": {
         "name": "Talpass",
-        "short": "TP",
+        "short": "VP",
         "site": {
           "valley_fort": "Talfort",
           "arsenal": "Arsenal",
@@ -137,6 +137,7 @@
           "citizen_square": "Stadtplatz",
           "qijian_dais": "Qijian-Podium",
           "long_pavilion": "Langer Pavillon",
+          "wuling_north": "Wuling Nord",
           "main_pillar_office": "Hauptsäulen-Abteilung",
           "restricted_area": "Verbotener Bereich",
           "tianjing_courtyard": "Tianjing-Hof",
@@ -150,8 +151,8 @@
         }
       },
       "JY": {
-        "name": "Jingyu-Tal",
-        "short": "JT",
+        "name": "Jingyu Valley",
+        "short": "JY",
         "site": {
           "treadway": "Weg",
           "ecological_research_station": "Ökologische Forschungsstation",
@@ -170,7 +171,7 @@
       },
       "QB": {
         "name": "Qingbo-Palisade",
-        "short": "QP",
+        "short": "QB",
         "site": {
           "skyhold_ridge": "Himmelsfestungs-kamm",
           "ancestral_spring": "Ahnenquelle",
@@ -181,7 +182,7 @@
       },
       "TA": {
         "name": "Testzone",
-        "short": "TZ",
+        "short": "TA",
         "site": {
           "test_area_entrance": "Testzone: Eingang",
           "type_c_auxiliary_pillar_area_1": "Typ-C-Hilfssäule in Bereich 1",
@@ -207,7 +208,7 @@
       },
       "SV": {
         "name": "Tal des Schwertverlieses",
-        "short": "TS",
+        "short": "SV",
         "site": {
           "leeward_trail": "Leewärtspfad",
           "west_gorge_path": "Westschluchtpfad",
@@ -219,6 +220,51 @@
           "old_blade_precipice": "Altklingensteilhang",
           "gorge_overhang": "Schluchtüberhang"
         }
+      },
+      "YL": {
+        "name": "Yinglung-Pass",
+        "short": "YL",
+        "site": {
+          "pass_side_canal": "Passseitiger Kanal",
+          "odd_pine_ridge": "Seltsamer Kieferkamm",
+          "stonepond_cliff": "Steinteichklippe",
+          "cloudscraper_flats": "Wolkenkratzer-Ebenen",
+          "balepyre_dais": "Leidfeuer-Podium",
+          "exclusion_gate": "Tor zur Sperrzone",
+          "ystf_main_camp": "YSE-Hauptquartier",
+          "detention_facility": "Haftanstalt",
+          "xiranflow_cloudseeder_station": "Xiranfluss-Wolkensäer-Station",
+          "abandoned_side_building": "Verlassenes Nebengebäude",
+          "ystf_filing_room": "YSE-Archiv",
+          "xunlung_ford": "Xunglung-Furt",
+          "yinglung_pass_raft_station": "Yinglung-Pass-Floßstation",
+          "xiranflow_cloudseeder": "Xiranfluss-Wolkensäer",
+          "device_pavilion": "Gerätepavillon"
+        }
+      },
+      "EZ": {
+        "name": "Sperrzone Nord-Wuling",
+        "short": "EZ",
+        "site": {
+          "sentry_base": "Wachstation",
+          "tanjian_hall": "Tanjian-Halle",
+          "xiranite_research_labs": "Xiranit-Forschungslabors",
+          "celestial_column": "Himmelssäule",
+          "designated_urban_area": "Ausgewiesener Stadtbezirk",
+          "quelltide_levee": "Quelltiden-Deich",
+          "prep_zone": "Vorbereitungszone",
+          "observation_deck_1": "Beobachtungsdeck 1",
+          "tianshi_pillar_rd_center": "Tianshi-Säule: F&E-Zentrum",
+          "pillars_brace": "Säulenstütze",
+          "cliffside_courtyard": "Klippenhof",
+          "waterworks_hub": "Wasserwerk-Hub",
+          "ghost_mesa_test_site": "Geistermesa-Testareal",
+          "building_supplies_factory": "Baumaterialfabrik",
+          "miasmas_end": "Ende des Nebels",
+          "wuling_vlr_upper_area": "Wuling RR, oberer Bereich",
+          "bureau_arsenal": "Behördenarsenal",
+          "rust_mound": "Rostberg"
+        }
       }
     }
   },
@@ -229,7 +275,7 @@
       "site": {
         "bridge": "Brücke",
         "reception_room": "Empfang",
-        "kernel_sector": "Kornsektor",
+        "kernel_sector": "Kernsektor",
         "central_ring": "Zentralring",
         "working_sector": "Arbeitssektor",
         "living_sector": "Wohnsektor"

@@ -3,8 +3,8 @@
     "main": "Valle IV",
     "sub": {
       "PL": {
-        "name": "Altopiano Elettrico",
-        "short": "AE",
+        "name": "Altopiano elettrico",
+        "short": "PL",
         "site": {
           "old_dorms": "Vecchi dormitori",
           "originium_power_plant": "Centrale elettrica a Originium",
@@ -20,8 +20,8 @@
         }
       },
       "OL": {
-        "name": "Giacimento Originario",
-        "short": "GO",
+        "name": "Giacimento originario",
+        "short": "OL",
         "site": {
           "originium_passage": "Passaggio di Originium",
           "cradle_of_the_ages": "Culla dei secoli",
@@ -41,7 +41,7 @@
       },
       "OP": {
         "name": "Parco scientifico dell'Originium",
-        "short": "PO",
+        "short": "OP",
         "site": {
           "control_center": "Centro di controllo",
           "route_5": "Percorso 5",
@@ -58,7 +58,7 @@
       },
       "AQ": {
         "name": "Cava di Aburrey",
-        "short": "CA",
+        "short": "AQ",
         "site": {
           "quarry_entrance": "Entrata della cava",
           "refuse_stockpile": "Deposito rifiuti",
@@ -74,7 +74,7 @@
       },
       "VP": {
         "name": "Passo della Valle",
-        "short": "PV",
+        "short": "VP",
         "site": {
           "valley_fort": "Forte della Valle",
           "arsenal": "Arsenale",
@@ -86,7 +86,7 @@
       },
       "HB": {
         "name": "Polo centrale",
-        "short": "PC",
+        "short": "HB",
         "site": {
           "logistics_platform": "Piattaforma logistica",
           "rockhill_passage": "Passaggio del colle roccioso",
@@ -137,6 +137,7 @@
           "citizen_square": "Piazza cittadina",
           "qijian_dais": "Qijian Dais",
           "long_pavilion": "Padiglione lungo",
+          "wuling_north": "Wuling nord",
           "main_pillar_office": "Ufficio della colonna principale",
           "restricted_area": "Area limitata",
           "tianjing_courtyard": "Cortile Tianjing",
@@ -150,7 +151,7 @@
         }
       },
       "JY": {
-        "name": "Valle Jingyu",
+        "name": "Jingyu Valley",
         "short": "JY",
         "site": {
           "treadway": "Sentiero",
@@ -170,7 +171,7 @@
       },
       "QB": {
         "name": "Palizzata di Qingbo",
-        "short": "PQ",
+        "short": "QB",
         "site": {
           "skyhold_ridge": "Crinale del forte celeste",
           "ancestral_spring": "Fonte ancestrale",
@@ -181,7 +182,7 @@
       },
       "TA": {
         "name": "Area dei test",
-        "short": "AT",
+        "short": "TA",
         "site": {
           "test_area_entrance": "Entrata dell'area dei test",
           "type_c_auxiliary_pillar_area_1": "Area 1 della colonna secondaria di tipo C",
@@ -207,7 +208,7 @@
       },
       "SV": {
         "name": "Valletta di Voltaspada",
-        "short": "VV",
+        "short": "SV",
         "site": {
           "leeward_trail": "Sentiero sottovento",
           "west_gorge_path": "Sentiero della gola ovest",
@@ -218,6 +219,51 @@
           "deep_gorge_vault": "Cripta della gola profonda",
           "old_blade_precipice": "Precipizio dell'antica lama",
           "gorge_overhang": "Sporgenza della gola"
+        }
+      },
+      "YL": {
+        "name": "Valico di Yinglung",
+        "short": "YL",
+        "site": {
+          "pass_side_canal": "Canale laterale",
+          "odd_pine_ridge": "Cresta dei pini strana",
+          "stonepond_cliff": "Dirupo dello stagno di pietra",
+          "cloudscraper_flats": "Pianure altenubi",
+          "balepyre_dais": "Base della pira propizia",
+          "exclusion_gate": "Varco di interdizione",
+          "ystf_main_camp": "Accampamento principale della STEY",
+          "detention_facility": "Struttura di detenzione",
+          "xiranflow_cloudseeder_station": "Stazione di semina delle nuvole di Xiranflow",
+          "abandoned_side_building": "Edificio laterale abbandonato",
+          "ystf_filing_room": "Archivio della STEY",
+          "xunlung_ford": "Guado di Xunlung",
+          "yinglung_pass_raft_station": "Stazione per zattere del Valico di Yinglung",
+          "xiranflow_cloudseeder": "Semina delle nuvole di Xiranflow",
+          "device_pavilion": "Padiglione dei dispositivi"
+        }
+      },
+      "EZ": {
+        "name": "Area interdetta di Wuling Nord",
+        "short": "EZ",
+        "site": {
+          "sentry_base": "Base sentinella",
+          "tanjian_hall": "Accademia Tanjian",
+          "xiranite_research_labs": "Laboratori di ricerca sulla xiranite",
+          "celestial_column": "Colonna celestiale",
+          "designated_urban_area": "Area di urbanizzazione",
+          "quelltide_levee": "Argine di Placamarea",
+          "prep_zone": "Zona di preparazione",
+          "observation_deck_1": "Ponte d'osservazione 1",
+          "tianshi_pillar_rd_center": "Centro di ricerca e sviluppo della colonna Tianshi",
+          "pillars_brace": "Base della colonna",
+          "cliffside_courtyard": "Cortile del dirupo",
+          "waterworks_hub": "Centro dell'acquedotto",
+          "ghost_mesa_test_site": "Fenditura dell'Area test",
+          "building_supplies_factory": "Fabbrica di risorse da costruzione",
+          "miasmas_end": "Fine del miasma",
+          "wuling_vlr_upper_area": "Area superiore, VS di Wuling",
+          "bureau_arsenal": "Arsenale del Dipartimento",
+          "rust_mound": "Tumulo della ruggine"
         }
       }
     }

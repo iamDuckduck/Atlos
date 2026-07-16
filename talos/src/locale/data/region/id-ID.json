@@ -4,7 +4,7 @@
     "sub": {
       "PL": {
         "name": "Dataran Tinggi Daya",
-        "short": "DT",
+        "short": "PL",
         "site": {
           "old_dorms": "Asrama Tua",
           "originium_power_plant": "Pembangkit Listrik Originium",
@@ -21,7 +21,7 @@
       },
       "OL": {
         "name": "Lodespring Asal",
-        "short": "LA",
+        "short": "OL",
         "site": {
           "originium_passage": "Lintasan Originium",
           "cradle_of_the_ages": "Buaian Zaman",
@@ -41,7 +41,7 @@
       },
       "OP": {
         "name": "Taman Sains Originium",
-        "short": "SO",
+        "short": "OP",
         "site": {
           "control_center": "Pusat Kontrol",
           "route_5": "Rute 5",
@@ -58,7 +58,7 @@
       },
       "AQ": {
         "name": "Tambang Batu Aburrey",
-        "short": "TB",
+        "short": "AQ",
         "site": {
           "quarry_entrance": "Pintu Masuk Tambang Batu",
           "refuse_stockpile": "Buangan Persediaan",
@@ -74,7 +74,7 @@
       },
       "VP": {
         "name": "Terusan Lembah",
-        "short": "TL",
+        "short": "VP",
         "site": {
           "valley_fort": "Benteng Lembah",
           "arsenal": "Gudang Senjata",
@@ -137,6 +137,7 @@
           "citizen_square": "Alun-alun Warga",
           "qijian_dais": "Podium Qijian",
           "long_pavilion": "Paviliun Panjang",
+          "wuling_north": "Utara Wuling",
           "main_pillar_office": "Kantor Pilar Utama",
           "restricted_area": "Area Terlarang",
           "tianjing_courtyard": "Halaman Tianjing",
@@ -150,8 +151,8 @@
         }
       },
       "JY": {
-        "name": "Lembah Jingyu",
-        "short": "LJ",
+        "name": "Jingyu Valley",
+        "short": "JY",
         "site": {
           "treadway": "Jalur Jalan",
           "ecological_research_station": "Stasiun Penelitian Ekologi",
@@ -169,7 +170,7 @@
         }
       },
       "QB": {
-        "name": "Kampung Bengteng Qingbo",
+        "name": "Kampung Benteng Qingbo",
         "short": "QB",
         "site": {
           "skyhold_ridge": "Punggungan Topang Langit",
@@ -181,7 +182,7 @@
       },
       "TA": {
         "name": "Area Uji Coba",
-        "short": "UC",
+        "short": "TA",
         "site": {
           "test_area_entrance": "Pintu Masuk Area Uji Coba",
           "type_c_auxiliary_pillar_area_1": "Area 1 Pilar Sokong Tipe C",
@@ -207,7 +208,7 @@
       },
       "SV": {
         "name": "Lembah Benteng Pedang",
-        "short": "LB",
+        "short": "SV",
         "site": {
           "leeward_trail": "Jalur Lindung Angin",
           "west_gorge_path": "Jalan Ngarai Barat",
@@ -219,13 +220,58 @@
           "old_blade_precipice": "Tebing Pedang Tua",
           "gorge_overhang": "Tebing Gantung Ngarai"
         }
+      },
+      "YL": {
+        "name": "Terusan Yinglung",
+        "short": "YL",
+        "site": {
+          "pass_side_canal": "Kanal Sisi Terusan",
+          "odd_pine_ridge": "Bukit Pinus Aneh",
+          "stonepond_cliff": "Tebing Kolam Batu",
+          "cloudscraper_flats": "Dataran Pencakar Awan",
+          "balepyre_dais": "Podium Balepyre",
+          "exclusion_gate": "Gerbang Eksklusi",
+          "ystf_main_camp": "Kamp Utama Satgassus Yinglung",
+          "detention_facility": "Sel Tahanan",
+          "xiranflow_cloudseeder_station": "Stasiun Pengisi Awan Xiranflow",
+          "abandoned_side_building": "Bangunan Samping Terbengkalai",
+          "ystf_filing_room": "Ruang Arsip Satgassus Yinglung",
+          "xunlung_ford": "Arungan Xunlung",
+          "yinglung_pass_raft_station": "Stasiun Rakit Terusan Yinglung",
+          "xiranflow_cloudseeder": "Pengisi Awan Xiranflow",
+          "device_pavilion": "Paviliun Perangkat"
+        }
+      },
+      "EZ": {
+        "name": "Zona Eksklusi Wuling Utara",
+        "short": "EZ",
+        "site": {
+          "sentry_base": "Pangkalan Jaga",
+          "tanjian_hall": "Balai Tanjian",
+          "xiranite_research_labs": "Lab Penelitian Xiranite",
+          "celestial_column": "Tonggak Langit",
+          "designated_urban_area": "Area Perkotaan Khusus",
+          "quelltide_levee": "Tanggul Quelltide",
+          "prep_zone": "Zona Persiapan",
+          "observation_deck_1": "Dek Pengamatan 1",
+          "tianshi_pillar_rd_center": "Pusat Litbang Pilar Tianshi",
+          "pillars_brace": "Penopang Pilar",
+          "cliffside_courtyard": "Halaman Tepi Tebing",
+          "waterworks_hub": "Hub Pengairan",
+          "ghost_mesa_test_site": "Lokasi Uji Coba Mesa Hantu",
+          "building_supplies_factory": "Pabrik Persediaan Bangunan",
+          "miasmas_end": "Ujung Miasma",
+          "wuling_vlr_upper_area": "CR Wuling, Area Atas",
+          "bureau_arsenal": "Gudang Senjata Biro",
+          "rust_mound": "Gundukan Karat"
+        }
       }
     }
   },
   "DJ": {
     "main": "PPO Dijiang",
     "sub": {
-      "name": "PPO Dijiang",
+      "name": "OMV Dijiang",
       "site": {
         "bridge": "Anjungan Komando",
         "reception_room": "Ruang Resepsionis",

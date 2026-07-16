@@ -1,6 +1,6 @@
 {
   "VL": {
-    "main": "Долина IV",
+    "main": "Долина IV",
     "sub": {
       "PL": {
         "name": "Плато Энергии",
@@ -132,11 +132,12 @@
           "tianshi_pillar_array": "Группа столбов Тяньши",
           "maintenance_zone": "Ремонтная зона",
           "institute_of_materials_science": "Институт материаловедения",
-          "bureau_of_applied_technologies": "Бюро прикладных технологий",
           "tianshi_bureau_academy": "Академия бюро Тяньши",
+          "bureau_of_applied_technologies": "Бюро прикладных технологий",
           "citizen_square": "Площадь Граждан",
           "qijian_dais": "Помост Цицзянь",
           "long_pavilion": "Длинный павильон",
+          "wuling_north": "Северный Улин",
           "main_pillar_office": "Кабинет в основном столбе",
           "restricted_area": "Закрытая область",
           "tianjing_courtyard": "Двор Тяньцзин",
@@ -181,7 +182,7 @@
       },
       "TA": {
         "name": "Область испытаний",
-        "short": "ОИ",
+        "short": "TA",
         "site": {
           "test_area_entrance": "Вход в область испытаний",
           "type_c_auxiliary_pillar_area_1": "Зона 1 вспомогательного столба типа C",
@@ -207,7 +208,7 @@
       },
       "SV": {
         "name": "Долина Залежи Клинков",
-        "short": "ЗК",
+        "short": "SV",
         "site": {
           "leeward_trail": "Подветренная тропа",
           "west_gorge_path": "Путь западного ущелья",
@@ -219,13 +220,58 @@
           "old_blade_precipice": "Обрыв старого клинка",
           "gorge_overhang": "Уступ над ущельем"
         }
+      },
+      "YL": {
+        "name": "Застава «Инлуна»",
+        "short": "YL",
+        "site": {
+          "pass_side_canal": "Канал у заставы",
+          "odd_pine_ridge": "Хребет Диковинной Сосны",
+          "stonepond_cliff": "Утес Каменного Пруда",
+          "cloudscraper_flats": "Облачная равнина",
+          "balepyre_dais": "Помост Погребального костра",
+          "exclusion_gate": "Ворота отчуждения",
+          "ystf_main_camp": "Главный лагерь спецопергруппы «Инлун»",
+          "detention_facility": "Изоляционное сооружение",
+          "xiranflow_cloudseeder_station": "Станция засева облаков",
+          "abandoned_side_building": "Заброшенное вспомогательное здание",
+          "ystf_filing_room": "Архив спецопергруппы «Инлун»",
+          "xunlung_ford": "Переправа Сюньлун",
+          "yinglung_pass_raft_station": "Причал на заставе «Инлуна»",
+          "xiranflow_cloudseeder": "Ксиранадовый засевщик облаков",
+          "device_pavilion": "Павильон устройств"
+        }
+      },
+      "EZ": {
+        "name": "Зона отчуждения северного Улина",
+        "short": "EZ",
+        "site": {
+          "sentry_base": "Дозорная база",
+          "tanjian_hall": "Зал Таньцзянь",
+          "xiranite_research_labs": "Лаборатории исследования ксиранита",
+          "celestial_column": "Небесная колонна",
+          "designated_urban_area": "Городская зона особого назначения",
+          "quelltide_levee": "Дамба Спокойного прилива",
+          "prep_zone": "Зона подготовки",
+          "observation_deck_1": "Смотровая площадка 1",
+          "tianshi_pillar_rd_center": "Научно-исследовательский центр столбов Тяньши",
+          "pillars_brace": "Опора столба",
+          "cliffside_courtyard": "Двор на краю утеса",
+          "waterworks_hub": "Центр водоснабжения",
+          "ghost_mesa_test_site": "Лаборатория на Теневом плато",
+          "building_supplies_factory": "Завод стройматериалов",
+          "miasmas_end": "Предел миазмов",
+          "wuling_vlr_upper_area": "Верхний уровень улинского разлома",
+          "bureau_arsenal": "Арсенал бюро",
+          "rust_mound": "Ржавый холм"
+        }
       }
     }
   },
   "DJ": {
     "main": "ОМК «Дицзян»",
     "sub": {
-      "name": "ОМК «Дицзян»",
+      "name": "OMV Dijiang",
       "site": {
         "bridge": "Мостик",
         "reception_room": "Приемная",

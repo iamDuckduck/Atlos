@@ -225,12 +225,45 @@
         "name": "应龙关",
         "short": "龙",
         "site": {
+          "pass_side_canal": "临关渠",
+          "odd_pine_ridge": "奇松岭",
+          "stonepond_cliff": "石涧崖",
+          "cloudscraper_flats": "探云坪",
+          "balepyre_dais": "烽燧台",
+          "exclusion_gate": "禁门",
+          "ystf_main_camp": "应龙主营",
+          "detention_facility": "禁室监牢",
+          "xiranflow_cloudseeder_station": "盈天台建设站",
+          "abandoned_side_building": "废弃偏楼",
+          "ystf_filing_room": "应龙档案室",
+          "xunlung_ford": "寻龙渡",
+          "yinglung_pass_raft_station": "应龙关渡口",
+          "xiranflow_cloudseeder": "盈天台",
+          "device_pavilion": "置器阁"
         }
       },
       "EZ": {
         "name": "北部禁区",
         "short": "禁",
         "site": {
+          "sentry_base": "前哨基地",
+          "tanjian_hall": "谈剑堂",
+          "xiranite_research_labs": "息壤研究所",
+          "celestial_column": "天柱",
+          "designated_urban_area": "城建区",
+          "quelltide_levee": "平波堤",
+          "prep_zone": "整备场",
+          "observation_deck_1": "一号观测台",
+          "tianshi_pillar_rd_center": "天师桩研发中心",
+          "pillars_brace": "镇桩台",
+          "cliffside_courtyard": "近崖草庭",
+          "waterworks_hub": "水利枢纽",
+          "ghost_mesa_test_site": "幽台试验场",
+          "building_supplies_factory": "援建材料厂",
+          "miasmas_end": "断瘴廊",
+          "wuling_vlr_upper_area": "武陵甚大裂隙上层",
+          "bureau_arsenal": "选剑局器物库",
+          "rust_mound": "锈器堆"
         }
       }
     }
@@ -238,7 +271,7 @@
   "DJ": {
     "main": "O.M.V.帝江号",
     "sub": {
-      "name": "O.M.V.帝江号",
+      "name": "OMV Dijiang",
       "site": {
         "bridge": "舰桥",
         "reception_room": "会客室",

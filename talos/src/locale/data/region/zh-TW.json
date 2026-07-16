@@ -220,13 +220,58 @@
           "old_blade_precipice": "古劍崖",
           "gorge_overhang": "懸谷台"
         }
+      },
+      "YL": {
+        "name": "應龍關",
+        "short": "龍",
+        "site": {
+          "pass_side_canal": "臨關渠",
+          "odd_pine_ridge": "奇松嶺",
+          "stonepond_cliff": "石澗崖",
+          "cloudscraper_flats": "探雲坪",
+          "balepyre_dais": "烽燧台",
+          "exclusion_gate": "禁門",
+          "ystf_main_camp": "應龍主營",
+          "detention_facility": "禁室監牢",
+          "xiranflow_cloudseeder_station": "盈天台建設站",
+          "abandoned_side_building": "廢棄偏樓",
+          "ystf_filing_room": "應龍檔案室",
+          "xunlung_ford": "尋龍渡",
+          "yinglung_pass_raft_station": "應龍關渡口",
+          "xiranflow_cloudseeder": "盈天台",
+          "device_pavilion": "置器閣"
+        }
+      },
+      "EZ": {
+        "name": "北部禁區",
+        "short": "禁",
+        "site": {
+          "sentry_base": "前哨基地",
+          "tanjian_hall": "談劍堂",
+          "xiranite_research_labs": "息壤研究所",
+          "celestial_column": "天柱",
+          "designated_urban_area": "城建區",
+          "quelltide_levee": "平波堤",
+          "prep_zone": "整備場",
+          "observation_deck_1": "一號觀測台",
+          "tianshi_pillar_rd_center": "天師樁研發中心",
+          "pillars_brace": "鎮樁台",
+          "cliffside_courtyard": "近崖草庭",
+          "waterworks_hub": "水利樞紐",
+          "ghost_mesa_test_site": "幽台試驗場",
+          "building_supplies_factory": "援建材料廠",
+          "miasmas_end": "斷瘴廊",
+          "wuling_vlr_upper_area": "武陵甚大裂隙上層",
+          "bureau_arsenal": "選劍局器物庫",
+          "rust_mound": "鏽器堆"
+        }
       }
     }
   },
   "DJ": {
     "main": "O.M.V.帝江號",
     "sub": {
-      "name": "O.M.V.帝江號",
+      "name": "OMV Dijiang",
       "site": {
         "bridge": "艦橋",
         "reception_room": "會客室",

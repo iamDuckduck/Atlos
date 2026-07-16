@@ -32,6 +32,12 @@
             "Repair Logic": {
                 "noFrame": true
             },
+            "Talosite": {
+                "noFrame": true
+            },
+            "Balloon": {
+                "noFrame": true
+            },
             "Gather": {
                 "noFrame": true
             },
@@ -81,6 +87,9 @@
         },
         "exploration": {
             "Guiding Butterflies": {
+                "noFrame": true
+            },
+            "Aero-Salvage": {
                 "noFrame": true
             },
             "Pressure Plate": {},
@@ -143,6 +152,12 @@
                 "tier": "1"
             },
             "Cuprium Spot": {
+                "subIcon": "ore_spot"
+            },
+            "Inergen Spot": {
+                "subIcon": "ore_spot"
+            },
+            "Xiragen Spot": {
                 "subIcon": "ore_spot"
             },
             "Clean Water": {
@@ -221,6 +236,10 @@
                 "subIcon": "plant_spot",
                 "tier": "5"
             },
+            "Talos Cap Spot": {
+                "subIcon": "plant_spot",
+                "tier": "5"
+            },
 
             "Kalkodendra Spot": {
                 "subIcon": "plant_spot",
@@ -242,6 +261,10 @@
                 "subIcon": "plant_spot",
                 "tier": "5"
             },
+            "Crimson Spearleaf Spot": {
+                "subIcon": "plant_spot",
+                "tier": "5"
+            },
 
             "Kalkonyx Spot": {
                 "subIcon": "mine_spot",
@@ -260,6 +283,10 @@
                 "tier": "5"
             },
             "Wulingstone Spot": {
+                "subIcon": "mine_spot",
+                "tier": "5"
+            },
+            "Protocolith Spot": {
                 "subIcon": "mine_spot",
                 "tier": "5"
             }
@@ -482,7 +509,7 @@
                 "faction": "Aggeloi",
                 "drop": "Natural Sparkling Water"
             },
-             "Tidewalker δ": {
+            "Tidewalker δ": {
                 "tier": "Elite",
                 "faction": "Aggeloi",
                 "drop": "Black Treacle"
@@ -580,6 +607,52 @@
             "Ereignis": {
                 "tier": "unknown",
                 "faction": "Landbreakers"
+            },
+
+            "Tuskbeast Blightshade": {
+                "tier": "Common",
+                "faction": "Blightshade",
+                "drop": ""
+            },
+            "YSTF Vanguard Blightshade": {
+                "tier": "Common",
+                "faction": "Blightshade",
+                "drop": ""
+            },
+            "YSTF Elite Blightshade": {
+                "tier": "Elite",
+                "faction": "Blightshade",
+                "drop": ""
+            },
+            "Quillbeast Blightshade": {
+                "tier": "Common",
+                "faction": "Blightshade",
+                "drop": ""
+            },
+            "Rakerbeast Blightshade": {
+                "tier": "Common",
+                "faction": "Blightshade",
+                "drop": ""
+            },
+            "YSTF Glaiver Blightshade": {
+                "tier": "Common",
+                "faction": "Blightshade",
+                "drop": ""
+            },
+            "YSTF Captain Blightshade": {
+                "tier": "Elite",
+                "faction": "Blightshade",
+                "drop": ""
+            },
+            "Blitzcrash Blightshade": {
+                "tier": "Elite",
+                "faction": "Blightshade",
+                "drop": ""
+            },
+            "Alleikhreos, Chiliarch": {
+                "tier": "Common",
+                "faction": "Blightshade",
+                "drop": ""
             },
 
             "Tunneling Nidwyrm": {

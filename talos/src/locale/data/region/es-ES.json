@@ -137,6 +137,7 @@
           "citizen_square": "Plaza Ciudadana",
           "qijian_dais": "Tarima Qijian",
           "long_pavilion": "Pabellón Largo",
+          "wuling_north": "Wuling Norte",
           "main_pillar_office": "Oficina principal de pilares",
           "restricted_area": "Área restringida",
           "tianjing_courtyard": "Patio de Tianjing",
@@ -181,7 +182,7 @@
       },
       "TA": {
         "name": "Área de pruebas",
-        "short": "ÁP",
+        "short": "TA",
         "site": {
           "test_area_entrance": "Entrada al Área de pruebas",
           "type_c_auxiliary_pillar_area_1": "Área 1 de pilares auxiliares de tipo C",
@@ -207,7 +208,7 @@
       },
       "SV": {
         "name": "Valle Ocultaespadas",
-        "short": "VO",
+        "short": "SV",
         "site": {
           "leeward_trail": "Sendero de sotavento",
           "west_gorge_path": "Sendero del desfiladero oeste",
@@ -219,13 +220,58 @@
           "old_blade_precipice": "Precipicio de la hoja antigua",
           "gorge_overhang": "Saliente del desfiladero"
         }
+      },
+      "YL": {
+        "name": "Paso de Yinglung",
+        "short": "YL",
+        "site": {
+          "pass_side_canal": "Canal lateral del paso",
+          "odd_pine_ridge": "Cresta de pinos raros",
+          "stonepond_cliff": "Risco Estanque Pétreo",
+          "cloudscraper_flats": "Llanuras rascacielos",
+          "balepyre_dais": "Plataforma piracima",
+          "exclusion_gate": "Puerta de exclusión",
+          "ystf_main_camp": "Campamento base EFEY",
+          "detention_facility": "Centro de detención",
+          "xiranflow_cloudseeder_station": "Estación del Siembranubes de Flujo Xiran",
+          "abandoned_side_building": "Anexo abandonado",
+          "ystf_filing_room": "Sala de archivos del EFEY",
+          "xunlung_ford": "Vado de Xunlung",
+          "yinglung_pass_raft_station": "Estación de balsas del Paso de Yinglung",
+          "xiranflow_cloudseeder": "Siembranubes de Flujo Xiran",
+          "device_pavilion": "Pabellón de dispositivos"
+        }
+      },
+      "EZ": {
+        "name": "Zona de exclusión norte de Wuling",
+        "short": "EZ",
+        "site": {
+          "sentry_base": "Base Centinela",
+          "tanjian_hall": "Salón tanjian",
+          "xiranite_research_labs": "Laboratorios de investigación de Xiranita",
+          "celestial_column": "Columna celestial",
+          "designated_urban_area": "Área urbana designada",
+          "quelltide_levee": "Dique de Quelltide",
+          "prep_zone": "Zona de preparación",
+          "observation_deck_1": "Mirador 1",
+          "tianshi_pillar_rd_center": "Centro de I+D del Pilar de Tianshi",
+          "pillars_brace": "Plataforma de los pilares",
+          "cliffside_courtyard": "Patio del acantilado",
+          "waterworks_hub": "Centro Hidráulico",
+          "ghost_mesa_test_site": "Sitio Meseta Fantasma",
+          "building_supplies_factory": "Fábrica de materiales",
+          "miasmas_end": "Fin del Miasma",
+          "wuling_vlr_upper_area": "Zona sup. GG de Wuling",
+          "bureau_arsenal": "Arsenal de la Agencia",
+          "rust_mound": "Montículo oxidado"
+        }
       }
     }
   },
   "DJ": {
     "main": "NMO Dijiang",
     "sub": {
-      "name": "NMO Dijiang",
+      "name": "OMV Dijiang",
       "site": {
         "bridge": "Puente",
         "reception_room": "Sala de recepción",

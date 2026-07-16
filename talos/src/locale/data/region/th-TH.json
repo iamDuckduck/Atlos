@@ -137,6 +137,7 @@
           "citizen_square": "จัตุรัส​พลเมือง",
           "qijian_dais": "เวที​ชี่​เจียน",
           "long_pavilion": "ศาลา​ยาว",
+          "wuling_north": "ด้าน​เหนือ​ของ​อู่​หลิง",
           "main_pillar_office": "สำนักงาน​เสาหลัก",
           "restricted_area": "พื้นที่​หวงห้าม",
           "tianjing_courtyard": "ลาน​เทียน​จิง",
@@ -150,7 +151,7 @@
         }
       },
       "JY": {
-        "name": "หุบเขา​จิง​หยู",
+        "name": "Jingyu Valley",
         "short": "JY",
         "site": {
           "treadway": "ทางเดิน",
@@ -219,13 +220,58 @@
           "old_blade_precipice": "ชะง่อน​ผา​คม​ดาบ​โบราณ",
           "gorge_overhang": "เพิงผา​หุบเขา"
         }
+      },
+      "YL": {
+        "name": "ทางผ่าน​ห​ยิง​หลง",
+        "short": "YL",
+        "site": {
+          "pass_side_canal": "คลอง​ริม​ด่าน",
+          "odd_pine_ridge": "ทิวสน​ประหลาด",
+          "stonepond_cliff": "ชะง่อน​ผา​สระ​หิน",
+          "cloudscraper_flats": "ที่ราบสูง​เสียดฟ้า",
+          "balepyre_dais": "แท่น​เพลิง​ผลาญ",
+          "exclusion_gate": "ประตู​เขต​พิเศษ",
+          "ystf_main_camp": "ค่าย​หลัก​ของ​ YSTF",
+          "detention_facility": "สถานกักกัน",
+          "xiranflow_cloudseeder_station": "สถานี​โปรย​เมฆ​ซี​เรน​โฟลว์",
+          "abandoned_side_building": "ตึกแถว​ร้าง",
+          "ystf_filing_room": "ห้อง​เอกสาร​ของ​ YSTF",
+          "xunlung_ford": "ท่า​ข้าม​ซ​วิ่น​หลง",
+          "yinglung_pass_raft_station": "ท่า​แพ​ทางผ่าน​ห​ยิง​หลง",
+          "xiranflow_cloudseeder": "เครื่อง​โปรย​เมฆ​ซี​เรน​โฟลว์",
+          "device_pavilion": "ศาลา​อุปกรณ์"
+        }
+      },
+      "EZ": {
+        "name": "เขต​พิเศษ​อู่​หลิง​เหนือ",
+        "short": "EZ",
+        "site": {
+          "sentry_base": "ฐาน​เฝ้า​ระวัง",
+          "tanjian_hall": "หอ​ถัน​เจียน",
+          "xiranite_research_labs": "ห้อง​วิจัย​ซี​เรน​ไนต์",
+          "celestial_column": "เสา​ค้ำฟ้า",
+          "designated_urban_area": "เขตเมือง​ที่​กำหนด",
+          "quelltide_levee": "คัน​กั้น​น้ำ​เค​วล​ล์​ไทด์",
+          "prep_zone": "โซน​เตรียมการ",
+          "observation_deck_1": "จุด​สังเกตการณ์​ 1",
+          "tianshi_pillar_rd_center": "ศูนย์​วิจัยและพัฒนา​เสา​เทียน​ซือ",
+          "pillars_brace": "ค้ำ​ยัน​เสาหลัก",
+          "cliffside_courtyard": "ลาน​ริม​ผา",
+          "waterworks_hub": "ศูนย์กลาง​ระบบ​ประปา",
+          "ghost_mesa_test_site": "พื้นที่​ทดสอบ​โกส​ต์​เม​ซา",
+          "building_supplies_factory": "โรงงาน​วัสดุก่อสร้าง",
+          "miasmas_end": "สุดเขต​หมอก​ควัน",
+          "wuling_vlr_upper_area": "อู่​หลิง​ VLR โซน​บน",
+          "bureau_arsenal": "คลังแสง​ของ​สำนัก",
+          "rust_mound": "เนิน​รัส"
+        }
       }
     }
   },
   "DJ": {
     "main": "OMV ตี้​เจียง",
     "sub": {
-      "name": "OMV ตี้​เจียง",
+      "name": "OMV Dijiang",
       "site": {
         "bridge": "สะพาน",
         "reception_room": "ห้อง​รับรอง​แขก",

@@ -97,6 +97,24 @@
         },
         "noFrame": true
     },
+    "talosite": {
+        "key": "talosite",
+        "name": "Talosite",
+        "category": {
+            "main": "poi",
+            "sub": "collection"
+        },
+        "noFrame": true
+    },
+    "balloon": {
+        "key": "balloon",
+        "name": "Balloon",
+        "category": {
+            "main": "poi",
+            "sub": "collection"
+        },
+        "noFrame": true
+    },
     "gather": {
         "key": "gather",
         "name": "Gather",
@@ -397,6 +415,15 @@
         },
         "noFrame": true
     },
+    "aero_salvage": {
+        "key": "aero_salvage",
+        "name": "Aero-Salvage",
+        "category": {
+            "main": "poi",
+            "sub": "exploration"
+        },
+        "noFrame": true
+    },
     "pressure_plate": {
         "key": "pressure_plate",
         "name": "Pressure Plate",
@@ -590,6 +617,24 @@
     "cuprium_spot": {
         "key": "cuprium_spot",
         "name": "Cuprium Spot",
+        "category": {
+            "main": "resource",
+            "sub": "natural"
+        },
+        "subIcon": "ore_spot"
+    },
+    "inergen_spot": {
+        "key": "inergen_spot",
+        "name": "Inergen Spot",
+        "category": {
+            "main": "resource",
+            "sub": "natural"
+        },
+        "subIcon": "ore_spot"
+    },
+    "xiragen_spot": {
+        "key": "xiragen_spot",
+        "name": "Xiragen Spot",
         "category": {
             "main": "resource",
             "sub": "natural"
@@ -808,6 +853,16 @@
         "subIcon": "plant_spot",
         "tier": "5"
     },
+    "talos_cap_spot": {
+        "key": "talos_cap_spot",
+        "name": "Talos Cap Spot",
+        "category": {
+            "main": "resource",
+            "sub": "valuable"
+        },
+        "subIcon": "plant_spot",
+        "tier": "5"
+    },
     "kalkodendra_spot": {
         "key": "kalkodendra_spot",
         "name": "Kalkodendra Spot",
@@ -858,6 +913,16 @@
         "subIcon": "plant_spot",
         "tier": "5"
     },
+    "crimson_spearleaf_spot": {
+        "key": "crimson_spearleaf_spot",
+        "name": "Crimson Spearleaf Spot",
+        "category": {
+            "main": "resource",
+            "sub": "valuable"
+        },
+        "subIcon": "plant_spot",
+        "tier": "5"
+    },
     "kalkonyx_spot": {
         "key": "kalkonyx_spot",
         "name": "Kalkonyx Spot",
@@ -901,6 +966,16 @@
     "wulingstone_spot": {
         "key": "wulingstone_spot",
         "name": "Wulingstone Spot",
+        "category": {
+            "main": "resource",
+            "sub": "valuable"
+        },
+        "subIcon": "mine_spot",
+        "tier": "5"
+    },
+    "protocolith_spot": {
+        "key": "protocolith_spot",
+        "name": "Protocolith Spot",
         "category": {
             "main": "resource",
             "sub": "valuable"
@@ -1639,6 +1714,105 @@
         "tier": "unknown",
         "faction": "Landbreakers"
     },
+    "tuskbeast_blightshade": {
+        "key": "tuskbeast_blightshade",
+        "name": "Tuskbeast Blightshade",
+        "category": {
+            "main": "enemy",
+            "sub": "mob"
+        },
+        "tier": "Common",
+        "faction": "Blightshade",
+        "drop": ""
+    },
+    "ystf_vanguard_blightshade": {
+        "key": "ystf_vanguard_blightshade",
+        "name": "YSTF Vanguard Blightshade",
+        "category": {
+            "main": "enemy",
+            "sub": "mob"
+        },
+        "tier": "Common",
+        "faction": "Blightshade",
+        "drop": ""
+    },
+    "ystf_elite_blightshade": {
+        "key": "ystf_elite_blightshade",
+        "name": "YSTF Elite Blightshade",
+        "category": {
+            "main": "enemy",
+            "sub": "mob"
+        },
+        "tier": "Elite",
+        "faction": "Blightshade",
+        "drop": ""
+    },
+    "quillbeast_blightshade": {
+        "key": "quillbeast_blightshade",
+        "name": "Quillbeast Blightshade",
+        "category": {
+            "main": "enemy",
+            "sub": "mob"
+        },
+        "tier": "Common",
+        "faction": "Blightshade",
+        "drop": ""
+    },
+    "rakerbeast_blightshade": {
+        "key": "rakerbeast_blightshade",
+        "name": "Rakerbeast Blightshade",
+        "category": {
+            "main": "enemy",
+            "sub": "mob"
+        },
+        "tier": "Common",
+        "faction": "Blightshade",
+        "drop": ""
+    },
+    "ystf_glaiver_blightshade": {
+        "key": "ystf_glaiver_blightshade",
+        "name": "YSTF Glaiver Blightshade",
+        "category": {
+            "main": "enemy",
+            "sub": "mob"
+        },
+        "tier": "Common",
+        "faction": "Blightshade",
+        "drop": ""
+    },
+    "ystf_captain_blightshade": {
+        "key": "ystf_captain_blightshade",
+        "name": "YSTF Captain Blightshade",
+        "category": {
+            "main": "enemy",
+            "sub": "mob"
+        },
+        "tier": "Elite",
+        "faction": "Blightshade",
+        "drop": ""
+    },
+    "blitzcrash_blightshade": {
+        "key": "blitzcrash_blightshade",
+        "name": "Blitzcrash Blightshade",
+        "category": {
+            "main": "enemy",
+            "sub": "mob"
+        },
+        "tier": "Elite",
+        "faction": "Blightshade",
+        "drop": ""
+    },
+    "alleikhreos_chiliarch": {
+        "key": "alleikhreos_chiliarch",
+        "name": "Alleikhreos, Chiliarch",
+        "category": {
+            "main": "enemy",
+            "sub": "mob"
+        },
+        "tier": "Common",
+        "faction": "Blightshade",
+        "drop": ""
+    },
     "tunneling_nidwyrm": {
         "key": "tunneling_nidwyrm",
         "name": "Tunneling Nidwyrm",
@@ -1907,7 +2081,7 @@
             "sub": "archives"
         },
         "ctgr": "collection",
-        "icon": "yujian"
+        "icon": "prts_sm2l6m1_yujian"
     },
     "nar_collection_map02_95_1": {
         "key": "nar_collection_map02_95_1",
@@ -2201,6 +2375,102 @@
         "ctgr": "digital",
         "icon": "pad"
     },
+    "nar_digital_map02_14001_1": {
+        "key": "nar_digital_map02_14001_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_007prts"
+    },
+    "nar_digital_map02_14001_2": {
+        "key": "nar_digital_map02_14001_2",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_007prts"
+    },
+    "nar_digital_map02_14001_3": {
+        "key": "nar_digital_map02_14001_3",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_007prts"
+    },
+    "nar_digital_map02_14002_1": {
+        "key": "nar_digital_map02_14002_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_14006_1": {
+        "key": "nar_digital_map02_14006_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_007prts"
+    },
+    "nar_digital_map02_14009_1": {
+        "key": "nar_digital_map02_14009_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_007prts"
+    },
+    "nar_digital_map02_14010_1": {
+        "key": "nar_digital_map02_14010_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_14011_1": {
+        "key": "nar_digital_map02_14011_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_14016_1": {
+        "key": "nar_digital_map02_14016_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_14024_1": {
+        "key": "nar_digital_map02_14024_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "prts_read_electronicscreen",
+        "rsch": "research_008prts"
+    },
     "nar_digital_map02_17_1": {
         "key": "nar_digital_map02_17_1",
         "category": {
@@ -2347,6 +2617,24 @@
     },
     "nar_media_map02_13005_1": {
         "key": "nar_media_map02_13005_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map02_14008_1": {
+        "key": "nar_media_map02_14008_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map02_14032_1": {
+        "key": "nar_media_map02_14032_1",
         "category": {
             "main": "files",
             "sub": "archives"
@@ -3321,6 +3609,208 @@
         },
         "ctgr": "paper",
         "icon": "letter"
+    },
+    "nar_paper_map02_14003_1": {
+        "key": "nar_paper_map02_14003_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14004_1": {
+        "key": "nar_paper_map02_14004_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook",
+        "rsch": "research_007prts"
+    },
+    "nar_paper_map02_14005_1": {
+        "key": "nar_paper_map02_14005_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14007_1": {
+        "key": "nar_paper_map02_14007_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14013_1": {
+        "key": "nar_paper_map02_14013_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14013_2": {
+        "key": "nar_paper_map02_14013_2",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14014_1": {
+        "key": "nar_paper_map02_14014_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14017_1": {
+        "key": "nar_paper_map02_14017_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "exbook"
+    },
+    "nar_paper_map02_14018_1": {
+        "key": "nar_paper_map02_14018_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14019_1": {
+        "key": "nar_paper_map02_14019_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook",
+        "rsch": "research_008prts"
+    },
+    "nar_paper_map02_14020_1": {
+        "key": "nar_paper_map02_14020_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "letter"
+    },
+    "nar_paper_map02_14021_1": {
+        "key": "nar_paper_map02_14021_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "exbook"
+    },
+    "nar_paper_map02_14023_1": {
+        "key": "nar_paper_map02_14023_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14025_1": {
+        "key": "nar_paper_map02_14025_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14025_2": {
+        "key": "nar_paper_map02_14025_2",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14025_3": {
+        "key": "nar_paper_map02_14025_3",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14026_1": {
+        "key": "nar_paper_map02_14026_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook",
+        "rsch": "research_008prts"
+    },
+    "nar_paper_map02_14027_1": {
+        "key": "nar_paper_map02_14027_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14028_1": {
+        "key": "nar_paper_map02_14028_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook",
+        "rsch": "research_008prts"
+    },
+    "nar_paper_map02_14029_1": {
+        "key": "nar_paper_map02_14029_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14030_1": {
+        "key": "nar_paper_map02_14030_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14031_1": {
+        "key": "nar_paper_map02_14031_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
     },
     "nar_paper_map02_14_1": {
         "key": "nar_paper_map02_14_1",

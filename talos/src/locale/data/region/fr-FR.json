@@ -3,8 +3,8 @@
     "main": "Vallée-IV",
     "sub": {
       "PL": {
-        "name": "Plateau Électrique",
-        "short": "PÉ",
+        "name": "Plateau électrique",
+        "short": "PL",
         "site": {
           "old_dorms": "Vieux dortoirs",
           "originium_power_plant": "Centrale électrique d'originium",
@@ -20,8 +20,8 @@
         }
       },
       "OL": {
-        "name": "Veine Originelle",
-        "short": "VO",
+        "name": "Veine originelle",
+        "short": "OL",
         "site": {
           "originium_passage": "Passage d'originium",
           "cradle_of_the_ages": "Berceau des millénaires",
@@ -41,7 +41,7 @@
       },
       "OP": {
         "name": "Parc des sciences de l'originium",
-        "short": "PO",
+        "short": "OP",
         "site": {
           "control_center": "Centre de contrôle",
           "route_5": "Route 5",
@@ -58,7 +58,7 @@
       },
       "AQ": {
         "name": "Carrière d'Aburrey",
-        "short": "CA",
+        "short": "AQ",
         "site": {
           "quarry_entrance": "Entrée de la carrière",
           "refuse_stockpile": "Pile de déchets",
@@ -74,7 +74,7 @@
       },
       "VP": {
         "name": "Col de la Vallée",
-        "short": "CV",
+        "short": "VP",
         "site": {
           "valley_fort": "Forteresse de la Vallée",
           "arsenal": "Arsenal",
@@ -137,6 +137,7 @@
           "citizen_square": "Place citoyenne",
           "qijian_dais": "Estrade de Qijian",
           "long_pavilion": "Pavillon long",
+          "wuling_north": "Wuling Nord",
           "main_pillar_office": "Bureau du pilier principal",
           "restricted_area": "Zone interdite",
           "tianjing_courtyard": "Cour de Tianjing",
@@ -150,7 +151,7 @@
         }
       },
       "JY": {
-        "name": "Vallée de Jingyu",
+        "name": "Jingyu Valley",
         "short": "JY",
         "site": {
           "treadway": "Marchemin",
@@ -181,7 +182,7 @@
       },
       "TA": {
         "name": "Zone de test",
-        "short": "ZT",
+        "short": "TA",
         "site": {
           "test_area_entrance": "Entrée de la zone de test",
           "type_c_auxiliary_pillar_area_1": "Pilier auxiliaire de type C - Zone 1",
@@ -207,7 +208,7 @@
       },
       "SV": {
         "name": "Val du caveau des lames",
-        "short": "VC",
+        "short": "SV",
         "site": {
           "leeward_trail": "Sentier sous le vent",
           "west_gorge_path": "Chemin de la gorge occidentale",
@@ -219,13 +220,58 @@
           "old_blade_precipice": "À-pic de la vieille lame",
           "gorge_overhang": "Surplomb de la gorge"
         }
+      },
+      "YL": {
+        "name": "Col de Yinglung",
+        "short": "YL",
+        "site": {
+          "pass_side_canal": "Canal près du col",
+          "odd_pine_ridge": "Crête des pins insolites",
+          "stonepond_cliff": "Falaise de l'étang de pierre",
+          "cloudscraper_flats": "Gratte-nuages",
+          "balepyre_dais": "Tour purificatrice - Estrade",
+          "exclusion_gate": "Zone d'exclusion",
+          "ystf_main_camp": "Camp principal des FSY",
+          "detention_facility": "Centre de détention",
+          "xiranflow_cloudseeder_station": "Station du séminimbus à Xiranflux",
+          "abandoned_side_building": "Annexe abandonnée",
+          "ystf_filing_room": "Salle d'archives des FSY",
+          "xunlung_ford": "Gué de Xunlung",
+          "yinglung_pass_raft_station": "Col de Yinglung - Quai",
+          "xiranflow_cloudseeder": "Séminimbus à Xiranflux",
+          "device_pavilion": "Pavillon aux appareils"
+        }
+      },
+      "EZ": {
+        "name": "Zone d'exclusion du nord de Wuling",
+        "short": "EZ",
+        "site": {
+          "sentry_base": "Base d'éclaireurs",
+          "tanjian_hall": "Salle de Tanjian",
+          "xiranite_research_labs": "Laboratoire de recherche sur la xiranite",
+          "celestial_column": "Colonne céleste",
+          "designated_urban_area": "Zone franche urbaine",
+          "quelltide_levee": "Digue de Calmer",
+          "prep_zone": "Zone de préparation",
+          "observation_deck_1": "Pont d'observation 1",
+          "tianshi_pillar_rd_center": "Centre de R&D du pilier des Tianshi",
+          "pillars_brace": "Entretoise du pilier",
+          "cliffside_courtyard": "Cour de la falaise",
+          "waterworks_hub": "Hub hydraulique",
+          "ghost_mesa_test_site": "Site d'essais du Plateau fantôme",
+          "building_supplies_factory": "Usine de matériaux de construction",
+          "miasmas_end": "Lisière des miasmes",
+          "wuling_vlr_upper_area": "FI de Wuling",
+          "bureau_arsenal": "Arsenal du Bureau",
+          "rust_mound": "Mont rouillé"
+        }
       }
     }
   },
   "DJ": {
     "main": "VMO Dijiang",
     "sub": {
-      "name": "VMO Dijiang",
+      "name": "OMV Dijiang",
       "site": {
         "bridge": "Pont",
         "reception_room": "Salle de réception",

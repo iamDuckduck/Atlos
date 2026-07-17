@@ -35,7 +35,8 @@
     "label": {
       "note": "Not",
       "url": "Bağlantı",
-      "comments": "Yorumlar"
+      "comments": "Yorumlar",
+      "collectionRate": "Toplama oranı"
     },
     "tabs": {
       "collectAll": "Aynı türdekilerin tümünü tamamlandı olarak işaretle",
@@ -49,6 +50,7 @@
     "readFullText": "Tam metni okumak için tıklayın.",
     "share": "Bu işaretçi için paylaşılabilir bağlantıyı kopyala.",
     "copied": "Bağlantı kopyalandı",
+    "collectionRateSource": "Sunucu genelindeki toplama oranı {nums} – OEM Cloud istatistikleri",
     "viewer": {
       "author": "YAZAR",
       "uploadedAt": "Yüklenme Tarihi",

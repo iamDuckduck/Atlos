@@ -35,7 +35,8 @@
     "label": {
       "note": "Nota",
       "url": "Link",
-      "comments": "Commenti"
+      "comments": "Commenti",
+      "collectionRate": "Tasso di raccolta"
     },
     "tabs": {
       "collectAll": "Segna tutti i punti uguali come completati",
@@ -49,6 +50,7 @@
     "readFullText": "Clicca per leggere il testo completo.",
     "share": "Copia il link condivisibile di questo punto.",
     "copied": "Link copiato",
+    "collectionRateSource": "Il tasso di raccolta globale è {nums} – Statistiche da OEM Cloud",
     "viewer": {
       "author": "Autore",
       "uploadedAt": "Caricato il",

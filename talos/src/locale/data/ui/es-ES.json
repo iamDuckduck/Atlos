@@ -35,7 +35,8 @@
     "label": {
       "note": "Nota",
       "url": "Enlace",
-      "comments": "Comentarios"
+      "comments": "Comentarios",
+      "collectionRate": "Tasa de recolección"
     },
     "tabs": {
       "collectAll": "Marcar todos los del mismo tipo como completados",
@@ -49,6 +50,7 @@
     "readFullText": "Haz clic para leer el texto completo.",
     "share": "Copiar enlace compartible de este punto.",
     "copied": "Enlace copiado",
+    "collectionRateSource": "La tasa global de recolección es del {nums} – Estadísticas de OEM Cloud",
     "viewer": {
       "author": "Autor",
       "uploadedAt": "Subido el",

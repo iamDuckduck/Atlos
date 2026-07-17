@@ -35,7 +35,8 @@
     "label": {
       "note": "Note",
       "url": "URL",
-      "comments": "Top Comment"
+      "comments": "Top Comment",
+      "collectionRate": "Collected"
     },
     "tabs": {
       "collectAll": "Mark all as completed",
@@ -49,6 +50,7 @@
     "readFullText": "Click to read full text.",
     "share": "Copy shareable link for this marker.",
     "copied": "Link copied",
+    "collectionRateSource": "Global collection rate is {nums} – Statistics from OEM Cloud",
     "viewer": {
       "author": "AUTHOR",
       "uploadedAt": "Uploaded At",

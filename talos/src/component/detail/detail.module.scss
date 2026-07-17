@@ -552,6 +552,63 @@
         }
     }
 
+    .collectionRateDivider {
+        --collection-rate: 0;
+        --collection-rate-color: var(--detail-heading);
+        --collection-rate-color: color-mix(
+            in srgb,
+            #{$primary-accent-5} calc((1 - var(--collection-rate)) * 100%),
+            var(--detail-heading)
+        );
+
+        margin-bottom: 0.25rem;
+        cursor: help;
+
+        &::after {
+            content: none;
+            display: none;
+        }
+
+        .collectionRateLine {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .collectionRateProgress {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            width: calc(var(--collection-rate) * 100%);
+            min-width: max-content;
+            max-width: 100%;
+            transition: width 0.3s $standard-curve;
+        }
+
+        .collectionRateBar {
+            flex: 1 1 auto;
+            min-width: 4px;
+            height: 1.5px;
+            background: var(--collection-rate-color);
+            transition: background-color 0.3s $standard-curve;
+        }
+
+        .collectionRateValue {
+            flex: 0 0 auto;
+            color: var(--collection-rate-color);
+            font-family: "Novecento Medium", sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            line-height: 1;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+            transition: color 0.3s $standard-curve;
+        }
+
+        &[data-loading='true'] .collectionRateLine {
+            opacity: 0.55;
+        }
+    }
+
     .detailAction {
         font-family: 'HMSans_EN', HMSans, sans-serif;
         font-weight: 400;

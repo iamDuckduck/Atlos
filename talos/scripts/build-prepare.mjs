@@ -13,6 +13,7 @@ const envDeploy = process.env.npm_config_deploy;
 const shouldDeploy = argDeploy || isTruthyFlag(envDeploy);
 const isCi = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true';
 const argSkipSubset = process.argv.includes('--skip-subset') || process.argv.includes('--skip-subset-fonts');
+const argSkipSeo = process.argv.includes('--skip-seo');
 const envSkipSubsetArg = process.env.npm_config_skip_subset;
 const envSkipSubsetFontsArg = process.env.npm_config_skip_subset_fonts;
 const envSkipSubset = process.env.SKIP_SUBSET_FONTS;
@@ -30,7 +31,11 @@ if (shouldSkipSubset) {
 run('pnpm run build:marker-stats');
 run('pnpm run build:marker-version-new');
 run('pnpm run build:search-index');
-run('pnpm run build:seo:pages');
+if (argSkipSeo) {
+  console.log('\nSkipping shared SEO page generation.');
+} else {
+  run('pnpm run build:seo:pages');
+}
 
 if (shouldDeploy) {
   run('pnpm run worker:deploy');

@@ -35,7 +35,8 @@
     "label": {
       "note": "Anteckning",
       "url": "Länk",
-      "comments": "Kommentarer"
+      "comments": "Kommentarer",
+      "collectionRate": "Insamlingsgrad"
     },
     "tabs": {
       "collectAll": "Markera alla av samma typ som slutförda",
@@ -49,6 +50,7 @@
     "readFullText": "Klicka för att läsa hela texten.",
     "share": "Kopiera delningslänken för denna markör.",
     "copied": "Länk kopierad",
+    "collectionRateSource": "Den globala insamlingsgraden är {nums} – Statistik från OEM Cloud",
     "viewer": {
       "author": "Uppladdare",
       "uploadedAt": "Uppladdad",

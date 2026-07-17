@@ -35,7 +35,8 @@
     "label": {
       "note": "Notatka",
       "url": "Link",
-      "comments": "Komentarze"
+      "comments": "Komentarze",
+      "collectionRate": "Wskaźnik zbierania"
     },
     "tabs": {
       "collectAll": "Oznacz wszystkie tego samego typu jako ukończone",
@@ -49,6 +50,7 @@
     "readFullText": "Kliknij, aby przeczytać pełny tekst.",
     "share": "Skopiuj link udostępniania tego znacznika.",
     "copied": "Link skopiowany",
+    "collectionRateSource": "Globalny wskaźnik zbierania wynosi {nums} – Statystyki z OEM Cloud",
     "viewer": {
       "author": "Autor",
       "uploadedAt": "Przesłano",

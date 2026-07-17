@@ -124,6 +124,7 @@ type CommentItemProps = {
     comment: UGCComment;
     displayDepth: number;
     isOwn: boolean;
+    canEditOthers: boolean;
     canInteract: boolean;
     actionPending: boolean;
     isEditing: boolean;
@@ -141,6 +142,7 @@ const CommentItem = memo(({
     comment,
     displayDepth,
     isOwn,
+    canEditOthers,
     canInteract,
     actionPending,
     isEditing,
@@ -197,7 +199,7 @@ const CommentItem = memo(({
             });
         }
 
-        if (isOwn) {
+        if (isOwn || canEditOthers) {
             items.push({
                 id: 'edit',
                 label: tUI('detail.comments.edit'),
@@ -205,6 +207,9 @@ const CommentItem = memo(({
                 disabled: !canInteract || !canEdit || actionPending,
                 onClick: () => onEdit(comment),
             });
+        }
+
+        if (isOwn) {
             items.push({
                 id: 'recall',
                 label: tUI(recallConfirming
@@ -237,6 +242,7 @@ const CommentItem = memo(({
         canInteract,
         canEdit,
         canModerate,
+        canEditOthers,
         comment,
         isEditing,
         isOwn,
@@ -381,6 +387,7 @@ const Comments = ({ point, pointName, active = true }: Props) => {
     const hasComments = commentsWithSubmissions.length > 0;
     const inputDisabled = !active;
     const userUid = user?.uid;
+    const canEditOthers = user?.role === 'a' || user?.role === 'r';
 
     useEffect(() => {
         let disposed = false;
@@ -611,6 +618,7 @@ const Comments = ({ point, pointName, active = true }: Props) => {
                         comment={comment}
                         displayDepth={displayDepth}
                         isOwn={comment.author?.publicUid === userUid}
+                        canEditOthers={canEditOthers}
                         canInteract={active}
                         actionPending={actionPendingIds.has(comment.id) || submittingCommentIds.has(comment.id)}
                         isEditing={editTarget?.id === comment.id}

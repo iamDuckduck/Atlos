@@ -35,7 +35,8 @@
     "label": {
       "note": "注记",
       "url": "相关链接",
-      "comments": "热门讨论"
+      "comments": "热门讨论",
+      "collectionRate": "收集率"
     },
     "tabs": {
       "collectAll": "一键收集同类点",
@@ -49,6 +50,7 @@
     "readFullText": "点此查看全文。",
     "share": "复制此点位的分享链接。",
     "copied": "链接已复制",
+    "collectionRateSource": "全服收集率为{nums} – 统计自 OEM Cloud",
     "viewer": {
       "author": "作者",
       "uploadedAt": "上传于",

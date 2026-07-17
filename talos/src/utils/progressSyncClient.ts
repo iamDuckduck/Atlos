@@ -61,7 +61,7 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
     const hasBody = init?.body !== undefined && init.body !== null;
     const response = await fetch(`${PROGRESS_API_BASE}${path}`, {
         ...init,
-        credentials: 'include',
+        credentials: init?.credentials ?? 'include',
         headers: {
             accept: 'application/json',
             ...(hasBody ? { 'content-type': 'application/json' } : {}),
@@ -107,8 +107,11 @@ export const fetchProgressStats = (
     markerIndexHash: string,
 ): Promise<{
     markerIndexHash: string;
+    pointCount?: number;
     totalSyncedUsers: number;
     sampleSize: number;
     counts: string;
     updatedAt: number | null;
-}> => requestJson(`/stats?markerIndexHash=${encodeURIComponent(markerIndexHash)}`);
+}> => requestJson(`/stats?markerIndexHash=${encodeURIComponent(markerIndexHash)}`, {
+    credentials: 'omit',
+});

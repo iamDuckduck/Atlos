@@ -35,7 +35,8 @@
     "label": {
       "note": "Note",
       "url": "Lien associé",
-      "comments": "Commentaires"
+      "comments": "Commentaires",
+      "collectionRate": "Taux de collecte"
     },
     "tabs": {
       "collectAll": "Marquer tous les points du même type comme terminés",
@@ -49,6 +50,7 @@
     "readFullText": "Cliquez pour lire le texte complet.",
     "share": "Copier le lien partageable de ce point.",
     "copied": "Lien copié",
+    "collectionRateSource": "Le taux de collecte global est de {nums} – Statistiques d’OEM Cloud",
     "viewer": {
       "author": "Auteur",
       "uploadedAt": "Téléversé le",

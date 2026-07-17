@@ -19,6 +19,7 @@ const getArgValue = (name, fallback = '') => {
 const target = getArgValue('--target', 'org').toLowerCase();
 const channel = getArgValue('--channel', process.env.DEPLOY_CHANNEL || 'beta').toLowerCase();
 const outputDirArg = getArgValue('--output-dir', path.resolve(ROOT, '.pages-dist', `${target}-${channel}`));
+const distDirArg = getArgValue('--dist-dir', process.env.DIST_DIR || path.resolve(ROOT, 'dist/r2'));
 
 if (target !== 'org') {
   throw new Error(`Unsupported Pages target: ${target}. Only org is configured.`);
@@ -48,7 +49,7 @@ const project = getArgValue('--project', defaults.project);
 const branch = getArgValue('--branch', defaults.branch);
 const customDomain = getArgValue('--custom-domain', defaults.customDomain);
 
-const distDir = path.resolve(ROOT, 'dist');
+const distDir = path.resolve(ROOT, distDirArg);
 const outputDir = path.resolve(ROOT, outputDirArg);
 const seoPointsDir = path.resolve(distDir, 'seo/points/r2');
 const tokenPattern = /^[0-9a-zA-Z]{7}\.html$/;
@@ -86,7 +87,7 @@ const copyRootFiles = async () => {
 
 const copySeoPointAliases = async () => {
   if (!(await fs.pathExists(seoPointsDir))) {
-    throw new Error('dist/seo/points/r2 does not exist. Run pnpm build:r2 first.');
+    throw new Error(`${path.relative(ROOT, seoPointsDir)}/ does not exist. Run pnpm build:r2 first.`);
   }
 
   const files = (await fs.readdir(seoPointsDir))
@@ -150,7 +151,7 @@ const writePagesConfigFiles = async () => {
 };
 
 if (!(await fs.pathExists(path.resolve(distDir, 'index.html')))) {
-  throw new Error('dist/index.html does not exist. Run pnpm build:r2 first.');
+  throw new Error(`${path.relative(ROOT, distDir)}/index.html does not exist. Run pnpm build:r2 first.`);
 }
 
 await fs.emptyDir(outputDir);
@@ -166,5 +167,6 @@ console.log(`channel: ${channel}`);
 console.log(`branch: ${branch}`);
 console.log(`custom domain: ${customDomain}`);
 console.log(`output: ${path.relative(ROOT, outputDir)}`);
+console.log(`dist: ${path.relative(ROOT, distDir)}`);
 console.log(`root files: ${rootCount}`);
 console.log(`seo point pages: ${pointCount}`);

@@ -13,6 +13,8 @@ import crypto from "crypto";
 import { getDeployChannel, resolveDeployPrefix } from "./release-channel.js";
 import { buildClipIndex, normalizeObjectKey, toPrefixedObjectKey } from "./tile-index.js";
 
+const distDir = path.resolve(process.cwd(), process.env.DIST_DIR || "dist/r2");
+
 // Read R2 specific config: config/config.r2.json
 // sample expected config file:
 // {
@@ -44,6 +46,7 @@ const { prefix, source: prefixSource } = resolveDeployPrefix({
 console.log(
   `[publish-R2] channel=${deployChannel} prefix=${prefix || "/"} source=${prefixSource}`
 );
+console.log(`[publish-R2] distDir=${path.relative(process.cwd(), distDir) || "."}`);
 
 const client = new S3Client({
   region: region || "auto",
@@ -64,7 +67,7 @@ function getAllFiles(dirPath, arrayOfFiles) {
     if (fs.statSync(path.join(dirPath, file)).isDirectory()) {
       arrayOfFiles = getAllFiles(path.join(dirPath, file), arrayOfFiles);
     } else {
-      const relativePath = path.relative("./dist", path.join(dirPath, file));
+      const relativePath = path.relative(distDir, path.join(dirPath, file));
       arrayOfFiles.push(relativePath);
     }
   });
@@ -254,7 +257,7 @@ const upload = async (relativePath, retryCount = 0) => {
   // Remove leading slash from prefix to avoid double slashes
   const cleanPrefix = prefix.replace(/^\/+/, '').replace(/\/+$/, '');
   const objectKey = cleanPrefix ? `${cleanPrefix}/${normalizedPath}` : normalizedPath;
-  const localPath = `./dist/${relativePath}`;
+  const localPath = path.resolve(distDir, relativePath);
 
   try {
     const stats = fs.statSync(localPath);
@@ -329,7 +332,7 @@ const uploadAlias = async (sourceRelativePath, aliasRelativePath, retryCount = 0
   const cleanPrefix = prefix.replace(/^\/+/, '').replace(/\/+$/, '');
   const normalizedAliasPath = aliasRelativePath.replace(/\\/g, "/");
   const objectKey = cleanPrefix ? `${cleanPrefix}/${normalizedAliasPath}` : normalizedAliasPath;
-  const localPath = `./dist/${sourceRelativePath}`;
+  const localPath = path.resolve(distDir, sourceRelativePath);
 
   try {
     const stats = fs.statSync(localPath);
@@ -422,8 +425,8 @@ const reconcileAssetObjects = async (localFiles) => {
     return;
   }
 
-  if (!(await fs.pathExists("./dist/assets"))) {
-    console.log("[publish-R2] assets directory skipped: dist/assets does not exist.");
+  if (!(await fs.pathExists(path.resolve(distDir, "assets")))) {
+    console.log("[publish-R2] assets directory skipped: assets does not exist in dist.");
     return;
   }
 
@@ -499,7 +502,7 @@ const uploadFiles = async (files) => {
 };
 
 const run = async () => {
-  const clipIndex = await buildClipIndex({ distDir: "./dist" });
+  const clipIndex = await buildClipIndex({ distDir });
   if (clipIndex.generated) {
     console.log(
       `[publish-R2] clip index generated: tiles=${clipIndex.tileFileCount}, coverageFiles=${clipIndex.coverageFileCount}`
@@ -508,7 +511,7 @@ const run = async () => {
     console.log(`[publish-R2] clip index skipped: ${clipIndex.reason}`);
   }
 
-  const localFiles = getAllFiles("./dist").filter(shouldUploadLocalFile);
+  const localFiles = getAllFiles(distDir).filter(shouldUploadLocalFile);
   if (uploadProfile === "resources") {
     console.log(`[publish-R2] resources profile selected; uploading ${localFiles.length} resource files from dist.`);
   }

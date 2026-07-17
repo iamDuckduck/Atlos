@@ -35,7 +35,8 @@
     "label": {
       "note": "메모",
       "url": "관련 링크",
-      "comments": "댓글"
+      "comments": "댓글",
+      "collectionRate": "수집률"
     },
     "tabs": {
       "collectAll": "같은 종류 모두 완료로 표시",
@@ -49,6 +50,7 @@
     "readFullText": "전체 내용을 보려면 클릭하세요.",
     "share": "이 위치의 공유 링크를 복사합니다.",
     "copied": "링크가 복사되었습니다",
+    "collectionRateSource": "전체 서버 수집률은 {nums} – OEM Cloud 통계",
     "viewer": {
       "author": "작성자",
       "uploadedAt": "업로드 날짜",

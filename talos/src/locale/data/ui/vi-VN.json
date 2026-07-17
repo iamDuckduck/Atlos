@@ -35,7 +35,8 @@
     "label": {
       "note": "Ghi chú",
       "url": "Liên kết",
-      "comments": "Bình luận"
+      "comments": "Bình luận",
+      "collectionRate": "Tỷ lệ thu thập"
     },
     "tabs": {
       "collectAll": "Đánh dấu tất cả cùng loại là đã hoàn thành",
@@ -49,6 +50,7 @@
     "readFullText": "Nhấn để đọc toàn bộ nội dung.",
     "share": "Sao chép liên kết chia sẻ cho điểm này.",
     "copied": "Đã sao chép liên kết",
+    "collectionRateSource": "Tỷ lệ thu thập toàn máy chủ là {nums} – Thống kê từ OEM Cloud",
     "viewer": {
       "author": "Người đăng",
       "uploadedAt": "Đã tải lên lúc",

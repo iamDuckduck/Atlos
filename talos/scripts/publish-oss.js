@@ -5,6 +5,8 @@ import crypto from "crypto";
 import { getDeployChannel, resolveDeployPrefix } from "./release-channel.js";
 import { buildClipIndex, normalizeObjectKey, toPrefixedObjectKey } from './tile-index.js';
 
+const distDir = path.resolve(process.cwd(), process.env.DIST_DIR || 'dist/oss');
+
 const config = JSON.parse(fs.readFileSync('./config/config.json', 'utf-8'));
 const { region, bucket, accessKeyId, accessKeySecret, prefix: basePrefix } = config.web.build.oss
 const deployChannel = getDeployChannel();
@@ -18,6 +20,7 @@ const { prefix, source: prefixSource } = resolveDeployPrefix({
 console.log(
   `[publish-oss] channel=${deployChannel} prefix=${prefix || '/'} source=${prefixSource}`
 );
+console.log(`[publish-oss] distDir=${path.relative(process.cwd(), distDir) || '.'}`);
 
 const client = new OSS({
   region,
@@ -53,7 +56,7 @@ function getAllFiles(dirPath, arrayOfFiles) {
     if (fs.statSync(path.join(dirPath, file)).isDirectory()) {
       arrayOfFiles = getAllFiles(path.join(dirPath, file), arrayOfFiles);
     } else {
-      const relativePath = path.relative('./dist', path.join(dirPath, file));
+      const relativePath = path.relative(distDir, path.join(dirPath, file));
       arrayOfFiles.push(relativePath);
     }
   });
@@ -176,7 +179,7 @@ const upload = async (relativePath, retryCount = 0) => {
   const normalizedPath = relativePath.replace(/\\/g, '/');
   const cleanPrefix = prefix.replace(/^\/+/, '').replace(/\/+$/, '');
   const objectKey = cleanPrefix ? `${cleanPrefix}/${normalizedPath}` : normalizedPath;
-  const localPath = `./dist/${relativePath}`;
+  const localPath = path.resolve(distDir, relativePath);
   
   const headers = {
     'x-oss-storage-class': 'Standard',
@@ -223,7 +226,7 @@ const uploadAlias = async (sourceRelativePath, aliasRelativePath, retryCount = 0
   const cleanPrefix = prefix.replace(/^\/+/, '').replace(/\/+$/, '');
   const normalizedAliasPath = aliasRelativePath.replace(/\\/g, '/');
   const objectKey = cleanPrefix ? `${cleanPrefix}/${normalizedAliasPath}` : normalizedAliasPath;
-  const localPath = `./dist/${sourceRelativePath}`;
+  const localPath = path.resolve(distDir, sourceRelativePath);
 
   const headers = {
     'x-oss-storage-class': 'Standard',
@@ -299,8 +302,8 @@ const reconcileClipObjects = async (expectedClipFiles) => {
 };
 
 const reconcileAssetObjects = async (localFiles) => {
-  if (!(await fs.pathExists('./dist/assets'))) {
-    console.log('[publish-oss] assets directory skipped: dist/assets does not exist.');
+  if (!(await fs.pathExists(path.resolve(distDir, 'assets')))) {
+    console.log('[publish-oss] assets directory skipped: assets does not exist in dist.');
     return;
   }
 
@@ -358,7 +361,7 @@ const uploadFiles = async (files) => {
 };
 
 const run = async () => {
-  const clipIndex = await buildClipIndex({ distDir: './dist' });
+  const clipIndex = await buildClipIndex({ distDir });
   if (clipIndex.generated) {
     console.log(
       `[publish-oss] clip index generated: tiles=${clipIndex.tileFileCount}, coverageFiles=${clipIndex.coverageFileCount}`
@@ -367,7 +370,7 @@ const run = async () => {
     console.log(`[publish-oss] clip index skipped: ${clipIndex.reason}`);
   }
 
-  const localFiles = getAllFiles('./dist').filter(shouldUploadLocalFile);
+  const localFiles = getAllFiles(distDir).filter(shouldUploadLocalFile);
   const htmlFiles = localFiles.filter((file) => file.replace(/\\/g, '/').endsWith('.html'));
   const shellFiles = htmlFiles.filter((file) => file.replace(/\\/g, '/') === 'index.html');
   const documentFiles = htmlFiles.filter((file) => !shellFiles.includes(file));

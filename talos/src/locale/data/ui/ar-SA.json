@@ -35,7 +35,8 @@
     "label": {
       "note": "ملاحظة",
       "url": "رابط",
-      "comments": "التعليقات"
+      "comments": "التعليقات",
+      "collectionRate": "معدل الجمع"
     },
     "tabs": {
       "collectAll": "تحديد كل العناصر من نفس النوع كمكتملة",
@@ -49,6 +50,7 @@
     "readFullText": "انقر لقراءة النص الكامل.",
     "share": "انسخ رابط المشاركة لهذه العلامة.",
     "copied": "تم النسخ",
+    "collectionRateSource": "معدل الجمع على مستوى الخادم هو {nums} – إحصاءات من OEM Cloud",
     "viewer": {
       "author": "الناشر",
       "uploadedAt": "تاريخ الرفع",

@@ -35,7 +35,8 @@
     "label": {
       "note": "Nota",
       "url": "Pautan",
-      "comments": "Komen"
+      "comments": "Komen",
+      "collectionRate": "Kadar pengumpulan"
     },
     "tabs": {
       "collectAll": "Kumpulkan semua item dari jenis yang sama sebagai selesai",
@@ -49,6 +50,7 @@
     "readFullText": "Klik untuk membaca teks penuh.",
     "share": "Salin pautan perkongsian untuk penanda ini.",
     "copied": "Pautan disalin",
+    "collectionRateSource": "Kadar pengumpulan seluruh pelayan ialah {nums} – Statistik daripada OEM Cloud",
     "viewer": {
       "author": "Pemuat naik",
       "uploadedAt": "Dimuat naik pada",

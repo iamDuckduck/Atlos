@@ -35,7 +35,8 @@
     "label": {
       "note": "Nota",
       "url": "Link",
-      "comments": "Comentários"
+      "comments": "Comentários",
+      "collectionRate": "Taxa de coleta"
     },
     "tabs": {
       "collectAll": "Marcar todos do mesmo tipo como concluídos",
@@ -49,6 +50,7 @@
     "readFullText": "Clique para ler o texto completo.",
     "share": "Copiar link compartilhável deste ponto.",
     "copied": "Link copiado",
+    "collectionRateSource": "A taxa global de coleta é {nums} – Estatísticas do OEM Cloud",
     "viewer": {
       "author": "Autor",
       "uploadedAt": "Enviado em",

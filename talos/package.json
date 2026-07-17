@@ -37,6 +37,7 @@
     "build:beta": "cross-env DEPLOY_CHANNEL=beta node ./scripts/build-oss.mjs",
     "build:r2": "node ./scripts/build-r2.mjs",
     "build:r2:beta": "cross-env DEPLOY_CHANNEL=beta node ./scripts/build-r2.mjs",
+    "build:all": "node ./scripts/build-all.mjs",
 
     "publish:web": "node ./scripts/publish-oss.js",
     "publish:web:r2": "node ./scripts/publish-R2.js",
@@ -58,7 +59,9 @@
     "release:package:org:beta": "node ./scripts/package-dist.mjs --target org --channel beta",
     "release:package:org:prod": "node ./scripts/package-dist.mjs --target org --channel prod",
     "deploy:cn:server": "bash ./scripts/deploy-cn-server.sh",
-    "preview": "vite preview",
+    "deploy:all": "node ./scripts/deploy-all.mjs",
+    "preview": "vite preview --outDir dist/oss",
+    "preview:r2": "vite preview --outDir dist/r2",
     "format": "prettier --write 'src/**/*.{js,ts,tsx,jsx,css,scss,html,md}'"
   },
   "browserlists": [

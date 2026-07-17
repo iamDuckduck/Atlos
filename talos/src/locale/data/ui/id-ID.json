@@ -35,7 +35,8 @@
     "label": {
       "note": "Catatan",
       "url": "Tautan",
-      "comments": "Komentar"
+      "comments": "Komentar",
+      "collectionRate": "Tingkat koleksi"
     },
     "tabs": {
       "collectAll": "Tandai semua jenis yang sama sebagai selesai",
@@ -49,6 +50,7 @@
     "readFullText": "Klik untuk membaca teks lengkap.",
     "share": "Salin tautan yang dapat dibagikan untuk titik ini.",
     "copied": "Tautan disalin",
+    "collectionRateSource": "Tingkat koleksi global adalah {nums} – Statistik dari OEM Cloud",
     "viewer": {
       "author": "Pengunggah",
       "uploadedAt": "Diunggah pada",

@@ -159,10 +159,11 @@
         content: '';
         position: absolute;
         inset: 0;
-        z-index: 0;
+        z-index: -1;
         border-radius: inherit;
         background-color: var(--short-action-button-bg);
         backdrop-filter: blur(var(--short-action-blur));
+        pointer-events: none;
         transition: background-color 0.2s ease, backdrop-filter 0.2s ease;
         will-change: backdrop-filter;
     }
@@ -171,6 +172,8 @@
         position: relative;
         z-index: 1;
         display: inline-flex;
+        isolation: isolate;
+        backface-visibility: hidden;
         opacity: var(--short-action-content-opacity);
         transition: color 0.2s ease, opacity 0.2s ease;
     }

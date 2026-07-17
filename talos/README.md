@@ -17,6 +17,22 @@ Generally you need `config.json` only, to enable local build. R2 version is used
 pnpm build:r2
 ```
 
+Build both OSS and R2 targets in parallel after one shared prepare step:
+
+```shell
+pnpm build:all
+pnpm build:all -- --skip-subset
+```
+
+The isolated outputs are `dist/oss` and `dist/r2`.
+
+Build and deploy both production sites in one command:
+
+```shell
+pnpm deploy:all
+pnpm deploy:all -- --skip-subset
+```
+
 Skip font subsetting:
 
 ```shell

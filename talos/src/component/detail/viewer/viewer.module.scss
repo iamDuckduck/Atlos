@@ -75,6 +75,7 @@
 .viewerContent {
     user-select: none;
     position: relative;
+    isolation: isolate;
     max-height: calc(90dvh - 7rem);
     display: flex;
     align-items: center;
@@ -91,13 +92,15 @@
         inset: 0;
         background-image: var(--bg);
         filter: blur(16px) brightness(1.05) contrast(0.85);
-        z-index: 0;
+        z-index: -1;
         background-size: cover;
         background-position: center;
+        pointer-events: none;
     }
 }
 
 .viewerImage {
+    position: relative;
     display: block;
     max-width: 100%;
     max-height: calc(92dvh - 7rem);
@@ -122,6 +125,7 @@
     right: 10px;
     z-index: 3;
     pointer-events: auto;
+    transform: translateZ(0);
 }
 
 .viewerShortActionUploadIcon {
@@ -147,6 +151,7 @@
     opacity: 0;
     transition: opacity 0.2s ease;
     filter: drop-shadow(0 0 4px rgba($black-0, 0.6));
+    transform: translateZ(0);
 
     &::before,
     &::after {

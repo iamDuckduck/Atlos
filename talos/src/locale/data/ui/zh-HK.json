@@ -35,7 +35,8 @@
     "label": {
       "note": "注解",
       "url": "分享連結",
-      "comments": "精選留言"
+      "comments": "精選留言",
+      "collectionRate": "收集率"
     },
     "tabs": {
       "collectAll": "一鍵收集同類點",
@@ -49,6 +50,7 @@
     "readFullText": "點此查看全文。",
     "share": "複製此點位之分享連結。",
     "copied": "連結已複製",
+    "collectionRateSource": "全服收集率為{nums} – 統計自 OEM Cloud",
     "viewer": {
       "author": "貢獻者",
       "uploadedAt": "上載時間",

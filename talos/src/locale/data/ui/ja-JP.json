@@ -35,7 +35,8 @@
     "label": {
       "note": "メモ",
       "url": "関連リンク",
-      "comments": "コメント"
+      "comments": "コメント",
+      "collectionRate": "収集率"
     },
     "tabs": {
       "collectAll": "同種の地点をすべて収集済みにします",
@@ -49,6 +50,7 @@
     "readFullText": "クリックして全文を表示。",
     "share": "この地点の共有リンクをコピーします。",
     "copied": "リンクをコピーしました",
+    "collectionRateSource": "全サーバー収集率は{nums} – OEM Cloudによる統計",
     "viewer": {
       "author": "投稿者",
       "uploadedAt": "アップロード日時",

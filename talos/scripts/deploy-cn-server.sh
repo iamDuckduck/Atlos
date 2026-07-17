@@ -8,6 +8,7 @@ ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 SSH_HOST="${ATLOS_CN_SSH_HOST:-atlos-cn}"
 REMOTE_DIR="${ATLOS_CN_REMOTE_DIR:-workspace/atlos-assets/_WORK_DIR/Atlos/talos}"
 SKIP_BUILD="${ATLOS_CN_SKIP_BUILD:-0}"
+DIST_DIR="${DIST_DIR:-dist/oss}"
 
 usage() {
     cat <<'EOF'
@@ -16,7 +17,8 @@ Usage: deploy-cn-server.sh [options]
 Build the CN frontend, publish it to OSS, and replace the server dist/.
 
 Options:
-  --skip-build          Publish the existing local dist/ without running pnpm build
+  --skip-build          Publish the existing local dist without running pnpm build
+  --dist-dir PATH       Local build directory (default: dist/oss)
   --host HOST           SSH host or ~/.ssh/config alias (default: atlos-cn)
   --remote-dir PATH     Remote talos directory
   -h, --help            Show this help
@@ -25,6 +27,7 @@ Environment overrides:
   ATLOS_CN_SSH_HOST
   ATLOS_CN_REMOTE_DIR
   ATLOS_CN_SKIP_BUILD=1
+  DIST_DIR
 EOF
 }
 
@@ -38,6 +41,15 @@ while (($# > 0)); do
             [[ $# -ge 2 ]] || { echo "Missing value for --host" >&2; exit 2; }
             SSH_HOST="$2"
             shift 2
+            ;;
+        --dist-dir)
+            [[ $# -ge 2 ]] || { echo "Missing value for --dist-dir" >&2; exit 2; }
+            DIST_DIR="$2"
+            shift 2
+            ;;
+        --dist-dir=*)
+            DIST_DIR="${1#*=}"
+            shift
             ;;
         --host=*)
             SSH_HOST="${1#*=}"
@@ -64,7 +76,7 @@ while (($# > 0)); do
     esac
 done
 
-for command in pnpm zip scp ssh; do
+for command in pnpm zip unzip scp ssh; do
     command -v "$command" >/dev/null 2>&1 || {
         echo "Required command not found: $command" >&2
         exit 1
@@ -85,8 +97,12 @@ else
     echo "==> Skipping build; using existing dist/"
 fi
 
-if [[ ! -f dist/index.html ]]; then
-    echo "dist/index.html not found; CN build is missing or incomplete." >&2
+if [[ "$DIST_DIR" != /* ]]; then
+    DIST_DIR="${ROOT}/${DIST_DIR}"
+fi
+
+if [[ ! -f "${DIST_DIR}/index.html" ]]; then
+    echo "${DIST_DIR}/index.html not found; CN build is missing or incomplete." >&2
     exit 1
 fi
 
@@ -94,8 +110,20 @@ TEMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/atlos-cn-deploy.XXXXXX")"
 ARCHIVE_PATH="${TEMP_DIR}/dist.zip"
 trap 'rm -rf "$TEMP_DIR"' EXIT
 
-echo "==> Packaging dist/"
-zip -qr "$ARCHIVE_PATH" dist
+echo "==> Packaging ${DIST_DIR} as dist.zip"
+(
+    cd "$DIST_DIR"
+    zip -qr "$ARCHIVE_PATH" .
+)
+
+if ! unzip -Z1 "$ARCHIVE_PATH" | grep -qx 'index.html'; then
+    echo "dist.zip does not contain index.html at its root." >&2
+    exit 1
+fi
+if unzip -Z1 "$ARCHIVE_PATH" | grep -Eq '^(oss|dist/oss)/'; then
+    echo "dist.zip unexpectedly contains an oss directory layer." >&2
+    exit 1
+fi
 
 deploy_server_dist() {
     echo "==> Uploading to ${SSH_HOST}:${REMOTE_DIR}/dist.zip.uploading"
@@ -110,8 +138,8 @@ cd "$remote_dir"
 
 mv -f dist.zip.uploading dist.zip
 rm -rf .dist-next
-mkdir .dist-next
-unzip -q -o dist.zip -d .dist-next
+mkdir -p .dist-next/dist
+unzip -q -o dist.zip -d .dist-next/dist
 
 if [[ ! -f .dist-next/dist/index.html ]]; then
     echo "Uploaded archive does not contain dist/index.html" >&2
@@ -139,7 +167,7 @@ REMOTE_SCRIPT
 }
 
 echo "==> Publishing CN dist to OSS while deploying the server dist"
-pnpm publish:web &
+DIST_DIR="$DIST_DIR" pnpm publish:web &
 PUBLISH_PID=$!
 
 SERVER_STATUS=0

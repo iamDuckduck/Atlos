@@ -19,6 +19,7 @@ import {
 // - 默认 / 未设置：使用 config/config.json（阿里云 OSS / .cn）
 // - BUILD_TARGET=r2：使用 config/config.r2.json（Cloudflare R2 / .org）
 const buildTarget = process.env.BUILD_TARGET === 'r2' ? 'r2' : 'oss';
+const buildOutDir = process.env.BUILD_OUT_DIR || `dist/${buildTarget}`;
 const configPath =
     buildTarget === 'r2' ? './config/config.r2.json' : './config/config.json';
 const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
@@ -339,6 +340,7 @@ export default defineConfig({
         },
     },
     build: {
+        outDir: buildOutDir,
         emptyOutDir: true,
         rollupOptions: {
             external: [

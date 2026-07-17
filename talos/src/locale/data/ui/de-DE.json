@@ -35,7 +35,8 @@
     "label": {
       "note": "Notiz",
       "url": "Link",
-      "comments": "Kommentare"
+      "comments": "Kommentare",
+      "collectionRate": "Sammelrate"
     },
     "tabs": {
       "collectAll": "Alle gleichen Punkte als abgeschlossen markieren",
@@ -49,6 +50,7 @@
     "readFullText": "Klicken Sie, um den vollständigen Text zu lesen.",
     "share": "Freigabelink für diesen Punkt kopieren.",
     "copied": "Link kopiert",
+    "collectionRateSource": "Die globale Sammelrate beträgt {nums} – Statistik von OEM Cloud",
     "viewer": {
       "author": "Autor",
       "uploadedAt": "Hochgeladen am",

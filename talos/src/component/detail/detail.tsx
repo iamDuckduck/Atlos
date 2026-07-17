@@ -8,6 +8,7 @@ import Uploader from '../uploader/uploader';
 import Comments, { CommentExcerpt } from './comment/Comments';
 import { flatList } from './comment/commentsTree';
 import { useAutoTrans } from './comment/useAutoTrans';
+import { useGlobalCollectionRate } from './useGlobalCollectionRate';
 
 import parse from 'html-react-parser';
 import { getItemIconUrl, getFileContentUrl, fetchArchiveFile } from '@/utils/resource.ts';
@@ -15,7 +16,7 @@ import { parseArchiveJsonResponse, createArchiveHtmlParserOptions } from './arch
 import { getLoadedRegionMarkers, loadRegionMarkers, MARKER_TYPE_DICT } from '@/data/marker';
 import { usePointShareLink } from '@/utils/shareLink';
 import useRegion from '@/store/region';
-import { listUGCComments, type UGCComment } from '@/utils/ugcClient';
+import { listUGCComments, resolveUGCUploadTarget, type UGCComment } from '@/utils/ugcClient';
 
 import BossIcon from '@/assets/images/category/boss.svg?react';
 import CollectionIcon from '@/assets/images/category/collection.svg?react';
@@ -129,6 +130,8 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
      */
     const currentPoint = useMarkerStore((state) => state.currentActivePoint);
     const currentPointId = currentPoint?.id;
+    const isImageUploadable = Boolean(currentPoint && resolveUGCUploadTarget(currentPoint));
+    const globalCollectionRate = useGlobalCollectionRate(currentPointId, isImageUploadable);
     const pointsRecord = useUserRecord();
     const addPoint = useAddPoint();
     const deletePoint = useDeletePoint();
@@ -153,6 +156,13 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
         ? pointNameRaw
         : (currentPoint?.type ?? '');
     const { copiedPopupVisible, copyPointShareUrl } = usePointShareLink(currentPoint);
+    const collectionRateText = globalCollectionRate.rate === null
+        ? '--'
+        : `${(globalCollectionRate.rate * 100).toFixed(1)}%`;
+    const collectionRatePopover = globalCollectionRate.rate === null
+        ? ''
+        : (tUI('detail.collectionRateSource') || 'Global collection rate is {nums} – Statistics from OEM Cloud')
+            .replace('{nums}', collectionRateText);
     const [activeTab, setActiveTab] = useState<DetailTab>('general');
 
     // Archive full-text state — content may be plain text and/or HTML (<i>, <del>, <img>, …)
@@ -781,6 +791,35 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
                                     </a>
                                 </PopoverTooltip>
                             </div>
+                            {isImageUploadable && (
+                                <PopoverTooltip
+                                    content={collectionRatePopover}
+                                    placement="top"
+                                    gap={4}
+                                    disabled={globalCollectionRate.rate === null}
+                                >
+                                    <div
+                                        className={classNames(styles.detailDivider, styles.collectionRateDivider)}
+                                        data-label={tUI('detail.label.collectionRate')}
+                                        data-loading={globalCollectionRate.loading ? 'true' : 'false'}
+                                        aria-busy={globalCollectionRate.loading}
+                                        style={{
+                                            '--collection-rate': globalCollectionRate.rate ?? 0,
+                                        } as React.CSSProperties}
+                                        aria-label={`${tUI('detail.label.collectionRate')} ${collectionRateText}`}
+                                    >
+                                        <span
+                                            className={styles.collectionRateLine}
+                                            aria-hidden="true"
+                                        >
+                                            <span className={styles.collectionRateProgress}>
+                                                <span className={styles.collectionRateBar}></span>
+                                                <span className={styles.collectionRateValue}>{collectionRateText}</span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </PopoverTooltip>
+                            )}
                         </div>
                         <div
                             className={classNames(styles.detailTabPanel, styles.commentsTabPanel)}

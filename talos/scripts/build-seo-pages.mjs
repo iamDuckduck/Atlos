@@ -39,7 +39,9 @@ const COINBASE_DISPLAY_FONT_FILE = path.resolve(LOCAL_FONT_DIR, 'Coinbase_Displa
 const COINBASE_DISPLAY_BOLD_FONT_FILE = path.resolve(LOCAL_FONT_DIR, 'Coinbase_Display-Bold-web-1.32.ttf');
 const ZILLA_SLAB_HIGHLIGHT_FONT_FILE = path.resolve(LOCAL_FONT_DIR, 'ZillaSlabHighlight-Bold.ttf');
 const NOVECENTO_SLAB_BOLD_FONT_FILE = path.resolve(LOCAL_FONT_DIR, 'Novecento Slab Bold.otf');
-const PUBLIC_OUT_DIR = path.resolve(ROOT, 'public');
+const PUBLIC_OUT_DIR = process.env.SEO_PUBLIC_OUT_DIR
+  ? path.resolve(ROOT, process.env.SEO_PUBLIC_OUT_DIR)
+  : path.resolve(ROOT, 'public');
 const LEGACY_POINTS_OUT_DIR = path.resolve(PUBLIC_OUT_DIR, 'points');
 const SEO_OUT_DIR = path.resolve(PUBLIC_OUT_DIR, 'seo');
 const SEO_POINTS_ROOT_DIR = path.resolve(SEO_OUT_DIR, 'points');
@@ -109,6 +111,7 @@ const workerPreviewFile = process.env.SEO_PREVIEW_OUTPUT_FILE
 const workerPreviewFormat = process.env.SEO_PREVIEW_FORMAT === 'json' ? 'json' : 'ts';
 const hasExplicitPointScope = seoTokens.length > 0 || (Number.isFinite(seoLimit) && seoLimit > 0);
 const shouldWriteAllPointFiles = process.env.SEO_WRITE_ALL_POINT_FILES === '1' || shouldForceAllImages;
+const shouldForcePointFiles = process.env.SEO_FORCE_POINT_FILES === '1';
 const shouldWritePointFiles = !shouldBuildImagesOnly && !shouldBuildPreviewOnly && !shouldSkipPointFiles && (hasExplicitPointScope || shouldWriteAllPointFiles);
 const shouldBuildPointImages = shouldGenerateImages && (shouldBuildImagesOnly || hasExplicitPointScope || shouldForceImages || shouldForceAllImages);
 const seoOgOutputDir = process.env.SEO_OG_OUTPUT_DIR
@@ -1642,7 +1645,7 @@ async function build() {
       const htmlSignature = await buildHtmlSignature(point);
       nextPageState.entries[point.token] = { signature: htmlSignature };
       const pageStateSignature = previousPageState.entries?.[point.token]?.signature;
-      if (pageStateSignature !== htmlSignature || !(await pathExists(point.htmlPath))) {
+      if (shouldForcePointFiles || pageStateSignature !== htmlSignature || !(await pathExists(point.htmlPath))) {
         await fs.writeFile(point.htmlPath, buildPointHtml(point));
       }
       if (shouldBuildPointImages || shouldForceImages || shouldForceAllImages) {

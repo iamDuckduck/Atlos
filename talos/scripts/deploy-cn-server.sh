@@ -108,6 +108,7 @@ fi
 
 TEMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/atlos-cn-deploy.XXXXXX")"
 ARCHIVE_PATH="${TEMP_DIR}/dist.zip"
+ARCHIVE_ENTRIES_PATH="${TEMP_DIR}/dist-entries.txt"
 trap 'rm -rf "$TEMP_DIR"' EXIT
 
 echo "==> Packaging ${DIST_DIR} as dist.zip"
@@ -116,11 +117,13 @@ echo "==> Packaging ${DIST_DIR} as dist.zip"
     zip -qr "$ARCHIVE_PATH" .
 )
 
-if ! unzip -Z1 "$ARCHIVE_PATH" | grep -qx 'index.html'; then
+unzip -Z1 "$ARCHIVE_PATH" > "$ARCHIVE_ENTRIES_PATH"
+
+if ! grep -Fxq 'index.html' "$ARCHIVE_ENTRIES_PATH"; then
     echo "dist.zip does not contain index.html at its root." >&2
     exit 1
 fi
-if unzip -Z1 "$ARCHIVE_PATH" | grep -Eq '^(oss|dist/oss)/'; then
+if grep -Eq '^(oss|dist/oss)/' "$ARCHIVE_ENTRIES_PATH"; then
     echo "dist.zip unexpectedly contains an oss directory layer." >&2
     exit 1
 fi

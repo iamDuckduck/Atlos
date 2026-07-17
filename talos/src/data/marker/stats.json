@@ -46,7 +46,7 @@
     "int_vending_machine_area4_1": 5,
     "pure_nodule_l": 3,
     "crate_iii": 187,
-    "rope": 130,
+    "rope": 166,
     "sparkling_nodule_s": 58,
     "sparkling_nodule_m": 14,
     "int_vending_machine_area6_1": 3,
@@ -115,7 +115,7 @@
     "nar_paper_map01_16_1": 1,
     "nar_sm1l1m2_3": 1,
     "cratesurprise": 26,
-    "gather": 1253,
+    "gather": 1258,
     "buckflower": 253,
     "firebuckle": 35,
     "citrome": 203,
@@ -485,10 +485,10 @@
     "quillbeast_blightshade": 1,
     "ystf_captain_blightshade": 2,
     "ystf_elite_blightshade": 23,
+    "rift_pillars_brace": 5,
     "xiragen_spot": 5,
     "protocolith_spot": 8,
-    "crimson_spearleaf_spot": 10,
-    "rift_pillars_brace": 5
+    "crimson_spearleaf_spot": 10
   },
   "subregion": {
     "DJ_1": {
@@ -1469,6 +1469,7 @@
       "ystf_glaiver_blightshade": 1,
       "tuskbeast_blightshade": 2,
       "ystf_vanguard_blightshade": 2,
+      "rope": 14,
       "aurylene": 16,
       "tp_point": 6,
       "cratesurprise": 1,
@@ -1513,7 +1514,9 @@
       "ystf_vanguard_blightshade": 43,
       "aurylene": 28,
       "crate_i": 24,
-      "gather": 163,
+      "gather": 168,
+      "rope": 22,
+      "rift_pillars_brace": 5,
       "crate_ii": 42,
       "talosite": 39,
       "inergen_spot": 2,
@@ -1531,8 +1534,7 @@
       "re_crisis": 2,
       "energy_alluvium": 1,
       "temporary_energy_alluvium": 2,
-      "cratelocked": 2,
-      "rift_pillars_brace": 5
+      "cratelocked": 2
     }
   },
   "region": {
@@ -1763,14 +1765,14 @@
       "nar_paper_map02_21_1": 1,
       "nar_paper_map02_22_1": 1,
       "nar_paper_map02_23_1": 1,
-      "rope": 68,
+      "rope": 104,
       "tp_point": 66,
       "crate_i": 191,
       "cratesurprise": 14,
       "crate_ii": 183,
       "exploration_level": 2,
       "aurylene": 199,
-      "gather": 978,
+      "gather": 983,
       "repair_logic": 3,
       "delta_bot": 37,
       "guiding_butterflies": 51,
@@ -2009,10 +2011,10 @@
       "quillbeast_blightshade": 1,
       "ystf_captain_blightshade": 2,
       "ystf_elite_blightshade": 23,
+      "rift_pillars_brace": 5,
       "xiragen_spot": 5,
       "protocolith_spot": 8,
-      "crimson_spearleaf_spot": 10,
-      "rift_pillars_brace": 5
+      "crimson_spearleaf_spot": 10
     },
     "Dijiang": {
       "tp_point": 2,

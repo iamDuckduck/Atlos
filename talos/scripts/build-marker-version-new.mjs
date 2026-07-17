@@ -26,6 +26,8 @@ const VERSION_NEW_BUILD_CONFIG = {
     'natural.cuprium_spot',
     'natural.ferrium_spot',
     'natural.amethyst_spot',
+    'natural.inergen_spot',
+    'natural.xiragen_spot'
   ],
 };
 

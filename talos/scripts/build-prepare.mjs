@@ -29,7 +29,7 @@ if (shouldSkipSubset) {
   run('pnpm run subset:fonts');
 }
 run('pnpm run build:marker-stats');
-run('pnpm run build:marker-version-new');
+run('pnpm run build:marker-diff');
 run('pnpm run build:search-index');
 if (argSkipSeo) {
   console.log('\nSkipping shared SEO page generation.');

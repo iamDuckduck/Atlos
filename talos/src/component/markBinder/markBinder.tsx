@@ -7,7 +7,6 @@ import { getItemIconUrl } from '@/utils/resource';
 import { useTranslateGame } from '@/locale';
 import { useMultiRegionMarkerCount, useFilter, useSearchString, useMarkerStore } from '@/store/marker';
 import MarkSelector from '../markSelector/markSelector';
-import { trackedSetFilterKeys } from '@/store/trackedActions';
 import { MarkVisibilityContext } from '../markFilter/visibilityContext';
 
 interface MarkBinderProps {
@@ -117,7 +116,7 @@ const MarkBinder = ({ group }: MarkBinderProps) => {
         const currentFilter = useMarkerStore.getState().filter;
         const currentlyAllActive =
             typeKeys.length > 0 && typeKeys.every((k) => currentFilter.includes(k));
-        trackedSetFilterKeys(typeKeys, !currentlyAllActive);
+        useMarkerStore.getState().setFilterKeys(typeKeys, !currentlyAllActive);
     }, [typeKeys]);
 
     if (!showFilter) return null;

@@ -60,6 +60,7 @@ runSync('node', [
   '--skip-seo',
   ...(shouldSkipSubset ? ['--skip-subset'] : []),
 ]);
+runSync('pnpm', ['run', 'build:seo:og']);
 
 const ossDistDir = path.resolve(ROOT, 'dist/oss');
 const r2DistDir = path.resolve(ROOT, 'dist/r2');
@@ -107,11 +108,50 @@ const results = await Promise.all([
   ]),
 ]);
 
-console.log('\n[deploy:all] summary');
-for (const result of results) {
-  console.log(`- ${result.label}: ${result.ok ? 'succeeded' : `failed (${result.error.message})`}`);
+let seoOgResult = {
+  label: 'seo-og',
+  ok: false,
+  skipped: true,
+  error: new Error('skipped because a site pipeline failed'),
+};
+if (results.every((result) => result.ok)) {
+  seoOgResult = await runPipeline('seo-og', [
+    {
+      name: 'publish-oss',
+      command: 'pnpm',
+      args: ['publish:seo:og:oss'],
+    },
+  ]);
 }
 
-if (results.some((result) => !result.ok)) {
+let relinkResult = {
+  label: 'relink-worker',
+  ok: false,
+  skipped: true,
+  error: new Error('skipped because site or SEO OG publishing failed'),
+};
+if (seoOgResult.ok) {
+  relinkResult = await runPipeline('relink-worker', [
+    {
+      name: 'deploy',
+      command: 'pnpm',
+      args: ['worker:relink:deploy'],
+    },
+  ]);
+}
+
+const allResults = [...results, seoOgResult, relinkResult];
+
+console.log('\n[deploy:all] summary');
+for (const result of allResults) {
+  const status = result.ok
+    ? 'succeeded'
+    : result.skipped
+      ? result.error.message
+      : `failed (${result.error.message})`;
+  console.log(`- ${result.label}: ${status}`);
+}
+
+if (allResults.some((result) => !result.ok && !result.skipped)) {
   process.exitCode = 1;
 }

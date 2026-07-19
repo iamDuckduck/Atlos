@@ -13,7 +13,7 @@ import {
     useSetForceDetailOpen,
 } from '@/store/uiPrefs';
 import { useMarkerStore, useSwitchFilter } from '@/store/marker';
-import { useAddPoint, useDeletePoint } from '@/store/userRecord';
+import { applyPointProgressSilently } from '@/store/history';
 import useRegion from '@/store/region';
 import { loadAllMarkers, MARKER_TYPE_TREE, type IMarkerData, type IMarkerType } from '@/data/marker';
 
@@ -30,8 +30,6 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
     const setSidebarOpen = useSetSidebarOpen();
     const toggleMarkFilterExpanded = useToggleMarkFilterExpanded();
     const switchFilter = useSwitchFilter();
-    const addPoint = useAddPoint();
-    const deletePoint = useDeletePoint();
     const setCurrentActivePoint = useMarkerStore((s) => s.setCurrentActivePoint);
     const setDrawerSnapIndex = useSetDesktopDrawerSnapIndex();
     const setForceRegionSubOpen = useSetForceRegionSubOpen();
@@ -176,7 +174,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
                 void loadAllMarkers().then((markers) => {
                     markers
                         .filter((m) => m.type === firstType)
-                        .forEach((p) => addPoint(p.id));
+                        .forEach((p) => applyPointProgressSilently({ collect: [p.id] }));
                 });
             },
         },
@@ -192,7 +190,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
                 void loadAllMarkers().then((markers) => {
                     markers
                         .filter((m) => m.type === firstType)
-                        .forEach((p) => deletePoint(p.id));
+                        .forEach((p) => applyPointProgressSilently({ uncollect: [p.id] }));
                 });
             },
             delay: 300,
@@ -357,7 +355,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
             placement: 'top',
             disableBeacon: true,
             onNext: () => {
-                if (targetPoint) addPoint(targetPoint.id);
+                if (targetPoint) applyPointProgressSilently({ collect: [targetPoint.id] });
             },
         },
         {
@@ -382,8 +380,6 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
         setSidebarOpen,
         toggleMarkFilterExpanded,
         switchFilter,
-        addPoint,
-        deletePoint,
         setDrawerSnapIndex,
         setForceRegionSubOpen,
         setForceLayerSubOpen,

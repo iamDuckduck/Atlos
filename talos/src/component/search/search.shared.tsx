@@ -9,7 +9,6 @@ import PopoverTooltip from '@/component/popover/popover';
 import { useLocale, useTranslateUI } from '@/locale';
 import { getItemIconUrl } from '@/utils/resource';
 import { navigateToSharedPoint } from '@/utils/navigation';
-import { trackedSwitchFilter } from '@/store/trackedActions';
 import { useMarkerStore } from '@/store/marker.ts';
 import { useAdvancedSearch } from './useAdvancedSearch';
 
@@ -75,7 +74,7 @@ const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%' }) => {
     const onResultClick = useCallback((group: (typeof clickableResults)[number]) => {
         if (group.uniquePoint) {
             if (!activeFilters.includes(group.typeKey)) {
-                trackedSwitchFilter(group.typeKey);
+                useMarkerStore.getState().switchFilter(group.typeKey);
             }
             navigateToSharedPoint({
                 regionKey: group.uniquePoint.regionKey,
@@ -84,7 +83,7 @@ const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%' }) => {
             });
             return;
         }
-        trackedSwitchFilter(group.typeKey);
+        useMarkerStore.getState().switchFilter(group.typeKey);
     }, [activeFilters]);
 
     const updateMaskVisibility = useCallback(() => {

@@ -4,6 +4,7 @@ import { setProgressSyncRequestHandler } from '@/component/progressSync/progress
 import { useAuthStore } from '@/store/auth';
 import { useProgressSyncStore, type CloudProgress, type ProgressConflictState } from '@/store/progressSync';
 import { useUserRecordStore } from '@/store/userRecord';
+import { replacePointProgressFromExternal } from '@/store/history';
 import { getProgressManifestPayload, getProgressMarkerIndex, type ProgressManifestPayload } from '@/utils/progressBitmap';
 import {
     fetchCloudProgress,
@@ -168,7 +169,7 @@ const ProgressSyncHost = () => {
             knownPointIdsRef.current,
         );
         suppressLocalChangeRef.current = true;
-        useUserRecordStore.getState().setPoints(nextLocalPointIds);
+        replacePointProgressFromExternal(nextLocalPointIds);
         queueMicrotask(() => {
             suppressLocalChangeRef.current = false;
         });
@@ -461,7 +462,8 @@ const ProgressSyncHost = () => {
         setBaseline(remoteBase);
         baselineRef.current = remoteBase;
         suppressLocalChangeRef.current = true;
-        useUserRecordStore.getState().setPoints(normalizePointIds([...pointIds, ...localUnknownPointIds]));
+        const resolvedPointIds = normalizePointIds([...pointIds, ...localUnknownPointIds]);
+        replacePointProgressFromExternal(resolvedPointIds);
         const updatedAt = useUserRecordStore.getState().updatedAt;
         queueMicrotask(() => {
             suppressLocalChangeRef.current = false;
@@ -469,7 +471,7 @@ const ProgressSyncHost = () => {
         setConflict(null);
         void syncNow('conflict', {
             forceBase: remoteBase,
-            pointIds: normalizePointIds([...pointIds, ...localUnknownPointIds]),
+            pointIds: resolvedPointIds,
             updatedAt,
         });
     }, [applyRemotePoints, conflict, renderedConflict, setBaseline, setConflict, syncNow]);

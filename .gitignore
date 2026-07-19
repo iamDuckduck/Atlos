@@ -69,3 +69,4 @@ talos/.stylelintcache
 /talos/src/asset
 
 *.glyphs
+*.test.ts

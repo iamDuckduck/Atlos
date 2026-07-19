@@ -6,10 +6,10 @@ import { useTranslateGame } from '@/locale';
 import { MarkVisibilityContext } from '../markFilter/visibilityContext';
 import {
     useFilter,
+    useMarkerStore,
     useRegionMarkerCount,
     useSearchString,
 } from '@/store/marker.ts';
-import { trackedSwitchFilter } from '@/store/trackedActions';
 import { useLayoutVersion } from '@/store/uiPrefs';
 
 interface MarkSelectorProps {
@@ -69,7 +69,10 @@ const MarkSelector = ({ typeInfo, countOverride }: MarkSelectorProps) => {
 
     // stores
     const filter = useFilter();
-    const handleSwitchFilter = useCallback(() => trackedSwitchFilter(typeInfo.key), [typeInfo.key]);
+    const handleSwitchFilter = useCallback(
+        () => useMarkerStore.getState().switchFilter(typeInfo.key),
+        [typeInfo.key],
+    );
     const regionCount = useRegionMarkerCount(typeInfo?.key);
     const cnt = countOverride ?? regionCount;
     const searchString = useSearchString();

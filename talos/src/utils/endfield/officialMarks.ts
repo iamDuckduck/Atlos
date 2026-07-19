@@ -1,5 +1,6 @@
 import { useMarkerStore } from '@/store/marker';
 import { useUserRecordStore } from '@/store/userRecord';
+import { replacePointProgressFromExternal } from '@/store/history';
 import { getEFOfficialMarks } from './backendClient';
 
 export type OfficialMarksImportResult = {
@@ -41,10 +42,9 @@ export const applyOfficialMarks = (
     const normalized = [...new Set(pointIds.map((id) => String(id)).filter(Boolean))];
     const existing = new Set(useUserRecordStore.getState().activePoints);
     const importedPointIds = normalized.filter((id) => !existing.has(id));
-    const userRecord = useUserRecordStore.getState();
     const markerStore = useMarkerStore.getState();
 
-    userRecord.setPoints(normalized);
+    replacePointProgressFromExternal(normalized);
     normalized.forEach((id) => {
         markerStore.setSelected(id, true);
     });

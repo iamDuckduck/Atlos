@@ -10,9 +10,9 @@ import {
 
 import styles from './marker.module.scss';
 import { useMarkerStore } from '@/store/marker';
-import { getActivePoints, useUserRecordStore } from '@/store/userRecord';
+import { getActivePoints } from '@/store/userRecord';
 import { useUiPrefsStore } from '@/store/uiPrefs';
-import { useHistoryStore } from '@/store/history';
+import { commitPointProgress } from '@/store/history';
 import { batchCheckSelectedPoints, isLassoSelected } from '@/component/settings/useMapMultiSelect';
 import { getLayerByTier, getLayerTier, useLayerStore, type LayerType } from '@/store/layer';
 import { REGION_DICT } from '@/data/map';
@@ -113,14 +113,9 @@ const syncMarkerStateClasses = (inner: HTMLElement, markerId: string): void => {
 };
 
 const checkSingleMarker = (id: string): void => {
-    useUserRecordStore.getState().addPoint(id);
+    commitPointProgress(`Collect ${id}`, { collect: [id] });
     useMarkerStore.getState().setSelected(id, false);
     useMarkerStore.getState().setTemporarySelected(id, false);
-};
-
-const undoCheckSingleMarker = (id: string): void => {
-    useUserRecordStore.getState().deletePoint(id);
-    useMarkerStore.getState().setSelected(id, true);
 };
 
 const handleMarkerClickState = (markerData: IMarkerData, layer: L.Marker, handlers?: MarkerStateHandlers): void => {
@@ -137,25 +132,13 @@ const handleMarkerClickState = (markerData: IMarkerData, layer: L.Marker, handle
 
     if (!selectedNow && !checkedNow) {
         useMarkerStore.getState().setSelected(markerData.id, true);
-        const id = markerData.id;
-        useHistoryStore.getState().push({
-            label: `Select ${id}`,
-            undo: () => useMarkerStore.getState().setSelected(id, false),
-            redo: () => useMarkerStore.getState().setSelected(id, true),
-        });
     } else if (selectedNow && !checkedNow) {
         const keepVisibleAfterCheck = handlers?.beforeCheck?.(markerData, { filterWasActive }) ?? false;
         const allSelected = useMarkerStore.getState().selectedPoints;
         if (isLassoSelected(markerData.id) && allSelected.length > 1 && batchCheckSelectedPoints(allSelected)) {
             // batch check handled
         } else {
-            const id = markerData.id;
-            checkSingleMarker(id);
-            useHistoryStore.getState().push({
-                label: `Check ${id}`,
-                undo: () => undoCheckSingleMarker(id),
-                redo: () => checkSingleMarker(id),
-            });
+            checkSingleMarker(markerData.id);
         }
 
         const shouldHideCompleted = useUiPrefsStore.getState().prefsHideCompletedMarkers;
@@ -165,22 +148,10 @@ const handleMarkerClickState = (markerData: IMarkerData, layer: L.Marker, handle
             inner.classList.remove(styles.disappearing);
         }
     } else {
-        const wasSelected = selectedNow;
         const id = markerData.id;
-        useUserRecordStore.getState().deletePoint(id);
+        commitPointProgress(`Uncollect ${id}`, { uncollect: [id] });
         useMarkerStore.getState().setSelected(id, false);
         useMarkerStore.getState().setTemporarySelected(id, false);
-        useHistoryStore.getState().push({
-            label: `Uncheck ${id}`,
-            undo: () => {
-                useUserRecordStore.getState().addPoint(id);
-                useMarkerStore.getState().setSelected(id, wasSelected);
-            },
-            redo: () => {
-                useUserRecordStore.getState().deletePoint(id);
-                useMarkerStore.getState().setSelected(id, false);
-            },
-        });
     }
 
     syncMarkerStateClasses(inner, markerData.id);

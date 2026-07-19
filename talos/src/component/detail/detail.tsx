@@ -39,11 +39,9 @@ import {
     useSubregionMarkerCount,
 } from '@/store/marker.ts';
 import {
-    useAddPoint,
-    useDeletePoint,
     useUserRecord,
-    useUserRecordStore,
 } from '@/store/userRecord.ts';
+import { commitPointProgress } from '@/store/history';
 import classNames from 'classnames';
 import { useTranslateGame, useTranslateUI, useLocale } from '@/locale';
 
@@ -133,8 +131,6 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
     const isImageUploadable = Boolean(currentPoint && resolveUGCUploadTarget(currentPoint));
     const globalCollectionRate = useGlobalCollectionRate(currentPointId, isImageUploadable);
     const pointsRecord = useUserRecord();
-    const addPoint = useAddPoint();
-    const deletePoint = useDeletePoint();
     const currentRegion = useRegion((state) => state.currentRegionKey);
     const isCollected = currentPoint
         ? pointsRecord.includes(currentPoint.id)
@@ -578,8 +574,9 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
             .map((marker) => marker.id);
         if (typeMarkerIds.length === 0) return;
 
-        const currentIds = useUserRecordStore.getState().activePoints;
-        useUserRecordStore.getState().setPoints([...currentIds, ...typeMarkerIds]);
+        commitPointProgress(`Collect ${typeMarkerIds.length} markers of type ${currentPoint.type}`, {
+            collect: typeMarkerIds,
+        });
     }, [currentPoint, currentRegion, isRegionTypeComplete]);
 
     return (
@@ -679,9 +676,13 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
                                     })}
                                     onClick={() => {
                                         if (isCollected) {
-                                            deletePoint(currentPoint.id);
+                                            commitPointProgress(`Uncollect ${currentPoint.id}`, {
+                                                uncollect: [currentPoint.id],
+                                            });
                                         } else {
-                                            addPoint(currentPoint.id);
+                                            commitPointProgress(`Collect ${currentPoint.id}`, {
+                                                collect: [currentPoint.id],
+                                            });
                                         }
                                     }}
                                 >

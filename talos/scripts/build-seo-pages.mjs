@@ -101,6 +101,7 @@ const seoTokens = (process.env.SEO_TOKENS || '')
 const shouldGenerateImages = process.env.SEO_SKIP_IMAGES !== '1';
 const shouldForceImages = process.env.SEO_FORCE_IMAGES === '1';
 const shouldForceAllImages = process.env.SEO_FORCE_ALL_IMAGES === '1';
+const shouldRefreshOgStateOnly = process.env.SEO_OG_REFRESH_STATE_ONLY === '1';
 const shouldSkipPointFiles = process.env.SEO_SKIP_POINT_FILES === '1';
 const shouldBuildImagesOnly = process.env.SEO_IMAGE_ONLY === '1';
 const shouldBuildPreviewOnly = process.env.SEO_PREVIEW_ONLY === '1';
@@ -126,7 +127,10 @@ const seoOgConcurrency = Number.isFinite(requestedSeoOgConcurrency) && requested
   ? requestedSeoOgConcurrency
   : defaultSeoOgConcurrency;
 const SEO_STATE_VERSION = 1;
-const OG_RENDER_SIGNATURE_VERSION = 1;
+const OG_RENDER_SIGNATURE_VERSION = 2;
+const FILE_FINGERPRINT_VERSION = 2;
+
+const fileFingerprintCache = new Map();
 
 function readJsonSync(file) {
   try {
@@ -240,12 +244,19 @@ async function pathExists(file) {
 
 async function fileFingerprint(file) {
   if (!file) return 'missing';
-  try {
-    const stats = await fs.stat(file);
-    return `${path.relative(ROOT, file)}:${stats.size}:${Math.trunc(stats.mtimeMs)}`;
-  } catch {
-    return `${path.relative(ROOT, file)}:missing`;
+  if (!fileFingerprintCache.has(file)) {
+    fileFingerprintCache.set(file, (async () => {
+      const relativePath = path.relative(ROOT, file);
+      try {
+        const contents = await fs.readFile(file);
+        const digest = crypto.createHash('sha256').update(contents).digest('hex');
+        return `${relativePath}:sha256:${digest}`;
+      } catch {
+        return `${relativePath}:missing`;
+      }
+    })());
   }
+  return fileFingerprintCache.get(file);
 }
 
 function stableJson(value) {
@@ -893,6 +904,10 @@ async function markerCompositeInputs(point, iconPath) {
     const badgeRight = frameLeft + imageSize + 0.45 * 16 * scale;
     const badgeLeft = badgeRight - badgeWidth;
     const badgeTop = frameTop - 0.45 * 16 * scale;
+    const framedMarkerCenter = {
+      x: markerCenter.x,
+      y: markerCenter.y - imageSize / 2,
+    };
     const svg = `
       <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
         <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
@@ -932,14 +947,14 @@ async function markerCompositeInputs(point, iconPath) {
     `;
     const inputs = [{
       input: Buffer.from(svg),
-      left: Math.round(markerCenter.x - size / 2),
-      top: Math.round(markerCenter.y - size / 2),
+      left: Math.round(framedMarkerCenter.x - size / 2),
+      top: Math.round(framedMarkerCenter.y - size / 2),
     }];
     if (iconPath) {
       inputs.push({
         input: await sharp(iconPath).resize(Math.round(imageSize), Math.round(imageSize), { fit: 'cover' }).png().toBuffer(),
-        left: Math.round(markerCenter.x - imageSize / 2),
-        top: Math.round(markerCenter.y - imageSize / 2),
+        left: Math.round(framedMarkerCenter.x - imageSize / 2),
+        top: Math.round(framedMarkerCenter.y - imageSize / 2),
       });
     }
     return inputs;
@@ -1431,8 +1446,15 @@ async function loadBuildState(file) {
 }
 
 async function writeBuildState(file, state) {
+  const contents = `${JSON.stringify(state, null, 2)}\n`;
+  const temporaryFile = `${file}.${process.pid}.${crypto.randomUUID()}.tmp`;
   await fs.mkdir(path.dirname(file), { recursive: true });
-  await fs.writeFile(file, `${JSON.stringify(state, null, 2)}\n`);
+  try {
+    await fs.writeFile(temporaryFile, contents);
+    await fs.rename(temporaryFile, file);
+  } finally {
+    await fs.rm(temporaryFile, { force: true });
+  }
 }
 
 async function pruneStaleFiles(dir, extension, activeTokens, previousTokens) {
@@ -1468,7 +1490,7 @@ function buildTilePathsForPoint(point) {
   });
 }
 
-async function generateOgImagesInParallel(points) {
+async function generateOgImagesInParallel(points, onGenerated) {
   if (points.length === 0) return;
 
   const workerCount = Math.min(seoOgConcurrency, points.length);
@@ -1483,9 +1505,11 @@ async function generateOgImagesInParallel(points) {
       nextIndex += 1;
       await generateOgImage(point);
       completed += 1;
-      if (completed === points.length || completed % 250 === 0) {
-        console.log(`[seo] generated ${completed}/${points.length} point images`);
+      const completedCount = completed;
+      if (completedCount === points.length || completedCount % 250 === 0) {
+        console.log(`[seo] generated ${completedCount}/${points.length} point images`);
       }
+      await onGenerated?.(point, completedCount);
     }
   });
 
@@ -1494,7 +1518,12 @@ async function generateOgImagesInParallel(points) {
 
 async function buildOgWorklist(points, sharedOgFingerprints, previousOgState) {
   const worklist = [];
-  const nextState = { version: SEO_STATE_VERSION, entries: {} };
+  const nextState = {
+    version: SEO_STATE_VERSION,
+    fingerprintVersion: FILE_FINGERPRINT_VERSION,
+    renderVersion: OG_RENDER_SIGNATURE_VERSION,
+    entries: {},
+  };
   for (const point of points) {
     const signature = await buildOgSignature(point, sharedOgFingerprints);
     nextState.entries[point.token] = { signature };
@@ -1627,7 +1656,41 @@ async function build() {
 
   if (shouldBuildImagesOnly) {
     const { worklist, nextState } = await buildOgWorklist(markers, sharedOgFingerprints, previousOgState);
-    await generateOgImagesInParallel(worklist);
+    if (shouldRefreshOgStateOnly) {
+      const outputChecks = await Promise.all(markers.map(async (point) => ({
+        token: point.token,
+        exists: await pathExists(point.ogImagePath),
+      })));
+      const missingOutputs = outputChecks.filter(({ exists }) => !exists);
+      if (missingOutputs.length > 0) {
+        throw new Error(`Cannot refresh OG state: ${missingOutputs.length} image outputs are missing.`);
+      }
+      await writeBuildState(SEO_OG_STATE_FILE, nextState);
+      await pruneStaleFiles(seoOgOutputDir, '.jpg', new Set(markers.map((point) => point.token)), new Set(Object.keys(previousOgState.entries ?? {})));
+      console.log(`[seo] target=${buildTarget} locale=${defaultLocale} site=${siteUrl}`);
+      console.log(`[seo] refreshed point image state=${markers.length}, output=${path.relative(ROOT, seoOgOutputDir)}`);
+      return;
+    }
+
+    const checkpointState = {
+      version: SEO_STATE_VERSION,
+      fingerprintVersion: FILE_FINGERPRINT_VERSION,
+      renderVersion: OG_RENDER_SIGNATURE_VERSION,
+      entries: { ...previousOgState.entries },
+    };
+    let checkpointWrite = Promise.resolve();
+    await generateOgImagesInParallel(worklist, (point, completed) => {
+      checkpointState.entries[point.token] = nextState.entries[point.token];
+      if (completed % 250 !== 0) return undefined;
+
+      const snapshot = {
+        ...checkpointState,
+        entries: { ...checkpointState.entries },
+      };
+      checkpointWrite = checkpointWrite.then(() => writeBuildState(SEO_OG_STATE_FILE, snapshot));
+      return checkpointWrite;
+    });
+    await checkpointWrite;
     await writeBuildState(SEO_OG_STATE_FILE, nextState);
     await pruneStaleFiles(seoOgOutputDir, '.jpg', new Set(markers.map((point) => point.token)), new Set(Object.keys(previousOgState.entries ?? {})));
     console.log(`[seo] target=${buildTarget} locale=${defaultLocale} site=${siteUrl}`);
@@ -1638,7 +1701,12 @@ async function build() {
   const today = new Date().toISOString().slice(0, 10);
   const sitemapItems = [];
   const nextPageState = { version: SEO_STATE_VERSION, entries: {} };
-  const nextOgState = { version: SEO_STATE_VERSION, entries: {} };
+  const nextOgState = {
+    version: SEO_STATE_VERSION,
+    fingerprintVersion: FILE_FINGERPRINT_VERSION,
+    renderVersion: OG_RENDER_SIGNATURE_VERSION,
+    entries: {},
+  };
   for (let index = 0; index < markers.length; index += 1) {
     const point = markers[index];
     if (shouldWritePointFiles) {

@@ -6,48 +6,13 @@ import { createConditionalStorage } from '@/utils/storage';
 interface IUserRecordStore {
     activePoints: string[];
     updatedAt: number;
-    addPoint: (id: string) => void;
-    deletePoint: (id: string) => void;
-    clearPoints: () => void;
-    setPoints: (ids: string[]) => void;
 }
 
 export const useUserRecordStore = create<IUserRecordStore>()(
     persist<IUserRecordStore, [], [], Partial<IUserRecordStore>>(
-        (set, get) => ({
+        () => ({
             activePoints: [],
             updatedAt: Date.now(),
-            addPoint: (id) => {
-                if (get().activePoints.includes(id)) {
-                    return;
-                } else {
-                    set((state) => ({
-                        activePoints: [...state.activePoints, id],
-                        updatedAt: Date.now(),
-                    }));
-                }
-            },
-            deletePoint: (id) => {
-                if (!get().activePoints.includes(id)) {
-                    return;
-                } else {
-                    set((state) => ({
-                        activePoints: state.activePoints.filter(
-                            (point) => point !== id,
-                        ),
-                        updatedAt: Date.now(),
-                    }));
-                }
-            },
-            clearPoints: () => {
-                set({ activePoints: [], updatedAt: Date.now() });
-            },
-            setPoints: (ids) => {
-                set({
-                    activePoints: [...new Set(ids.map((id) => String(id)).filter(Boolean))],
-                    updatedAt: Date.now(),
-                });
-            },
         }),
         {
             name: 'points-storage',
@@ -83,14 +48,14 @@ export const useUserRecordStore = create<IUserRecordStore>()(
 // Auto-restore when preference is enabled
 useUiPrefsStore.subscribe((state, prevState) => {
     if (state.prefsMarkerProgressEnabled && !prevState.prefsMarkerProgressEnabled) {
-        void useUserRecordStore.persist.rehydrate();
+        void Promise.resolve(useUserRecordStore.persist.rehydrate()).then(async () => {
+            const { useHistoryStore } = await import('@/store/history');
+            useHistoryStore.getState().clear();
+        });
     }
 });
 
 export const useUserRecord = () => useUserRecordStore((state) => state.activePoints);
-export const useAddPoint = () => useUserRecordStore((state) => state.addPoint);
-export const useDeletePoint = () =>
-    useUserRecordStore((state) => state.deletePoint);
 
 // Non-hook accessors for non-React modules (e.g., Leaflet renderer)
 // Returns empty array if preference is disabled

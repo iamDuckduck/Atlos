@@ -13,7 +13,7 @@ import {
     useSetForceHeadbarExpanded,
 } from '@/store/uiPrefs';
 import { useMarkerStore, useSwitchFilter } from '@/store/marker';
-import { useAddPoint, useDeletePoint } from '@/store/userRecord';
+import { applyPointProgressSilently } from '@/store/history';
 import useRegion from '@/store/region';
 import { loadAllMarkers, MARKER_TYPE_TREE, type IMarkerData, type IMarkerType } from '@/data/marker';
 
@@ -29,8 +29,6 @@ export const useMobileGuideSteps = (map?: L.Map) => {
     const t = useTranslateUI();
     const toggleMarkFilterExpanded = useToggleMarkFilterExpanded();
     const switchFilter = useSwitchFilter();
-    const addPoint = useAddPoint();
-    const deletePoint = useDeletePoint();
     const setCurrentActivePoint = useMarkerStore((s) => s.setCurrentActivePoint);
     const setDrawerSnapIndex = useSetMobileDrawerSnapIndex();
     const setForceDetailOpen = useSetForceDetailOpen();
@@ -324,7 +322,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
                 void loadAllMarkers().then((markers) => {
                     markers
                         .filter((m) => m.type === firstType)
-                        .forEach((p) => addPoint(p.id));
+                        .forEach((p) => applyPointProgressSilently({ collect: [p.id] }));
                 });
             },
         },
@@ -361,7 +359,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
                 void loadAllMarkers().then((markers) => {
                     markers
                         .filter((m) => m.type === firstType)
-                        .forEach((p) => deletePoint(p.id));
+                        .forEach((p) => applyPointProgressSilently({ uncollect: [p.id] }));
                 });
             },
             delay: 300,
@@ -397,8 +395,6 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         map,
         toggleMarkFilterExpanded,
         switchFilter,
-        addPoint,
-        deletePoint,
         setDrawerSnapIndex,
         setCurrentActivePoint,
         setForceDetailOpen,

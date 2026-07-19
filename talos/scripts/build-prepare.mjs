@@ -31,6 +31,7 @@ if (shouldSkipSubset) {
 run('pnpm run build:marker-stats');
 run('pnpm run build:marker-diff');
 run('pnpm run build:search-index');
+run('pnpm run build:relink-preview');
 if (argSkipSeo) {
   console.log('\nSkipping shared SEO page generation.');
 } else {

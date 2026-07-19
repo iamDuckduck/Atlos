@@ -12,7 +12,7 @@
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useCallback, useEffect, useRef } from 'react';
 import { getShortcutConfig } from './shortcuts';
-import { useHistoryStore } from '@/store/history';
+import { replacePointProgressFromExternal, useHistoryStore } from '@/store/history';
 import { useMarkerStore } from '@/store/marker';
 import { useUserRecordStore } from '@/store/userRecord';
 import { exportMarkerData, importMarkerData } from '@/utils/storage';
@@ -42,10 +42,8 @@ export function useKeyboardShortcuts(mapInstance: L.Map | undefined) {
     const handleImportFile = useCallback(async (file: File) => {
         const content = await file.text();
         const success = importMarkerData(content, {
-            clearPoints: useUserRecordStore.getState().clearPoints,
-            addPoint: useUserRecordStore.getState().addPoint,
+            replacePoints: replacePointProgressFromExternal,
             setFilter: useMarkerStore.getState().setFilter,
-            getSelectedPoints: () => useMarkerStore.getState().selectedPoints,
             setSelected: useMarkerStore.getState().setSelected,
             getActivePoints: () => useUserRecordStore.getState().activePoints,
             getFilter: () => useMarkerStore.getState().filter,

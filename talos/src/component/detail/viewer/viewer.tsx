@@ -149,7 +149,7 @@ const Viewer: React.FC<ViewerProps> = ({
     }, [createdAtDate, tUI]);
     const flagLabel = currentFlagged ? tUI('detail.viewer.unflag') : tUI('detail.viewer.flag');
     const recallLabel = recallConfirming
-        ? tUI('detail.viewer.confirmRecall')
+        ? tUI('common.confirmAgain')
         : currentRecallRequested ? tUI('detail.viewer.unrecall') : tUI('detail.viewer.recall');
     const uploadLabel = tUI('detail.viewer.uploadAno');
     const viewerShortActions = useMemo<ShortActionItem[]>(() => (

@@ -60,7 +60,6 @@
       "uploadAno": "Upload Another",
       "share": "Share",
       "recall": "Recall",
-      "confirmRecall": "Confirm Recall?",
       "unrecall": "Cancel Recall"
     },
     "comments": {
@@ -78,9 +77,7 @@
       "edit": "Edit",
       "submitEdit": "Submit Edit",
       "undoEdit": "Undo Edit",
-      "confirmUndoEdit": "Confirm Undo?",
       "recall": "Recall",
-      "confirmRecall": "Confirm Recall?",
       "reviewing": "Reviewing",
       "emptyWithRule": "No comments yet. Please follow <a href=\"{link}\">community guidelines</a> when posting.",
       "ruleOnly": "Please follow <a href=\"{link}\">community guidelines</a> when posting.",
@@ -435,6 +432,7 @@
     "all": "All",
     "selected": "Selected",
     "confirm": "Confirm",
+    "confirmAgain": "Click again to confirm",
     "loading": "Loading...",
     "enable": "Enable",
     "disable": "Disable",

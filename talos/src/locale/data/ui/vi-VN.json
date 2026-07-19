@@ -60,7 +60,6 @@
       "uploadAno": "Tải lên khác",
       "share": "Chia sẻ",
       "recall": "Yêu cầu gỡ",
-      "confirmRecall": "Xác nhận yêu cầu gỡ?",
       "unrecall": "Hủy yêu cầu gỡ"
     },
     "comments": {
@@ -78,9 +77,7 @@
       "edit": "Chỉnh sửa",
       "submitEdit": "Lưu chỉnh sửa",
       "undoEdit": "Hoàn tác chỉnh sửa",
-      "confirmUndoEdit": "Hoàn tác chỉnh sửa?",
       "recall": "Yêu cầu gỡ bình luận",
-      "confirmRecall": "Xác nhận yêu cầu gỡ bình luận?",
       "reviewing": "Đang duyệt",
       "emptyWithRule": "Chưa có bình luận nào. Vui lòng tuân thủ <a href=\"{link}\">nguyên tắc cộng đồng</a> khi đăng.",
       "ruleOnly": "Vui lòng tuân thủ <a href=\"{link}\">nguyên tắc cộng đồng</a> khi đăng.",
@@ -435,6 +432,7 @@
     "all": "Tất cả",
     "selected": "Đã chọn",
     "confirm": "Xác nhận",
+    "confirmAgain": "Nhấp lại để xác nhận",
     "loading": "Đang tải...",
     "enable": "Bật",
     "disable": "Tắt",

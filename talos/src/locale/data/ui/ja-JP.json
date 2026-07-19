@@ -60,7 +60,6 @@
       "uploadAno": "別の画像をアップロード",
       "share": "共有",
       "recall": "削除申請",
-      "confirmRecall": "削除申請を確認しますか？",
       "unrecall": "削除申請を取り消す"
     },
     "comments": {
@@ -78,9 +77,7 @@
       "edit": "編集",
       "submitEdit": "変更を保存",
       "undoEdit": "編集を取り消す",
-      "confirmUndoEdit": "編集を取り消しますか？",
       "recall": "コメントの削除を申請",
-      "confirmRecall": "コメントの削除を申請しますか？",
       "reviewing": "審査中",
       "emptyWithRule": "まだコメントはありません。投稿時は<a href=\"{link}\">コミュニティガイドライン</a>に従ってください。",
       "ruleOnly": "投稿時は<a href=\"{link}\">コミュニティガイドライン</a>に従ってください。",
@@ -435,6 +432,7 @@
     "all": "すべて",
     "selected": "選択中",
     "confirm": "確認",
+    "confirmAgain": "もう一度クリックして確認",
     "loading": "読み込み中…",
     "enable": "有効",
     "disable": "無効",

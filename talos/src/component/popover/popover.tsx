@@ -263,6 +263,10 @@ const PopoverTooltip: React.FC<PopoverTooltipProps> = ({
     }, [hidePopover, showPopover, visible]);
 
     useEffect(() => {
+        if (isOpenRef.current) schedulePosition();
+    }, [content, schedulePosition]);
+
+    useEffect(() => {
         const handleViewportChange = () => schedulePosition();
         window.addEventListener('resize', handleViewportChange);
         window.addEventListener('scroll', handleViewportChange, true);

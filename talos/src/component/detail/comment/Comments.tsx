@@ -213,9 +213,7 @@ const CommentItem = memo(({
             items.push({
                 id: 'recall',
                 label: tUI(recallConfirming
-                    ? (isEditing || comment.editUndoAvailable
-                        ? 'detail.comments.confirmUndoEdit'
-                        : 'detail.comments.confirmRecall')
+                    ? 'common.confirmAgain'
                     : (isEditing || comment.editUndoAvailable
                         ? 'detail.comments.undoEdit'
                         : 'detail.comments.recall')),

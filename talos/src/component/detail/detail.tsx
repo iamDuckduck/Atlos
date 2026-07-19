@@ -69,6 +69,8 @@ interface DetailProps {
 
 const DETAIL_EXIT_DURATION_MS = 300;
 const TAB_INDICATOR_SETTLE_MS = 400;
+const COLLECT_ALL_CONFIRM_MIN_DELAY_MS = 300;
+const COLLECT_ALL_CONFIRM_EXPIRE_MS = 2_000;
 
 interface TabSwipeBounds {
     startCenter: number;
@@ -128,6 +130,7 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
      */
     const currentPoint = useMarkerStore((state) => state.currentActivePoint);
     const currentPointId = currentPoint?.id;
+    const currentPointType = currentPoint?.type;
     const isImageUploadable = Boolean(currentPoint && resolveUGCUploadTarget(currentPoint));
     const globalCollectionRate = useGlobalCollectionRate(currentPointId, isImageUploadable);
     const pointsRecord = useUserRecord();
@@ -560,8 +563,48 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
         ? regionCnt.total > 0 && regionCnt.collected >= regionCnt.total
         : false;
 
+    const [collectAllConfirmation, setCollectAllConfirmation] = useState<{
+        key: string;
+        armedAt: number;
+    } | null>(null);
+    const collectAllConfirmationKey = currentPoint && currentRegion
+        ? `${currentPoint.id}:${currentRegion}:${currentPoint.type}`
+        : null;
+    const collectAllConfirming = Boolean(
+        collectAllConfirmationKey
+        && collectAllConfirmation?.key === collectAllConfirmationKey,
+    );
+
+    useEffect(() => {
+        setCollectAllConfirmation(null);
+    }, [currentPointId, currentPointType, currentRegion]);
+
+    useEffect(() => {
+        if (!collectAllConfirmation) return undefined;
+        const remaining = COLLECT_ALL_CONFIRM_EXPIRE_MS
+            - (Date.now() - collectAllConfirmation.armedAt);
+        const timer = window.setTimeout(
+            () => setCollectAllConfirmation(null),
+            Math.max(0, remaining),
+        );
+        return () => window.clearTimeout(timer);
+    }, [collectAllConfirmation]);
+
     const handleCollectAllInRegion = useCallback(async () => {
-        if (!currentPoint || !currentRegion || isRegionTypeComplete) return;
+        if (
+            !currentPoint
+            || !currentRegion
+            || !collectAllConfirmationKey
+            || isRegionTypeComplete
+        ) return;
+
+        const now = Date.now();
+        if (collectAllConfirmation?.key !== collectAllConfirmationKey) {
+            setCollectAllConfirmation({ key: collectAllConfirmationKey, armedAt: now });
+            return;
+        }
+        if (now - collectAllConfirmation.armedAt < COLLECT_ALL_CONFIRM_MIN_DELAY_MS) return;
+        setCollectAllConfirmation(null);
 
         let regionMarkers = getLoadedRegionMarkers(currentRegion);
         if (regionMarkers.length === 0) {
@@ -577,7 +620,17 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
         commitPointProgress(`Collect ${typeMarkerIds.length} markers of type ${currentPoint.type}`, {
             collect: typeMarkerIds,
         });
-    }, [currentPoint, currentRegion, isRegionTypeComplete]);
+    }, [
+        collectAllConfirmation,
+        collectAllConfirmationKey,
+        currentPoint,
+        currentRegion,
+        isRegionTypeComplete,
+    ]);
+
+    const collectAllLabel = collectAllConfirming
+        ? tUI('common.confirmAgain')
+        : tUI('detail.tabs.collectAll');
 
     return (
         <>
@@ -625,14 +678,20 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
                         data-active-tab={activeTab}
                         ref={tabsRef}
                     >
-                        <PopoverTooltip content={tUI('detail.tabs.collectAll')} placement="top" gap={4}>
+                        <PopoverTooltip
+                            content={collectAllLabel}
+                            placement="top"
+                            gap={4}
+                        >
                             <button
                                 type="button"
                                 className={classNames(styles.collectAllTab, {
                                     [styles.disabled]: isRegionTypeComplete,
+                                    [styles.confirming]: collectAllConfirming,
                                 })}
                                 aria-disabled={isRegionTypeComplete}
-                                aria-label={tUI('detail.tabs.collectAll')}
+                                aria-label={collectAllLabel}
+                                data-confirming={collectAllConfirming ? 'true' : 'false'}
                                 onClick={() => void handleCollectAllInRegion()}
                             >
                                 <CollectAllIcon />

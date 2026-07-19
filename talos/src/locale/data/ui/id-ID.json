@@ -60,7 +60,6 @@
       "uploadAno": "Unggah lainnya",
       "share": "Bagikan",
       "recall": "Minta penghapusan",
-      "confirmRecall": "Konfirmasi penghapusan?",
       "unrecall": "Batalkan penghapusan"
     },
     "comments": {
@@ -78,9 +77,7 @@
       "edit": "Edit",
       "submitEdit": "Simpan perubahan",
       "undoEdit": "Batalkan perubahan",
-      "confirmUndoEdit": "Batalkan perubahan?",
       "recall": "Minta penghapusan komentar",
-      "confirmRecall": "Konfirmasi penghapusan komentar?",
       "reviewing": "Ditinjau",
       "emptyWithRule": "Belum ada komentar. Harap ikuti <a href=\"{link}\">pedoman komunitas</a> saat memposting.",
       "ruleOnly": "Harap ikuti <a href=\"{link}\">pedoman komunitas</a> saat memposting.",
@@ -435,6 +432,7 @@
     "all": "Semua",
     "selected": "Terpilih",
     "confirm": "Konfirmasi",
+    "confirmAgain": "Klik lagi untuk mengonfirmasi",
     "loading": "Memuat...",
     "enable": "Aktifkan",
     "disable": "Nonaktifkan",

@@ -60,7 +60,6 @@
       "uploadAno": "Muat naik lain",
       "share": "Kongsi",
       "recall": "Minta pemadaman",
-      "confirmRecall": "Sahkan pemadaman?",
       "unrecall": "Batalkan pemadaman"
     },
     "comments": {
@@ -78,9 +77,7 @@
       "edit": "Edit",
       "submitEdit": "Simpan perubahan",
       "undoEdit": "Batalkan perubahan",
-      "confirmUndoEdit": "Batalkan perubahan?",
       "recall": "Minta pemadaman komen",
-      "confirmRecall": "Sahkan pemadaman komen?",
       "reviewing": "Disemak",
       "emptyWithRule": "Belum ada komen. Sila ikut <a href=\"{link}\">garis panduan komuniti</a> semasa menyiarkan.",
       "ruleOnly": "Sila ikut <a href=\"{link}\">garis panduan komuniti</a> semasa menyiarkan.",
@@ -435,6 +432,7 @@
     "all": "Semua",
     "selected": "Dipilih",
     "confirm": "Sahkan",
+    "confirmAgain": "Klik sekali lagi untuk mengesahkan",
     "loading": "Memuat...",
     "enable": "Dayakan",
     "disable": "Nyahdayakan",

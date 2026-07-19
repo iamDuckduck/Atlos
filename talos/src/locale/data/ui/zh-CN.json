@@ -60,7 +60,6 @@
       "uploadAno": "上传另一张图片",
       "share": "分享",
       "recall": "撤回此图片",
-      "confirmRecall": "确认撤回此图片？",
       "unrecall": "取消撤回"
     },
     "comments": {
@@ -78,9 +77,7 @@
       "edit": "修改留言",
       "submitEdit": "提交修改",
       "undoEdit": "撤销修改",
-      "confirmUndoEdit": "确认撤销修改？",
       "recall": "撤回此留言",
-      "confirmRecall": "确认撤回此留言？",
       "reviewing": "审核中",
       "emptyWithRule": "暂无留言。发布内容请遵循<a href=\"{link}\">社区守则</a>。",
       "ruleOnly": "发布内容请遵循<a href=\"{link}\">社区守则</a>。",
@@ -435,6 +432,7 @@
     "all": "全部",
     "selected": "选中项",
     "confirm": "确认",
+    "confirmAgain": "再次点击确认",
     "loading": "加载中⋯",
     "enable": "启用",
     "disable": "禁用",

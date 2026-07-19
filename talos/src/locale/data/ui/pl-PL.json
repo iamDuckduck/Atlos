@@ -60,7 +60,6 @@
       "uploadAno": "Prześlij kolejne",
       "share": "Udostępnij",
       "recall": "Poproś o usunięcie",
-      "confirmRecall": "Potwierdzić usunięcie?",
       "unrecall": "Anuluj usunięcie"
     },
     "comments": {
@@ -78,9 +77,7 @@
       "edit": "Edytuj",
       "submitEdit": "Zapisz zmiany",
       "undoEdit": "Anuluj zmiany",
-      "confirmUndoEdit": "Anulować zmiany?",
       "recall": "Poproś o usunięcie komentarza",
-      "confirmRecall": "Potwierdzić usunięcie komentarza?",
       "reviewing": "W weryfikacji",
       "emptyWithRule": "Nie ma jeszcze komentarzy. Podczas publikowania przestrzegaj <a href=\"{link}\">zasad społeczności</a>.",
       "ruleOnly": "Podczas publikowania przestrzegaj <a href=\"{link}\">zasad społeczności</a>.",
@@ -435,6 +432,7 @@
     "all": "Wszystkie",
     "selected": "Wybrane",
     "confirm": "Potwierdź",
+    "confirmAgain": "Kliknij ponownie, aby potwierdzić",
     "loading": "Ładowanie...",
     "enable": "Włącz",
     "disable": "Wyłącz",

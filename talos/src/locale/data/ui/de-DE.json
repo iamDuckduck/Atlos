@@ -60,7 +60,6 @@
       "uploadAno": "Weiteres hochladen",
       "share": "Teilen",
       "recall": "Bildrücknahme beantragen",
-      "confirmRecall": "Rücknahme bestätigen?",
       "unrecall": "Rücknahme abbrechen"
     },
     "comments": {
@@ -78,9 +77,7 @@
       "edit": "Bearbeiten",
       "submitEdit": "Bearbeitung speichern",
       "undoEdit": "Bearbeitung verwerfen",
-      "confirmUndoEdit": "Bearbeitung verwerfen?",
       "recall": "Entfernung des Kommentars beantragen",
-      "confirmRecall": "Rücknahme bestätigen?",
       "reviewing": "In Prüfung",
       "emptyWithRule": "Noch keine Kommentare. Bitte beachte beim Posten die <a href=\"{link}\">Community-Richtlinien</a>.",
       "ruleOnly": "Bitte beachte beim Posten die <a href=\"{link}\">Community-Richtlinien</a>.",
@@ -435,6 +432,7 @@
     "all": "Alle",
     "selected": "Ausgewählt",
     "confirm": "Bestätigen",
+    "confirmAgain": "Erneut klicken zum Bestätigen",
     "loading": "Lädt...",
     "enable": "Aktivieren",
     "disable": "Deaktivieren",

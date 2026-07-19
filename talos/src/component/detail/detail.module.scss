@@ -246,12 +246,17 @@
         svg {
             width: 1.35rem;
             height: 1.35rem;
+            transition: opacity 0.3s ease;
         }
 
         &:disabled,
         &.disabled {
             cursor: default;
             opacity: 0.8;
+        }
+
+        &.confirming > svg {
+            opacity: 0.75;
         }
     }
 

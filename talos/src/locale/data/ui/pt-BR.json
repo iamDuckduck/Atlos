@@ -60,7 +60,6 @@
       "uploadAno": "Enviar outro",
       "share": "Compartilhar",
       "recall": "Solicitar remoção",
-      "confirmRecall": "Confirmar remoção?",
       "unrecall": "Cancelar remoção"
     },
     "comments": {
@@ -78,9 +77,7 @@
       "edit": "Editar",
       "submitEdit": "Salvar alterações",
       "undoEdit": "Desfazer alterações",
-      "confirmUndoEdit": "Desfazer as alterações?",
       "recall": "Solicitar remoção do comentário",
-      "confirmRecall": "Confirmar remoção do comentário?",
       "reviewing": "Em análise",
       "emptyWithRule": "Ainda não há comentários. Ao publicar, siga as <a href=\"{link}\">diretrizes da comunidade</a>.",
       "ruleOnly": "Ao publicar, siga as <a href=\"{link}\">diretrizes da comunidade</a>.",
@@ -435,6 +432,7 @@
     "all": "Tudo",
     "selected": "Selecionado",
     "confirm": "Confirmar",
+    "confirmAgain": "Clique novamente para confirmar",
     "loading": "Carregando...",
     "enable": "Ativar",
     "disable": "Desativar",

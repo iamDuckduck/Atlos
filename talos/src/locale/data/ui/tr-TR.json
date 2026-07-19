@@ -60,7 +60,6 @@
       "uploadAno": "Başka Yükle",
       "share": "Paylaş",
       "recall": "Geri Çek",
-      "confirmRecall": "Geri Çekmeyi Onayla?",
       "unrecall": "Geri Çekmeyi İptal Et"
     },
     "comments": {
@@ -78,9 +77,7 @@
       "edit": "Düzenle",
       "submitEdit": "Düzenlemeyi Kaydet",
       "undoEdit": "Düzenlemeyi Geri Al",
-      "confirmUndoEdit": "Düzenleme Geri Alınsın mı?",
       "recall": "Yorumu kaldırma isteği",
-      "confirmRecall": "Yorumu Kaldırmayı Onayla?",
       "reviewing": "İnceleniyor",
       "emptyWithRule": "Henüz yorum yok. Gönderi paylaşırken lütfen <a href=\"{link}\">topluluk kurallarına</a> uyun.",
       "ruleOnly": "Gönderi paylaşırken lütfen <a href=\"{link}\">topluluk kurallarına</a> uyun.",
@@ -435,6 +432,7 @@
     "all": "Tümü",
     "selected": "Seçili",
     "confirm": "Onayla",
+    "confirmAgain": "Onaylamak için tekrar tıklayın",
     "loading": "Yükleniyor...",
     "enable": "Etkinleştir",
     "disable": "Devre Dışı Bırak",

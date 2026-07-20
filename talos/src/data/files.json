@@ -5,8 +5,12 @@
                 "icon": "letter",
                 "ctgr": "paper"
             },
-            "nar_col_lv003_15": {
+            "nar_col_lv003_5": {
                 "icon": "letter",
+                "ctgr": "paper"
+            },
+            "nar_col_lv003_6": {
+                "icon": "ntbook",
                 "ctgr": "paper"
             },
             "nar_col_lv003_19": {
@@ -17,333 +21,31 @@
                 "icon": "letter",
                 "ctgr": "paper"
             },
-            "nar_col_lv003_5": {
+            "nar_col_lv003_15": {
                 "icon": "letter",
                 "ctgr": "paper"
             },
-            "nar_col_lv003_6": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_col_lv003_9d1": {
-                "icon": "pic",
-                "ctgr": "digital"
-            },
-            "nar_collection_map02_13006_1": {
-                "icon": "prts_sm2l6m1_yujian",
-                "ctgr": "collection"
-            },
-            "nar_collection_map02_95_1": {
-                "icon": "amulet",
-                "ctgr": "collection"
-            },
-            "nar_digital_map01_11_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_130_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_14_1": {
-                "icon": "docs",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_15_1": {
-                "icon": "docs",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_26_1": {
-                "icon": "pad",
-                "ctgr": "digital",
-                "rsch": "research_007"
-            },
-            "nar_digital_map01_29_1": {
-                "icon": "docs",
-                "ctgr": "digital",
-                "rsch": "research_006"
-            },
-            "nar_digital_map01_29_2": {
-                "icon": "docs",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_29_3": {
-                "icon": "docs",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_32_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_33_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_34_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_35_1": {
-                "icon": "pad",
-                "ctgr": "digital",
-                "rsch": "research_006"
-            },
-            "nar_digital_map01_36_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_38_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_40_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_41_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_43_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_4_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_64_1": {
-                "icon": "pad",
-                "ctgr": "digital",
-                "rsch": "research_007"
-            },
-            "nar_digital_map01_76_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_77_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_78_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_79_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_80_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_84_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_90_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map01_98_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map02_10001_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map02_10002_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map02_100_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map02_12142_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map02_14001_1": {
-                "icon": "pad",
-                "ctgr": "digital",
-                "rsch": "research_007prts"
-            },
-            "nar_digital_map02_14001_2": {
-                "icon": "pad",
-                "ctgr": "digital",
-                "rsch": "research_007prts"
-            },
-            "nar_digital_map02_14001_3": {
-                "icon": "pad",
-                "ctgr": "digital",
-                "rsch": "research_007prts"
-            },
-            "nar_digital_map02_14002_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map02_14006_1": {
-                "icon": "pad",
-                "ctgr": "digital",
-                "rsch": "research_007prts"
-            },
-            "nar_digital_map02_14009_1": {
-                "icon": "pad",
-                "ctgr": "digital",
-                "rsch": "research_007prts"
-            },
-            "nar_digital_map02_14010_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map02_14011_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map02_14016_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map02_14024_1": {
-                "icon": "pad",
-                "ctgr": "digital",
-                "rsch": "research_008prts"
-            },
-            "nar_digital_map02_17_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map02_18_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_digital_map02_20_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_gm01m9_1": {
-                "icon": "pad",
-                "ctgr": "digital"
-            },
-            "nar_media_map01_108_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map01_109_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map01_117_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map01_118_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map01_120_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map01_128_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map01_45_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map01_45_2": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map01_54_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map01_81_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map02_113_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map02_12144_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map02_13005_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map02_14008_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map02_14032_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map02_64_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map02_65_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map02_66_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map02_70_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_media_map02_71_1": {
-                "icon": "record",
-                "ctgr": "media"
-            },
-            "nar_paper_map01_121_1": {
+            "nar_paper_map01_1_1": {
                 "icon": "note",
                 "ctgr": "paper"
             },
-            "nar_paper_map01_122_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_123_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_124_1": {
+            "nar_paper_map01_6_1": {
                 "icon": "letter",
                 "ctgr": "paper"
             },
-            "nar_paper_map01_127_1": {
+            "nar_paper_map01_7_1": {
                 "icon": "note",
                 "ctgr": "paper"
             },
-            "nar_paper_map01_127_2": {
-                "icon": "note",
+            "nar_paper_map01_8_1": {
+                "icon": "docs",
                 "ctgr": "paper"
             },
-            "nar_paper_map01_127_3": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_127_4": {
+            "nar_paper_map01_9_1": {
                 "icon": "note",
                 "ctgr": "paper"
             },
             "nar_paper_map01_12_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_131_1": {
                 "icon": "note",
                 "ctgr": "paper"
             },
@@ -371,10 +73,6 @@
                 "icon": "note",
                 "ctgr": "paper"
             },
-            "nar_paper_map01_1_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
             "nar_paper_map01_21_1": {
                 "icon": "note",
                 "ctgr": "paper"
@@ -392,36 +90,6 @@
                 "ctgr": "paper"
             },
             "nar_paper_map01_25_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_27_1": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_28_1": {
-                "icon": "ntbook",
-                "ctgr": "paper",
-                "rsch": "research_006"
-            },
-            "nar_paper_map01_2_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_37_1": {
-                "icon": "note",
-                "ctgr": "paper",
-                "rsch": "research_006"
-            },
-            "nar_paper_map01_39_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_42_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_44_1": {
                 "icon": "note",
                 "ctgr": "paper"
             },
@@ -457,6 +125,10 @@
                 "ctgr": "paper",
                 "rsch": "research_002"
             },
+            "nar_paper_map01_2_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
             "nar_paper_map01_55_1": {
                 "icon": "note",
                 "ctgr": "paper"
@@ -489,48 +161,6 @@
                 "icon": "note",
                 "ctgr": "paper"
             },
-            "nar_paper_map01_63_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_65_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_66_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_67_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_68_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_69_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_6_1": {
-                "icon": "letter",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_70_1": {
-                "icon": "note",
-                "ctgr": "paper",
-                "rsch": "research_007"
-            },
-            "nar_paper_map01_75_1": {
-                "icon": "note",
-                "ctgr": "paper",
-                "rsch": "research_007"
-            },
-            "nar_paper_map01_7_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
             "nar_paper_map01_83_1": {
                 "icon": "docs",
                 "ctgr": "paper"
@@ -553,10 +183,6 @@
             },
             "nar_paper_map01_89_1": {
                 "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map01_8_1": {
-                "icon": "docs",
                 "ctgr": "paper"
             },
             "nar_paper_map01_91_1": {
@@ -591,230 +217,151 @@
                 "icon": "ntbook",
                 "ctgr": "paper"
             },
-            "nar_paper_map01_9_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_101_1": {
+            "nar_paper_map01_28_1": {
                 "icon": "ntbook",
                 "ctgr": "paper",
-                "rsch": "research_004prts"
+                "rsch": "research_006"
             },
-            "nar_paper_map02_102_1": {
+            "nar_paper_map01_37_1": {
+                "icon": "note",
+                "ctgr": "paper",
+                "rsch": "research_006"
+            },
+            "nar_paper_map01_39_1": {
                 "icon": "note",
                 "ctgr": "paper"
             },
-            "nar_paper_map02_103_1": {
+            "nar_paper_map01_42_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_44_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_27_1": {
                 "icon": "ntbook",
                 "ctgr": "paper"
             },
-            "nar_paper_map02_104_1": {
+            "nar_paper_map01_63_1": {
                 "icon": "note",
                 "ctgr": "paper"
             },
-            "nar_paper_map02_105_1": {
+            "nar_paper_map01_65_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_66_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_67_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_68_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_127_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_127_2": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_127_3": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_127_4": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_69_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_70_1": {
+                "icon": "note",
+                "ctgr": "paper",
+                "rsch": "research_007"
+            },
+            "nar_paper_map01_75_1": {
+                "icon": "note",
+                "ctgr": "paper",
+                "rsch": "research_007"
+            },
+            "nar_paper_map01_131_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_121_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_122_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_123_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map01_124_1": {
                 "icon": "letter",
                 "ctgr": "paper"
             },
-            "nar_paper_map02_106_1": {
+            "nar_paper_map02_1_1": {
                 "icon": "ntbook",
-                "ctgr": "paper"
+                "ctgr": "paper",
+                "rsch": "research_001"
             },
-            "nar_paper_map02_107_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_107_2": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_108_1": {
+            "nar_paper_map02_2_1": {
                 "icon": "note",
                 "ctgr": "paper",
-                "rsch": "research_004prts"
+                "rsch": "research_001"
             },
-            "nar_paper_map02_109_1": {
-                "icon": "letter",
+            "nar_paper_map02_3_1": {
+                "icon": "obook",
                 "ctgr": "paper"
+            },
+            "nar_paper_map02_3_2": {
+                "icon": "obook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_3_3": {
+                "icon": "obook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_3_4": {
+                "icon": "obook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_7_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_8_1": {
+                "icon": "note",
+                "ctgr": "paper",
+                "rsch": "research_001"
             },
             "nar_paper_map02_10_1": {
                 "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_110_1": {
-                "icon": "letter",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_111_1": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_112_1": {
-                "icon": "letter",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_115_1": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_116_1": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_117_1": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_118_1": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_119_1": {
-                "icon": "note",
                 "ctgr": "paper"
             },
             "nar_paper_map02_11_1": {
                 "icon": "note",
                 "ctgr": "paper"
             },
-            "nar_paper_map02_12137_1": {
-                "icon": "docs",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_12143_1": {
-                "icon": "letter",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_12145_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_12146_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_123_1": {
-                "icon": "note",
-                "ctgr": "paper",
-                "rsch": "research_003prts"
-            },
-            "nar_paper_map02_128_1": {
-                "icon": "letter",
-                "ctgr": "paper"
-            },
             "nar_paper_map02_12_1": {
                 "icon": "note",
                 "ctgr": "paper"
             },
-            "nar_paper_map02_13001_1": {
-                "icon": "note",
-                "ctgr": "paper",
-                "rsch": "research_006prts"
-            },
-            "nar_paper_map02_13001_2": {
-                "icon": "note",
-                "ctgr": "paper",
-                "rsch": "research_006prts"
-            },
-            "nar_paper_map02_13001_3": {
-                "icon": "note",
-                "ctgr": "paper",
-                "rsch": "research_006prts"
-            },
             "nar_paper_map02_13_1": {
                 "icon": "letter",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14003_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14004_1": {
-                "icon": "ntbook",
-                "ctgr": "paper",
-                "rsch": "research_007prts"
-            },
-            "nar_paper_map02_14005_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14007_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14013_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14013_2": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14014_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14017_1": {
-                "icon": "exbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14018_1": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14019_1": {
-                "icon": "ntbook",
-                "ctgr": "paper",
-                "rsch": "research_008prts"
-            },
-            "nar_paper_map02_14020_1": {
-                "icon": "letter",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14021_1": {
-                "icon": "exbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14023_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14025_1": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14025_2": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14025_3": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14026_1": {
-                "icon": "ntbook",
-                "ctgr": "paper",
-                "rsch": "research_008prts"
-            },
-            "nar_paper_map02_14027_1": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14028_1": {
-                "icon": "ntbook",
-                "ctgr": "paper",
-                "rsch": "research_008prts"
-            },
-            "nar_paper_map02_14029_1": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14030_1": {
-                "icon": "ntbook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_14031_1": {
-                "icon": "ntbook",
                 "ctgr": "paper"
             },
             "nar_paper_map02_14_1": {
@@ -832,11 +379,6 @@
             "nar_paper_map02_19_1": {
                 "icon": "ntbook",
                 "ctgr": "paper"
-            },
-            "nar_paper_map02_1_1": {
-                "icon": "ntbook",
-                "ctgr": "paper",
-                "rsch": "research_001"
             },
             "nar_paper_map02_21_1": {
                 "icon": "note",
@@ -887,11 +429,6 @@
                 "icon": "obook",
                 "ctgr": "paper",
                 "rsch": "research_WulingBussiness"
-            },
-            "nar_paper_map02_2_1": {
-                "icon": "note",
-                "ctgr": "paper",
-                "rsch": "research_001"
             },
             "nar_paper_map02_30_1": {
                 "icon": "ntbook",
@@ -947,22 +484,6 @@
                 "ctgr": "paper"
             },
             "nar_paper_map02_39_4": {
-                "icon": "obook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_3_1": {
-                "icon": "obook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_3_2": {
-                "icon": "obook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_3_3": {
-                "icon": "obook",
-                "ctgr": "paper"
-            },
-            "nar_paper_map02_3_4": {
                 "icon": "obook",
                 "ctgr": "paper"
             },
@@ -1105,10 +626,6 @@
                 "ctgr": "paper",
                 "rsch": "research_003prts"
             },
-            "nar_paper_map02_7_1": {
-                "icon": "note",
-                "ctgr": "paper"
-            },
             "nar_paper_map02_80_1": {
                 "icon": "note",
                 "ctgr": "paper"
@@ -1150,11 +667,6 @@
                 "icon": "note",
                 "ctgr": "paper"
             },
-            "nar_paper_map02_8_1": {
-                "icon": "note",
-                "ctgr": "paper",
-                "rsch": "research_001"
-            },
             "nar_paper_map02_90_1": {
                 "icon": "note",
                 "ctgr": "paper"
@@ -1179,6 +691,31 @@
                 "icon": "note",
                 "ctgr": "paper"
             },
+            "nar_paper_map02_123_1": {
+                "icon": "note",
+                "ctgr": "paper",
+                "rsch": "research_003prts"
+            },
+            "nar_paper_map02_115_1": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_116_1": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_117_1": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_118_1": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_119_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
             "nar_paper_map02_97_1": {
                 "icon": "ntbook",
                 "ctgr": "paper"
@@ -1197,9 +734,472 @@
                 "icon": "ntbook",
                 "ctgr": "paper"
             },
+            "nar_paper_map02_101_1": {
+                "icon": "ntbook",
+                "ctgr": "paper",
+                "rsch": "research_004prts"
+            },
+            "nar_paper_map02_102_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_103_1": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_104_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_105_1": {
+                "icon": "letter",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_106_1": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_12146_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_107_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_107_2": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_108_1": {
+                "icon": "note",
+                "ctgr": "paper",
+                "rsch": "research_004prts"
+            },
+            "nar_paper_map02_109_1": {
+                "icon": "letter",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_110_1": {
+                "icon": "letter",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_111_1": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_112_1": {
+                "icon": "letter",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_128_1": {
+                "icon": "letter",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_12137_1": {
+                "icon": "docs",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_12143_1": {
+                "icon": "letter",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_12145_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_13001_1": {
+                "icon": "note",
+                "ctgr": "paper",
+                "rsch": "research_006prts"
+            },
+            "nar_paper_map02_13001_2": {
+                "icon": "note",
+                "ctgr": "paper",
+                "rsch": "research_006prts"
+            },
+            "nar_paper_map02_13001_3": {
+                "icon": "note",
+                "ctgr": "paper",
+                "rsch": "research_006prts"
+            },
+            "nar_paper_map02_14003_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14004_1": {
+                "icon": "ntbook",
+                "ctgr": "paper",
+                "rsch": "research_007prts"
+            },
+            "nar_paper_map02_14005_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14007_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14013_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14013_2": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14014_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14017_1": {
+                "icon": "exbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14018_1": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14019_1": {
+                "icon": "ntbook",
+                "ctgr": "paper",
+                "rsch": "research_008prts"
+            },
+            "nar_paper_map02_14020_1": {
+                "icon": "letter",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14021_1": {
+                "icon": "exbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14023_1": {
+                "icon": "note",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14025_1": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14025_2": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14025_3": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14026_1": {
+                "icon": "ntbook",
+                "ctgr": "paper",
+                "rsch": "research_008prts"
+            },
+            "nar_paper_map02_14027_1": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14028_1": {
+                "icon": "ntbook",
+                "ctgr": "paper",
+                "rsch": "research_008prts"
+            },
+            "nar_paper_map02_14029_1": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14030_1": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_paper_map02_14031_1": {
+                "icon": "ntbook",
+                "ctgr": "paper"
+            },
+            "nar_col_lv003_9d1": {
+                "icon": "pic",
+                "ctgr": "digital"
+            },
+            "nar_gm01m9_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_4_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_11_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_14_1": {
+                "icon": "docs",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_15_1": {
+                "icon": "docs",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_84_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_90_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_130_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_98_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_29_1": {
+                "icon": "docs",
+                "ctgr": "digital",
+                "rsch": "research_006"
+            },
+            "nar_digital_map01_29_2": {
+                "icon": "docs",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_29_3": {
+                "icon": "docs",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_32_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_33_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_34_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_35_1": {
+                "icon": "pad",
+                "ctgr": "digital",
+                "rsch": "research_006"
+            },
+            "nar_digital_map01_36_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_38_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_40_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_41_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_43_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_26_1": {
+                "icon": "pad",
+                "ctgr": "digital",
+                "rsch": "research_007"
+            },
+            "nar_digital_map01_64_1": {
+                "icon": "pad",
+                "ctgr": "digital",
+                "rsch": "research_007"
+            },
+            "nar_digital_map01_76_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_77_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_78_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_79_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map01_80_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map02_17_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map02_18_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map02_20_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map02_10001_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map02_10002_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map02_100_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map02_12142_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map02_14009_1": {
+                "icon": "pad",
+                "ctgr": "digital",
+                "rsch": "research_007prts"
+            },
+            "nar_digital_map02_14001_1": {
+                "icon": "pad",
+                "ctgr": "digital",
+                "rsch": "research_007prts"
+            },
+            "nar_digital_map02_14001_2": {
+                "icon": "pad",
+                "ctgr": "digital",
+                "rsch": "research_007prts"
+            },
+            "nar_digital_map02_14001_3": {
+                "icon": "pad",
+                "ctgr": "digital",
+                "rsch": "research_007prts"
+            },
+            "nar_digital_map02_14002_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map02_14006_1": {
+                "icon": "pad",
+                "ctgr": "digital",
+                "rsch": "research_007prts"
+            },
+            "nar_digital_map02_14010_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map02_14011_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map02_14016_1": {
+                "icon": "pad",
+                "ctgr": "digital"
+            },
+            "nar_digital_map02_14024_1": {
+                "icon": "pad",
+                "ctgr": "digital",
+                "rsch": "research_008prts"
+            },
             "nar_sm1l1m2_3": {
                 "icon": "note",
                 "ctgr": "collection"
+            },
+            "nar_collection_map02_95_1": {
+                "icon": "amulet",
+                "ctgr": "collection"
+            },
+            "nar_collection_map02_13006_1": {
+                "icon": "prts_sm2l6m1_yujian",
+                "ctgr": "collection"
+            },
+            "nar_media_map01_117_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map01_118_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map01_54_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map01_120_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map01_108_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map01_109_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map01_45_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map01_45_2": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map01_81_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map01_128_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map02_65_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map02_64_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map02_70_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map02_66_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map02_71_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map02_113_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map02_12144_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map02_13005_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map02_14008_1": {
+                "icon": "record",
+                "ctgr": "media"
+            },
+            "nar_media_map02_14032_1": {
+                "icon": "record",
+                "ctgr": "media"
             }
         }
     }

@@ -40,6 +40,7 @@ export const LOCATOR_REMINDER_STRATEGIES = {
             'collection.gear_template',
             'exploration.pressure_plate',
             'exploration.wooden_box',
+            'exploration.blight_core',
             ...COMMON_MOB_RULES,
         ],
     },
@@ -52,6 +53,7 @@ export const LOCATOR_REMINDER_STRATEGIES = {
         exclude: [
             'exploration.pressure_plate',
             'exploration.wooden_box',
+            'exploration.blight_core',
         ],
     },
     manual: {

@@ -437,8 +437,7 @@
         "category": {
             "main": "poi",
             "sub": "exploration"
-        },
-        "noFrame": true
+        }
     },
     "rift_pillars_brace": {
         "key": "rift_pillars_brace",
@@ -2029,14 +2028,23 @@
         "ctgr": "paper",
         "icon": "letter"
     },
-    "nar_col_lv003_15": {
-        "key": "nar_col_lv003_15",
+    "nar_col_lv003_5": {
+        "key": "nar_col_lv003_5",
         "category": {
             "main": "files",
             "sub": "archives"
         },
         "ctgr": "paper",
         "icon": "letter"
+    },
+    "nar_col_lv003_6": {
+        "key": "nar_col_lv003_6",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
     },
     "nar_col_lv003_19": {
         "key": "nar_col_lv003_19",
@@ -2056,8 +2064,8 @@
         "ctgr": "paper",
         "icon": "letter"
     },
-    "nar_col_lv003_5": {
-        "key": "nar_col_lv003_5",
+    "nar_col_lv003_15": {
+        "key": "nar_col_lv003_15",
         "category": {
             "main": "files",
             "sub": "archives"
@@ -2065,639 +2073,8 @@
         "ctgr": "paper",
         "icon": "letter"
     },
-    "nar_col_lv003_6": {
-        "key": "nar_col_lv003_6",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_col_lv003_9d1": {
-        "key": "nar_col_lv003_9d1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pic"
-    },
-    "nar_collection_map02_13006_1": {
-        "key": "nar_collection_map02_13006_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "collection",
-        "icon": "prts_sm2l6m1_yujian"
-    },
-    "nar_collection_map02_95_1": {
-        "key": "nar_collection_map02_95_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "collection",
-        "icon": "amulet"
-    },
-    "nar_digital_map01_11_1": {
-        "key": "nar_digital_map01_11_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_130_1": {
-        "key": "nar_digital_map01_130_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_14_1": {
-        "key": "nar_digital_map01_14_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "docs"
-    },
-    "nar_digital_map01_15_1": {
-        "key": "nar_digital_map01_15_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "docs"
-    },
-    "nar_digital_map01_26_1": {
-        "key": "nar_digital_map01_26_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad",
-        "rsch": "research_007"
-    },
-    "nar_digital_map01_29_1": {
-        "key": "nar_digital_map01_29_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "docs",
-        "rsch": "research_006"
-    },
-    "nar_digital_map01_29_2": {
-        "key": "nar_digital_map01_29_2",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "docs"
-    },
-    "nar_digital_map01_29_3": {
-        "key": "nar_digital_map01_29_3",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "docs"
-    },
-    "nar_digital_map01_32_1": {
-        "key": "nar_digital_map01_32_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_33_1": {
-        "key": "nar_digital_map01_33_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_34_1": {
-        "key": "nar_digital_map01_34_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_35_1": {
-        "key": "nar_digital_map01_35_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad",
-        "rsch": "research_006"
-    },
-    "nar_digital_map01_36_1": {
-        "key": "nar_digital_map01_36_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_38_1": {
-        "key": "nar_digital_map01_38_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_40_1": {
-        "key": "nar_digital_map01_40_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_41_1": {
-        "key": "nar_digital_map01_41_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_43_1": {
-        "key": "nar_digital_map01_43_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_4_1": {
-        "key": "nar_digital_map01_4_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_64_1": {
-        "key": "nar_digital_map01_64_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad",
-        "rsch": "research_007"
-    },
-    "nar_digital_map01_76_1": {
-        "key": "nar_digital_map01_76_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_77_1": {
-        "key": "nar_digital_map01_77_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_78_1": {
-        "key": "nar_digital_map01_78_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_79_1": {
-        "key": "nar_digital_map01_79_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_80_1": {
-        "key": "nar_digital_map01_80_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_84_1": {
-        "key": "nar_digital_map01_84_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_90_1": {
-        "key": "nar_digital_map01_90_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map01_98_1": {
-        "key": "nar_digital_map01_98_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map02_10001_1": {
-        "key": "nar_digital_map02_10001_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map02_10002_1": {
-        "key": "nar_digital_map02_10002_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map02_100_1": {
-        "key": "nar_digital_map02_100_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map02_12142_1": {
-        "key": "nar_digital_map02_12142_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map02_14001_1": {
-        "key": "nar_digital_map02_14001_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad",
-        "rsch": "research_007prts"
-    },
-    "nar_digital_map02_14001_2": {
-        "key": "nar_digital_map02_14001_2",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad",
-        "rsch": "research_007prts"
-    },
-    "nar_digital_map02_14001_3": {
-        "key": "nar_digital_map02_14001_3",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad",
-        "rsch": "research_007prts"
-    },
-    "nar_digital_map02_14002_1": {
-        "key": "nar_digital_map02_14002_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map02_14006_1": {
-        "key": "nar_digital_map02_14006_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad",
-        "rsch": "research_007prts"
-    },
-    "nar_digital_map02_14009_1": {
-        "key": "nar_digital_map02_14009_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad",
-        "rsch": "research_007prts"
-    },
-    "nar_digital_map02_14010_1": {
-        "key": "nar_digital_map02_14010_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map02_14011_1": {
-        "key": "nar_digital_map02_14011_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map02_14016_1": {
-        "key": "nar_digital_map02_14016_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map02_14024_1": {
-        "key": "nar_digital_map02_14024_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad",
-        "rsch": "research_008prts"
-    },
-    "nar_digital_map02_17_1": {
-        "key": "nar_digital_map02_17_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map02_18_1": {
-        "key": "nar_digital_map02_18_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_digital_map02_20_1": {
-        "key": "nar_digital_map02_20_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_gm01m9_1": {
-        "key": "nar_gm01m9_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "digital",
-        "icon": "pad"
-    },
-    "nar_media_map01_108_1": {
-        "key": "nar_media_map01_108_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map01_109_1": {
-        "key": "nar_media_map01_109_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map01_117_1": {
-        "key": "nar_media_map01_117_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map01_118_1": {
-        "key": "nar_media_map01_118_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map01_120_1": {
-        "key": "nar_media_map01_120_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map01_128_1": {
-        "key": "nar_media_map01_128_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map01_45_1": {
-        "key": "nar_media_map01_45_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map01_45_2": {
-        "key": "nar_media_map01_45_2",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map01_54_1": {
-        "key": "nar_media_map01_54_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map01_81_1": {
-        "key": "nar_media_map01_81_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map02_113_1": {
-        "key": "nar_media_map02_113_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map02_12144_1": {
-        "key": "nar_media_map02_12144_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map02_13005_1": {
-        "key": "nar_media_map02_13005_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map02_14008_1": {
-        "key": "nar_media_map02_14008_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map02_14032_1": {
-        "key": "nar_media_map02_14032_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map02_64_1": {
-        "key": "nar_media_map02_64_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map02_65_1": {
-        "key": "nar_media_map02_65_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map02_66_1": {
-        "key": "nar_media_map02_66_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map02_70_1": {
-        "key": "nar_media_map02_70_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_media_map02_71_1": {
-        "key": "nar_media_map02_71_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "media",
-        "icon": "record"
-    },
-    "nar_paper_map01_121_1": {
-        "key": "nar_paper_map01_121_1",
+    "nar_paper_map01_1_1": {
+        "key": "nar_paper_map01_1_1",
         "category": {
             "main": "files",
             "sub": "archives"
@@ -2705,26 +2082,8 @@
         "ctgr": "paper",
         "icon": "note"
     },
-    "nar_paper_map01_122_1": {
-        "key": "nar_paper_map01_122_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_123_1": {
-        "key": "nar_paper_map01_123_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_124_1": {
-        "key": "nar_paper_map01_124_1",
+    "nar_paper_map01_6_1": {
+        "key": "nar_paper_map01_6_1",
         "category": {
             "main": "files",
             "sub": "archives"
@@ -2732,8 +2091,8 @@
         "ctgr": "paper",
         "icon": "letter"
     },
-    "nar_paper_map01_127_1": {
-        "key": "nar_paper_map01_127_1",
+    "nar_paper_map01_7_1": {
+        "key": "nar_paper_map01_7_1",
         "category": {
             "main": "files",
             "sub": "archives"
@@ -2741,26 +2100,17 @@
         "ctgr": "paper",
         "icon": "note"
     },
-    "nar_paper_map01_127_2": {
-        "key": "nar_paper_map01_127_2",
+    "nar_paper_map01_8_1": {
+        "key": "nar_paper_map01_8_1",
         "category": {
             "main": "files",
             "sub": "archives"
         },
         "ctgr": "paper",
-        "icon": "note"
+        "icon": "docs"
     },
-    "nar_paper_map01_127_3": {
-        "key": "nar_paper_map01_127_3",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_127_4": {
-        "key": "nar_paper_map01_127_4",
+    "nar_paper_map01_9_1": {
+        "key": "nar_paper_map01_9_1",
         "category": {
             "main": "files",
             "sub": "archives"
@@ -2770,15 +2120,6 @@
     },
     "nar_paper_map01_12_1": {
         "key": "nar_paper_map01_12_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_131_1": {
-        "key": "nar_paper_map01_131_1",
         "category": {
             "main": "files",
             "sub": "archives"
@@ -2840,15 +2181,6 @@
         "ctgr": "paper",
         "icon": "note"
     },
-    "nar_paper_map01_1_1": {
-        "key": "nar_paper_map01_1_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
     "nar_paper_map01_21_1": {
         "key": "nar_paper_map01_21_1",
         "category": {
@@ -2887,71 +2219,6 @@
     },
     "nar_paper_map01_25_1": {
         "key": "nar_paper_map01_25_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_27_1": {
-        "key": "nar_paper_map01_27_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map01_28_1": {
-        "key": "nar_paper_map01_28_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook",
-        "rsch": "research_006"
-    },
-    "nar_paper_map01_2_1": {
-        "key": "nar_paper_map01_2_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_37_1": {
-        "key": "nar_paper_map01_37_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note",
-        "rsch": "research_006"
-    },
-    "nar_paper_map01_39_1": {
-        "key": "nar_paper_map01_39_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_42_1": {
-        "key": "nar_paper_map01_42_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_44_1": {
-        "key": "nar_paper_map01_44_1",
         "category": {
             "main": "files",
             "sub": "archives"
@@ -3026,6 +2293,15 @@
         "icon": "note",
         "rsch": "research_002"
     },
+    "nar_paper_map01_2_1": {
+        "key": "nar_paper_map01_2_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
     "nar_paper_map01_55_1": {
         "key": "nar_paper_map01_55_1",
         "category": {
@@ -3098,98 +2374,6 @@
         "ctgr": "paper",
         "icon": "note"
     },
-    "nar_paper_map01_63_1": {
-        "key": "nar_paper_map01_63_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_65_1": {
-        "key": "nar_paper_map01_65_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_66_1": {
-        "key": "nar_paper_map01_66_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_67_1": {
-        "key": "nar_paper_map01_67_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_68_1": {
-        "key": "nar_paper_map01_68_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_69_1": {
-        "key": "nar_paper_map01_69_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map01_6_1": {
-        "key": "nar_paper_map01_6_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "letter"
-    },
-    "nar_paper_map01_70_1": {
-        "key": "nar_paper_map01_70_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note",
-        "rsch": "research_007"
-    },
-    "nar_paper_map01_75_1": {
-        "key": "nar_paper_map01_75_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note",
-        "rsch": "research_007"
-    },
-    "nar_paper_map01_7_1": {
-        "key": "nar_paper_map01_7_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
     "nar_paper_map01_83_1": {
         "key": "nar_paper_map01_83_1",
         "category": {
@@ -3243,15 +2427,6 @@
         },
         "ctgr": "paper",
         "icon": "note"
-    },
-    "nar_paper_map01_8_1": {
-        "key": "nar_paper_map01_8_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "docs"
     },
     "nar_paper_map01_91_1": {
         "key": "nar_paper_map01_91_1",
@@ -3325,106 +2500,291 @@
         "ctgr": "paper",
         "icon": "ntbook"
     },
-    "nar_paper_map01_9_1": {
-        "key": "nar_paper_map01_9_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_101_1": {
-        "key": "nar_paper_map02_101_1",
+    "nar_paper_map01_28_1": {
+        "key": "nar_paper_map01_28_1",
         "category": {
             "main": "files",
             "sub": "archives"
         },
         "ctgr": "paper",
         "icon": "ntbook",
-        "rsch": "research_004prts"
+        "rsch": "research_006"
     },
-    "nar_paper_map02_102_1": {
-        "key": "nar_paper_map02_102_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_103_1": {
-        "key": "nar_paper_map02_103_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_104_1": {
-        "key": "nar_paper_map02_104_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_105_1": {
-        "key": "nar_paper_map02_105_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "letter"
-    },
-    "nar_paper_map02_106_1": {
-        "key": "nar_paper_map02_106_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_107_1": {
-        "key": "nar_paper_map02_107_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_107_2": {
-        "key": "nar_paper_map02_107_2",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_108_1": {
-        "key": "nar_paper_map02_108_1",
+    "nar_paper_map01_37_1": {
+        "key": "nar_paper_map01_37_1",
         "category": {
             "main": "files",
             "sub": "archives"
         },
         "ctgr": "paper",
         "icon": "note",
-        "rsch": "research_004prts"
+        "rsch": "research_006"
     },
-    "nar_paper_map02_109_1": {
-        "key": "nar_paper_map02_109_1",
+    "nar_paper_map01_39_1": {
+        "key": "nar_paper_map01_39_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_42_1": {
+        "key": "nar_paper_map01_42_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_44_1": {
+        "key": "nar_paper_map01_44_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_27_1": {
+        "key": "nar_paper_map01_27_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map01_63_1": {
+        "key": "nar_paper_map01_63_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_65_1": {
+        "key": "nar_paper_map01_65_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_66_1": {
+        "key": "nar_paper_map01_66_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_67_1": {
+        "key": "nar_paper_map01_67_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_68_1": {
+        "key": "nar_paper_map01_68_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_127_1": {
+        "key": "nar_paper_map01_127_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_127_2": {
+        "key": "nar_paper_map01_127_2",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_127_3": {
+        "key": "nar_paper_map01_127_3",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_127_4": {
+        "key": "nar_paper_map01_127_4",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_69_1": {
+        "key": "nar_paper_map01_69_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_70_1": {
+        "key": "nar_paper_map01_70_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note",
+        "rsch": "research_007"
+    },
+    "nar_paper_map01_75_1": {
+        "key": "nar_paper_map01_75_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note",
+        "rsch": "research_007"
+    },
+    "nar_paper_map01_131_1": {
+        "key": "nar_paper_map01_131_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_121_1": {
+        "key": "nar_paper_map01_121_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_122_1": {
+        "key": "nar_paper_map01_122_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_123_1": {
+        "key": "nar_paper_map01_123_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map01_124_1": {
+        "key": "nar_paper_map01_124_1",
         "category": {
             "main": "files",
             "sub": "archives"
         },
         "ctgr": "paper",
         "icon": "letter"
+    },
+    "nar_paper_map02_1_1": {
+        "key": "nar_paper_map02_1_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook",
+        "rsch": "research_001"
+    },
+    "nar_paper_map02_2_1": {
+        "key": "nar_paper_map02_2_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note",
+        "rsch": "research_001"
+    },
+    "nar_paper_map02_3_1": {
+        "key": "nar_paper_map02_3_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "obook"
+    },
+    "nar_paper_map02_3_2": {
+        "key": "nar_paper_map02_3_2",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "obook"
+    },
+    "nar_paper_map02_3_3": {
+        "key": "nar_paper_map02_3_3",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "obook"
+    },
+    "nar_paper_map02_3_4": {
+        "key": "nar_paper_map02_3_4",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "obook"
+    },
+    "nar_paper_map02_7_1": {
+        "key": "nar_paper_map02_7_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_8_1": {
+        "key": "nar_paper_map02_8_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note",
+        "rsch": "research_001"
     },
     "nar_paper_map02_10_1": {
         "key": "nar_paper_map02_10_1",
@@ -3435,78 +2795,6 @@
         "ctgr": "paper",
         "icon": "ntbook"
     },
-    "nar_paper_map02_110_1": {
-        "key": "nar_paper_map02_110_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "letter"
-    },
-    "nar_paper_map02_111_1": {
-        "key": "nar_paper_map02_111_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_112_1": {
-        "key": "nar_paper_map02_112_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "letter"
-    },
-    "nar_paper_map02_115_1": {
-        "key": "nar_paper_map02_115_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_116_1": {
-        "key": "nar_paper_map02_116_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_117_1": {
-        "key": "nar_paper_map02_117_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_118_1": {
-        "key": "nar_paper_map02_118_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_119_1": {
-        "key": "nar_paper_map02_119_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
     "nar_paper_map02_11_1": {
         "key": "nar_paper_map02_11_1",
         "category": {
@@ -3515,61 +2803,6 @@
         },
         "ctgr": "paper",
         "icon": "note"
-    },
-    "nar_paper_map02_12137_1": {
-        "key": "nar_paper_map02_12137_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "docs"
-    },
-    "nar_paper_map02_12143_1": {
-        "key": "nar_paper_map02_12143_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "letter"
-    },
-    "nar_paper_map02_12145_1": {
-        "key": "nar_paper_map02_12145_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_12146_1": {
-        "key": "nar_paper_map02_12146_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_123_1": {
-        "key": "nar_paper_map02_123_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note",
-        "rsch": "research_003prts"
-    },
-    "nar_paper_map02_128_1": {
-        "key": "nar_paper_map02_128_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "letter"
     },
     "nar_paper_map02_12_1": {
         "key": "nar_paper_map02_12_1",
@@ -3580,36 +2813,6 @@
         "ctgr": "paper",
         "icon": "note"
     },
-    "nar_paper_map02_13001_1": {
-        "key": "nar_paper_map02_13001_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note",
-        "rsch": "research_006prts"
-    },
-    "nar_paper_map02_13001_2": {
-        "key": "nar_paper_map02_13001_2",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note",
-        "rsch": "research_006prts"
-    },
-    "nar_paper_map02_13001_3": {
-        "key": "nar_paper_map02_13001_3",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note",
-        "rsch": "research_006prts"
-    },
     "nar_paper_map02_13_1": {
         "key": "nar_paper_map02_13_1",
         "category": {
@@ -3618,208 +2821,6 @@
         },
         "ctgr": "paper",
         "icon": "letter"
-    },
-    "nar_paper_map02_14003_1": {
-        "key": "nar_paper_map02_14003_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_14004_1": {
-        "key": "nar_paper_map02_14004_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook",
-        "rsch": "research_007prts"
-    },
-    "nar_paper_map02_14005_1": {
-        "key": "nar_paper_map02_14005_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_14007_1": {
-        "key": "nar_paper_map02_14007_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_14013_1": {
-        "key": "nar_paper_map02_14013_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_14013_2": {
-        "key": "nar_paper_map02_14013_2",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_14014_1": {
-        "key": "nar_paper_map02_14014_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_14017_1": {
-        "key": "nar_paper_map02_14017_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "exbook"
-    },
-    "nar_paper_map02_14018_1": {
-        "key": "nar_paper_map02_14018_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_14019_1": {
-        "key": "nar_paper_map02_14019_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook",
-        "rsch": "research_008prts"
-    },
-    "nar_paper_map02_14020_1": {
-        "key": "nar_paper_map02_14020_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "letter"
-    },
-    "nar_paper_map02_14021_1": {
-        "key": "nar_paper_map02_14021_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "exbook"
-    },
-    "nar_paper_map02_14023_1": {
-        "key": "nar_paper_map02_14023_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
-    "nar_paper_map02_14025_1": {
-        "key": "nar_paper_map02_14025_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_14025_2": {
-        "key": "nar_paper_map02_14025_2",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_14025_3": {
-        "key": "nar_paper_map02_14025_3",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_14026_1": {
-        "key": "nar_paper_map02_14026_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook",
-        "rsch": "research_008prts"
-    },
-    "nar_paper_map02_14027_1": {
-        "key": "nar_paper_map02_14027_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_14028_1": {
-        "key": "nar_paper_map02_14028_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook",
-        "rsch": "research_008prts"
-    },
-    "nar_paper_map02_14029_1": {
-        "key": "nar_paper_map02_14029_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_14030_1": {
-        "key": "nar_paper_map02_14030_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
-    },
-    "nar_paper_map02_14031_1": {
-        "key": "nar_paper_map02_14031_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook"
     },
     "nar_paper_map02_14_1": {
         "key": "nar_paper_map02_14_1",
@@ -3856,16 +2857,6 @@
         },
         "ctgr": "paper",
         "icon": "ntbook"
-    },
-    "nar_paper_map02_1_1": {
-        "key": "nar_paper_map02_1_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "ntbook",
-        "rsch": "research_001"
     },
     "nar_paper_map02_21_1": {
         "key": "nar_paper_map02_21_1",
@@ -3976,16 +2967,6 @@
         "ctgr": "paper",
         "icon": "obook",
         "rsch": "research_WulingBussiness"
-    },
-    "nar_paper_map02_2_1": {
-        "key": "nar_paper_map02_2_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note",
-        "rsch": "research_001"
     },
     "nar_paper_map02_30_1": {
         "key": "nar_paper_map02_30_1",
@@ -4107,42 +3088,6 @@
     },
     "nar_paper_map02_39_4": {
         "key": "nar_paper_map02_39_4",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "obook"
-    },
-    "nar_paper_map02_3_1": {
-        "key": "nar_paper_map02_3_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "obook"
-    },
-    "nar_paper_map02_3_2": {
-        "key": "nar_paper_map02_3_2",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "obook"
-    },
-    "nar_paper_map02_3_3": {
-        "key": "nar_paper_map02_3_3",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "obook"
-    },
-    "nar_paper_map02_3_4": {
-        "key": "nar_paper_map02_3_4",
         "category": {
             "main": "files",
             "sub": "archives"
@@ -4459,15 +3404,6 @@
         "icon": "note",
         "rsch": "research_003prts"
     },
-    "nar_paper_map02_7_1": {
-        "key": "nar_paper_map02_7_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note"
-    },
     "nar_paper_map02_80_1": {
         "key": "nar_paper_map02_80_1",
         "category": {
@@ -4559,16 +3495,6 @@
         "ctgr": "paper",
         "icon": "note"
     },
-    "nar_paper_map02_8_1": {
-        "key": "nar_paper_map02_8_1",
-        "category": {
-            "main": "files",
-            "sub": "archives"
-        },
-        "ctgr": "paper",
-        "icon": "note",
-        "rsch": "research_001"
-    },
     "nar_paper_map02_90_1": {
         "key": "nar_paper_map02_90_1",
         "category": {
@@ -4623,6 +3549,61 @@
         "ctgr": "paper",
         "icon": "note"
     },
+    "nar_paper_map02_123_1": {
+        "key": "nar_paper_map02_123_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note",
+        "rsch": "research_003prts"
+    },
+    "nar_paper_map02_115_1": {
+        "key": "nar_paper_map02_115_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_116_1": {
+        "key": "nar_paper_map02_116_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_117_1": {
+        "key": "nar_paper_map02_117_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_118_1": {
+        "key": "nar_paper_map02_118_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_119_1": {
+        "key": "nar_paper_map02_119_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
     "nar_paper_map02_97_1": {
         "key": "nar_paper_map02_97_1",
         "category": {
@@ -4661,6 +3642,826 @@
         "ctgr": "paper",
         "icon": "ntbook"
     },
+    "nar_paper_map02_101_1": {
+        "key": "nar_paper_map02_101_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook",
+        "rsch": "research_004prts"
+    },
+    "nar_paper_map02_102_1": {
+        "key": "nar_paper_map02_102_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_103_1": {
+        "key": "nar_paper_map02_103_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_104_1": {
+        "key": "nar_paper_map02_104_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_105_1": {
+        "key": "nar_paper_map02_105_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "letter"
+    },
+    "nar_paper_map02_106_1": {
+        "key": "nar_paper_map02_106_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_12146_1": {
+        "key": "nar_paper_map02_12146_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_107_1": {
+        "key": "nar_paper_map02_107_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_107_2": {
+        "key": "nar_paper_map02_107_2",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_108_1": {
+        "key": "nar_paper_map02_108_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note",
+        "rsch": "research_004prts"
+    },
+    "nar_paper_map02_109_1": {
+        "key": "nar_paper_map02_109_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "letter"
+    },
+    "nar_paper_map02_110_1": {
+        "key": "nar_paper_map02_110_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "letter"
+    },
+    "nar_paper_map02_111_1": {
+        "key": "nar_paper_map02_111_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_112_1": {
+        "key": "nar_paper_map02_112_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "letter"
+    },
+    "nar_paper_map02_128_1": {
+        "key": "nar_paper_map02_128_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "letter"
+    },
+    "nar_paper_map02_12137_1": {
+        "key": "nar_paper_map02_12137_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "docs"
+    },
+    "nar_paper_map02_12143_1": {
+        "key": "nar_paper_map02_12143_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "letter"
+    },
+    "nar_paper_map02_12145_1": {
+        "key": "nar_paper_map02_12145_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_13001_1": {
+        "key": "nar_paper_map02_13001_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note",
+        "rsch": "research_006prts"
+    },
+    "nar_paper_map02_13001_2": {
+        "key": "nar_paper_map02_13001_2",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note",
+        "rsch": "research_006prts"
+    },
+    "nar_paper_map02_13001_3": {
+        "key": "nar_paper_map02_13001_3",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note",
+        "rsch": "research_006prts"
+    },
+    "nar_paper_map02_14003_1": {
+        "key": "nar_paper_map02_14003_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14004_1": {
+        "key": "nar_paper_map02_14004_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook",
+        "rsch": "research_007prts"
+    },
+    "nar_paper_map02_14005_1": {
+        "key": "nar_paper_map02_14005_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14007_1": {
+        "key": "nar_paper_map02_14007_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14013_1": {
+        "key": "nar_paper_map02_14013_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14013_2": {
+        "key": "nar_paper_map02_14013_2",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14014_1": {
+        "key": "nar_paper_map02_14014_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14017_1": {
+        "key": "nar_paper_map02_14017_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "exbook"
+    },
+    "nar_paper_map02_14018_1": {
+        "key": "nar_paper_map02_14018_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14019_1": {
+        "key": "nar_paper_map02_14019_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook",
+        "rsch": "research_008prts"
+    },
+    "nar_paper_map02_14020_1": {
+        "key": "nar_paper_map02_14020_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "letter"
+    },
+    "nar_paper_map02_14021_1": {
+        "key": "nar_paper_map02_14021_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "exbook"
+    },
+    "nar_paper_map02_14023_1": {
+        "key": "nar_paper_map02_14023_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "note"
+    },
+    "nar_paper_map02_14025_1": {
+        "key": "nar_paper_map02_14025_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14025_2": {
+        "key": "nar_paper_map02_14025_2",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14025_3": {
+        "key": "nar_paper_map02_14025_3",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14026_1": {
+        "key": "nar_paper_map02_14026_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook",
+        "rsch": "research_008prts"
+    },
+    "nar_paper_map02_14027_1": {
+        "key": "nar_paper_map02_14027_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14028_1": {
+        "key": "nar_paper_map02_14028_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook",
+        "rsch": "research_008prts"
+    },
+    "nar_paper_map02_14029_1": {
+        "key": "nar_paper_map02_14029_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14030_1": {
+        "key": "nar_paper_map02_14030_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_paper_map02_14031_1": {
+        "key": "nar_paper_map02_14031_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "paper",
+        "icon": "ntbook"
+    },
+    "nar_col_lv003_9d1": {
+        "key": "nar_col_lv003_9d1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pic"
+    },
+    "nar_gm01m9_1": {
+        "key": "nar_gm01m9_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_4_1": {
+        "key": "nar_digital_map01_4_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_11_1": {
+        "key": "nar_digital_map01_11_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_14_1": {
+        "key": "nar_digital_map01_14_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "docs"
+    },
+    "nar_digital_map01_15_1": {
+        "key": "nar_digital_map01_15_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "docs"
+    },
+    "nar_digital_map01_84_1": {
+        "key": "nar_digital_map01_84_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_90_1": {
+        "key": "nar_digital_map01_90_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_130_1": {
+        "key": "nar_digital_map01_130_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_98_1": {
+        "key": "nar_digital_map01_98_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_29_1": {
+        "key": "nar_digital_map01_29_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "docs",
+        "rsch": "research_006"
+    },
+    "nar_digital_map01_29_2": {
+        "key": "nar_digital_map01_29_2",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "docs"
+    },
+    "nar_digital_map01_29_3": {
+        "key": "nar_digital_map01_29_3",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "docs"
+    },
+    "nar_digital_map01_32_1": {
+        "key": "nar_digital_map01_32_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_33_1": {
+        "key": "nar_digital_map01_33_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_34_1": {
+        "key": "nar_digital_map01_34_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_35_1": {
+        "key": "nar_digital_map01_35_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_006"
+    },
+    "nar_digital_map01_36_1": {
+        "key": "nar_digital_map01_36_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_38_1": {
+        "key": "nar_digital_map01_38_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_40_1": {
+        "key": "nar_digital_map01_40_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_41_1": {
+        "key": "nar_digital_map01_41_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_43_1": {
+        "key": "nar_digital_map01_43_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_26_1": {
+        "key": "nar_digital_map01_26_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_007"
+    },
+    "nar_digital_map01_64_1": {
+        "key": "nar_digital_map01_64_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_007"
+    },
+    "nar_digital_map01_76_1": {
+        "key": "nar_digital_map01_76_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_77_1": {
+        "key": "nar_digital_map01_77_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_78_1": {
+        "key": "nar_digital_map01_78_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_79_1": {
+        "key": "nar_digital_map01_79_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map01_80_1": {
+        "key": "nar_digital_map01_80_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_17_1": {
+        "key": "nar_digital_map02_17_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_18_1": {
+        "key": "nar_digital_map02_18_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_20_1": {
+        "key": "nar_digital_map02_20_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_10001_1": {
+        "key": "nar_digital_map02_10001_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_10002_1": {
+        "key": "nar_digital_map02_10002_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_100_1": {
+        "key": "nar_digital_map02_100_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_12142_1": {
+        "key": "nar_digital_map02_12142_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_14009_1": {
+        "key": "nar_digital_map02_14009_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_007prts"
+    },
+    "nar_digital_map02_14001_1": {
+        "key": "nar_digital_map02_14001_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_007prts"
+    },
+    "nar_digital_map02_14001_2": {
+        "key": "nar_digital_map02_14001_2",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_007prts"
+    },
+    "nar_digital_map02_14001_3": {
+        "key": "nar_digital_map02_14001_3",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_007prts"
+    },
+    "nar_digital_map02_14002_1": {
+        "key": "nar_digital_map02_14002_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_14006_1": {
+        "key": "nar_digital_map02_14006_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_007prts"
+    },
+    "nar_digital_map02_14010_1": {
+        "key": "nar_digital_map02_14010_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_14011_1": {
+        "key": "nar_digital_map02_14011_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_14016_1": {
+        "key": "nar_digital_map02_14016_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad"
+    },
+    "nar_digital_map02_14024_1": {
+        "key": "nar_digital_map02_14024_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "digital",
+        "icon": "pad",
+        "rsch": "research_008prts"
+    },
     "nar_sm1l1m2_3": {
         "key": "nar_sm1l1m2_3",
         "category": {
@@ -4669,5 +4470,203 @@
         },
         "ctgr": "collection",
         "icon": "note"
+    },
+    "nar_collection_map02_95_1": {
+        "key": "nar_collection_map02_95_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "collection",
+        "icon": "amulet"
+    },
+    "nar_collection_map02_13006_1": {
+        "key": "nar_collection_map02_13006_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "collection",
+        "icon": "prts_sm2l6m1_yujian"
+    },
+    "nar_media_map01_117_1": {
+        "key": "nar_media_map01_117_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map01_118_1": {
+        "key": "nar_media_map01_118_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map01_54_1": {
+        "key": "nar_media_map01_54_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map01_120_1": {
+        "key": "nar_media_map01_120_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map01_108_1": {
+        "key": "nar_media_map01_108_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map01_109_1": {
+        "key": "nar_media_map01_109_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map01_45_1": {
+        "key": "nar_media_map01_45_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map01_45_2": {
+        "key": "nar_media_map01_45_2",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map01_81_1": {
+        "key": "nar_media_map01_81_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map01_128_1": {
+        "key": "nar_media_map01_128_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map02_65_1": {
+        "key": "nar_media_map02_65_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map02_64_1": {
+        "key": "nar_media_map02_64_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map02_70_1": {
+        "key": "nar_media_map02_70_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map02_66_1": {
+        "key": "nar_media_map02_66_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map02_71_1": {
+        "key": "nar_media_map02_71_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map02_113_1": {
+        "key": "nar_media_map02_113_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map02_12144_1": {
+        "key": "nar_media_map02_12144_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map02_13005_1": {
+        "key": "nar_media_map02_13005_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map02_14008_1": {
+        "key": "nar_media_map02_14008_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
+    },
+    "nar_media_map02_14032_1": {
+        "key": "nar_media_map02_14032_1",
+        "category": {
+            "main": "files",
+            "sub": "archives"
+        },
+        "ctgr": "media",
+        "icon": "record"
     }
 }

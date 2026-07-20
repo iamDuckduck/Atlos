@@ -91,9 +91,7 @@
             },
             "Pressure Plate": {},
             "Wooden Box": {},
-            "Blight Core": {
-                "noFrame": true
-            }
+            "Blight Core": {}
         },
         "combat": {
             "Rift: Pillar's Brace": {
@@ -606,10 +604,6 @@
                 "tier": "Common",
                 "faction": "Landbreakers",
                 "drop": "Fillet"
-            },
-            "Ereignis": {
-                "tier": "unknown",
-                "faction": "Landbreakers"
             },
 
             "Tuskbeast Blightshade": {

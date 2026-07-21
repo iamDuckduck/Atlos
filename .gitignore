@@ -70,3 +70,4 @@ talos/.stylelintcache
 
 *.glyphs
 *.test.ts
+*.generated.ts

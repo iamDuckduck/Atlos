@@ -2,7 +2,7 @@ import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useStat
 import { LinearBlur } from "progressive-blur";
 import mobileStyles from './sideBar.mobile.module.scss';
 
-import Search from '../search/search';
+import SearchMobile from '../search/search.mobile';
 import FilterListMobile from '../filterList/filterList.mobile';
 import Drawer from '../drawer/drawer';
 import { Trigger } from '../trigger/trigger';
@@ -37,6 +37,7 @@ import useRegion from '@/store/region';
 import { useTranslateGame, useTranslateUI } from '@/locale';
 import { useFilter, useMarkerStore } from '@/store/marker';
 import { useTriggerCluster, useTriggerBoundary, useTriggerlabelName, useSetTriggerCluster, useSetTriggerBoundary, useSetTriggerlabelName, useSetMobileDrawerSnapIndex, useMobileDrawerSnapIndex } from '@/store/uiPrefs';
+import { useAppViewport } from '@/utils/device';
 
 const CATEGORY_ICON_MAP: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
     boss: BossIcon,
@@ -72,7 +73,7 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
   const [supportOpen, setSupportOpen] = useState(false);
   const versionNewCounts = useVersionNewMarkerCounts();
 
-  const [vh, setVh] = useState<number>(typeof window !== 'undefined' ? window.innerHeight : 800);
+  const { height: vh } = useAppViewport();
   const filterList = useFilter();
   const searchString = useMarkerStore((s) => s.searchString);
   const currentRegion = useRegion((s) => s.currentRegionKey);
@@ -94,12 +95,6 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
   const setTrigBoundary = useSetTriggerBoundary();
   const setTrigOptimal = useSetTriggerlabelName();
   const setDrawerSnapIndex = useSetMobileDrawerSnapIndex();
-
-  useEffect(() => {
-    const onResize = () => setVh(window.innerHeight);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -373,7 +368,7 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
                 onFocus={handleSearchFocus}
                 onClick={handleSearchFocus}
               >
-                <Search />
+                <SearchMobile />
               </div>
               {showDivider && (
                 <div

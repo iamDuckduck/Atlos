@@ -16,6 +16,7 @@ import { useMarkerStore, useSwitchFilter } from '@/store/marker';
 import { applyPointProgressSilently } from '@/store/history';
 import useRegion from '@/store/region';
 import { loadAllMarkers, MARKER_TYPE_TREE, type IMarkerData, type IMarkerType } from '@/data/marker';
+import { DEFAULT_REGION } from '@/data/map';
 
 export type GuideStep = Step & {
     id: string;
@@ -39,10 +40,10 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
 
     const targetSubCategory = 'boss';
     // Fallback to first available if boss is missing/empty, though unlikely
-    const firstSubCategory = MARKER_TYPE_TREE[targetSubCategory]?.length 
-        ? targetSubCategory 
+    const firstSubCategory = MARKER_TYPE_TREE[targetSubCategory]?.length
+        ? targetSubCategory
         : Object.keys(MARKER_TYPE_TREE)[0];
-        
+
     const firstType = (MARKER_TYPE_TREE[firstSubCategory]?.[0] as IMarkerType | undefined)?.key ?? '';
 
     const [targetPoint, setTargetPoint] = useState<IMarkerData | undefined>();
@@ -301,7 +302,7 @@ export const useDesktopGuideSteps = (map?: L.Map) => {
             onNext: () => {
                 setForceRegionSubOpen(false);
                 // Ensure next layer steps always have a layer switch rendered.
-                setCurrentRegion('Valley_4');
+                setCurrentRegion(DEFAULT_REGION);
                 map?.setZoom(map.getMinZoom(), { animate: true });
             },
             delay: 420,

@@ -14,6 +14,7 @@ import { useAdvancedSearch } from './useAdvancedSearch';
 
 interface SearchSharedProps {
     width?: number | string;
+    mobile?: boolean;
 }
 
 const REGION_ICON_DICT: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
@@ -43,7 +44,7 @@ const HighlightText = ({ text, keyword }: { text: string; keyword: string }) => 
     );
 };
 
-const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%' }) => {
+const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%', mobile = false }) => {
     const { searchString, setSearchString } = useMarkerStore();
     const activeFilters = useMarkerStore((s) => s.filter);
     const locale = useLocale();
@@ -130,7 +131,10 @@ const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%' }) => {
     }, [results.length, t]);
 
     return (
-        <div className={styles.searchContainer} style={{ width }}>
+        <div
+            className={`${styles.searchContainer} ${mobile ? styles.mobile : ''}`}
+            style={{ width }}
+        >
             <form className={styles.searchForm}>
                 <div className={styles.searchInputWrapper} data-expanded={panelOpen ? 'true' : 'false'}>
                     <div className={styles.searchInputRow} data-has-count={hasQuery ? 'true' : 'false'}>

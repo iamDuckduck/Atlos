@@ -152,6 +152,7 @@ const RegionContainer: React.FC<{
         <div
             className={classNames(
                 styles.regswitch,
+                isMobile && styles.mobile,
                 isSidebarOpen && styles.sidebarOpen,
             )}
         >

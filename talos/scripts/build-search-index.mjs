@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -404,11 +405,14 @@ async function build() {
     )
 
     const file = path.resolve(OUT_DIR, `${locale}.json`)
-    await fs.writeFile(file, JSON.stringify(docs.map(compactDoc)), 'utf8')
+    const serializedDocs = JSON.stringify(docs.map(compactDoc))
+    const revision = createHash('sha256').update(serializedDocs).digest('hex').slice(0, 16)
+    await fs.writeFile(file, serializedDocs, 'utf8')
 
     indexManifest.locales.push({
       locale,
       file: `${locale}.json`,
+      revision,
       format: 'array',
       fields: DOC_FIELDS,
       stats,

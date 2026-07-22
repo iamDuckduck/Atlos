@@ -23,7 +23,9 @@ import {
 import { GuideSpotlight } from './spotlight/spotlight';
 import { useDesktopGuideSteps } from './procedure/steps.desktop';
 import { useMobileGuideSteps } from './procedure/steps.mobile';
-import { useDevice } from '@/utils/device';
+import { DEFAULT_REGION } from '@/data/map';
+import { useAppViewport, useDevice } from '@/utils/device';
+import useRegion from '@/store/region';
 
 const CURRENT_GUIDE_VERSION = '1.0.0';
 
@@ -35,6 +37,7 @@ interface UserGuideProps {
 
 const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
     const { isMobile } = useDevice();
+    const { width: viewportWidth, height: viewportHeight } = useAppViewport();
     const initialGuideDeviceRef = useRef<'mobile' | 'desktop'>(isMobile ? 'mobile' : 'desktop');
     const isUserGuideOpen = useIsUserGuideOpen();
     const setIsUserGuideOpen = useSetIsUserGuideOpen();
@@ -49,6 +52,14 @@ const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
     const setUserGuideStepCompleted = useSetUserGuideStepCompleted();
     const setUserGuideStepCompletedBulk = useSetUserGuideStepCompletedBulk();
     const replaceUserGuideStepCompleted = useReplaceUserGuideStepCompleted();
+
+    useEffect(() => {
+        if (!isUserGuideOpen) return;
+        const regionState = useRegion.getState();
+        if (regionState.currentRegionKey !== DEFAULT_REGION) {
+            regionState.setCurrentRegion(DEFAULT_REGION);
+        }
+    }, [isUserGuideOpen]);
 
     // Load steps based on device type
     const desktopSteps = useDesktopGuideSteps(map);
@@ -71,12 +82,12 @@ const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
 
     const isElementInViewport = useCallback((el: HTMLElement) => {
         const rect = el.getBoundingClientRect();
-        const vw = window.innerWidth || 0;
-        const vh = window.innerHeight || 0;
+        const vw = viewportWidth || 0;
+        const vh = viewportHeight || 0;
         const isVisible = rect.width > 0 && rect.height > 0;
         const inView = rect.bottom > 0 && rect.right > 0 && rect.top < vh && rect.left < vw;
         return { rect, isVisible, inView, vw, vh };
-    }, []);
+    }, [viewportHeight, viewportWidth]);
 
     // Track i18n loading status
     const [i18nReady, setI18nReady] = useState(false);

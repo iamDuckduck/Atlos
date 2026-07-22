@@ -4,6 +4,7 @@ import svgr from 'vite-plugin-svgr';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import { resolve } from 'path';
 import { execSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import eslint from 'vite-plugin-eslint';
 import fs, { existsSync } from 'fs';
 import Inspect from 'vite-plugin-inspect';
@@ -77,13 +78,42 @@ const buildAssetVersion = process.env.BUILD_ASSET_VERSION || getGitAssetVersion(
 const assetsHost = isProd
     ? joinCdnPath(config?.web?.build?.cdn, resolvedPrefix)
     : '';
+
+const getSearchDocVersions = () => {
+    const docsDir = resolve(__dirname, 'public/search/docs');
+    const manifestPath = resolve(docsDir, 'index.json');
+    let manifest = {};
+
+    try {
+        manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    } catch {
+        // Fall back to hashing locale files directly below.
+    }
+
+    const versions = {};
+    const locales = Array.isArray(manifest?.locales) ? manifest.locales : [];
+    for (const entry of locales) {
+        if (!entry || typeof entry.locale !== 'string' || typeof entry.file !== 'string') continue;
+        try {
+            const content = fs.readFileSync(resolve(docsDir, entry.file));
+            versions[entry.locale] = createHash('sha256').update(content).digest('hex').slice(0, 16);
+        } catch {
+            if (typeof entry.revision === 'string' && entry.revision) {
+                versions[entry.locale] = entry.revision;
+            }
+        }
+    }
+    return versions;
+};
+
+const searchDocVersions = getSearchDocVersions();
 const excludedClipDirNames = new Set(['jinlong']);
 const scriptExts = new Set(['.py', '.sh', '.js', '.mjs', '.ts', '.bash', '.zsh']);
 const historicalMarkerDataPattern = /src\/data\/marker\/data\/\d{8}\//;
 
 const isExcludedClipDir = (name) => excludedClipDirNames.has(name.toLowerCase());
 
-const stableFontAssetFamilies = new Set(['Fedra', 'Novecento']);
+const stableFontAssetFamilies = new Set(['Fedra', 'Novecento', 'UD_ShinGo', 'Harmony']);
 const fontAssetExtPattern = /\.(?:woff2?|otf|ttf)$/i;
 
 const getStableFontAssetFamily = (assetInfo) => {
@@ -280,6 +310,7 @@ export default defineConfig({
     define: {
         __ASSETS_HOST: JSON.stringify(assetsHost),
         __APP_VERSION__: JSON.stringify(buildAssetVersion),
+        __SEARCH_DOC_VERSIONS__: JSON.stringify(searchDocVersions),
     },
     resolve: {
         alias: {

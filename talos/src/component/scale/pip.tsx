@@ -4,6 +4,14 @@ import type { Map as LeafletMap } from 'leaflet';
 import L from 'leaflet';
 import { useTranslateUI } from '@/locale';
 import Icon from '../../assets/images/UI/observator_6.webp';
+import {
+    createAppViewport,
+    PIP_HEIGHT,
+    PIP_MIN_HEIGHT,
+    PIP_WIDTH,
+} from './pipViewport';
+
+export { PIP_UI_MINIMUM_EDGE } from './pipViewport';
 
 type DocumentPictureInPictureOptions = {
     width?: number;
@@ -110,11 +118,6 @@ const isElement = (value: unknown): value is Element => (
 );
 
 const APP_ROOT_ID = 'root';
-const PIP_WIDTH = 800;
-const PIP_HEIGHT = 600;
-const PIP_MOBILE_WIDTH = 500;
-const PIP_MOBILE_RATIO = 0.75;
-export const PIP_UI_MINIMUM_EDGE = 240;
 const SYNCED_ROOT_ATTRIBUTES = ['class', 'style', 'lang', 'dir', 'data-theme', 'data-schema', 'data-theme-switching'];
 
 let activePipWindow: Window | null = null;
@@ -198,19 +201,11 @@ export const waitForPictureInPictureStyles = (): Promise<void> => (
 export const getAppViewport = () => {
     const pipWindow = activePipWindow && !activePipWindow.closed ? activePipWindow : null;
     const sourceWindow = pipWindow ?? window;
-    const width = sourceWindow.innerWidth;
-    const height = sourceWindow.innerHeight;
-    const ratio = width / Math.max(height, 1);
-    const inPictureInPicture = Boolean(pipWindow);
-    const mobileBreakpoint = inPictureInPicture ? (ratio < PIP_MOBILE_RATIO ? PIP_MOBILE_WIDTH : 0) : 768;
-
-    return {
-        width,
-        height,
-        ratio,
-        inPictureInPicture,
-        mobileBreakpoint,
-    };
+    return createAppViewport(
+        sourceWindow.innerWidth,
+        sourceWindow.innerHeight,
+        Boolean(pipWindow),
+    );
 };
 
 export const subscribeAppViewport = (listener: ViewportListener) => {
@@ -248,9 +243,7 @@ const syncRootAttributes = (source: Document, target: Document) => {
 };
 
 const isPipMobileViewport = (targetWindow: Window) => {
-    const width = targetWindow.innerWidth;
-    const height = targetWindow.innerHeight;
-    return width <= PIP_MOBILE_WIDTH && width / Math.max(height, 1) < PIP_MOBILE_RATIO;
+    return createAppViewport(targetWindow.innerWidth, targetWindow.innerHeight, true).isPipMobile;
 };
 
 const syncPipViewportAttributes = (targetWindow: Window) => {
@@ -779,7 +772,7 @@ export const openAppPictureInPicture = async () => {
     try {
         const pipWindow = await documentPictureInPicture.requestWindow({
             width: PIP_WIDTH,
-            height: Math.min(PIP_HEIGHT, Math.max(320, Math.round(window.innerHeight * 0.6))),
+            height: Math.min(PIP_HEIGHT, Math.max(PIP_MIN_HEIGHT, Math.round(window.innerHeight * 0.6))),
             disallowReturnToOpener: false,
             preferInitialWindowPlacement: true,
         });

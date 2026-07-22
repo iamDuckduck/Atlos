@@ -12,7 +12,7 @@ import { RegionContainer } from '@/component/regSwitch/regSwitch';
 import { LayerSwitch } from '@/component/layerSwitch/layerSwitch';
 import { LocatorButton } from '@/component/locator';
 import { Detail } from '@/component/detail/detail';
-import FilterList from '@/component/filterList/filterList';
+import FilterListDesktop from '@/component/filterList/filterList.desktop';
 import {
     useSetIsUserGuideOpen,
     useMobileDrawerSnapIndex,
@@ -162,7 +162,7 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
 
     return (
         <div
-            className={`${styles.uiOverlay} ${layoutSidebarOpen ? styles.sidebarOpen : ''}`}
+            className={`${styles.uiOverlay} ${isMobile ? styles.mobile : ''} ${layoutSidebarOpen ? styles.sidebarOpen : ''}`}
         >
             {/* Headbar */}
             {(visible || showVisibilityControl) && (
@@ -253,7 +253,7 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
                 {!isMobile && <Detail />}
 
                 {/* Filter List: hide on mobile (rendered inside SideBarMobile) */}
-                {!isMobile && <FilterList isSidebarOpen={isSidebarOpen} />}
+                {!isMobile && <FilterListDesktop isSidebarOpen={isSidebarOpen} />}
             </div>
 
             {/* Language Modal */}

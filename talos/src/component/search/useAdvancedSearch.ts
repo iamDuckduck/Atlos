@@ -1,3 +1,4 @@
+/* global __SEARCH_DOC_VERSIONS__ */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
     loadAllMarkers,
@@ -141,6 +142,9 @@ const DOC_LIMIT = 600;
 const SEARCH_DEBOUNCE_MS = 180;
 const BASE_URL = (import.meta.env.BASE_URL as string | undefined) || '/';
 const PREBUILT_DOCS_BASE_PATH = `${BASE_URL.replace(/\/$/, '')}/search/docs`;
+const SEARCH_DOC_VERSIONS = typeof __SEARCH_DOC_VERSIONS__ !== 'undefined'
+    ? __SEARCH_DOC_VERSIONS__
+    : {};
 
 const DEFAULT_SEARCH_ENDPOINT = 'https://oem-search.cirisus.workers.dev/search';
 const REMOTE_SEARCH_ENDPOINT =
@@ -173,7 +177,11 @@ const normalizeDocsLocale = (locale: string): string => {
     return 'en-US';
 };
 
-const buildDocsPath = (locale: string): string => `${PREBUILT_DOCS_BASE_PATH}/${locale}.json`;
+const buildDocsPath = (locale: string): string => {
+    const path = `${PREBUILT_DOCS_BASE_PATH}/${locale}.json`;
+    const revision = SEARCH_DOC_VERSIONS[locale];
+    return revision ? `${path}?v=${encodeURIComponent(revision)}` : path;
+};
 
 const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
     typeof value === 'object' && value !== null;

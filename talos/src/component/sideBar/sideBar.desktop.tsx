@@ -17,7 +17,7 @@ import NpcIcon from '../../assets/images/category/npc.svg?react';
 import FacilityIcon from '../../assets/images/category/facility.svg?react';
 import ArchivesIcon from '../../assets/images/category/archives.svg?react';
 
-import Search from '../search/search';
+import SearchDesktop from '../search/search.desktop';
 import Drawer from '../drawer/drawer';
 import { Trigger, TriggerBar } from '../trigger/trigger';
 import MarkFilter from '../markFilter/markFilter';
@@ -249,7 +249,7 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                     />
                 </div>
                 <div className={styles.sidebarContent} data-sidescroll="true">
-                    <Search />
+                    <SearchDesktop />
                     <div className={styles.filters}>
                         <MarkFilterDragProvider>
                             {VERSION_NEW_FILTER_GROUPS.map((group) => (

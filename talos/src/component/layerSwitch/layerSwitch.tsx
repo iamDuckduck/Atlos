@@ -61,6 +61,7 @@ const LayerSwitch: React.FC<{
             className={classNames(
                 styles.regswitch,
                 styles.layerswitch,
+                isMobile && styles.mobile,
                 isSidebarOpen && styles.sidebarOpen,
             )}
         >

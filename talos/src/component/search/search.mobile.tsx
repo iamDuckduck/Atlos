@@ -6,7 +6,7 @@ interface SearchMobileProps {
 }
 
 const SearchMobile: FC<SearchMobileProps> = ({ width = '100%' }) => {
-  return <SearchShared width={width} />;
+  return <SearchShared width={width} mobile />;
 };
 
 export default SearchMobile;

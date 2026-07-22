@@ -25,7 +25,7 @@ const MarkBinder = ({ group }: MarkBinderProps) => {
 
     const iconUrl = useMemo(
         () => group.sharedKey === 'rsch'
-            ? '/assets/images/item/investigate.webp'
+            ? getItemIconUrl('investigate', 'webp')
             : getItemIconUrl(group.dropKey, 'webp'),
         [group.dropKey, group.sharedKey],
     );

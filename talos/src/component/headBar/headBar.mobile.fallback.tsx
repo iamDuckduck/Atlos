@@ -5,11 +5,12 @@ import CloseIcon from '../../assets/logos/close.svg?react';
 interface HeadBarMobileFallbackProps {
     children: React.ReactNode;
     forceExpanded?: boolean | null;
+    compact?: boolean;
 }
 
-const HeadBarMobileFallback: React.FC<HeadBarMobileFallbackProps> = ({ children, forceExpanded = null }) => {
+const HeadBarMobileFallback: React.FC<HeadBarMobileFallbackProps> = ({ children, forceExpanded = null, compact = false }) => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const actualExpanded = forceExpanded !== null ? forceExpanded : isExpanded;
+    const actualExpanded = !compact && (forceExpanded !== null ? forceExpanded : isExpanded);
     const childrenArray = React.Children.toArray(children);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -48,16 +49,18 @@ const HeadBarMobileFallback: React.FC<HeadBarMobileFallbackProps> = ({ children,
         >
             <div
                 ref={containerRef}
-                className={`${styles.headbarMobile} ${actualExpanded ? styles.expanded : styles.collapsed}`}
+                className={`${styles.headbarMobile} ${actualExpanded ? styles.expanded : styles.collapsed} ${compact ? styles.visibilityOnly : ''}`}
             >
                 <div className={styles.headbarGrid}>
-                    <button
-                        className={styles.toggleIcon}
-                        onClick={toggleExpand}
-                        disabled={forceExpanded !== null}
-                    >
-                        <CloseIcon />
-                    </button>
+                    {!compact && (
+                        <button
+                            className={styles.toggleIcon}
+                            onClick={toggleExpand}
+                            disabled={forceExpanded !== null}
+                        >
+                            <CloseIcon />
+                        </button>
+                    )}
                     {childrenArray}
                 </div>
             </div>

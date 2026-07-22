@@ -7,11 +7,9 @@
     width: 100%; /* Default full screen */
     height: 100%;
     pointer-events: none;
-    opacity: 1;
     transition:
         left 0.3s ease-in-out,
-        width 0.3s ease-in-out,
-        opacity 0.2s ease-out;
+        width 0.3s ease-in-out;
 
     /* Sidebar open state */
     &.sidebarOpen {
@@ -19,20 +17,49 @@
         width: calc(100% - var(--sidebar-width, 500px));
     }
 
-    /* Hidden state */
-    &.hidden {
-        opacity: 0;
-        pointer-events: none;
-    }
-
     /* Allow child components to receive pointer events */
     & > * {
         pointer-events: auto;
     }
-    
-    /* When hidden, disable pointer events for all children too */
-    &.hidden > * {
+}
+
+.overlayContent {
+    position: absolute;
+    inset: 0;
+    opacity: 1;
+    pointer-events: none;
+    transition: opacity 0.2s ease-out;
+
+    & > * {
+        pointer-events: auto;
+    }
+
+    &.hidden {
+        opacity: 0;
         pointer-events: none;
+
+        & > * {
+            pointer-events: none;
+        }
+    }
+}
+
+.shortcutTooltip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: calc(100vw - 2rem);
+    white-space: pre-wrap;
+}
+
+.headbarHost {
+    display: contents;
+}
+
+@media screen and (width < 180px), screen and (height < 180px) {
+    .headbarHost {
+        display: none;
     }
 }
 

@@ -6,14 +6,15 @@ import HeadBarDesktopFallback from './headBar.desktop.fallback';
 
 interface HeadBarDesktopProps {
     children: React.ReactNode;
+    compact?: boolean;
 }
 
-const HeadBarDesktop: React.FC<HeadBarDesktopProps> = ({ children }) => {
+const HeadBarDesktop: React.FC<HeadBarDesktopProps> = ({ children, compact = false }) => {
     const performanceMode = usePerformanceMode();
 
     // Use fallback component in performance mode
     if (performanceMode) {
-        return <HeadBarDesktopFallback>{children}</HeadBarDesktopFallback>;
+        return <HeadBarDesktopFallback compact={compact}>{children}</HeadBarDesktopFallback>;
     }
 
     return (
@@ -24,7 +25,7 @@ const HeadBarDesktop: React.FC<HeadBarDesktopProps> = ({ children }) => {
             aberrationIntensity={2}
             elasticity={0.1}
             cornerRadius={50}
-            padding='8px 16px'
+            padding={compact ? '8px' : '8px 16px'}
             mode='standard'
             overLight={false}
             positioning='top-right'
@@ -34,9 +35,12 @@ const HeadBarDesktop: React.FC<HeadBarDesktopProps> = ({ children }) => {
                 right: '1rem',
                 backgroundColor: 'var(--headbar-bg)',
                 borderRadius: '50%',
+                transition: 'padding 0.3s ease',
             }}
         >
-            <div className={styles.headbar}>{children}</div>
+            <div className={`${styles.headbar} ${compact ? styles.visibilityOnly : ''}`}>
+                {children}
+            </div>
         </LiquidGlass>
     );
 };

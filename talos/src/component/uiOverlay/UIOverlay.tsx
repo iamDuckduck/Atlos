@@ -24,6 +24,8 @@ import { useLocale, useTranslateUI } from '@/locale';
 import { useDevice } from '@/utils/device';
 import { initTheme, cleanupTheme, toggleTheme } from '@/utils/theme';
 import { useAppPictureInPicture } from '@/component/scale/pip';
+import { Shortcut } from '@/component/shortcut';
+import { modKey } from '@/component/settings/shortcuts';
 
 import ToS from '../../assets/logos/tos.svg?react';
 import hideUI from '../../assets/logos/hideUI.svg?react';
@@ -41,11 +43,19 @@ interface UIOverlayProps {
     map?: L.Map;
     isSidebarOpen: boolean;
     visible?: boolean;
-    onHideUI?: () => void;
+    showVisibilityControl?: boolean;
+    onToggleUI?: () => void;
     userGuideReady?: boolean;
 }
 
-const UIOverlay: React.FC<UIOverlayProps> = ({ map, isSidebarOpen, visible = true, onHideUI, userGuideReady = false }) => {
+const UIOverlay: React.FC<UIOverlayProps> = ({
+    map,
+    isSidebarOpen,
+    visible = true,
+    showVisibilityControl = true,
+    onToggleUI,
+    userGuideReady = false,
+}) => {
     const t = useTranslateUI();
     const locale = useLocale();
     const [langOpen, setLangOpen] = useState(false);
@@ -74,6 +84,7 @@ const UIOverlay: React.FC<UIOverlayProps> = ({ map, isSidebarOpen, visible = tru
     }, [locale, setAnnouncementFlowReady]);
 
     useEffect(() => {
+        if (!visible) return;
         if (!announcementChecked) return;
         if (!userGuideReady) return;
         if (isUserGuideOpen) return;
@@ -86,14 +97,14 @@ const UIOverlay: React.FC<UIOverlayProps> = ({ map, isSidebarOpen, visible = tru
         }
 
         setAnnouncementFlowReady(true);
-    }, [announcementChecked, userGuideReady, isUserGuideOpen, hasUnreadAnnouncement, autoOpenedOnce, setAnnouncementFlowReady, setIsAnnouncementOpen]);
+    }, [visible, announcementChecked, userGuideReady, isUserGuideOpen, hasUnreadAnnouncement, autoOpenedOnce, setAnnouncementFlowReady, setIsAnnouncementOpen]);
 
     const handleReset = () => {
         setStorageOpen(true);
     };
 
     const handleHideUI = () => {
-        if (onHideUI) {onHideUI();}
+        onToggleUI?.();
     };
     const handleGroup = () => setGroupOpen(true);
 
@@ -115,6 +126,16 @@ const UIOverlay: React.FC<UIOverlayProps> = ({ map, isSidebarOpen, visible = tru
     const handleAnnouncement = () => setAnnouncementOpen(true);
     const layoutSidebarOpen = !isMobile && isSidebarOpen;
     const fullModalActionsDisabled = pictureInPicture.active;
+    const hideUIShortcutKeys = [
+        { label: modKey(), variant: 'mod' as const },
+        { label: 'H' },
+    ];
+    const hideUITooltip = (
+        <span className={styles.shortcutTooltip}>
+            <span>{t('headbar.hideUI')}{'\u2002'}</span>
+            <Shortcut keys={hideUIShortcutKeys} scale={0.72} />
+        </span>
+    );
 
     useEffect(() => {
         if (announcementOpen) {
@@ -129,90 +150,111 @@ const UIOverlay: React.FC<UIOverlayProps> = ({ map, isSidebarOpen, visible = tru
         }
     }, [announcementOpen, announcementChecked, userGuideReady, setIsAnnouncementOpen, setAnnouncementFlowReady]);
 
+    useEffect(() => {
+        if (visible) return;
+        setLangOpen(false);
+        setGroupOpen(false);
+        setStorageOpen(false);
+        setSettingsOpen(false);
+        setAnnouncementOpen(false);
+        setIsUserGuideOpen(false);
+    }, [setIsUserGuideOpen, visible]);
+
     return (
         <div
-            className={`${styles.uiOverlay} ${layoutSidebarOpen ? styles.sidebarOpen : ''} ${!visible ? styles.hidden : ''}`}
+            className={`${styles.uiOverlay} ${layoutSidebarOpen ? styles.sidebarOpen : ''}`}
         >
-            {/* Scale Component */}
-            {map && <Scale map={map} />}
-
             {/* Headbar */}
-            <HeadBar>
-                <HeadItem 
-                    icon={ToS}
-                    onClick={handleReset}
-                    tooltip={t('headbar.tos')}
-                    disabled={fullModalActionsDisabled}
-                    guideKey='headbar-tos'
-                />
-                <HeadItem
-                    icon={hideUI}
-                    onClick={handleHideUI}
-                    tooltip={t('headbar.hideUI')}
-                    guideKey='headbar-hide-ui'
-                />
-                <HeadItem
-                    icon={Group}
-                    onClick={handleGroup}
-                    tooltip={t('headbar.group')}
-                    guideKey='headbar-group'
-                />
-                <HeadItem
-                    icon={Darkmode}
-                    onClick={handleDarkMode}
-                    tooltip={isDark ? t('headbar.lightmode') : t('headbar.darkmode')}
-                    guideKey='headbar-dark-mode'
-                />
-                <HeadItem
-                    icon={i18n}
-                    onClick={handleLanguage}
-                    tooltip={t('headbar.language')}
-                    guideKey='headbar-language'
-                />
-                <HeadItem
-                    icon={Guide}
-                    onClick={handleHelp}
-                    tooltip={t('headbar.help')}
-                    disabled={fullModalActionsDisabled}
-                    guideKey='headbar-help'
-                />
-                <HeadItem
-                    icon={AnnouncementIcon}
-                    onClick={handleAnnouncement}
-                    tooltip={t('headbar.announcement')}
-                    badge={hasUnreadAnnouncement}
-                    disabled={fullModalActionsDisabled}
-                    guideKey='headbar-announcement'
-                />
-                <HeadItem
-                    icon={SettingsIcon}
-                    onClick={handleSettings}
-                    tooltip={t('headbar.settings')}
-                    guideKey='headbar-settings'
-                />
-            </HeadBar>
-
-            {/* Switch Area: wrap both Region and Layer switches */}
-            {!isMobile && (
-                <div className={styles.switchArea}>
-                    <RegionContainer isSidebarOpen={layoutSidebarOpen} />
-                    <LayerSwitch isSidebarOpen={layoutSidebarOpen} />
-                    <LocatorButton variant="desktop" />
+            {(visible || showVisibilityControl) && (
+                <div className={styles.headbarHost}>
+                    <HeadBar compact={!visible}>
+                        <HeadItem
+                            icon={ToS}
+                            onClick={handleReset}
+                            tooltip={t('headbar.tos')}
+                            disabled={fullModalActionsDisabled}
+                            guideKey='headbar-tos'
+                        />
+                        <HeadItem
+                            icon={hideUI}
+                            onClick={handleHideUI}
+                            tooltip={hideUITooltip}
+                            ariaLabel={`${t('headbar.hideUI')} (${modKey()}+H)`}
+                            guideKey='headbar-hide-ui'
+                        />
+                        <HeadItem
+                            icon={Group}
+                            onClick={handleGroup}
+                            tooltip={t('headbar.group')}
+                            guideKey='headbar-group'
+                        />
+                        <HeadItem
+                            icon={Darkmode}
+                            onClick={handleDarkMode}
+                            tooltip={isDark ? t('headbar.lightmode') : t('headbar.darkmode')}
+                            guideKey='headbar-dark-mode'
+                        />
+                        <HeadItem
+                            icon={i18n}
+                            onClick={handleLanguage}
+                            tooltip={t('headbar.language')}
+                            guideKey='headbar-language'
+                        />
+                        <HeadItem
+                            icon={Guide}
+                            onClick={handleHelp}
+                            tooltip={t('headbar.help')}
+                            disabled={fullModalActionsDisabled}
+                            guideKey='headbar-help'
+                        />
+                        <HeadItem
+                            icon={AnnouncementIcon}
+                            onClick={handleAnnouncement}
+                            tooltip={t('headbar.announcement')}
+                            badge={hasUnreadAnnouncement}
+                            disabled={fullModalActionsDisabled}
+                            guideKey='headbar-announcement'
+                        />
+                        <HeadItem
+                            icon={SettingsIcon}
+                            onClick={handleSettings}
+                            tooltip={t('headbar.settings')}
+                            guideKey='headbar-settings'
+                        />
+                    </HeadBar>
                 </div>
             )}
-            {isMobile && (
-                <div className={styles.switchArea} data-snap={mobileDrawerSnapIndex ?? 0}>
-                    <RegionContainer isSidebarOpen={false} />
-                    <LayerSwitch isSidebarOpen={false} />
-                </div>
-            )}
-            {isMobile && <LocatorButton variant="mobile" />}
 
-            {/* Detail Panel: hide on mobile (rendered inside SideBarMobile) */}
-            {!isMobile && <Detail />}
+            <div
+                className={`${styles.overlayContent} ${!visible ? styles.hidden : ''}`}
+                aria-hidden={!visible}
+                inert={!visible}
+            >
+                {/* Scale Component */}
+                {map && <Scale map={map} />}
 
-            {/* Filter List: hide on mobile (rendered inside SideBarMobile) */}
-            {!isMobile && <FilterList isSidebarOpen={isSidebarOpen} />}
+                {/* Switch Area: wrap both Region and Layer switches */}
+                {!isMobile && (
+                    <div className={styles.switchArea}>
+                        <RegionContainer isSidebarOpen={layoutSidebarOpen} />
+                        <LayerSwitch isSidebarOpen={layoutSidebarOpen} />
+                        <LocatorButton variant="desktop" />
+                    </div>
+                )}
+                {isMobile && (
+                    <div className={styles.switchArea} data-snap={mobileDrawerSnapIndex ?? 0}>
+                        <RegionContainer isSidebarOpen={false} />
+                        <LayerSwitch isSidebarOpen={false} />
+                    </div>
+                )}
+                {isMobile && <LocatorButton variant="mobile" />}
+
+                {/* Detail Panel: hide on mobile (rendered inside SideBarMobile) */}
+                {!isMobile && <Detail />}
+
+                {/* Filter List: hide on mobile (rendered inside SideBarMobile) */}
+                {!isMobile && <FilterList isSidebarOpen={isSidebarOpen} />}
+            </div>
 
             {/* Language Modal */}
             <LanguageModal

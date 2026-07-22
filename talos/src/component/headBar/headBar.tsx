@@ -11,21 +11,25 @@ import styles from './headbar.module.scss';
 interface HeadItemProps {
     icon: React.FC;
     onClick?: () => void;
-    tooltip?: string;
+    tooltip?: React.ReactNode;
+    ariaLabel?: string;
     active?: boolean;
     disabled?: boolean;
     badge?: boolean;
     guideKey?: string;
+    compactHidden?: boolean;
 }
 
 const HeadItem = ({
     icon: Icon,
     onClick,
     tooltip = '',
+    ariaLabel,
     active = false,
     disabled = false,
     badge = false,
     guideKey,
+    compactHidden = false,
 }: HeadItemProps) => {
     const handleClick = (
         e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -38,10 +42,12 @@ const HeadItem = ({
 
     const button = (
         <button
-            className={`${styles.headbarItem} ${active ? styles.active : ''} ${disabled ? styles.disabled : ''}`}
+            className={`${styles.headbarItem} ${active ? styles.active : ''} ${disabled ? styles.disabled : ''} ${compactHidden ? styles.compactHidden : ''}`}
             onClick={handleClick}
             disabled={disabled}
-            aria-label={tooltip}
+            aria-label={ariaLabel ?? (typeof tooltip === 'string' ? tooltip : undefined)}
+            aria-hidden={compactHidden || undefined}
+            tabIndex={compactHidden ? -1 : undefined}
             data-guide={guideKey}
         >
             <div className={styles.headbarIcon}>{Icon && <Icon />}</div>
@@ -61,14 +67,22 @@ const HeadItem = ({
 };
 
 // Main HeadBar component with responsive detection
-const HeadBar = ({ children }: { children: React.ReactNode }) => {
+const HeadBar = ({ children, compact = false }: { children: React.ReactNode; compact?: boolean }) => {
     const { isMobile } = useDevice();
     const forceHeadbarExpanded = useForceHeadbarExpanded();
-    
+    const displayedChildren = React.Children.map(children, (child) => {
+        if (!React.isValidElement<HeadItemProps>(child)) return child;
+        return React.cloneElement(child, {
+            compactHidden: compact && child.props.guideKey !== 'headbar-hide-ui',
+        });
+    });
+
     return isMobile ? (
-        <HeadBarMobile forceExpanded={forceHeadbarExpanded}>{children}</HeadBarMobile>
+        <HeadBarMobile forceExpanded={forceHeadbarExpanded} compact={compact}>
+            {displayedChildren}
+        </HeadBarMobile>
     ) : (
-        <HeadBarDesktop>{children}</HeadBarDesktop>
+        <HeadBarDesktop compact={compact}>{displayedChildren}</HeadBarDesktop>
     );
 };
 

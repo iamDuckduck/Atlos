@@ -3,6 +3,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import type { IMarkerData } from '@/data/marker';
 import { useTranslateGame } from '@/locale';
+import {
+    getAppViewport,
+    PIP_UI_MINIMUM_EDGE,
+    subscribeAppViewport,
+} from '@/component/scale/pip';
 import PopoverTooltip from '@/component/popover/popover';
 import {
     peekUGCImages,
@@ -32,6 +37,12 @@ interface UsePreviewResult {
 const PREVIEW_HIDE_DELAY_MS = 160;
 const PREVIEW_FETCH_DELAY_MS = 80;
 const PREVIEW_BATCH_SIZE = 10;
+
+const isPreviewDisabledForViewport = () => {
+    const viewport = getAppViewport();
+    return viewport.inPictureInPicture
+        && Math.min(viewport.width, viewport.height) < PIP_UI_MINIMUM_EDGE;
+};
 
 const getPreviewUpvoteCount = (image: UGCImage): number => (
     Number.isFinite(image.upvotes)
@@ -68,6 +79,7 @@ export const UsePreview = (
     const isPreviewVisibleRef = useRef(false);
     const [hoveredMarker, setHoveredMarker] = useState<HoveredMarkerState | null>(null);
     const [isPreviewVisible, setIsPreviewVisible] = useState(false);
+    const [previewEnabled, setPreviewEnabled] = useState(() => !isPreviewDisabledForViewport());
 
     const clearHover = useCallback(() => {
         if (fetchTimeoutRef.current) {
@@ -103,6 +115,17 @@ export const UsePreview = (
             hideTimeoutRef.current = undefined;
         }
     }, []);
+
+    useEffect(() => {
+        const syncPreviewAvailability = () => {
+            const enabled = !isPreviewDisabledForViewport();
+            if (!enabled) clearHover();
+            setPreviewEnabled(enabled);
+        };
+
+        syncPreviewAvailability();
+        return subscribeAppViewport(syncPreviewAvailability);
+    }, [clearHover]);
 
     const updateMarkerPosition = useCallback((marker: IMarkerData) => {
         if (!map) return null;
@@ -155,6 +178,10 @@ export const UsePreview = (
         if (!map) return;
 
         const onEnter = (event: Event) => {
+            if (!previewEnabled || isPreviewDisabledForViewport()) {
+                clearHover();
+                return;
+            }
             const detail = (event as CustomEvent<PreviewEnterDetail>).detail;
             const marker = detail?.marker;
             if (!marker) return;
@@ -252,7 +279,7 @@ export const UsePreview = (
             map.off('zoom', syncPosition);
             map.off('talos:regionSwitched', onRegionSwitch);
         };
-    }, [cancelHide, clearHover, map, rememberHoverMarker, scheduleHide, showPreviewFromImages, updateMarkerPosition]);
+    }, [cancelHide, clearHover, map, previewEnabled, rememberHoverMarker, scheduleHide, showPreviewFromImages, updateMarkerPosition]);
 
     useEffect(() => {
         return () => {
@@ -273,7 +300,7 @@ export const UsePreview = (
             : hoveredMarker.marker.type;
     }, [hoveredMarker, tGame]);
 
-    const PreviewElement = hoveredMarker ? (
+    const PreviewElement = previewEnabled && hoveredMarker ? (
         <PopoverTooltip
             key={`${hoveredMarker.marker.id}:${Math.round(hoveredMarker.left)}:${Math.round(hoveredMarker.top)}`}
             content={

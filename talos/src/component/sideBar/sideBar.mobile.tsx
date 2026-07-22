@@ -341,6 +341,8 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
   return (
     <div
       className={`${mobileStyles.sidebarContainer} ${!visible ? mobileStyles.hidden : ''}`}
+      aria-hidden={!visible}
+      inert={!visible}
       ref={rootRef}
       style={{ '--top-blur-extra': `${topBlurExtraHeight}px` } as React.CSSProperties}
     >

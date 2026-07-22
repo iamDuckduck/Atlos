@@ -217,7 +217,11 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
     };
 
     return (
-        <div className={`${styles.sidebarContainer} ${isOpen ? styles.open : ''} ${!visible ? styles.hidden : ''}`}>
+        <div
+            className={`${styles.sidebarContainer} ${isOpen ? styles.open : ''} ${!visible ? styles.hidden : ''}`}
+            aria-hidden={!visible}
+            inert={!visible}
+        >
             <button
                 className={`${styles.sidebarToggle} ${isOpen ? styles.open : ''} ${!visible ? styles.hidden : ''}`}
                 onClick={toggleSidebar}

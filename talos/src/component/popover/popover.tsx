@@ -55,6 +55,8 @@ const computeCoordinates = (
     triggerRect: DOMRect,
     popoverRect: DOMRect,
     gap: number,
+    viewportWidth: number,
+    viewportHeight: number,
 ): PositionedRect => {
     switch (placement) {
         case 'right':
@@ -64,7 +66,7 @@ const computeCoordinates = (
             };
         case 'left':
             return {
-                right: window.innerWidth - triggerRect.left + gap,
+                right: viewportWidth - triggerRect.left + gap,
                 top: triggerRect.top + triggerRect.height / 2 - popoverRect.height / 2,
             };
         case 'bottom':
@@ -75,7 +77,7 @@ const computeCoordinates = (
         case 'top':
             return {
                 left: triggerRect.left + triggerRect.width / 2 - popoverRect.width / 2,
-                bottom: window.innerHeight - triggerRect.top + gap,
+                bottom: viewportHeight - triggerRect.top + gap,
             };
     }
 };
@@ -85,10 +87,17 @@ const computePopoverPosition = (
     triggerRect: DOMRect,
     popoverRect: DOMRect,
     gap: number,
+    viewportWidth: number,
+    viewportHeight: number,
 ): PositionedRect => {
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const coordinates = computeCoordinates(placement, triggerRect, popoverRect, gap);
+    const coordinates = computeCoordinates(
+        placement,
+        triggerRect,
+        popoverRect,
+        gap,
+        viewportWidth,
+        viewportHeight,
+    );
     const maxLeft = Math.max(VIEWPORT_MARGIN, viewportWidth - popoverRect.width - VIEWPORT_MARGIN);
     const maxTop = Math.max(VIEWPORT_MARGIN, viewportHeight - popoverRect.height - VIEWPORT_MARGIN);
     const maxRight = Math.max(VIEWPORT_MARGIN, viewportWidth - popoverRect.width - VIEWPORT_MARGIN);
@@ -159,12 +168,15 @@ const PopoverTooltip: React.FC<PopoverTooltipProps> = ({
         const popover = popoverRef.current;
         if (!trigger || !popover || !isOpenRef.current) return;
 
+        const ownerWindow = trigger.ownerDocument.defaultView ?? window;
         const popoverRect = popover.getBoundingClientRect();
         const position = computePopoverPosition(
             placement,
             trigger.getBoundingClientRect(),
             popoverRect,
             gap,
+            ownerWindow.innerWidth,
+            ownerWindow.innerHeight,
         );
 
         popover.style.position = 'fixed';
@@ -268,12 +280,13 @@ const PopoverTooltip: React.FC<PopoverTooltipProps> = ({
 
     useEffect(() => {
         const handleViewportChange = () => schedulePosition();
-        window.addEventListener('resize', handleViewportChange);
-        window.addEventListener('scroll', handleViewportChange, true);
+        const ownerWindow = triggerRef.current?.ownerDocument.defaultView ?? window;
+        ownerWindow.addEventListener('resize', handleViewportChange);
+        ownerWindow.addEventListener('scroll', handleViewportChange, true);
 
         return () => {
-            window.removeEventListener('resize', handleViewportChange);
-            window.removeEventListener('scroll', handleViewportChange, true);
+            ownerWindow.removeEventListener('resize', handleViewportChange);
+            ownerWindow.removeEventListener('scroll', handleViewportChange, true);
         };
     }, [schedulePosition]);
 

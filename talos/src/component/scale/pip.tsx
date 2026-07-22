@@ -114,6 +114,7 @@ const PIP_WIDTH = 800;
 const PIP_HEIGHT = 600;
 const PIP_MOBILE_WIDTH = 500;
 const PIP_MOBILE_RATIO = 0.75;
+export const PIP_UI_MINIMUM_EDGE = 240;
 const SYNCED_ROOT_ATTRIBUTES = ['class', 'style', 'lang', 'dir', 'data-theme', 'data-schema', 'data-theme-switching'];
 
 let activePipWindow: Window | null = null;

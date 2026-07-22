@@ -9,8 +9,8 @@
  *   settings/useShortcuts.ts   → HOW they behave (logic)
  */
 
-import { useHotkeys } from 'react-hotkeys-hook';
-import { useCallback, useEffect, useRef } from 'react';
+import { useHotkeys, type Options } from 'react-hotkeys-hook';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { getShortcutConfig } from './shortcuts';
 import { replacePointProgressFromExternal, useHistoryStore } from '@/store/history';
 import { useMarkerStore } from '@/store/marker';
@@ -23,8 +23,12 @@ function hotkeyFor(id: string): string {
     return cfg?.hotkey ?? '';
 }
 
-export function useKeyboardShortcuts(mapInstance: L.Map | undefined) {
+export function useKeyboardShortcuts(mapInstance: L.Map | undefined, shortcutDocument: Document) {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const hotkeyOptions = useMemo<Options>(() => ({
+        document: shortcutDocument,
+        enableOnFormTags: false,
+    }), [shortcutDocument]);
 
     // ── Export ──
     const handleExport = useCallback(() => {
@@ -36,7 +40,7 @@ export function useKeyboardShortcuts(mapInstance: L.Map | undefined) {
     useHotkeys(hotkeyFor('exportData'), (e) => {
         e.preventDefault();
         handleExport();
-    }, { enableOnFormTags: false });
+    }, hotkeyOptions);
 
     // ── Import ──
     const handleImportFile = useCallback(async (file: File) => {
@@ -64,30 +68,30 @@ export function useKeyboardShortcuts(mapInstance: L.Map | undefined) {
             if (file) void handleImportFile(file);
             input.value = '';
         });
-        document.body.appendChild(input);
+        shortcutDocument.body.appendChild(input);
         fileInputRef.current = input;
 
         return () => {
             input.remove();
             fileInputRef.current = null;
         };
-    }, [handleImportFile]);
+    }, [handleImportFile, shortcutDocument]);
 
     useHotkeys(hotkeyFor('importData'), (e) => {
         e.preventDefault();
         fileInputRef.current?.click();
-    }, { enableOnFormTags: false });
+    }, hotkeyOptions);
 
     // ── Undo / Redo ──
     useHotkeys(hotkeyFor('undo'), (e) => {
         e.preventDefault();
         useHistoryStore.getState().undo();
-    }, { enableOnFormTags: false });
+    }, hotkeyOptions);
 
     useHotkeys(hotkeyFor('redo'), (e) => {
         e.preventDefault();
         useHistoryStore.getState().redo();
-    }, { enableOnFormTags: false });
+    }, hotkeyOptions);
 
     // ── Zoom ──
     useHotkeys(hotkeyFor('zoomIn'), (e) => {
@@ -95,14 +99,14 @@ export function useKeyboardShortcuts(mapInstance: L.Map | undefined) {
         if (mapInstance) {
             mapInstance.zoomIn(0.5);
         }
-    }, { enableOnFormTags: false }, [mapInstance]);
+    }, hotkeyOptions, [mapInstance]);
 
     useHotkeys(hotkeyFor('zoomOut'), (e) => {
         e.preventDefault();
         if (mapInstance) {
             mapInstance.zoomOut(0.5);
         }
-    }, { enableOnFormTags: false }, [mapInstance]);
+    }, hotkeyOptions, [mapInstance]);
 
     // multiSelect / multiDeselect are handled separately via pointer events (useMapMultiSelect)
 }

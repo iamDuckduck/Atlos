@@ -29,10 +29,11 @@ const CURRENT_GUIDE_VERSION = '1.0.0';
 
 interface UserGuideProps {
     map?: L.Map;
+    visible?: boolean;
     onReady?: () => void;
 }
 
-const UserGuide = ({ map, onReady }: UserGuideProps) => {
+const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
     const { isMobile } = useDevice();
     const initialGuideDeviceRef = useRef<'mobile' | 'desktop'>(isMobile ? 'mobile' : 'desktop');
     const isUserGuideOpen = useIsUserGuideOpen();
@@ -125,7 +126,7 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
     // - Otherwise: ensure missing step keys default to incomplete.
     // - Auto-open guide until all steps are completed.
     useEffect(() => {
-        if (!i18nReady) return;
+        if (!i18nReady || !visible) return;
 
         if (userGuideVersion !== CURRENT_GUIDE_VERSION) {
             // Atomic reset to avoid race that can cause STEP-0 to be treated as completed.
@@ -171,16 +172,19 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
         firstIncompleteIndex,
         notifyReady,
         deviceMatchesInitialGuide,
+        visible,
     ]);
 
     // Custom spotlight tracking
     const [currentTarget, setCurrentTarget] = useState<Element | null>(null);
 
     useEffect(() => {
-        if (!isUserGuideOpen) {
+        if (!visible || !isUserGuideOpen) {
             setCurrentTarget(null);
-            setStepIndex(0);
-            wasOpenRef.current = false;
+            if (!isUserGuideOpen) {
+                setStepIndex(0);
+                wasOpenRef.current = false;
+            }
             return;
         }
 
@@ -244,7 +248,7 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
         return () => {
             cancelled = true;
         };
-    }, [isUserGuideOpen, stepIndex, steps, firstIncompleteIndex, isElementInViewport]);
+    }, [visible, isUserGuideOpen, stepIndex, steps, firstIncompleteIndex, isElementInViewport]);
 
     const handleJoyrideCallback = useCallback(
         (data: CallBackProps) => {
@@ -381,7 +385,7 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
     return (
         <>
             <GuideSpotlight
-                active={isUserGuideOpen}
+                active={isUserGuideOpen && visible}
                 getCurrentTarget={() => currentTarget}
                 padding={10}
                 onAdvance={() => {
@@ -393,7 +397,7 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
             <Joyride
                 key={joyrideKey}
                 steps={steps}
-                run={isUserGuideOpen && i18nReady}
+                run={isUserGuideOpen && i18nReady && visible}
                 stepIndex={stepIndex}
                 continuous={true}
                 debug={false}

@@ -20,6 +20,9 @@ const CLUSTER_SUBCATEGORY_WHITELIST = new Set<string>([
     'exploration'
 ]);
 
+const MARKER_FADE_DURATION_MS = 150;
+const MARKER_REMOVAL_DELAY_MS = MARKER_FADE_DURATION_MS + 10;
+
 interface ClusterLayerDeps {
     map: L.Map;
     getMarkerDict: () => Record<string, L.Layer>;
@@ -35,10 +38,8 @@ export class ClusterLayer {
     private activeSubregions = new Set<string>();
     private temporaryVisibleIds = new Set<string>();
     private checkedVisibleOverrideIds = new Set<string>();
-    /**
-     * 延迟移除定时器，和普通点位保持一致，用于淡出动画
-     */
-    private pendingRemovalTimers: Record<string, number> = {};
+    private pendingRemovalBatches: Record<string, { timer: number; markerIds: Set<string> }> = {};
+    private pendingFadeInFrames = new Map<L.MarkerClusterGroup, number>();
 
     constructor(private readonly deps: ClusterLayerDeps) {}
 
@@ -162,6 +163,7 @@ export class ClusterLayer {
         activeManagedTypes.forEach((typeKey) => {
             const clusterGroup = this.clusterGroupsByType[typeKey];
             if (!clusterGroup) return;
+            const addedIds: string[] = [];
 
             newIds.forEach((id) => {
                 const data = markerDataDict[id];
@@ -178,17 +180,15 @@ export class ClusterLayer {
                     parentGroup.removeLayer(layer);
                 }
 
-                // 取消可能的延迟移除
-                if (this.pendingRemovalTimers[id] !== undefined) {
-                    clearTimeout(this.pendingRemovalTimers[id]);
-                    delete this.pendingRemovalTimers[id];
-                }
-
                 clusterGroup.addLayer(layer); // 静默加入，不清空其他
+                addedIds.push(id);
             });
 
             if (clusterGroup.getLayers().length > 0 && !this.deps.map.hasLayer(clusterGroup)) {
                 clusterGroup.addTo(this.deps.map);
+            }
+            if (addedIds.length > 0) {
+                this.fadeInVisibleMarkers(clusterGroup, addedIds);
             }
         });
     }
@@ -270,6 +270,7 @@ export class ClusterLayer {
 
         // 为每个受管理类型做增量 diff
         Object.entries(this.clusterGroupsByType).forEach(([typeKey, clusterGroup]) => {
+            const removalWasCancelled = this.cancelPendingRemoval(typeKey, clusterGroup);
             const shouldBeActive = activeManagedTypes.includes(typeKey);
 
             // 目标集合（需要在聚合中的点位）- 排除已完成的點位
@@ -294,15 +295,8 @@ export class ClusterLayer {
             const toAdd = desiredIds.filter((id) => !currentSet.has(id));
             const toRemove = currentIds.filter((id) => !desiredSet.has(id));
 
-            // 处理移除，添加淡出
-            toRemove.forEach((id) => {
-                const layer = markerDict[id];
-                const data = markerDataDict[id];
-                if (!layer || !data) return;
-                this.fadeOutAndRemove(clusterGroup, id, layer);
-            });
-
-            // 处理新增，静默加入
+            // 处理新增。先完成聚合计算，再对最终可见的 marker/cluster 播放淡入。
+            const layersToAdd: L.Layer[] = [];
             toAdd.forEach((id) => {
                 const layer = markerDict[id];
                 const data = markerDataDict[id];
@@ -311,13 +305,11 @@ export class ClusterLayer {
                 if (parentGroup?.hasLayer(layer)) {
                     parentGroup.removeLayer(layer);
                 }
-                // 取消可能的延迟移除
-                if (this.pendingRemovalTimers[id] !== undefined) {
-                    clearTimeout(this.pendingRemovalTimers[id]);
-                    delete this.pendingRemovalTimers[id];
-                }
-                clusterGroup.addLayer(layer);
+                layersToAdd.push(layer);
             });
+            if (layersToAdd.length > 0) {
+                clusterGroup.addLayers(layersToAdd);
+            }
 
             // 如果该类型现在应该展示并且有点位则确保加入地图；否则如果不再需要并且无活动标记则从地图移除
             if ((shouldBeActive || desiredIds.length > 0) && clusterGroup.getLayers().length > 0) {
@@ -330,34 +322,141 @@ export class ClusterLayer {
                     map.removeLayer(clusterGroup);
                 }
             }
+
+            if (toRemove.length > 0) {
+                this.fadeOutAndRemove(clusterGroup, typeKey, toRemove);
+            } else if (toAdd.length > 0 || removalWasCancelled) {
+                this.fadeInVisibleMarkers(clusterGroup, desiredIds);
+            }
         });
     }
 
-    private fadeOutAndRemove(clusterGroup: L.MarkerClusterGroup, markerId: string, layer: L.Layer) {
-        const markerRoot = (layer as L.Marker).getElement?.() as HTMLElement | null;
-        if (markerRoot) {
-            const inner = markerRoot.querySelector<HTMLElement>(`.${styles.markerInner}, .${styles.noFrameInner}`);
-            if (inner) {
-                inner.classList.add(styles.disappearing);
-            }
+    private getVisibleMarkerInners(clusterGroup: L.MarkerClusterGroup, markerIds: Iterable<string>) {
+        const markerDict = this.deps.getMarkerDict();
+        const visibleInners = new Set<HTMLElement>();
+
+        for (const markerId of markerIds) {
+            const layer = markerDict[markerId];
+            if (!(layer instanceof L.Marker) || !clusterGroup.hasLayer(layer)) continue;
+
+            // Clustered child markers do not own DOM nodes. getVisibleParent resolves either
+            // the marker itself or the cluster icon that is actually painted by Leaflet.
+            const visibleLayer = clusterGroup.getVisibleParent(layer);
+            const markerRoot = visibleLayer?.getElement?.() as HTMLElement | null;
+            const inner = markerRoot?.querySelector<HTMLElement>(`.${styles.markerInner}, .${styles.noFrameInner}`);
+            if (inner) visibleInners.add(inner);
         }
-        emitPreviewLeave(markerId);
-        if (this.pendingRemovalTimers[markerId] !== undefined) {
-            clearTimeout(this.pendingRemovalTimers[markerId]);
+
+        return visibleInners;
+    }
+
+    private clearVisibleAnimation(clusterGroup: L.MarkerClusterGroup, markerIds: Iterable<string>) {
+        this.getVisibleMarkerInners(clusterGroup, markerIds).forEach((inner) => {
+            inner.classList.remove(styles.appearing, styles.disappearing);
+        });
+    }
+
+    private animateVisibleMarkers(
+        clusterGroup: L.MarkerClusterGroup,
+        markerIds: Iterable<string>,
+        animationClass: string
+    ) {
+        if (animationClass === styles.disappearing) {
+            this.cancelPendingFadeIn(clusterGroup);
         }
-        this.pendingRemovalTimers[markerId] = window.setTimeout(() => {
-            clusterGroup.removeLayer(layer);
-            delete this.pendingRemovalTimers[markerId];
-            // 如果该 clusterGroup 已无层并且不应再显示，则从地图移除
-            if (clusterGroup.getLayers().length === 0 && this.deps.map.hasLayer(clusterGroup)) {
-                this.deps.map.removeLayer(clusterGroup);
+        const visibleInners = [...this.getVisibleMarkerInners(clusterGroup, markerIds)];
+        if (visibleInners.length === 0) return;
+
+        visibleInners.forEach((inner) => {
+            inner.classList.remove(styles.appearing, styles.disappearing);
+        });
+        // Flush once so reapplying the same class restarts the animation after rapid filter changes.
+        void visibleInners[0].offsetWidth;
+        visibleInners.forEach((inner) => {
+            inner.classList.add(animationClass);
+            if (animationClass !== styles.appearing) return;
+
+            const clearAppearing = (event: AnimationEvent) => {
+                if (event.target !== inner) return;
+                inner.classList.remove(styles.appearing);
+                inner.removeEventListener('animationend', clearAppearing);
+            };
+            inner.addEventListener('animationend', clearAppearing);
+        });
+    }
+
+    private fadeInVisibleMarkers(clusterGroup: L.MarkerClusterGroup, markerIds: Iterable<string>) {
+        this.cancelPendingFadeIn(clusterGroup);
+        const frame = window.requestAnimationFrame(() => {
+            this.pendingFadeInFrames.delete(clusterGroup);
+            this.animateVisibleMarkers(clusterGroup, markerIds, styles.appearing);
+        });
+        this.pendingFadeInFrames.set(clusterGroup, frame);
+    }
+
+    private cancelPendingFadeIn(clusterGroup: L.MarkerClusterGroup) {
+        const frame = this.pendingFadeInFrames.get(clusterGroup);
+        if (frame === undefined) return;
+        window.cancelAnimationFrame(frame);
+        this.pendingFadeInFrames.delete(clusterGroup);
+    }
+
+    private cancelPendingRemoval(typeKey: string, clusterGroup: L.MarkerClusterGroup) {
+        const pending = this.pendingRemovalBatches[typeKey];
+        if (!pending) return false;
+
+        window.clearTimeout(pending.timer);
+        delete this.pendingRemovalBatches[typeKey];
+        this.clearVisibleAnimation(clusterGroup, pending.markerIds);
+        return true;
+    }
+
+    private fadeOutAndRemove(clusterGroup: L.MarkerClusterGroup, typeKey: string, markerIds: string[]) {
+        this.animateVisibleMarkers(clusterGroup, markerIds, styles.disappearing);
+        markerIds.forEach(emitPreviewLeave);
+
+        const pendingMarkerIds = new Set(markerIds);
+        const timer = window.setTimeout(() => {
+            const pending = this.pendingRemovalBatches[typeKey];
+            if (!pending || pending.timer !== timer) return;
+
+            const markerDict = this.deps.getMarkerDict();
+            const layersToRemove = [...pending.markerIds]
+                .map((id) => markerDict[id])
+                .filter((layer): layer is L.Layer => Boolean(layer) && clusterGroup.hasLayer(layer));
+
+            if (layersToRemove.length > 0) {
+                clusterGroup.removeLayers(layersToRemove);
             }
-        }, 160);
+            delete this.pendingRemovalBatches[typeKey];
+
+            if (clusterGroup.getLayers().length === 0) {
+                if (this.deps.map.hasLayer(clusterGroup)) {
+                    this.deps.map.removeLayer(clusterGroup);
+                }
+                return;
+            }
+
+            // Removing a child can replace its visible cluster icon. Fade the updated icon back in
+            // so count changes and cluster splits do not snap after the outgoing state disappears.
+            const remainingIds = (this.deps.getMarkerTypeMap()[typeKey] ?? []).filter((id) => {
+                const layer = markerDict[id];
+                return Boolean(layer) && clusterGroup.hasLayer(layer);
+            });
+            this.fadeInVisibleMarkers(clusterGroup, remainingIds);
+        }, MARKER_REMOVAL_DELAY_MS);
+
+        this.pendingRemovalBatches[typeKey] = {
+            timer,
+            markerIds: pendingMarkerIds
+        };
     }
 
     private removeClustersFromMap() {
         const map = this.deps.map;
-        Object.values(this.clusterGroupsByType).forEach((clusterGroup) => {
+        Object.entries(this.clusterGroupsByType).forEach(([typeKey, clusterGroup]) => {
+            this.cancelPendingRemoval(typeKey, clusterGroup);
+            this.cancelPendingFadeIn(clusterGroup);
             clusterGroup.clearLayers();
             if (map.hasLayer(clusterGroup)) {
                 map.removeLayer(clusterGroup);

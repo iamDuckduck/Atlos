@@ -132,6 +132,17 @@ const ScaleDesktop = ({ map }: { map: L.Map }) => {
                 updateScalerUI(scale);
             }
         };
+        const handleZoom = () => {
+            const currentZoom = map.getZoom();
+            setZoomLevel(currentZoom);
+            updateScalerUI(
+                calculateScale(
+                    currentZoom,
+                    map.getMinZoom(),
+                    map.getMaxZoom(),
+                ),
+            );
+        };
         const handleZoomEnd = () => {
             const finalZoom = map.getZoom();
             setZoomLevel(finalZoom);
@@ -151,7 +162,7 @@ const ScaleDesktop = ({ map }: { map: L.Map }) => {
         map.on('zoomstart', handleZoomStart);
         map.on('zoomanim', handleZoomAnim);
         map.on('zoomend', handleZoomEnd);
-        map.on('zoom', handleZoomEnd);
+        map.on('zoom', handleZoom);
         map.on('talos:regionSwitched', handleRegionSwitched);
 
         return () => {
@@ -161,7 +172,7 @@ const ScaleDesktop = ({ map }: { map: L.Map }) => {
             map.off('zoomstart', handleZoomStart);
             map.off('zoomanim', handleZoomAnim);
             map.off('zoomend', handleZoomEnd);
-            map.off('zoom', handleZoomEnd);
+            map.off('zoom', handleZoom);
             map.off('talos:regionSwitched', handleRegionSwitched);
         };
     }, [map, updateScalerUI]);

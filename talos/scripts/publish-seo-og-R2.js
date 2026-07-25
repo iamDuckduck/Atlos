@@ -26,10 +26,10 @@ const remoteBase = [
   'seo/og',
   R2_OG_VARIANT,
 ].filter(Boolean).join('/');
-const requestedConcurrency = Number.parseInt(process.env.SEO_OG_UPLOAD_CONCURRENCY || '40', 10);
+const requestedConcurrency = Number.parseInt(process.env.SEO_OG_UPLOAD_CONCURRENCY || '120', 10);
 const concurrency = Number.isFinite(requestedConcurrency) && requestedConcurrency > 0
   ? requestedConcurrency
-  : 40;
+  : 120;
 
 console.log(
   `[publish-seo-og-R2] channel=${deployChannel} prefix=${prefix || '/'} source=${prefixSource}`

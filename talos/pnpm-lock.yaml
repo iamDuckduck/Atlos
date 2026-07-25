@@ -92,6 +92,9 @@ importers:
       react-window:
         specifier: ^1.8.10
         version: 1.8.11(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      trackpad-input:
+        specifier: ^0.1.1
+        version: 0.1.1
       vite-plugin-svgr:
         specifier: ^4.3.0
         version: 4.3.0(rollup@4.35.0)(typescript@5.8.3)(vite@6.2.1(@types/node@22.16.5)(sass@1.85.1)(terser@5.44.1))
@@ -5619,6 +5622,10 @@ packages:
 
   tr46@5.1.1:
     resolution: {integrity: sha512-hdF5ZgjTqgAntKkklYw0R03MG2x/bSzTtkxmIRw/sTNV8YXsCJ1tfLAX23lhxhHJlEf3CRCOCGGWw3vI3GaSPw==}
+    engines: {node: '>=18'}
+
+  trackpad-input@0.1.1:
+    resolution: {integrity: sha512-iJ+ToVVJ9wsmwe8x+4lsUenWBwTaT13RN0ExIGQNVlTzV8iQdLqanOmL4+aFNieCV7WWLPe0eqSfU5b2gwhCYQ==}
     engines: {node: '>=18'}
 
   tree-changes@0.11.3:
@@ -12207,6 +12214,8 @@ snapshots:
   tr46@5.1.1:
     dependencies:
       punycode: 2.3.1
+
+  trackpad-input@0.1.1: {}
 
   tree-changes@0.11.3:
     dependencies:

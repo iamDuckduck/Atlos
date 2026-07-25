@@ -7,6 +7,8 @@ import useViewState from '@/store/viewState';
 import { IMarkerData } from '@/data/marker';
 import { SubregionBoundaryManager } from '@/component/map/boundary';
 import type { LayerType } from '@/store/layer';
+import { enableSmoothWheelZoom } from './smoothWheelZoom';
+import { SmoothTileLayer } from './smoothTileLayer';
 
 export interface IMapOptions {
     onSwitchCurrentMarker?: (marker: IMarkerData) => void;
@@ -25,7 +27,12 @@ const getMaxZoomOffset = (regionId: string): number => {
     return 1;
 };
 
-const getRegionPixelBounds = (config: IMapRegion): [[number, number], [number, number]] => {
+// Keep this switch explicit so the short zoom tail can be tuned independently.
+const ENABLE_ZOOM_INERTIA = true;
+
+const getRegionPixelBounds = (
+    config: IMapRegion,
+): [[number, number], [number, number]] => {
     const offsetX = config.boundsOffset?.x ?? 0;
     const offsetY = config.boundsOffset?.y ?? 0;
     return [
@@ -57,10 +64,16 @@ export class MapCore {
             zoomControl: false,
             attributionControl: false,
             doubleClickZoom: false,
-            zoomSnap: 0.25,
+            scrollWheelZoom: false,
+            zoomAnimation: true,
+            markerZoomAnimation: true,
+            fadeAnimation: true,
+            zoomSnap: 0,
             zoomDelta: 0.25,
-            wheelPxPerZoomLevel: 50,
-            wheelDebounceTime:0,
+        });
+
+        enableSmoothWheelZoom(this.map, {
+            enableInertia: ENABLE_ZOOM_INERTIA,
         });
 
         this.markerLayer = new MarkerLayer(
@@ -124,7 +137,9 @@ export class MapCore {
         }
 
         if (config.maxZoom === undefined) {
-            throw new Error(`Invalid region config for: ${regionId}. Missing maxZoom.`);
+            throw new Error(
+                `Invalid region config for: ${regionId}. Missing maxZoom.`,
+            );
         }
 
         // Keep Leaflet's zoom constraints in sync with region config.
@@ -134,7 +149,8 @@ export class MapCore {
         this.map.setMaxZoom(maxZoom);
 
         const view = useViewState.getState().getViewState(regionId);
-        const [[minPixelX, minPixelY], [maxPixelX, maxPixelY]] = getRegionPixelBounds(config);
+        const [[minPixelX, minPixelY], [maxPixelX, maxPixelY]] =
+            getRegionPixelBounds(config);
         if (
             view &&
             view.lat !== undefined &&
@@ -158,8 +174,12 @@ export class MapCore {
             }
             const center = this.map.unproject(
                 [
-                    minPixelX + config.dimensions[0] / 2 + config.initialOffset.x,
-                    minPixelY + config.dimensions[1] / 2 + config.initialOffset.y,
+                    minPixelX +
+                        config.dimensions[0] / 2 +
+                        config.initialOffset.x,
+                    minPixelY +
+                        config.dimensions[1] / 2 +
+                        config.initialOffset.y,
                 ],
                 config.maxZoom,
             );
@@ -188,23 +208,27 @@ export class MapCore {
         );
 
         const mapBounds = L.latLngBounds(southWest, northEast);
-        
+
         // set map bounds to restrict panning
         this.map.setMaxBounds(mapBounds);
-        
-        const tileLayer = L.tileLayer(getTileResourceUrl(`/clips/${regionId}/{z}/{x}_{y}.webp`), {
-            tileSize: config.tileSize,
-            noWrap: true,
-            bounds: mapBounds,
-            pane: 'tilePane',
-            maxNativeZoom: config.maxZoom,
-            // Use Math.ceil so that Leaflet's internal Math.round(zoom) never
-            // exceeds the tile layer's maxZoom (which would set _tileZoom to
-            // undefined and silently skip tile loading at fractional max zoom).
-            maxZoom: Math.ceil(maxZoom),
-            // Use 1x1 transparent webp to suppress 404 console errors for missing tiles
-            errorTileUrl: 'data:image/webp;base64,UklGRhYAAABXRUJQVlA4TAoAAAAvAAAAAP8B/wE=',
-        }).addTo(this.map);
+
+        const tileLayer = new SmoothTileLayer(
+            getTileResourceUrl(`/clips/${regionId}/{z}/{x}_{y}.webp`),
+            {
+                tileSize: config.tileSize,
+                noWrap: true,
+                bounds: mapBounds,
+                pane: 'tilePane',
+                maxNativeZoom: config.maxZoom,
+                // Use Math.ceil so that Leaflet's internal Math.round(zoom) never
+                // exceeds the tile layer's maxZoom (which would set _tileZoom to
+                // undefined and silently skip tile loading at fractional max zoom).
+                maxZoom: Math.ceil(maxZoom),
+                // Use 1x1 transparent webp to suppress 404 console errors for missing tiles
+                errorTileUrl:
+                    'data:image/webp;base64,UklGRhYAAABXRUJQVlA4TAoAAAAvAAAAAP8B/wE=',
+            },
+        ).addTo(this.map);
 
         // Store main tile layer reference
         this.mainTileLayer = tileLayer;
@@ -229,18 +253,18 @@ export class MapCore {
         await Promise.all([
             markerReady,
             new Promise<void>((resolve) => {
-            // If the layer is already loaded (from cache), resolve on next tick
-            let resolved = false;
-            const done = () => {
-                if (resolved) return;
-                resolved = true;
-                tileLayer.off('load', done);
-                resolve();
-            };
-            tileLayer.once('load', done);
-            // Fallback: if no tiles are needed, Leaflet may not fire 'load';
-            // use a microtask to resolve quickly without arbitrary timeout
-            void Promise.resolve().then(done);
+                // If the layer is already loaded (from cache), resolve on next tick
+                let resolved = false;
+                const done = () => {
+                    if (resolved) return;
+                    resolved = true;
+                    tileLayer.off('load', done);
+                    resolve();
+                };
+                tileLayer.once('load', done);
+                // Fallback: if no tiles are needed, Leaflet may not fire 'load';
+                // use a microtask to resolve quickly without arbitrary timeout
+                void Promise.resolve().then(done);
             }),
         ]);
 
@@ -295,7 +319,7 @@ export class MapCore {
             const container = this.mainTileLayer.getContainer();
             if (layer === 'M') {
                 if (container) {
-                     container.style.filter = 'brightness(1)';
+                    container.style.filter = 'brightness(1)';
                 }
             } else {
                 if (container) {
@@ -304,7 +328,8 @@ export class MapCore {
 
                 // Add layer tile layer
                 const suffix = getLayerTileSuffix(layer);
-                const [[minPixelX, minPixelY], [maxPixelX, maxPixelY]] = getRegionPixelBounds(config);
+                const [[minPixelX, minPixelY], [maxPixelX, maxPixelY]] =
+                    getRegionPixelBounds(config);
                 const southWest = this.map.unproject(
                     [minPixelX, maxPixelY],
                     config.maxZoom,
@@ -314,10 +339,13 @@ export class MapCore {
                     config.maxZoom,
                 );
                 const mapBounds = L.latLngBounds(southWest, northEast);
-                const maxZoom = config.maxZoom + getMaxZoomOffset(this.currentRegionId);
+                const maxZoom =
+                    config.maxZoom + getMaxZoomOffset(this.currentRegionId);
 
-                this.layerTileLayer = L.tileLayer(
-                    getTileResourceUrl(`/clips/${this.currentRegionId}/{z}/{x}_{y}${suffix}.webp`),
+                this.layerTileLayer = new SmoothTileLayer(
+                    getTileResourceUrl(
+                        `/clips/${this.currentRegionId}/{z}/{x}_{y}${suffix}.webp`,
+                    ),
                     {
                         tileSize: config.tileSize,
                         noWrap: true,
@@ -326,8 +354,9 @@ export class MapCore {
                         maxNativeZoom: config.maxZoom,
                         maxZoom: Math.ceil(maxZoom),
                         // Use 1x1 transparent webp to suppress 404 console errors for missing tiles
-                        errorTileUrl: 'data:image/webp;base64,UklGRhYAAABXRUJQVlA4TAoAAAAvAAAAAP8B/wE=',
-                    }
+                        errorTileUrl:
+                            'data:image/webp;base64,UklGRhYAAABXRUJQVlA4TAoAAAAvAAAAAP8B/wE=',
+                    },
                 ).addTo(this.map);
 
                 // Wait for layer tiles to load

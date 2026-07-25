@@ -108,7 +108,7 @@ const deleteRemoteObjectKeys = async (keys) => {
 const MULTIPART_THRESHOLD = 64 * 1024 * 1024;
 const MAX_RETRIES = 3;
 const shouldUploadSeoPointAliases = process.env.SEO_UPLOAD_POINT_ALIASES !== '0';
-const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || '20', 10);
+const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || '40', 10);
 const seoPointTarget = 'oss';
 const targetSeoPointPrefix = `seo/points/${seoPointTarget}/`;
 const targetSeoPointHtmlPattern = new RegExp(`^${targetSeoPointPrefix}[0-9a-zA-Z]{7}\\.html$`);
@@ -201,7 +201,7 @@ const upload = async (relativePath, retryCount = 0) => {
       await client.multipartUpload(objectKey, localPath, {
         headers,
         partSize: 2 * 1024 * 1024, // 2MB per part (reduce part quantity)
-        parallel: 3, // 3 parts upload concurrency
+        parallel: 40, // 40 parts upload concurrency
       });
       console.log(`${relativePath} uploaded (multipart, ${(fileSize / 1024 / 1024).toFixed(2)}MB)`);
     } else {
@@ -278,7 +278,7 @@ const uploadSeoPointAliases = async (localFiles) => {
   await Promise.all(workers);
 };
 
-const concurrency = 5; // limit concurrency
+const concurrency = 40; // limit concurrency
 let index = 0;
 let allFiles = [];
 

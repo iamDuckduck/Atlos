@@ -175,7 +175,7 @@ const getMimeType = (filePath) => {
 const MULTIPART_THRESHOLD = 64 * 1024 * 1024;
 const MAX_RETRIES = 3;
 const shouldUploadSeoPointAliases = process.env.SEO_UPLOAD_POINT_ALIASES === "1";
-const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || "40", 10);
+const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || "120", 10);
 const uploadProfile = process.env.R2_UPLOAD_PROFILE === "resources" ? "resources" : "full";
 const resourceUploadPrefixes = ["assets/", "files/", "search/", "clips/"];
 const seoPointTarget = "r2";

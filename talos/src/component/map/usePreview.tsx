@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import type { IMarkerData } from '@/data/marker';
 import { useTranslateGame } from '@/locale';
 import { getAppViewport } from '@/component/scale/pip';
 import PopoverTooltip from '@/component/popover/popover';
 import { useAppViewport } from '@/utils/device';
+import { isRecordToolEnabled } from '@/devtools/loadDevTool';
 import {
     peekUGCImages,
     peekPublicUGCImages,
@@ -19,6 +20,10 @@ import {
     type PreviewLeaveDetail,
 } from './PreviewEvents';
 import styles from './Preview.module.scss';
+
+const RecordToolPreview = import.meta.env.DEV
+    ? lazy(() => import('@/devtools/recordTool/RecordToolPreview'))
+    : null;
 
 type HoveredMarkerState = {
     marker: IMarkerData;
@@ -58,8 +63,9 @@ const selectPreviewImage = (images: UGCImage[]): UGCImage | null => (
         })[0] ?? null
 );
 
-export const UsePreview = (
+const UseProductionPreview = (
     map: L.Map | null,
+    disabled = false,
 ): UsePreviewResult => {
     const tGame = useTranslateGame();
     const viewport = useAppViewport();
@@ -71,7 +77,7 @@ export const UsePreview = (
     const isPreviewVisibleRef = useRef(false);
     const [hoveredMarker, setHoveredMarker] = useState<HoveredMarkerState | null>(null);
     const [isPreviewVisible, setIsPreviewVisible] = useState(false);
-    const previewEnabled = !viewport.isPipUiTooSmall;
+    const previewEnabled = !disabled && !viewport.isPipUiTooSmall;
 
     const clearHover = useCallback(() => {
         if (fetchTimeoutRef.current) {
@@ -109,8 +115,8 @@ export const UsePreview = (
     }, []);
 
     useEffect(() => {
-        if (viewport.isPipUiTooSmall) clearHover();
-    }, [clearHover, viewport.isPipUiTooSmall]);
+        if (disabled || viewport.isPipUiTooSmall) clearHover();
+    }, [clearHover, disabled, viewport.isPipUiTooSmall]);
 
     const updateMarkerPosition = useCallback((marker: IMarkerData) => {
         if (!map) return null;
@@ -160,7 +166,7 @@ export const UsePreview = (
     }, []);
 
     useEffect(() => {
-        if (!map) return;
+        if (!map || disabled) return;
 
         const onEnter = (event: Event) => {
             if (!previewEnabled || getAppViewport().isPipUiTooSmall) {
@@ -264,7 +270,7 @@ export const UsePreview = (
             map.off('zoom', syncPosition);
             map.off('talos:regionSwitched', onRegionSwitch);
         };
-    }, [cancelHide, clearHover, map, previewEnabled, rememberHoverMarker, scheduleHide, showPreviewFromImages, updateMarkerPosition]);
+    }, [cancelHide, clearHover, disabled, map, previewEnabled, rememberHoverMarker, scheduleHide, showPreviewFromImages, updateMarkerPosition]);
 
     useEffect(() => {
         return () => {
@@ -316,4 +322,18 @@ export const UsePreview = (
     ) : null;
 
     return { PreviewElement };
+};
+
+export const UsePreview = (map: L.Map | null): UsePreviewResult => {
+    const recordToolEnabled = isRecordToolEnabled();
+    const productionPreview = UseProductionPreview(map, recordToolEnabled);
+    const recordToolPreview = recordToolEnabled && RecordToolPreview ? (
+        <Suspense fallback={null}>
+            <RecordToolPreview map={map} />
+        </Suspense>
+    ) : null;
+
+    return {
+        PreviewElement: recordToolEnabled ? recordToolPreview : productionPreview.PreviewElement,
+    };
 };

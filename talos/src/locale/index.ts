@@ -205,10 +205,10 @@ export async function preloadAllLanguages(current: Lang = getCurrentLocale()) {
 
 async function loadAndSet(locale: Lang) {
     const fontRegion = getFontRegionForLocale(locale);
-    const [data] = await Promise.all([
-        loadLocaleCached(locale),
-        switchFontRegion(fontRegion),
-    ]);
+    void switchFontRegion(fontRegion).catch((err: unknown) => {
+        LOGGER.warn('Font switch failed:', err);
+    });
+    const data = await loadLocaleCached(locale);
 
     useI18nStore.setState({ locale, data });
     

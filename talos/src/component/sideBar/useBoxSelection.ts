@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useFilter, useSetFilter } from '@/store/marker';
+import { isRecordToolEnabled } from '@/devtools/loadDevTool';
 
 type Point = { x: number; y: number };
 type SelectionBox = { startX: number; startY: number; endX: number; endY: number };
@@ -31,6 +32,7 @@ export const useBoxSelection = (
     const setFilter = useSetFilter();
     const currentFilterRef = useRef(filter);
     const [isSelecting, setIsSelecting] = useState(false);
+    const recordToolEnabled = isRecordToolEnabled();
 
     useEffect(() => { currentFilterRef.current = filter; }, [filter]);
 
@@ -178,9 +180,13 @@ export const useBoxSelection = (
 
             currentOptimisticSet = new Set(nextSet);
             syncOptimisticActiveState(currentOptimisticSet);
+            if (recordToolEnabled) {
+                applyFilter(nextSet);
+                return;
+            }
+
             pendingFilterSet = new Set(nextSet);
             pendingFilterChangeCount += 1;
-
             if (pendingFilterChangeCount >= FILTER_UPDATE_BATCH_SIZE) {
                 flushPendingFilter();
             }
@@ -244,11 +250,17 @@ export const useBoxSelection = (
         };
 
         const flushSelectionUpdate = () => {
+            if (recordToolEnabled) {
+                if (lastClientPoint && activeScrollContainer) {
+                    updateSelection(lastClientPoint, activeScrollContainer);
+                }
+                return;
+            }
+
             if (selectionUpdateRaf !== null) {
                 cancelAnimationFrame(selectionUpdateRaf);
                 selectionUpdateRaf = null;
             }
-
             if (pendingSelectionClientPoint && pendingSelectionScrollContainer) {
                 updateSelection(pendingSelectionClientPoint, pendingSelectionScrollContainer);
             }
@@ -258,9 +270,13 @@ export const useBoxSelection = (
         };
 
         const requestSelectionUpdate = (clientPoint: Point, scrollContainer: HTMLElement) => {
+            if (recordToolEnabled) {
+                updateSelection(clientPoint, scrollContainer);
+                return;
+            }
+
             pendingSelectionClientPoint = clientPoint;
             pendingSelectionScrollContainer = scrollContainer;
-
             if (selectionUpdateRaf !== null) return;
 
             selectionUpdateRaf = requestAnimationFrame(() => {
@@ -313,7 +329,7 @@ export const useBoxSelection = (
 
             activeScrollContainer.scrollTop = before + velocity * deltaSeconds;
             if (activeScrollContainer.scrollTop !== before) {
-                cancelSelectionUpdate();
+                if (!recordToolEnabled) cancelSelectionUpdate();
                 updateSelection(lastClientPoint, activeScrollContainer);
             }
 
@@ -500,7 +516,7 @@ export const useBoxSelection = (
             container.removeEventListener('pointerdown', onPointerDown);
             cleanupSelection();
         };
-    }, [setFilter, containerRef, selectionBoxRef]);
+    }, [setFilter, containerRef, selectionBoxRef, recordToolEnabled]);
 
     return { isSelecting };
 };

@@ -30,6 +30,8 @@ const hasLinkToolFlag = (): boolean => hasFlag('linkTool');
 
 const hasMarkToolFlag = (): boolean => hasFlag('markTool');
 
+export const isRecordToolEnabled = (): boolean => import.meta.env.DEV && hasFlag('recordTool');
+
 const waitForMap = async (): Promise<L.Map | null> => {
     const deadline = Date.now() + 10_000;
     while (Date.now() < deadline) {

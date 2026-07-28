@@ -15,6 +15,8 @@ import {
 import {
     useUserGuideVersion,
     useSetUserGuideVersion,
+    useUserGuideCompletedVersion,
+    useSetUserGuideCompletedVersion,
     useUserGuideStepCompleted,
     useSetUserGuideStepCompleted,
     useSetUserGuideStepCompletedBulk,
@@ -48,6 +50,8 @@ const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
     const setMobileDrawerSnapIndex = useSetMobileDrawerSnapIndex();
     const userGuideVersion = useUserGuideVersion();
     const setUserGuideVersion = useSetUserGuideVersion();
+    const userGuideCompletedVersion = useUserGuideCompletedVersion();
+    const setUserGuideCompletedVersion = useSetUserGuideCompletedVersion();
     const stepCompleted = useUserGuideStepCompleted();
     const setUserGuideStepCompleted = useSetUserGuideStepCompleted();
     const setUserGuideStepCompletedBulk = useSetUserGuideStepCompletedBulk();
@@ -134,8 +138,8 @@ const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
 
     // Initialize/upgrade guide state.
     // - On version bump: reset all steps to incomplete and open guide.
-    // - Otherwise: ensure missing step keys default to incomplete.
-    // - Auto-open guide until all steps are completed.
+    // - Completion is version-wide, so changing responsive layouts cannot reopen it.
+    // - Otherwise: ensure missing step keys default to incomplete and resume progress.
     useEffect(() => {
         if (!i18nReady || !visible) return;
 
@@ -143,10 +147,16 @@ const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
             // Atomic reset to avoid race that can cause STEP-0 to be treated as completed.
             replaceUserGuideStepCompleted(buildAllStepsCompletionMap(false));
             setUserGuideVersion(CURRENT_GUIDE_VERSION);
+            setUserGuideCompletedVersion('');
             didAutoOpenRef.current = true;
             wasOpenRef.current = true; // Mark as already opened
             setStepIndex(0);
             setIsUserGuideOpen(true);
+            notifyReady();
+            return;
+        }
+
+        if (userGuideCompletedVersion === CURRENT_GUIDE_VERSION) {
             notifyReady();
             return;
         }
@@ -160,8 +170,7 @@ const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
             setUserGuideStepCompletedBulk(missingUpdates);
         }
 
-        const hasIncomplete = steps.some((s) => stepCompleted[s.id] !== true);
-        if (!didAutoOpenRef.current && deviceMatchesInitialGuide && hasIncomplete) {
+        if (!didAutoOpenRef.current && deviceMatchesInitialGuide) {
             didAutoOpenRef.current = true;
             wasOpenRef.current = true; // Mark as already opened to prevent the second effect from resetting stepIndex
             const resumeIndex = firstIncompleteIndex();
@@ -172,10 +181,12 @@ const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
     }, [
         i18nReady,
         userGuideVersion,
+        userGuideCompletedVersion,
         steps,
         stepCompleted,
         setIsUserGuideOpen,
         setUserGuideVersion,
+        setUserGuideCompletedVersion,
         setUserGuideStepCompleted,
         setUserGuideStepCompletedBulk,
         replaceUserGuideStepCompleted,
@@ -270,6 +281,7 @@ const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
                 // Reset transition state
                 isTransitioningRef.current = false;
                 
+                setUserGuideCompletedVersion(CURRENT_GUIDE_VERSION);
                 replaceUserGuideStepCompleted(buildAllStepsCompletionMap(true));
                 setForceDetailOpen(false);
                 setForceRegionSubOpen(false);
@@ -388,6 +400,7 @@ const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
             setMobileDrawerSnapIndex,
             setIsUserGuideOpen,
             setUserGuideStepCompleted,
+            setUserGuideCompletedVersion,
             replaceUserGuideStepCompleted,
             buildAllStepsCompletionMap,
         ],

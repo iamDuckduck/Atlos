@@ -1143,17 +1143,6 @@
             3928.6666343264037
           ]
         },
-        "WL/YL/xiranflow_cloudseeder_station": {
-          "id": "WL/YL/xiranflow_cloudseeder_station",
-          "type": "site",
-          "region": "WL",
-          "sub": "YL",
-          "site": "xiranflow_cloudseeder_station",
-          "point": [
-            5881.714205909702,
-            4917.220556371251
-          ]
-        },
         "WL/YL/detention_facility": {
           "id": "WL/YL/detention_facility",
           "type": "site",
@@ -1163,6 +1152,17 @@
           "point": [
             6068.3903961429505,
             5212.791190907228
+          ]
+        },
+        "WL/YL/xiranflow_cloudseeder": {
+          "id": "WL/YL/xiranflow_cloudseeder",
+          "type": "site",
+          "region": "WL",
+          "sub": "YL",
+          "site": "xiranflow_cloudseeder",
+          "point": [
+            5877.982489980623,
+            4918.472950622281
           ]
         }
       }

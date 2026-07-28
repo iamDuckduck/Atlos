@@ -152,13 +152,13 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
 
     useEffect(() => {
         if (visible) return;
+        // UserGuide pauses itself while the UI is hidden and resumes at the same step.
         setLangOpen(false);
         setGroupOpen(false);
         setStorageOpen(false);
         setSettingsOpen(false);
         setAnnouncementOpen(false);
-        setIsUserGuideOpen(false);
-    }, [setIsUserGuideOpen, visible]);
+    }, [visible]);
 
     return (
         <div

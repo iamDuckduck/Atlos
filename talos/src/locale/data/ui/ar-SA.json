@@ -10,6 +10,10 @@
     "announcement": "الإعلانات",
     "settings": "الإعدادات"
   },
+  "mapControls": {
+    "layerSelect": "اختيار الطبقة",
+    "locationTracking": "مزامنة الموقع"
+  },
   "trigger": {
     "boundaryMode": "عرض الحدود",
     "clusterMode": "تجميع النقاط",

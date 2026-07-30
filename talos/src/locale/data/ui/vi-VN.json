@@ -10,6 +10,10 @@
     "announcement": "Thông báo",
     "settings": "Cài đặt"
   },
+  "mapControls": {
+    "layerSelect": "Chọn lớp",
+    "locationTracking": "Đồng bộ vị trí"
+  },
   "trigger": {
     "boundaryMode": "Hiển thị ranh giới khu vực",
     "clusterMode": "Gộp điểm",

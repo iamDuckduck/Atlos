@@ -10,6 +10,10 @@
     "announcement": "घोषणाएँ",
     "settings": "प्राथमिकताएं"
   },
+  "mapControls": {
+    "layerSelect": "परत चयन",
+    "locationTracking": "Location Sync"
+  },
   "trigger": {
     "boundaryMode": "सीमा मोड",
     "clusterMode": "समूह मोड",

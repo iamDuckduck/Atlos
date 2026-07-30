@@ -10,6 +10,10 @@
     "announcement": "お知らせ",
     "settings": "設定"
   },
+  "mapControls": {
+    "layerSelect": "レイヤー選択",
+    "locationTracking": "位置同期"
+  },
   "trigger": {
     "boundaryMode": "バウンダリー モード",
     "clusterMode": "クラスター モード",

@@ -10,6 +10,10 @@
     "announcement": "Anúncios",
     "settings": "Preferências"
   },
+  "mapControls": {
+    "layerSelect": "Seleção de camada",
+    "locationTracking": "Sinc. de Localização"
+  },
   "trigger": {
     "boundaryMode": "Modo de Limite",
     "clusterMode": "Modo de Agrupamento",

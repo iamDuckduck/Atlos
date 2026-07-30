@@ -156,9 +156,7 @@ const RegionContainer: React.FC<{
                 isSidebarOpen && styles.sidebarOpen,
             )}
         >
-             <div
-                className={styles.regLabel}
-            ></div>
+            <div className={styles.regLabel}></div>
             <div
                 className={styles.indicator}
                 style={getContainerStyle(regionIndex, true, isMobile)}
@@ -166,60 +164,67 @@ const RegionContainer: React.FC<{
             {Object.entries(REGION_DICT).map(([key, region]) => {
                 const Icon: React.FC = REGION_ICON_DICT[key];
                 const regionCode = REGION_I18N_CODE[key] ?? key;
+                const regionName = tGame(`region.${regionCode}.main`);
                 const subRegionIndex = currentSubregionKey
                     ? region.subregions.indexOf(currentSubregionKey)
                     : -1;
                 return (
-                    <div
+                    <PopoverTooltip
                         key={key}
-                        className={classNames(
-                            styles.regItem,
-                            currentRegionKey === key && styles.selected,
-                        )}
-                        onClick={() => {
-                            setCurrentRegion(key);
-                        }}
-                        role="button"
-                        tabIndex={0}
-                        aria-label={tGame(`region.${regionCode}.main`)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                setCurrentRegion(key);
-                            }
-                        }}
+                        content={regionName}
+                        placement="left"
+                        disabled={isMobile || !isSidebarOpen}
                     >
-                        <div className={styles.icon}>
-                            <Icon />
-                        </div>
-                        {region.subregions.length > 1 && (
-                            <SubregionSwitch
-                                selectedIndex={subRegionIndex}
-                                forceOpen={forceRegionSubOpen && currentRegionKey === key}
-                                isMobile={isMobile}
-                                items={region.subregions.map((subregion) => {
-                                    const subKey = SUBREGION_DICT[subregion]?.name;
-                                    const fullName = subKey ? tGame(`region.${regionCode}.sub.${subKey}.name`) : subregion;
-                                    const shortName = (() => {
-                                        if (!subKey) return subregion;
-                                        const v = tGame(`region.${regionCode}.sub.${subKey}.short`);
-                                        return typeof v === 'string' && v.trim() ? v : subKey;
-                                    })();
+                        <div
+                            className={classNames(
+                                styles.regItem,
+                                currentRegionKey === key && styles.selected,
+                            )}
+                            onClick={() => {
+                                setCurrentRegion(key);
+                            }}
+                            role="button"
+                            tabIndex={0}
+                            aria-label={regionName}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    setCurrentRegion(key);
+                                }
+                            }}
+                        >
+                            <div className={styles.icon}>
+                                <Icon />
+                            </div>
+                            {region.subregions.length > 1 && (
+                                <SubregionSwitch
+                                    selectedIndex={subRegionIndex}
+                                    forceOpen={forceRegionSubOpen && currentRegionKey === key}
+                                    isMobile={isMobile}
+                                    items={region.subregions.map((subregion) => {
+                                        const subKey = SUBREGION_DICT[subregion]?.name;
+                                        const fullName = subKey ? tGame(`region.${regionCode}.sub.${subKey}.name`) : subregion;
+                                        const shortName = (() => {
+                                            if (!subKey) return subregion;
+                                            const v = tGame(`region.${regionCode}.sub.${subKey}.short`);
+                                            return typeof v === 'string' && v.trim() ? v : subKey;
+                                        })();
 
-                                    return {
-                                        key: subregion,
-                                        label: shortName,
-                                        selected: currentSubregionKey === subregion,
-                                        tooltip: fullName,
-                                        ariaLabel: fullName,
-                                        onClick: () => {
-                                            requestSubregionSwitch(subregion);
-                                        },
-                                    };
-                                })}
-                            />
-                        )}
-                    </div>
+                                        return {
+                                            key: subregion,
+                                            label: shortName,
+                                            selected: currentSubregionKey === subregion,
+                                            tooltip: fullName,
+                                            ariaLabel: fullName,
+                                            onClick: () => {
+                                                requestSubregionSwitch(subregion);
+                                            },
+                                        };
+                                    })}
+                                />
+                            )}
+                        </div>
+                    </PopoverTooltip>
                 );
             })}
         </div>

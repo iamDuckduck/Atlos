@@ -10,6 +10,10 @@
     "announcement": "공지사항",
     "settings": "설정"
   },
+  "mapControls": {
+    "layerSelect": "레이어 선택",
+    "locationTracking": "위치 동기화"
+  },
   "trigger": {
     "boundaryMode": "경계 모드",
     "clusterMode": "클러스터 모드",

@@ -10,6 +10,10 @@
     "announcement": "Оголошення",
     "settings": "Налаштування"
   },
+  "mapControls": {
+    "layerSelect": "Вибір шару",
+    "locationTracking": "Синхронізація локації"
+  },
   "trigger": {
     "boundaryMode": "Режим кордонів",
     "clusterMode": "Режим кластерів",

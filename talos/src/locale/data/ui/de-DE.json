@@ -10,6 +10,10 @@
     "announcement": "Ankündigungen",
     "settings": "Einstellungen"
   },
+  "mapControls": {
+    "layerSelect": "Ebenenauswahl",
+    "locationTracking": "Positionssync"
+  },
   "trigger": {
     "boundaryMode": "Grenzmodus",
     "clusterMode": "Cluster-Modus",

@@ -10,6 +10,10 @@
     "announcement": "Anuncios",
     "settings": "Ajustes"
   },
+  "mapControls": {
+    "layerSelect": "Selección de capa",
+    "locationTracking": "Sincronización de ubicación"
+  },
   "trigger": {
     "boundaryMode": "Modo de límites",
     "clusterMode": "Modo de agrupamiento",

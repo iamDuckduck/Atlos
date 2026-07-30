@@ -10,6 +10,10 @@
     "announcement": "Pengumuman",
     "settings": "Preferensi"
   },
+  "mapControls": {
+    "layerSelect": "Pilihan lapisan",
+    "locationTracking": "Sinkron Lokasi"
+  },
   "trigger": {
     "boundaryMode": "Mode Batas",
     "clusterMode": "Mode Kluster",

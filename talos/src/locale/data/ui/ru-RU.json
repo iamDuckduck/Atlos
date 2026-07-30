@@ -10,6 +10,10 @@
     "announcement": "Объявления",
     "settings": "Настройки"
   },
+  "mapControls": {
+    "layerSelect": "Выбор слоя",
+    "locationTracking": "Синхронизация позиции"
+  },
   "trigger": {
     "boundaryMode": "Режим границ",
     "clusterMode": "Режим кластеризации",

@@ -10,6 +10,10 @@
     "announcement": "Annonces",
     "settings": "Paramètres"
   },
+  "mapControls": {
+    "layerSelect": "Sélection de couche",
+    "locationTracking": "Synchro position"
+  },
   "trigger": {
     "boundaryMode": "Mode des limites",
     "clusterMode": "Mode de regroupement",

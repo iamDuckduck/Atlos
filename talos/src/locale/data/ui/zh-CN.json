@@ -10,6 +10,10 @@
     "announcement": "公告",
     "settings": "偏好设置"
   },
+  "mapControls": {
+    "layerSelect": "图层选择",
+    "locationTracking": "启用位置同步"
+  },
   "trigger": {
     "boundaryMode": "地区边界显示",
     "clusterMode": "点位聚合",

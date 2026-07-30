@@ -238,7 +238,7 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
                     <div className={styles.switchArea}>
                         <RegionContainer isSidebarOpen={layoutSidebarOpen} />
                         <LayerSwitch isSidebarOpen={layoutSidebarOpen} />
-                        <LocatorButton variant="desktop" />
+                        <LocatorButton variant="desktop" isSidebarOpen={layoutSidebarOpen} />
                     </div>
                 )}
                 {isMobile && (

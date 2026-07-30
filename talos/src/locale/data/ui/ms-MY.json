@@ -10,6 +10,10 @@
     "announcement": "Pengumuman",
     "settings": "Keutamaan"
   },
+  "mapControls": {
+    "layerSelect": "Pemilihan lapisan",
+    "locationTracking": "Segerak Lokasi"
+  },
   "trigger": {
     "boundaryMode": "Mod Sempadan",
     "clusterMode": "Mod Pengelompokan",

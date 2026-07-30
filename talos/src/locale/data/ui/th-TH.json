@@ -10,6 +10,10 @@
     "announcement": "ประกาศ",
     "settings": "การตั้งค่า"
   },
+  "mapControls": {
+    "layerSelect": "เลือกเลเยอร์",
+    "locationTracking": "ซิงก์ตำแหน่ง"
+  },
   "trigger": {
     "boundaryMode": "แสดงขอบเขตพื้นที่",
     "clusterMode": "การรวมจุด",

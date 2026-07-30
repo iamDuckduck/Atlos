@@ -10,6 +10,10 @@
     "announcement": "Ogłoszenia",
     "settings": "Preferencje"
   },
+  "mapControls": {
+    "layerSelect": "Wybór warstwy",
+    "locationTracking": "Synchronizacja pozycji"
+  },
   "trigger": {
     "boundaryMode": "Tryb granic",
     "clusterMode": "Tryb klastrowania",

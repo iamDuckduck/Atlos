@@ -1,12 +1,21 @@
 import {
+  DeleteObjectsCommand,
   HeadObjectCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
+import { NodeHttpHandler } from '@smithy/node-http-handler';
 import crypto from 'node:crypto';
 import fs from 'fs-extra';
+import https from 'node:https';
 import path from 'node:path';
 import { getDeployChannel, resolveDeployPrefix } from './release-channel.js';
+import {
+  acknowledgeSeoOgPublishEntries,
+  completeSeoOgFullVerification,
+  readSeoOgPublishQueue,
+} from './seo-og-publish-queue.js';
 
 const config = JSON.parse(fs.readFileSync('./config/config.r2.json', 'utf-8'));
 const { endpoint, bucket, region, prefix: basePrefix, accessKeyId, accessKeySecret } =
@@ -30,6 +39,13 @@ const requestedConcurrency = Number.parseInt(process.env.SEO_OG_UPLOAD_CONCURREN
 const concurrency = Number.isFinite(requestedConcurrency) && requestedConcurrency > 0
   ? requestedConcurrency
   : 120;
+const requestedMaxSockets = Number.parseInt(process.env.SEO_OG_MAX_SOCKETS || '', 10);
+const maxSockets = Number.isFinite(requestedMaxSockets) && requestedMaxSockets > 0
+  ? requestedMaxSockets
+  : concurrency;
+const verboseSkips = process.env.PUBLISH_VERBOSE_SKIPS !== '0';
+const forceFullVerification = process.env.SEO_OG_FORCE_VERIFY === '1';
+const publishStartedAt = Date.now();
 
 console.log(
   `[publish-seo-og-R2] channel=${deployChannel} prefix=${prefix || '/'} source=${prefixSource}`
@@ -46,6 +62,9 @@ const client = new S3Client({
     accessKeyId,
     secretAccessKey: accessKeySecret,
   },
+  requestHandler: new NodeHttpHandler({
+    httpsAgent: new https.Agent({ keepAlive: true, maxSockets }),
+  }),
 });
 
 const normalizeEtag = (etag) =>
@@ -81,12 +100,34 @@ async function getRemoteObjectInfo(objectKey) {
   }
 }
 
-async function shouldSkipUpload(localPath, objectKey, fileSize) {
+async function shouldSkipUpload(localPath, objectKey, fileSize, knownRemote) {
   const [localEtag, remote] = await Promise.all([
     calculateFileMd5(localPath),
-    getRemoteObjectInfo(objectKey),
+    knownRemote === undefined ? getRemoteObjectInfo(objectKey) : knownRemote,
   ]);
   return Boolean(remote && remote.size === fileSize && remote.etag === localEtag);
+}
+
+async function listRemoteImageInfo() {
+  const objects = new Map();
+  let continuationToken;
+  do {
+    const response = await client.send(new ListObjectsV2Command({
+      Bucket: bucket,
+      Prefix: `${remoteBase}/`,
+      ContinuationToken: continuationToken,
+      MaxKeys: 1000,
+    }));
+    for (const item of response.Contents ?? []) {
+      if (!item.Key) continue;
+      objects.set(item.Key, {
+        etag: normalizeEtag(item.ETag),
+        size: item.Size ?? 0,
+      });
+    }
+    continuationToken = response.IsTruncated ? response.NextContinuationToken : undefined;
+  } while (continuationToken);
+  return objects;
 }
 
 async function collectImageFiles(dir, baseDir = dir) {
@@ -104,13 +145,16 @@ async function collectImageFiles(dir, baseDir = dir) {
   return files;
 }
 
-async function uploadImage(relativePath) {
+async function uploadImage(relativePath, { verifyRemote = true, remoteInfoIndex } = {}) {
   const localPath = path.join(localDir, relativePath);
   const objectKey = [remoteBase, relativePath].filter(Boolean).join('/');
   const stats = await fs.stat(localPath);
 
-  if (await shouldSkipUpload(localPath, objectKey, stats.size)) {
-    console.log(`${relativePath} skipped`);
+  const knownRemote = remoteInfoIndex
+    ? remoteInfoIndex.get(objectKey) ?? null
+    : undefined;
+  if (verifyRemote && await shouldSkipUpload(localPath, objectKey, stats.size, knownRemote)) {
+    if (verboseSkips) console.log(`${relativePath} skipped`);
     return;
   }
 
@@ -126,35 +170,88 @@ async function uploadImage(relativePath) {
   console.log(`${relativePath} uploaded (${(stats.size / 1024).toFixed(2)}KB)`);
 }
 
-async function run() {
-  if (!(await fs.pathExists(localDir))) {
-    throw new Error(`SEO OG image directory does not exist: ${localDir}`);
+async function deleteImages(tokens) {
+  const chunkSize = 1000;
+  for (let index = 0; index < tokens.length; index += chunkSize) {
+    const chunk = tokens.slice(index, index + chunkSize);
+    await client.send(new DeleteObjectsCommand({
+      Bucket: bucket,
+      Delete: {
+        Objects: chunk.map((token) => ({ Key: `${remoteBase}/${token}.jpg` })),
+        Quiet: true,
+      },
+    }));
   }
+}
 
-  const files = (await collectImageFiles(localDir)).sort();
-
-  if (!files.length) {
-    console.log('[publish-seo-og-R2] no point images found.');
-    return;
-  }
-
+async function uploadFiles(files, options) {
   let cursor = 0;
   const workers = Array.from(
     { length: Math.max(1, Math.min(concurrency, files.length)) },
     async () => {
       while (cursor < files.length) {
         const file = files[cursor++];
-        await uploadImage(file);
+        await uploadImage(file, options);
       }
     },
   );
-
   await Promise.all(workers);
-  console.log(`[publish-seo-og-R2] uploaded/skipped ${files.length} images.`);
 }
 
-run().catch((err) => {
-  console.error('[publish-seo-og-R2] failed');
-  console.error(err);
-  process.exitCode = 1;
-});
+async function run() {
+  if (!(await fs.pathExists(localDir))) {
+    throw new Error(`SEO OG image directory does not exist: ${localDir}`);
+  }
+
+  const queue = await readSeoOgPublishQueue(localDir);
+  const shouldVerifyAll = forceFullVerification || queue.requiresFullVerification;
+  if (!shouldVerifyAll) {
+    const queuedEntries = Object.entries(queue.entries);
+    const uploads = queuedEntries
+      .filter(([, entry]) => entry.action === 'upload')
+      .map(([token]) => `${token}.jpg`);
+    const deletes = queuedEntries
+      .filter(([, entry]) => entry.action === 'delete')
+      .map(([token]) => token);
+
+    console.log(`[publish-seo-og-R2] incremental queue: upload=${uploads.length}, delete=${deletes.length}`);
+    if (uploads.length > 0) await uploadFiles(uploads, { verifyRemote: false });
+    if (deletes.length > 0) await deleteImages(deletes);
+    await acknowledgeSeoOgPublishEntries(localDir, queue.entries);
+    console.log(`[publish-seo-og-R2] published ${queuedEntries.length} queued changes.`);
+    return;
+  }
+
+  const files = (await collectImageFiles(localDir)).sort();
+  const reason = forceFullVerification
+    ? 'forced by SEO_OG_FORCE_VERIFY=1'
+    : queue.invalid
+      ? 'queue is invalid or from an older version'
+      : 'queue is not initialized';
+  console.log(`[publish-seo-og-R2] full verification: ${reason}; loading remote metadata.`);
+  const remoteInfoIndex = await listRemoteImageInfo();
+  console.log(`[publish-seo-og-R2] loaded ${remoteInfoIndex.size} remote image records.`);
+  if (files.length === 0 && remoteInfoIndex.size > 0) {
+    throw new Error('Local SEO OG directory contains no images; refusing to delete all remote images.');
+  }
+  await uploadFiles(files, { verifyRemote: true, remoteInfoIndex });
+  const localTokens = new Set(files.map((file) => path.basename(file, '.jpg')));
+  const remoteTokens = [...remoteInfoIndex.keys()]
+    .filter((key) => key.startsWith(`${remoteBase}/`) && key.endsWith('.jpg'))
+    .map((key) => key.slice(remoteBase.length + 1, -4))
+    .filter((token) => /^[0-9a-zA-Z]{7}$/.test(token));
+  const staleRemoteTokens = remoteTokens.filter((token) => !localTokens.has(token));
+  if (staleRemoteTokens.length > 0) await deleteImages(staleRemoteTokens);
+  await completeSeoOgFullVerification(localDir, queue.entries);
+  console.log(`[publish-seo-og-R2] verified ${files.length} local images, deleted ${staleRemoteTokens.length} stale remote images.`);
+}
+
+run()
+  .then(() => {
+    console.log(`[publish-seo-og-R2] completed in ${((Date.now() - publishStartedAt) / 1000).toFixed(1)}s.`);
+  })
+  .catch((err) => {
+    console.error('[publish-seo-og-R2] failed');
+    console.error(err);
+    process.exitCode = 1;
+  });

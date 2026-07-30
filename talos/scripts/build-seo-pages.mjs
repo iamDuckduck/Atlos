@@ -9,6 +9,7 @@ import {
   joinCdnPath,
   resolveDeployPrefix,
 } from './release-channel.js';
+import { enqueueSeoOgPublishChanges } from './seo-og-publish-queue.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1457,6 +1458,21 @@ async function writeBuildState(file, state) {
   }
 }
 
+function mergeScopedBuildState(previousState, nextState, activeTokens) {
+  if (!hasExplicitPointScope) return nextState;
+  const retainedEntries = Object.fromEntries(
+    Object.entries(previousState.entries ?? {})
+      .filter(([token]) => activeTokens.has(token)),
+  );
+  return {
+    ...nextState,
+    entries: {
+      ...retainedEntries,
+      ...nextState.entries,
+    },
+  };
+}
+
 async function pruneStaleFiles(dir, extension, activeTokens, previousTokens) {
   const staleTokens = [...previousTokens].filter((token) => !activeTokens.has(token));
   await Promise.all(staleTokens.map(async (token) => {
@@ -1629,6 +1645,8 @@ async function build() {
     .filter(Boolean)
     .sort((a, b) => a.token.localeCompare(b.token));
 
+  const allMarkerTokens = new Set(markers.map((point) => point.token));
+
   if (seoTokens.length > 0) {
     const tokenSet = new Set(seoTokens);
     markers = markers.filter((point) => tokenSet.has(point.token));
@@ -1655,7 +1673,11 @@ async function build() {
   }
 
   if (shouldBuildImagesOnly) {
-    const { worklist, nextState } = await buildOgWorklist(markers, sharedOgFingerprints, previousOgState);
+    const { worklist, nextState: scopedNextState } = await buildOgWorklist(markers, sharedOgFingerprints, previousOgState);
+    const nextState = mergeScopedBuildState(previousOgState, scopedNextState, allMarkerTokens);
+    const activeTokens = allMarkerTokens;
+    const staleTokens = Object.keys(previousOgState.entries ?? {})
+      .filter((token) => !activeTokens.has(token));
     if (shouldRefreshOgStateOnly) {
       const outputChecks = await Promise.all(markers.map(async (point) => ({
         token: point.token,
@@ -1665,8 +1687,9 @@ async function build() {
       if (missingOutputs.length > 0) {
         throw new Error(`Cannot refresh OG state: ${missingOutputs.length} image outputs are missing.`);
       }
+      await enqueueSeoOgPublishChanges(seoOgOutputDir, { deleteTokens: staleTokens });
       await writeBuildState(SEO_OG_STATE_FILE, nextState);
-      await pruneStaleFiles(seoOgOutputDir, '.jpg', new Set(markers.map((point) => point.token)), new Set(Object.keys(previousOgState.entries ?? {})));
+      await pruneStaleFiles(seoOgOutputDir, '.jpg', activeTokens, new Set(Object.keys(previousOgState.entries ?? {})));
       console.log(`[seo] target=${buildTarget} locale=${defaultLocale} site=${siteUrl}`);
       console.log(`[seo] refreshed point image state=${markers.length}, output=${path.relative(ROOT, seoOgOutputDir)}`);
       return;
@@ -1679,20 +1702,30 @@ async function build() {
       entries: { ...previousOgState.entries },
     };
     let checkpointWrite = Promise.resolve();
+    const pendingUploadTokens = [];
     await generateOgImagesInParallel(worklist, (point, completed) => {
       checkpointState.entries[point.token] = nextState.entries[point.token];
+      pendingUploadTokens.push(point.token);
       if (completed % 250 !== 0) return undefined;
 
       const snapshot = {
         ...checkpointState,
         entries: { ...checkpointState.entries },
       };
-      checkpointWrite = checkpointWrite.then(() => writeBuildState(SEO_OG_STATE_FILE, snapshot));
+      const checkpointTokens = pendingUploadTokens.splice(0);
+      checkpointWrite = checkpointWrite.then(async () => {
+        await enqueueSeoOgPublishChanges(seoOgOutputDir, { uploadTokens: checkpointTokens });
+        await writeBuildState(SEO_OG_STATE_FILE, snapshot);
+      });
       return checkpointWrite;
     });
     await checkpointWrite;
+    await enqueueSeoOgPublishChanges(seoOgOutputDir, {
+      uploadTokens: pendingUploadTokens,
+      deleteTokens: staleTokens,
+    });
     await writeBuildState(SEO_OG_STATE_FILE, nextState);
-    await pruneStaleFiles(seoOgOutputDir, '.jpg', new Set(markers.map((point) => point.token)), new Set(Object.keys(previousOgState.entries ?? {})));
+    await pruneStaleFiles(seoOgOutputDir, '.jpg', activeTokens, new Set(Object.keys(previousOgState.entries ?? {})));
     console.log(`[seo] target=${buildTarget} locale=${defaultLocale} site=${siteUrl}`);
     console.log(`[seo] generated point images=${worklist.length}/${markers.length}, output=${path.relative(ROOT, seoOgOutputDir)}`);
     return;
@@ -1707,6 +1740,7 @@ async function build() {
     renderVersion: OG_RENDER_SIGNATURE_VERSION,
     entries: {},
   };
+  const generatedOgTokens = [];
   for (let index = 0; index < markers.length; index += 1) {
     const point = markers[index];
     if (shouldWritePointFiles) {
@@ -1728,6 +1762,7 @@ async function build() {
           } else {
             await generateFallbackOgImage(point);
           }
+          generatedOgTokens.push(point.token);
         }
       }
     }
@@ -1745,12 +1780,21 @@ async function build() {
   }
 
   if (shouldWritePointFiles) {
-    await writeBuildState(SEO_PAGE_STATE_FILE, nextPageState);
-    await pruneStaleFiles(SEO_POINTS_OUT_DIR, '.html', new Set(markers.map((point) => point.token)), new Set(Object.keys(previousPageState.entries ?? {})));
+    const pageState = mergeScopedBuildState(previousPageState, nextPageState, allMarkerTokens);
+    await writeBuildState(SEO_PAGE_STATE_FILE, pageState);
+    await pruneStaleFiles(SEO_POINTS_OUT_DIR, '.html', allMarkerTokens, new Set(Object.keys(previousPageState.entries ?? {})));
   }
   if (shouldBuildPointImages || shouldForceImages || shouldForceAllImages) {
-    await writeBuildState(SEO_OG_STATE_FILE, nextOgState);
-    await pruneStaleFiles(seoOgOutputDir, '.jpg', new Set(markers.map((point) => point.token)), new Set(Object.keys(previousOgState.entries ?? {})));
+    const activeTokens = allMarkerTokens;
+    const staleTokens = Object.keys(previousOgState.entries ?? {})
+      .filter((token) => !activeTokens.has(token));
+    await enqueueSeoOgPublishChanges(seoOgOutputDir, {
+      uploadTokens: generatedOgTokens,
+      deleteTokens: staleTokens,
+    });
+    const ogState = mergeScopedBuildState(previousOgState, nextOgState, activeTokens);
+    await writeBuildState(SEO_OG_STATE_FILE, ogState);
+    await pruneStaleFiles(seoOgOutputDir, '.jpg', activeTokens, new Set(Object.keys(previousOgState.entries ?? {})));
   }
 
   const sitemapFiles = [];

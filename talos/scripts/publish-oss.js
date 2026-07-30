@@ -1,4 +1,5 @@
 import OSS from 'ali-oss';
+import { execFileSync } from 'node:child_process';
 import fs from "fs-extra";
 import path from "path";
 import crypto from "crypto";
@@ -6,6 +7,7 @@ import { getDeployChannel, resolveDeployPrefix } from "./release-channel.js";
 import { buildClipIndex, normalizeObjectKey, toPrefixedObjectKey } from './tile-index.js';
 
 const distDir = path.resolve(process.cwd(), process.env.DIST_DIR || 'dist/oss');
+const publishStartedAt = Date.now();
 
 const config = JSON.parse(fs.readFileSync('./config/config.json', 'utf-8'));
 const { region, bucket, accessKeyId, accessKeySecret, prefix: basePrefix } = config.web.build.oss
@@ -53,6 +55,7 @@ function getAllFiles(dirPath, arrayOfFiles) {
   arrayOfFiles = arrayOfFiles || [];
 
   files.forEach(function (file) {
+    if (file === '.DS_Store') return;
     if (fs.statSync(path.join(dirPath, file)).isDirectory()) {
       arrayOfFiles = getAllFiles(path.join(dirPath, file), arrayOfFiles);
     } else {
@@ -64,7 +67,9 @@ function getAllFiles(dirPath, arrayOfFiles) {
   return arrayOfFiles;
 }
 
-const listRemoteObjects = async (prefixToList) => {
+const remoteObjectListPromiseMap = new Map();
+
+const fetchRemoteObjects = async (prefixToList) => {
   const remoteObjects = [];
   let continuationToken;
 
@@ -81,6 +86,8 @@ const listRemoteObjects = async (prefixToList) => {
         remoteObjects.push({
           key: item.name,
           lastModified: item.lastModified,
+          etag: String(item.etag ?? '').replace(/^"|"$/g, '').toLowerCase(),
+          size: Number.parseInt(item.size, 10) || 0,
         });
       }
     }
@@ -89,6 +96,13 @@ const listRemoteObjects = async (prefixToList) => {
   } while (continuationToken);
 
   return remoteObjects;
+};
+
+const listRemoteObjects = (prefixToList) => {
+  if (!remoteObjectListPromiseMap.has(prefixToList)) {
+    remoteObjectListPromiseMap.set(prefixToList, fetchRemoteObjects(prefixToList));
+  }
+  return remoteObjectListPromiseMap.get(prefixToList);
 };
 
 const listRemoteObjectKeys = async (prefixToList) =>
@@ -107,8 +121,9 @@ const deleteRemoteObjectKeys = async (keys) => {
 // Keep search index docs as single PUT objects so OSS ETag remains the file MD5.
 const MULTIPART_THRESHOLD = 64 * 1024 * 1024;
 const MAX_RETRIES = 3;
+const verboseSkips = process.env.PUBLISH_VERBOSE_SKIPS !== '0';
 const shouldUploadSeoPointAliases = process.env.SEO_UPLOAD_POINT_ALIASES !== '0';
-const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || '40', 10);
+const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || '100', 10);
 const seoPointTarget = 'oss';
 const targetSeoPointPrefix = `seo/points/${seoPointTarget}/`;
 const targetSeoPointHtmlPattern = new RegExp(`^${targetSeoPointPrefix}[0-9a-zA-Z]{7}\\.html$`);
@@ -156,16 +171,30 @@ const getRemoteObjectInfo = async (objectKey) => {
   }
 };
 
-const shouldSkipUpload = async (relativePath, objectKey, localPath, fileSize) => {
-  const [localEtag, remote] = await Promise.all([
-    calculateFileMd5(localPath),
-    getRemoteObjectInfo(objectKey),
-  ]);
+const shouldSkipUpload = async (
+  relativePath,
+  objectKey,
+  localPath,
+  fileSize,
+  remoteObjectInfoIndex,
+) => {
+  const remote = remoteObjectInfoIndex
+    ? remoteObjectInfoIndex.get(normalizeObjectKey(objectKey)) ?? null
+    : await getRemoteObjectInfo(objectKey);
 
   if (!remote) return false;
 
-  if (remote.size === fileSize && remote.etag === localEtag) {
-    console.log(`${relativePath} skipped (same ETag ${localEtag})`);
+  if (remote.size !== fileSize) {
+    console.log(
+      `${relativePath} changed, uploading (remote size=${remote.size}; local size=${fileSize})`
+    );
+    return false;
+  }
+
+  const localEtag = await calculateFileMd5(localPath);
+
+  if (remote.etag === localEtag) {
+    if (verboseSkips) console.log(`${relativePath} skipped (same ETag ${localEtag})`);
     return true;
   }
 
@@ -175,7 +204,7 @@ const shouldSkipUpload = async (relativePath, objectKey, localPath, fileSize) =>
   return false;
 };
 
-const upload = async (relativePath, retryCount = 0) => {
+const upload = async (relativePath, retryCount = 0, remoteObjectInfoIndex) => {
   const normalizedPath = relativePath.replace(/\\/g, '/');
   const cleanPrefix = prefix.replace(/^\/+/, '').replace(/\/+$/, '');
   const objectKey = cleanPrefix ? `${cleanPrefix}/${normalizedPath}` : normalizedPath;
@@ -192,7 +221,13 @@ const upload = async (relativePath, retryCount = 0) => {
     const stats = fs.statSync(localPath);
     const fileSize = stats.size;
 
-    if (await shouldSkipUpload(relativePath, objectKey, localPath, fileSize)) {
+    if (await shouldSkipUpload(
+      relativePath,
+      objectKey,
+      localPath,
+      fileSize,
+      remoteObjectInfoIndex,
+    )) {
       return;
     }
     
@@ -201,7 +236,7 @@ const upload = async (relativePath, retryCount = 0) => {
       await client.multipartUpload(objectKey, localPath, {
         headers,
         partSize: 2 * 1024 * 1024, // 2MB per part (reduce part quantity)
-        parallel: 40, // 40 parts upload concurrency
+        parallel: 100, // 100 parts upload concurrency
       });
       console.log(`${relativePath} uploaded (multipart, ${(fileSize / 1024 / 1024).toFixed(2)}MB)`);
     } else {
@@ -215,7 +250,7 @@ const upload = async (relativePath, retryCount = 0) => {
       const waitTime = 2000 * Math.pow(2, retryCount); // 2s, 4s, 8s
       console.warn(`Retry ${retryCount + 1}/${MAX_RETRIES} after ${waitTime}ms: ${relativePath}`);
       await new Promise(r => setTimeout(r, waitTime));
-      return upload(relativePath, retryCount + 1);
+      return upload(relativePath, retryCount + 1, remoteObjectInfoIndex);
     }
     console.error(`Upload failed after ${MAX_RETRIES} retries: ${relativePath}`, e?.name || e?.code || e?.message || e);
     throw e;
@@ -278,9 +313,37 @@ const uploadSeoPointAliases = async (localFiles) => {
   await Promise.all(workers);
 };
 
-const concurrency = 40; // limit concurrency
-let index = 0;
-let allFiles = [];
+const requestedConcurrency = Number.parseInt(process.env.OSS_UPLOAD_CONCURRENCY || '40', 10);
+const concurrency = Number.isFinite(requestedConcurrency) && requestedConcurrency > 0
+  ? requestedConcurrency
+  : 40;
+
+const getRemoteListRelativePrefix = (relativePath) => {
+  const segments = relativePath.replace(/\\/g, '/').split('/');
+  if (segments.length < 2) return null;
+  const depth = segments[0] === 'seo' && segments[1] === 'points' ? 3 : 1;
+  return `${segments.slice(0, depth).join('/')}/`;
+};
+
+const buildRemoteObjectInfoIndex = async (localFiles) => {
+  const startedAt = Date.now();
+  const relativePrefixes = new Set(
+    localFiles.map(getRemoteListRelativePrefix).filter(Boolean),
+  );
+  const objectGroups = await Promise.all(
+    [...relativePrefixes].map((relativePrefix) =>
+      listRemoteObjects(toPrefixedObjectKey(prefix, relativePrefix))
+    ),
+  );
+  const index = new Map();
+  objectGroups.flat().forEach((object) => {
+    index.set(normalizeObjectKey(object.key), object);
+  });
+  console.log(
+    `[publish-oss] loaded ${index.size} remote object records from ${relativePrefixes.size} prefixes in ${((Date.now() - startedAt) / 1000).toFixed(1)}s.`
+  );
+  return index;
+};
 
 const reconcileClipObjects = async (expectedClipFiles) => {
   const clipPrefix = toPrefixedObjectKey(prefix, 'clips/');
@@ -345,18 +408,34 @@ const reconcileAssetObjects = async (localFiles) => {
   );
 };
 
-const worker = async () => {
-  while (index < allFiles.length) {
-    const file = allFiles[index++];
-    await upload(file);
+const uploadExternalSeoOgImages = async () => {
+  if (process.env.SEO_SKIP_OG_UPLOAD === '1') {
+    console.log('[publish-oss] SEO OG image upload skipped by SEO_SKIP_OG_UPLOAD=1.');
+    return;
   }
+
+  const seoOgDir = path.resolve(process.cwd(), process.env.SEO_OG_OUTPUT_DIR || '../seo-og/oss');
+  if (!(await fs.pathExists(seoOgDir))) {
+    console.log('[publish-oss] SEO OG image upload skipped: external image directory does not exist.');
+    return;
+  }
+
+  execFileSync('node', ['./scripts/publish-seo-og-OSS.js'], {
+    stdio: 'inherit',
+    env: { ...process.env, SEO_OG_OUTPUT_DIR: seoOgDir },
+  });
 };
 
-const uploadFiles = async (files) => {
-  allFiles = files;
-  index = 0;
+const uploadFiles = async (files, remoteObjectInfoIndex) => {
+  let cursor = 0;
+  const worker = async () => {
+    while (cursor < files.length) {
+      const file = files[cursor++];
+      await upload(file, 0, remoteObjectInfoIndex);
+    }
+  };
   const workers = [];
-  for (let i = 0; i < concurrency; i++) workers.push(worker());
+  for (let i = 0; i < Math.min(concurrency, files.length); i++) workers.push(worker());
   await Promise.all(workers);
 };
 
@@ -375,8 +454,9 @@ const run = async () => {
   const shellFiles = htmlFiles.filter((file) => file.replace(/\\/g, '/') === 'index.html');
   const documentFiles = htmlFiles.filter((file) => !shellFiles.includes(file));
   const resourceFiles = localFiles.filter((file) => !htmlFiles.includes(file));
+  const remoteObjectInfoIndex = await buildRemoteObjectInfoIndex(localFiles);
 
-  await uploadFiles(resourceFiles);
+  await uploadFiles(resourceFiles, remoteObjectInfoIndex);
 
   if (clipIndex.generated) {
     await reconcileClipObjects(clipIndex.expectedClipFiles);
@@ -384,20 +464,22 @@ const run = async () => {
 
   await reconcileAssetObjects(localFiles);
 
-  await uploadFiles(documentFiles);
+  await uploadExternalSeoOgImages();
+
+  await uploadFiles(documentFiles, remoteObjectInfoIndex);
   if (shouldUploadSeoPointAliases) {
     await uploadSeoPointAliases(localFiles);
   } else {
     console.log('[publish-oss] SEO point alias upload skipped. Unset SEO_UPLOAD_POINT_ALIASES or set it to a value other than 0 to upload token/index.html aliases.');
   }
 
-  for (const shellFile of shellFiles) await upload(shellFile);
+  for (const shellFile of shellFiles) await upload(shellFile, 0, remoteObjectInfoIndex);
 };
 
 
 
 run().then(() => {
-  console.log('All files have been uploaded.');
+  console.log(`All files have been uploaded to OSS in ${((Date.now() - publishStartedAt) / 1000).toFixed(1)}s.`);
 }).catch((err) => {
   console.error('Error uploading files:', err);
   process.exitCode = 1;

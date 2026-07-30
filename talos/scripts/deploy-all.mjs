@@ -108,29 +108,13 @@ const results = await Promise.all([
   ]),
 ]);
 
-let seoOgResult = {
-  label: 'seo-og',
+let relinkResult = {
+  label: 'relink-worker',
   ok: false,
   skipped: true,
   error: new Error('skipped because a site pipeline failed'),
 };
 if (results.every((result) => result.ok)) {
-  seoOgResult = await runPipeline('seo-og', [
-    {
-      name: 'publish-oss',
-      command: 'pnpm',
-      args: ['publish:seo:og:oss'],
-    },
-  ]);
-}
-
-let relinkResult = {
-  label: 'relink-worker',
-  ok: false,
-  skipped: true,
-  error: new Error('skipped because site or SEO OG publishing failed'),
-};
-if (seoOgResult.ok) {
   relinkResult = await runPipeline('relink-worker', [
     {
       name: 'deploy',
@@ -140,7 +124,7 @@ if (seoOgResult.ok) {
   ]);
 }
 
-const allResults = [...results, seoOgResult, relinkResult];
+const allResults = [...results, relinkResult];
 
 console.log('\n[deploy:all] summary');
 for (const result of allResults) {

@@ -2,9 +2,15 @@ import { REGION_DICT } from '@/data/map';
 import { IMarkerData, MARKER_TYPE_DICT, loadRegionMarkers } from '@/data/marker';
 import LOGGER from '@/utils/log';
 import L from 'leaflet';
-import { emitPreviewLeave, getMarkerLayer, syncMarkerTierAttribute } from './markerRenderer';
+import {
+    emitPreviewLeave,
+    getMarkerLayer,
+    syncMarkerCollectedStacking,
+    syncMarkerTierAttribute,
+} from './markerRenderer';
 import styles from './marker.module.scss';
 import { ClusterLayer } from './clusterLayer';
+import { deduplicateMarkersByPositionAndType } from './markerDedup';
 import { useUiPrefsStore } from '@/store/uiPrefs';
 import { getActivePoints } from '@/store/userRecord';
 import { useMarkerStore } from '@/store/marker';
@@ -394,13 +400,15 @@ export class MarkerLayer {
 
         // 更新所有 marker 的 checked 类
         Object.entries(this.markerDict).forEach(([id, layer]) => {
-            const markerRoot = (layer as L.Marker).getElement?.() as HTMLElement | null;
+            if (!(layer instanceof L.Marker)) return;
+            const markerRoot = layer.getElement?.() as HTMLElement | null;
             if (!markerRoot) return;
             const inner = markerRoot.querySelector(`.${styles.markerInner}, .${styles.noFrameInner}`);
             if (!inner) return;
 
             const wasCollected = prevCollected.has(id);
             const isCollected = newCollected.has(id);
+            syncMarkerCollectedStacking(layer, isCollected);
 
             if (wasCollected !== isCollected) {
                 if (isCollected) {
@@ -470,7 +478,7 @@ export class MarkerLayer {
     importMarker(markers: IMarkerData[]) {
         const newMarkerIds: string[] = [];
 
-        markers.forEach((marker) => {
+        deduplicateMarkersByPositionAndType(markers).forEach((marker) => {
             if (this.markerDataDict[marker.id]) return;
 
             const typeKey = marker.type;

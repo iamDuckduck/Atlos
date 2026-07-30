@@ -103,13 +103,23 @@ const switchToMarkerLayer = (markerData: IMarkerData): void => {
     layerStore.setCurrentLayer(targetLayer);
 };
 
-const syncMarkerStateClasses = (inner: HTMLElement, markerId: string): void => {
+export const syncMarkerCollectedStacking = (layer: L.Marker, collected: boolean): void => {
+    const markerRoot = layer.getElement?.() as HTMLElement | null;
+    if (!markerRoot) return;
+    markerRoot.classList.toggle(styles.completedMarker, collected);
+    markerRoot.classList.toggle(styles.incompleteMarker, !collected);
+};
+
+const syncMarkerStateClasses = (layer: L.Marker, markerId: string): void => {
+    const inner = getMarkerInnerElement(layer);
+    if (!inner) return;
     const markerStore = useMarkerStore.getState();
     const selectedAfter = markerStore.selectedPoints.includes(markerId)
         || markerStore.temporarySelectedPoints.includes(markerId);
     const checkedAfter = getActivePoints().includes(markerId);
     inner.classList.toggle(styles.selected, selectedAfter);
     inner.classList.toggle(styles.checked, checkedAfter);
+    syncMarkerCollectedStacking(layer, checkedAfter);
 };
 
 const checkSingleMarker = (id: string): void => {
@@ -154,7 +164,7 @@ const handleMarkerClickState = (markerData: IMarkerData, layer: L.Marker, handle
         useMarkerStore.getState().setTemporarySelected(id, false);
     }
 
-    syncMarkerStateClasses(inner, markerData.id);
+    syncMarkerStateClasses(layer, markerData.id);
 };
 
 const emitPreviewEnter = (markerData: IMarkerData): void => {
@@ -203,12 +213,7 @@ const RENDERER_DICT: Record<
             syncMarkerTierAttribute(layer, markerData);
             // entry fade-in
             inner.classList.add(styles.appearing);
-            const { selectedPoints, temporarySelectedPoints } = useMarkerStore.getState();
-            const isSelected = selectedPoints.includes(markerData.id)
-                || temporarySelectedPoints.includes(markerData.id);
-            if (isSelected) inner.classList.add(styles.selected);
-            const collected = getActivePoints();
-            if (collected.includes(markerData.id)) inner.classList.add(styles.checked);
+            syncMarkerStateClasses(layer, markerData.id);
             // 等待动画完成后移除 appearing class
             const onAnimationEnd = () => {
                 inner.classList.remove(styles.appearing);
@@ -265,12 +270,7 @@ const RENDERER_DICT: Record<
             syncMarkerTierAttribute(layer, markerData);
             // entry fade-in
             inner.classList.add(styles.appearing);
-            const { selectedPoints, temporarySelectedPoints } = useMarkerStore.getState();
-            const isSelected = selectedPoints.includes(markerData.id)
-                || temporarySelectedPoints.includes(markerData.id);
-            if (isSelected) inner.classList.add(styles.selected);
-            const collected = getActivePoints();
-            if (collected.includes(markerData.id)) inner.classList.add(styles.checked);
+            syncMarkerStateClasses(layer, markerData.id);
             // 等待动画完成后移除 appearing class
             const onAnimationEnd = () => {
                 inner.classList.remove(styles.appearing);
@@ -321,6 +321,7 @@ export function getMarkerLayer(
             if (inner) {
                 syncMarkerTierAttribute(layer, markerData);
                 inner.classList.add(styles.checked);
+                syncMarkerCollectedStacking(layer, true);
             }
         }, 0);
     }

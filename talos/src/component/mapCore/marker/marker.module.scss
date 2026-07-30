@@ -11,6 +11,14 @@
 */
 
 /* state injected on Inner */
+.completedMarker {
+    z-index: 0 !important;
+}
+
+.incompleteMarker {
+    z-index: 1 !important;
+}
+
 .markerInner {
     opacity: 1;
     transition: opacity 0.15s ease-in;
@@ -86,7 +94,6 @@
     }
     &.checked {
         opacity: 0.3;
-        z-index: 0; // 已完成的点位 z-index 更低，不会遮挡未完成的点位
         .FrameImage { 
             &::before {
                 background-color: $primary-accent-4;

@@ -541,7 +541,7 @@ export async function transUGCComments(
             ...(options?.sourceLang ? { sourceLanguage: options.sourceLang } : {}),
             ...(options?.cachedOnly ? { cachedOnly: true } : {}),
         },
-        false,
+        !options?.cachedOnly,
     );
 
     return payload.items ?? [];

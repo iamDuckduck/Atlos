@@ -11,14 +11,56 @@ import {
     ProgressSyncError,
     registerProgressManifest,
     syncCloudProgress,
+    type ProgressSyncRequestPayload,
 } from '@/utils/progressSyncClient';
 
 const MAX_DIRTY_MS = 60_000;
 const COUNT_FLUSH_THRESHOLD = 10;
 const MODAL_EXIT_DURATION_MS = 325;
+const PENDING_MUTATION_STORAGE_PREFIX = 'talos-progress-pending-mutation:';
 
 type SyncReason = 'startup' | 'auto' | 'manual' | 'visibility' | 'online' | 'conflict';
 type ProgressBase = Pick<CloudProgress, 'revision' | 'markerIndexHash' | 'pointIds'>;
+type PendingProgressMutation = {
+    uid: string;
+    payload: ProgressSyncRequestPayload;
+    pointIds: string[];
+};
+
+const pendingMutationStorageKey = (uid: string): string => `${PENDING_MUTATION_STORAGE_PREFIX}${uid}`;
+
+const readPendingMutation = (uid: string): PendingProgressMutation | null => {
+    if (typeof window === 'undefined') return null;
+    try {
+        const parsed = JSON.parse(window.localStorage.getItem(pendingMutationStorageKey(uid)) ?? 'null') as Partial<PendingProgressMutation> | null;
+        if (
+            !parsed
+            || parsed.uid !== uid
+            || !parsed.payload
+            || typeof parsed.payload.clientMutationId !== 'string'
+            || typeof parsed.payload.markerIndexHash !== 'string'
+            || !Array.isArray(parsed.pointIds)
+        ) {
+            return null;
+        }
+        return parsed as PendingProgressMutation;
+    } catch {
+        return null;
+    }
+};
+
+const persistPendingMutation = (uid: string, pending: PendingProgressMutation | null): void => {
+    if (typeof window === 'undefined') return;
+    try {
+        if (pending) {
+            window.localStorage.setItem(pendingMutationStorageKey(pending.uid), JSON.stringify(pending));
+        } else {
+            window.localStorage.removeItem(pendingMutationStorageKey(uid));
+        }
+    } catch {
+        // The in-memory copy still provides idempotency for the current page session.
+    }
+};
 
 const normalizePointIds = (pointIds: string[]): string[] =>
     [...new Set(pointIds.map((id) => String(id)).filter(Boolean))];
@@ -107,6 +149,7 @@ const ProgressSyncHost = () => {
     const manifestRef = useRef<ProgressManifestPayload | null>(null);
     const knownPointIdsRef = useRef<Set<string>>(new Set());
     const sessionUidRef = useRef(sessionUser?.uid ?? null);
+    const pendingMutationRef = useRef<PendingProgressMutation | null>(null);
     const [renderedConflict, setRenderedConflict] = useState<ProgressConflictState | null>(conflict);
     const [conflictOpen, setConflictOpen] = useState(Boolean(conflict));
 
@@ -115,7 +158,9 @@ const ProgressSyncHost = () => {
     }, [baseline]);
 
     useEffect(() => {
-        sessionUidRef.current = sessionUser?.uid ?? null;
+        const uid = sessionUser?.uid ?? null;
+        sessionUidRef.current = uid;
+        pendingMutationRef.current = uid ? readPendingMutation(uid) : null;
     }, [sessionUser?.uid]);
 
     useEffect(() => {
@@ -159,6 +204,22 @@ const ProgressSyncHost = () => {
             manifestRef.current = manifest;
         }
         return manifest;
+    }, []);
+
+    const withManifestRetry = useCallback(async <T,>(
+        manifest: ProgressManifestPayload,
+        operation: () => Promise<T>,
+    ): Promise<T> => {
+        try {
+            return await operation();
+        } catch (error) {
+            if (!(error instanceof ProgressSyncError) || error.code !== 'PROGRESS_MANIFEST_NOT_REGISTERED') {
+                throw error;
+            }
+            await registerProgressManifest(manifest);
+            manifestRef.current = manifest;
+            return operation();
+        }
     }, []);
 
     const applyRemotePoints = useCallback((progress: CloudProgress) => {
@@ -216,9 +277,35 @@ const ProgressSyncHost = () => {
             const localPointIds = normalizePointIds(options.pointIds ?? localState.activePoints);
             const { known: activePoints, unknown: retainedLocalPointIds } = splitByKnownPointIds(localPointIds, knownPointIds);
             let base = options.forceBase ?? baselineRef.current;
+            const pendingMutation = pendingMutationRef.current;
+
+            if (pendingMutation && pendingMutation.uid === sessionUidRef.current) {
+                if (pendingMutation.payload.markerIndexHash === manifest.markerIndexHash) {
+                    const pendingResponse = await withManifestRetry(
+                        manifest,
+                        () => syncCloudProgress(pendingMutation.payload),
+                    );
+                    const acknowledgedProgress = {
+                        ...pendingResponse.progress,
+                        pointIds: pendingMutation.pointIds,
+                    };
+                    pendingMutationRef.current = null;
+                    persistPendingMutation(pendingMutation.uid, null);
+                    setBaseline(acknowledgedProgress);
+                    baselineRef.current = acknowledgedProgress;
+                    base = acknowledgedProgress;
+                } else {
+                    pendingMutationRef.current = null;
+                    persistPendingMutation(pendingMutation.uid, null);
+                    base = null;
+                }
+            }
 
             if (!base) {
-                const { progress: remoteProgress } = await fetchCloudProgress();
+                const { progress: remoteProgress } = await withManifestRetry(
+                    manifest,
+                    () => fetchCloudProgress(manifest.markerIndexHash),
+                );
                 const remote = { ...remoteProgress, pointIds: splitByKnownPointIds(remoteProgress.pointIds, knownPointIds).known };
                 if (!isRemoteEmpty(remote) && !arePointSetsEqual(remote.pointIds, activePoints)) {
                     openConflict(activePoints, remote);
@@ -254,15 +341,27 @@ const ProgressSyncHost = () => {
                 return;
             }
 
-            const response = await syncCloudProgress({
+            const syncPayload: ProgressSyncRequestPayload = {
                 baseRevision: base.revision,
                 setPointIds,
                 clearPointIds: patch.clearPointIds,
                 clientMutationId: buildMutationId(),
+                markerIndexHash: manifest.markerIndexHash,
                 updatedAt: options.updatedAt ?? localState.updatedAt,
-            }, {
-                keepalive: options.keepalive,
-            });
+            };
+            const pending: PendingProgressMutation = {
+                uid: sessionUidRef.current,
+                payload: syncPayload,
+                pointIds: activePoints,
+            };
+            pendingMutationRef.current = pending;
+            persistPendingMutation(pending.uid, pending);
+            const response = await withManifestRetry(
+                manifest,
+                () => syncCloudProgress(syncPayload, { keepalive: options.keepalive }),
+            );
+            pendingMutationRef.current = null;
+            persistPendingMutation(pending.uid, null);
 
             const nextProgress = {
                 ...response.progress,
@@ -278,11 +377,19 @@ const ProgressSyncHost = () => {
             void reason;
         } catch (error) {
             if (error instanceof ProgressSyncError && error.status === 409 && error.current) {
+                const pendingUid = pendingMutationRef.current?.uid;
+                pendingMutationRef.current = null;
+                if (pendingUid) persistPendingMutation(pendingUid, null);
                 openConflict(
                     splitByKnownPointIds(useUserRecordStore.getState().activePoints, knownPointIdsRef.current).known,
                     error.current,
                 );
                 return;
+            }
+            if (error instanceof ProgressSyncError && error.code === 'IDEMPOTENCY_KEY_REUSED') {
+                const pendingUid = pendingMutationRef.current?.uid;
+                pendingMutationRef.current = null;
+                if (pendingUid) persistPendingMutation(pendingUid, null);
             }
 
             setStatus(typeof navigator !== 'undefined' && navigator.onLine === false ? 'offline' : 'error');
@@ -290,7 +397,7 @@ const ProgressSyncHost = () => {
         } finally {
             inFlightRef.current = false;
         }
-    }, [clearTimers, ensureManifest, openConflict, setBaseline, setCounts, setError, setStatus]);
+    }, [clearTimers, ensureManifest, openConflict, setBaseline, setCounts, setError, setStatus, withManifestRetry]);
 
     const checkRemoteAndReconcile = useCallback(async () => {
         if (!sessionUidRef.current) return;
@@ -300,8 +407,16 @@ const ProgressSyncHost = () => {
         setError(null);
 
         try {
-            await ensureManifest();
-            const { progress: remoteProgress } = await fetchCloudProgress();
+            if (pendingMutationRef.current?.uid === sessionUidRef.current) {
+                inFlightRef.current = false;
+                await syncNow('startup');
+                return;
+            }
+            const manifest = await ensureManifest();
+            const { progress: remoteProgress } = await withManifestRetry(
+                manifest,
+                () => fetchCloudProgress(manifest.markerIndexHash),
+            );
             const knownPointIds = knownPointIdsRef.current;
             const remote = { ...remoteProgress, pointIds: splitByKnownPointIds(remoteProgress.pointIds, knownPointIds).known };
             const localStatePointIds = normalizePointIds(useUserRecordStore.getState().activePoints);
@@ -362,7 +477,7 @@ const ProgressSyncHost = () => {
         } finally {
             inFlightRef.current = false;
         }
-    }, [applyRemotePoints, ensureManifest, openConflict, setBaseline, setCounts, setError, setStatus, syncNow]);
+    }, [applyRemotePoints, ensureManifest, openConflict, setBaseline, setCounts, setError, setStatus, syncNow, withManifestRetry]);
 
     const scheduleSync = useCallback((changedPoints: number) => {
         if (!sessionUidRef.current) return;

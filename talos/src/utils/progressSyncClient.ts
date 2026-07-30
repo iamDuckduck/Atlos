@@ -6,6 +6,15 @@ const PROGRESS_API_BASE = `${getAuthBase()}/progress/v1`;
 
 type CloudProgressMeta = Pick<CloudProgress, 'revision' | 'markerIndexHash' | 'updatedAt'>;
 
+export type ProgressSyncRequestPayload = {
+    baseRevision: string;
+    clientMutationId: string;
+    markerIndexHash: string;
+    setPointIds: string[];
+    clearPointIds: string[];
+    updatedAt: number;
+};
+
 type ApiErrorPayload = {
     code?: string;
     message?: string;
@@ -76,8 +85,10 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
     return response.json() as Promise<T>;
 }
 
-export const fetchCloudProgress = (): Promise<{ progress: CloudProgress }> =>
-    requestJson('/state');
+export const fetchCloudProgress = (
+    markerIndexHash: string,
+): Promise<{ progress: CloudProgress }> =>
+    requestJson(`/state?markerIndexHash=${encodeURIComponent(markerIndexHash)}`);
 
 export const registerProgressManifest = (
     payload: ProgressManifestPayload,
@@ -88,13 +99,7 @@ export const registerProgressManifest = (
     });
 
 export const syncCloudProgress = (
-    payload: {
-        baseRevision: string;
-        clientMutationId: string;
-        setPointIds: string[];
-        clearPointIds: string[];
-        updatedAt: number;
-    },
+    payload: ProgressSyncRequestPayload,
     options: { keepalive?: boolean } = {},
 ): Promise<{ ok: true; progress: CloudProgressMeta; unchanged?: boolean; idempotent?: boolean }> =>
     requestJson('/sync', {

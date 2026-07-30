@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "Keyboard Shortcuts",
       "hint": "Available shortcuts for quick actions.",
+      "toggleUI": "Show/Hide UI",
+      "quickSearch": "Quick Search",
       "exportData": "Export Data",
       "importData": "Import Data",
       "undo": "Undo",

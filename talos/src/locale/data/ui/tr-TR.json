@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "Klavye Kısayolları",
       "hint": "Hızlı işlemler için kullanılabilen kısayollar.",
+      "toggleUI": "Arayüzü göster/gizle",
+      "quickSearch": "Hızlı arama",
       "exportData": "Verileri Dışa Aktar",
       "importData": "Verileri İçe Aktar",
       "undo": "Geri Al",

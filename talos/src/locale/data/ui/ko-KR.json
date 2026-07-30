@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "키보드 단축키",
       "hint": "빠른 작업을 위한 사용 가능한 단축키입니다.",
+      "toggleUI": "UI 표시/숨기기",
+      "quickSearch": "빠른 검색",
       "exportData": "데이터 내보내기",
       "importData": "데이터 가져오기",
       "undo": "실행 취소",

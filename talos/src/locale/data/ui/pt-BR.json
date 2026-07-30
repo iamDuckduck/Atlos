@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "Atalhos de Teclado",
       "hint": "Atalhos disponíveis para ações rápidas.",
+      "toggleUI": "Mostrar/ocultar interface",
+      "quickSearch": "Busca rápida",
       "exportData": "Exportar Dados",
       "importData": "Importar Dados",
       "undo": "Desfazer",

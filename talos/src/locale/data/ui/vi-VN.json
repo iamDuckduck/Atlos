@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "Phím tắt bàn phím",
       "hint": "Các phím tắt có sẵn cho thao tác nhanh.",
+      "toggleUI": "Hiện/ẩn giao diện",
+      "quickSearch": "Tìm kiếm nhanh",
       "exportData": "Xuất dữ liệu",
       "importData": "Nhập dữ liệu",
       "undo": "Hoàn tác",

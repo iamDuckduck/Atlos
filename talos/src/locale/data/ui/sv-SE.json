@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "Tangentbordsgenvägar",
       "hint": "Tillgängliga genvägar för snabba åtgärder.",
+      "toggleUI": "Visa/dölj gränssnittet",
+      "quickSearch": "Snabbsökning",
       "exportData": "Exportera data",
       "importData": "Importera data",
       "undo": "Ångra",

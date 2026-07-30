@@ -336,6 +336,7 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
   return (
     <div
       className={`${mobileStyles.sidebarContainer} ${!visible ? mobileStyles.hidden : ''}`}
+      data-sidebar-layout="mobile"
       aria-hidden={!visible}
       inert={!visible}
       ref={rootRef}
@@ -358,7 +359,11 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
         style={{ bottom: 0 }}
         snapToIndex={drawerSnapIndex}
       >
-        <div className={`${mobileStyles.contentWrapper} ${hasSearchQuery ? mobileStyles.searchMode : ''}`} ref={contentRef}>
+        <div
+          className={`${mobileStyles.contentWrapper} ${hasSearchQuery ? mobileStyles.searchMode : ''}`}
+          data-sidebar-scroll="true"
+          ref={contentRef}
+        >
           <div className={mobileStyles.sidebarContent}>
             {/* Top row: Search + FilterList with draggable divider */}
             <div className={mobileStyles.topRow} ref={topRowRef}>

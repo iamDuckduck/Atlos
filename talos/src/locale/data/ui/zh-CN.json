@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "快捷键",
       "hint": "可用的键盘快捷操作。",
+      "toggleUI": "显示/隐藏界面",
+      "quickSearch": "快速查找",
       "exportData": "导出数据",
       "importData": "导入数据",
       "undo": "撤销",

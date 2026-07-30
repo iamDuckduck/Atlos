@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "Tastenkürzel",
       "hint": "Verfügbare Tastenkürzel für schnelle Aktionen.",
+      "toggleUI": "Oberfläche ein-/ausblenden",
+      "quickSearch": "Schnellsuche",
       "exportData": "Daten exportieren",
       "importData": "Daten importieren",
       "undo": "Rückgängig",

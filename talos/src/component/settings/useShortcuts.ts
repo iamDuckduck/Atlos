@@ -15,6 +15,7 @@ import { getShortcutConfig } from './shortcuts';
 import { replacePointProgressFromExternal, useHistoryStore } from '@/store/history';
 import { useMarkerStore } from '@/store/marker';
 import { useUserRecordStore } from '@/store/userRecord';
+import { useUiPrefsStore } from '@/store/uiPrefs';
 import { exportMarkerData, importMarkerData } from '@/utils/storage';
 import L from 'leaflet';
 /** Build a map of id → hotkey string from config (only entries with a hotkey) */
@@ -23,12 +24,49 @@ function hotkeyFor(id: string): string {
     return cfg?.hotkey ?? '';
 }
 
-export function useKeyboardShortcuts(mapInstance: L.Map | undefined, shortcutDocument: Document) {
+interface UIShortcutActions {
+    showUI: () => void;
+}
+
+export function useKeyboardShortcuts(
+    mapInstance: L.Map | undefined,
+    shortcutDocument: Document,
+    { showUI }: UIShortcutActions,
+) {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const hotkeyOptions = useMemo<Options>(() => ({
         document: shortcutDocument,
         enableOnFormTags: false,
     }), [shortcutDocument]);
+
+    // ── Quick search ──
+    useHotkeys(hotkeyFor('quickSearch'), (e) => {
+        e.preventDefault();
+        showUI();
+
+        const sidebar = shortcutDocument.querySelector<HTMLElement>('[data-sidebar-layout]');
+        const prefs = useUiPrefsStore.getState();
+        if (sidebar?.dataset.sidebarLayout === 'desktop' && !prefs.sidebarOpen) {
+            prefs.setSidebarOpen(true);
+        } else if (sidebar?.dataset.sidebarLayout === 'mobile') {
+            const snapIndex = prefs.mobileDrawerSnapIndex ?? 0;
+            if (snapIndex < 1) prefs.setMobileDrawerSnapIndex(1);
+        }
+
+        const focusSearch = () => {
+            const scroller = shortcutDocument.querySelector<HTMLElement>('[data-sidebar-scroll="true"]');
+            if (scroller && scroller.scrollTop > 1) {
+                scroller.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            shortcutDocument
+                .querySelector<HTMLInputElement>('[data-search-input="true"]')
+                ?.focus({ preventScroll: true });
+        };
+
+        const requestFrame = shortcutDocument.defaultView?.requestAnimationFrame;
+        if (requestFrame) requestFrame(focusSearch);
+        else focusSearch();
+    }, { ...hotkeyOptions, enableOnFormTags: true }, [shortcutDocument, showUI]);
 
     // ── Export ──
     const handleExport = useCallback(() => {

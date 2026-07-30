@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "Skróty klawiszowe",
       "hint": "Dostępne skróty do szybkich akcji.",
+      "toggleUI": "Pokaż/ukryj interfejs",
+      "quickSearch": "Szybkie wyszukiwanie",
       "exportData": "Eksportuj dane",
       "importData": "Importuj dane",
       "undo": "Cofnij",

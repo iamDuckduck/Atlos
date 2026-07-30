@@ -219,6 +219,7 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
     return (
         <div
             className={`${styles.sidebarContainer} ${isOpen ? styles.open : ''} ${!visible ? styles.hidden : ''}`}
+            data-sidebar-layout="desktop"
             aria-hidden={!visible}
             inert={!visible}
         >
@@ -248,7 +249,7 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                         draggable={'false'}
                     />
                 </div>
-                <div className={styles.sidebarContent} data-sidescroll="true">
+                <div className={styles.sidebarContent} data-sidescroll="true" data-sidebar-scroll="true">
                     <SearchDesktop />
                     <div className={styles.filters}>
                         <MarkFilterDragProvider>

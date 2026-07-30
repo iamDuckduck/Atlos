@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "Pintasan Papan Kekunci",
       "hint": "Pintasan tersedia untuk tindakan pantas.",
+      "toggleUI": "Tunjuk/Sembunyikan Antara Muka",
+      "quickSearch": "Carian Pantas",
       "exportData": "Eksport Data",
       "importData": "Import Data",
       "undo": "Buat Asal",

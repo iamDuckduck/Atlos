@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "Scorciatoie da tastiera",
       "hint": "Scorciatoie disponibili per azioni rapide.",
+      "toggleUI": "Mostra/nascondi interfaccia",
+      "quickSearch": "Ricerca rapida",
       "exportData": "Esporta dati",
       "importData": "Importa dati",
       "undo": "Annulla",

@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "快捷鍵",
       "hint": "可用的鍵盤快捷操作。",
+      "toggleUI": "顯示/隱藏介面",
+      "quickSearch": "快速查找",
       "exportData": "匯出資料",
       "importData": "匯入資料",
       "undo": "復原",

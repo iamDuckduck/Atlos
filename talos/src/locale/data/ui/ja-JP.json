@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "キーボードショートカット",
       "hint": "クイックアクション用の利用可能なショートカット。",
+      "toggleUI": "UIの表示/非表示",
+      "quickSearch": "クイック検索",
       "exportData": "データをエクスポート",
       "importData": "データをインポート",
       "undo": "元に戻す",

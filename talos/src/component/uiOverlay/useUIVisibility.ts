@@ -20,6 +20,10 @@ export const useUIVisibility = () => {
         if (viewport.isPipUiTooSmall) return;
         setUiVisible((visible) => !visible);
     }, [viewport.isPipUiTooSmall]);
+    const showUI = useCallback(() => {
+        if (viewport.isPipUiTooSmall) return;
+        setUiVisible(true);
+    }, [viewport.isPipUiTooSmall]);
 
     useEffect(() => {
         let activeDocument: Document | null = null;
@@ -71,6 +75,7 @@ export const useUIVisibility = () => {
     return {
         shortcutDocument,
         showVisibilityControl: !viewport.isPipUiTooSmall,
+        showUI,
         uiVisible,
         toggleUI,
     };

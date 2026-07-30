@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "Pintasan Keyboard",
       "hint": "Pintasan yang tersedia untuk tindakan cepat.",
+      "toggleUI": "Tampilkan/Sembunyikan Antarmuka",
+      "quickSearch": "Pencarian Cepat",
       "exportData": "Ekspor Data",
       "importData": "Impor Data",
       "undo": "Batalkan",

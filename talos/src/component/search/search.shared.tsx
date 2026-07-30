@@ -143,6 +143,7 @@ const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%', mobile = fa
                         </div>
                         <input
                             type='text'
+                            data-search-input="true"
                             className={styles.searchInput}
                             placeholder={t('search.placeholder')}
                             value={searchString}

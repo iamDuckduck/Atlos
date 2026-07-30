@@ -183,6 +183,8 @@
     "shortcuts": {
       "title": "Raccourcis clavier",
       "hint": "Raccourcis disponibles pour les actions rapides.",
+      "toggleUI": "Afficher/masquer l’interface",
+      "quickSearch": "Recherche rapide",
       "exportData": "Exporter les données",
       "importData": "Importer les données",
       "undo": "Annuler",

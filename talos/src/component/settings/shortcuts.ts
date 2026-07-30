@@ -34,7 +34,7 @@ export interface ShortcutEntry {
     /** react-hotkeys-hook combo string (resolved at runtime) */
     hotkey: string;
     /** Grouping in the settings panel */
-    group: 'data' | 'history' | 'map';
+    group: 'data' | 'history' | 'map' | 'ui';
 }
 
 // ─── Helpers ─────────────────────────────────────────────────
@@ -53,6 +53,20 @@ export function getShortcutConfig(): ShortcutEntry[] {
     const p = pre();
 
     _cache = [
+        // ── UI ──
+        {
+            id: 'toggleUI',
+            keys: [{ label: m, variant: 'mod' }, { label: 'H' }],
+            hotkey: `${p}+h`,
+            group: 'ui',
+        },
+        {
+            id: 'quickSearch',
+            keys: [{ label: m, variant: 'mod' }, { label: 'K' }],
+            hotkey: `${p}+k`,
+            group: 'ui',
+        },
+
         // ── Data ──
         {
             id: 'exportData',

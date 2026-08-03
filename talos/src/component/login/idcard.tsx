@@ -4,7 +4,11 @@ import { normalizeAvatarIndex } from './avatarConfig';
 import { useIdCardHoverAngle } from './useIdCardHoverAngle';
 import { useIdCardProfileViewModel } from './useIdCardProfileViewModel';
 import { Access } from './access';
-import { OEM_AUTH_OPEN_EVENT, type OemAuthOpenDetail } from './authEvents';
+import {
+  OEM_AUTH_OPEN_EVENT,
+  notifyOemAuthModalDismissed,
+  type OemAuthOpenDetail,
+} from './authEvents';
 import IdCardView from './idcardView';
 import ProfileModal from './profile/profile';
 import styles from './idcard.module.scss';
@@ -124,6 +128,7 @@ const IDCard = ({ username, id }: { username?: string; id?: string }) => {
       <Access
         open={open}
         setOpen={setOpen}
+        onDismiss={notifyOemAuthModalDismissed}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         resetToken={resetToken}

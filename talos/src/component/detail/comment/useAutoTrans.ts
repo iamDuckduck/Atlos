@@ -1,13 +1,18 @@
 import { useEffect, useRef, type Dispatch, type SetStateAction } from 'react';
+import { useAuthStore } from '@/store/auth';
 import { getTargetLang } from '@/utils/lang';
-import { transUGCComments, type UGCComment } from '@/utils/ugcClient';
+import type { UGCComment } from '@/utils/ugcClient';
 import { flatList, isVisible } from './commentsTree';
+import {
+    getCommentTranslationKey,
+    requestCommentTranslations,
+} from './translationCoordinator';
 
 const AUTO_TRANS_TARGET_LANGS = new Set(['zh-cn', 'en-us', 'ru-ru', 'ja-jp', 'ko-kr']);
 const ZH_HANT_AUTO_DISPLAY_TARGET_LANG = 'zh-cn';
 
 type AutoTransRequest = {
-    cachedOnly: boolean;
+    cacheOnly: boolean;
     skipChineseSource: boolean;
     targetLang: string;
 };
@@ -27,14 +32,14 @@ const getAutoTransRequest = (locale: string): AutoTransRequest | null => {
     const targetLang = getTargetLang(locale);
     if (isTraditionalChineseTarget(targetLang)) {
         return {
-            cachedOnly: true,
+            cacheOnly: true,
             skipChineseSource: true,
             targetLang: ZH_HANT_AUTO_DISPLAY_TARGET_LANG,
         };
     }
     if (!AUTO_TRANS_TARGET_LANGS.has(targetLang)) return null;
     return {
-        cachedOnly: false,
+        cacheOnly: false,
         skipChineseSource: false,
         targetLang,
     };
@@ -42,8 +47,9 @@ const getAutoTransRequest = (locale: string): AutoTransRequest | null => {
 
 const applyAutoTrans = (
     comments: UGCComment[],
-    trans: Awaited<ReturnType<typeof transUGCComments>>,
+    trans: Awaited<ReturnType<typeof requestCommentTranslations>>,
     request: AutoTransRequest,
+    requestedKeyById: Map<string, string>,
 ): UGCComment[] => {
     const transById = new Map(
         trans
@@ -55,14 +61,31 @@ const applyAutoTrans = (
     );
     if (transById.size === 0) return comments;
 
-    const applyTo = (items: UGCComment[]): UGCComment[] => (
-        items.map((comment) => {
+    const applyTo = (items: UGCComment[]): UGCComment[] => {
+        let changed = false;
+        const nextItems = items.map((comment) => {
             const transItem = transById.get(comment.id);
             const replies = comment.replies.length > 0 ? applyTo(comment.replies) : comment.replies;
-            if (!transItem) {
-                return replies === comment.replies ? comment : { ...comment, replies };
+            const requestedKey = requestedKeyById.get(comment.id);
+            if (
+                !transItem
+                || !requestedKey
+                || getCommentTranslationKey(comment, request.targetLang) !== requestedKey
+            ) {
+                if (replies === comment.replies) return comment;
+                changed = true;
+                return { ...comment, replies };
             }
 
+            const translationChanged = (
+                comment.translatedContent !== transItem.translatedContent
+                || comment.translationSourceLanguage !== transItem.sourceLanguage
+                || comment.translationTargetLanguage !== transItem.targetLanguage
+                || comment.translationHidden !== false
+                || comment.translationStatus !== undefined
+            );
+            if (!translationChanged && replies === comment.replies) return comment;
+            changed = true;
             return {
                 ...comment,
                 replies,
@@ -72,8 +95,9 @@ const applyAutoTrans = (
                 translationHidden: false,
                 translationStatus: undefined,
             };
-        })
-    );
+        });
+        return changed ? nextItems : items;
+    };
 
     return applyTo(comments);
 };
@@ -84,9 +108,9 @@ const clearSkippedAutoTrans = (
 ): UGCComment[] => {
     if (!request.skipChineseSource) return comments;
 
-    let changed = false;
-    const applyTo = (items: UGCComment[]): UGCComment[] => (
-        items.map((comment) => {
+    const applyTo = (items: UGCComment[]): UGCComment[] => {
+        let changed = false;
+        const nextItems = items.map((comment) => {
             const replies = comment.replies.length > 0 ? applyTo(comment.replies) : comment.replies;
             const shouldClear = (
                 comment.translationTargetLanguage?.toLowerCase() === request.targetLang
@@ -108,11 +132,11 @@ const clearSkippedAutoTrans = (
                 translationHidden: undefined,
                 translationStatus: undefined,
             };
-        })
-    );
+        });
+        return changed ? nextItems : items;
+    };
 
-    const nextComments = applyTo(comments);
-    return changed ? nextComments : comments;
+    return applyTo(comments);
 };
 
 export const useAutoTrans = ({
@@ -128,6 +152,7 @@ export const useAutoTrans = ({
     scopeKey: string;
     setComments: Dispatch<SetStateAction<UGCComment[]>>;
 }) => {
+    const isAuthenticated = useAuthStore((state) => Boolean(state.sessionUser));
     const requestRef = useRef('');
 
     useEffect(() => {
@@ -138,25 +163,33 @@ export const useAutoTrans = ({
 
         setComments((current) => clearSkippedAutoTrans(current, request));
 
-        const { cachedOnly, targetLang } = request;
-        const commentIds = flatList(comments)
+        const { cacheOnly, targetLang } = request;
+        const candidates = flatList(comments)
             .filter((comment) => isVisible(comment.status))
             .filter((comment) => !(
                 comment.translatedContent
                 && comment.translationTargetLanguage?.toLowerCase() === targetLang
-            ))
-            .map((comment) => comment.id);
-        if (commentIds.length === 0) return;
+            ));
+        if (candidates.length === 0) return;
 
-        const requestKey = `${scopeKey}:${targetLang}:${cachedOnly ? 'cache' : 'translate'}:${commentIds.join(',')}`;
+        const allowLive = isAuthenticated && !cacheOnly;
+        const requestedKeyById = new Map(
+            candidates.map((comment) => (
+                [comment.id, getCommentTranslationKey(comment, targetLang)] as const
+            )),
+        );
+        const requestKey = `${scopeKey}:${allowLive ? 'live' : 'cache'}:${[...requestedKeyById.values()].join(',')}`;
         if (requestRef.current === requestKey) return;
         requestRef.current = requestKey;
 
         let disposed = false;
-        void transUGCComments(commentIds, targetLang, { cachedOnly })
+        void requestCommentTranslations(candidates, targetLang, {
+            allowLive,
+            liveAttemptPolicy: 'once',
+        })
             .then((items) => {
                 if (disposed) return;
-                setComments((current) => applyAutoTrans(current, items, request));
+                setComments((current) => applyAutoTrans(current, items, request, requestedKeyById));
             })
             .catch(() => {
                 // Auto translation is opportunistic; keep original comments on failure.
@@ -165,5 +198,5 @@ export const useAutoTrans = ({
         return () => {
             disposed = true;
         };
-    }, [comments, enabled, locale, scopeKey, setComments]);
+    }, [comments, enabled, isAuthenticated, locale, scopeKey, setComments]);
 };

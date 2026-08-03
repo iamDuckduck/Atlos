@@ -36,6 +36,7 @@ import styles from './access.module.scss';
 interface AccessProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  onDismiss?: () => void;
   activeTab: AuthMode;
   setActiveTab: (mode: AuthMode) => void;
   resetToken?: string | null;
@@ -107,6 +108,7 @@ const createSubmitSignature = (payload: { mode: AuthMode; values: AuthValues }):
 const Access = ({
   open,
   setOpen,
+  onDismiss,
   activeTab,
   setActiveTab,
   resetToken,
@@ -683,7 +685,10 @@ const Access = ({
       size={modalSize}
       title={modalTitle}
       icon={modalIcon}
-      onClose={() => setOpen(false)}
+      onClose={() => {
+        onDismiss?.();
+        setOpen(false);
+      }}
       onChange={setOpen}
       iconScale={0.8}
     >

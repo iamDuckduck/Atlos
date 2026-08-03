@@ -357,8 +357,11 @@ const Comments = ({ point, pointName, active = true }: Props) => {
     });
     const handleTranslate = useTrans({
         locale,
+        comments,
         busyIds: actionPendingIds,
+        isAuthenticated,
         patch: patchComment,
+        scopeKey: point.id,
         setBusy: setCommentActionPending,
         setComments,
         setReply: setReplyTarget,

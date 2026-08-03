@@ -743,6 +743,8 @@ export const useAdvancedSearch = (query: string, locale: string) => {
     const activeTokenRef = useRef(0);
     const lastFetchKeyRef = useRef('');
     const lastDocsRef = useRef<SearchHitDoc[]>([]);
+    const tGameRef = useRef(tGame);
+    tGameRef.current = tGame;
 
     const normalizedQuery = useMemo(() => normalizeText(query), [query]);
     const normalizedSearchQuery = normalizedQuery;
@@ -751,8 +753,8 @@ export const useAdvancedSearch = (query: string, locale: string) => {
         let timeoutId = 0;
         const run = async () => {
             if (!normalizedSearchQuery) {
-                setResults([]);
-                setLoading(false);
+                setResults((current) => current.length === 0 ? current : []);
+                setLoading((current) => current ? false : current);
                 lastFetchKeyRef.current = '';
                 lastDocsRef.current = [];
                 return;
@@ -765,7 +767,7 @@ export const useAdvancedSearch = (query: string, locale: string) => {
             const fetchKey = `${docsLocale}@@${normalizedSearchQuery}`;
 
             if (fetchKey === lastFetchKeyRef.current && lastDocsRef.current.length > 0) {
-                setResults(toGroups(lastDocsRef.current, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGame));
+                setResults(toGroups(lastDocsRef.current, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGameRef.current));
                 setLoading(false);
                 return;
             }
@@ -854,7 +856,7 @@ export const useAdvancedSearch = (query: string, locale: string) => {
                         if (payload && payload.hits.length > 0) {
                             lastFetchKeyRef.current = fetchKey;
                             lastDocsRef.current = payload.hits;
-                            setResults(toGroups(payload.hits, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGame));
+                            setResults(toGroups(payload.hits, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGameRef.current));
                             setLoading(false);
                             return;
                         }
@@ -869,7 +871,7 @@ export const useAdvancedSearch = (query: string, locale: string) => {
                 if (activeTokenRef.current !== token) return;
                 lastFetchKeyRef.current = fetchKey;
                 lastDocsRef.current = localDocs;
-                setResults(toGroups(localDocs, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGame));
+                setResults(toGroups(localDocs, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGameRef.current));
                 setLoading(false);
                 return;
             }
@@ -879,7 +881,7 @@ export const useAdvancedSearch = (query: string, locale: string) => {
 
             lastFetchKeyRef.current = fetchKey;
             lastDocsRef.current = finalDocs;
-            setResults(toGroups(finalDocs, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGame));
+            setResults(toGroups(finalDocs, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGameRef.current));
             setLoading(false);
         };
 
@@ -890,7 +892,7 @@ export const useAdvancedSearch = (query: string, locale: string) => {
         return () => {
             window.clearTimeout(timeoutId);
         };
-    }, [normalizedSearchQuery, locale, currentRegionKey, currentSubregionKey, tGame]);
+    }, [normalizedSearchQuery, locale, currentRegionKey, currentSubregionKey]);
 
     return {
         results,

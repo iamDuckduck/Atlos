@@ -51,7 +51,7 @@ const HeadItem = ({
             data-guide={guideKey}
         >
             <div className={styles.headbarIcon}>{Icon && <Icon />}</div>
-            {badge && <span className={styles.badge} />}
+            {badge && <span className={styles.badge} data-badge={guideKey} />}
         </button>
     );
 
@@ -73,7 +73,7 @@ const HeadBar = ({ children, compact = false }: { children: React.ReactNode; com
     const displayedChildren = React.Children.map(children, (child) => {
         if (!React.isValidElement<HeadItemProps>(child)) return child;
         return React.cloneElement(child, {
-            compactHidden: compact && child.props.guideKey !== 'headbar-hide-ui',
+            compactHidden: compact && child.props.guideKey !== 'hide-ui',
         });
     });
 

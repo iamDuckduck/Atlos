@@ -3,7 +3,7 @@ import L from 'leaflet';
 import styles from './UIOverlay.module.scss';
 
 import LanguageModal from '@/component/language/language';
-import GroupsModal from '@/component/group/group';
+import NotifyModal from '@/component/notify/notify';
 import ToSModal from '@/component/tos/tos';
 import SettingsModal from '@/component/settings/settings';
 import Scale from '@/component/scale/scale';
@@ -26,10 +26,17 @@ import { initTheme, cleanupTheme, toggleTheme } from '@/utils/theme';
 import { useAppPictureInPicture } from '@/component/scale/pip';
 import { Shortcut } from '@/component/shortcut';
 import { modKey } from '@/component/settings/shortcuts';
+import { useAuthStore } from '@/store/auth';
+import {
+    getNotificationUnreadCounts,
+    subscribeNotificationLive,
+    type NotificationLiveUpdate,
+    type NotificationUnreadCounts,
+} from '@/utils/notifyClient';
 
 import ToS from '../../assets/logos/tos.svg?react';
 import hideUI from '../../assets/logos/hideUI.svg?react';
-import Group from '../../assets/logos/group.svg?react';
+import NotificationIcon from '../../assets/logos/group.svg?react';
 import Darkmode from '../../assets/logos/darkmode.svg?react';
 import i18n from '../../assets/logos/i18n.svg?react';
 import Guide from '../../assets/logos/guide.svg?react';
@@ -59,7 +66,7 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
     const t = useTranslateUI();
     const locale = useLocale();
     const [langOpen, setLangOpen] = useState(false);
-    const [groupOpen, setGroupOpen] = useState(false);
+    const [notifyOpen, setNotifyOpen] = useState(false);
     const [storageOpen, setStorageOpen] = useState(false);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [announcementOpen, setAnnouncementOpen] = useState(false);
@@ -71,6 +78,15 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
         announcementChecked,
     } = useAnnouncementFlow(locale);
     const { isMobile } = useDevice();
+    const sessionUser = useAuthStore((state) => state.sessionUser);
+    const sessionUid = sessionUser?.uid;
+    const [notificationUnread, setNotificationUnread] = useState<NotificationUnreadCounts>({
+        system: 0,
+        community: 0,
+        total: 0,
+    });
+    const [notificationLiveUpdate, setNotificationLiveUpdate] = useState<NotificationLiveUpdate | null>(null);
+    const [notificationSyncVersion, setNotificationSyncVersion] = useState(0);
     const pictureInPicture = useAppPictureInPicture(map);
     const setIsUserGuideOpen = useSetIsUserGuideOpen();
     const isUserGuideOpen = useIsUserGuideOpen();
@@ -106,7 +122,38 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
     const handleHideUI = () => {
         onToggleUI?.();
     };
-    const handleGroup = () => setGroupOpen(true);
+    const handleNotification = () => setNotifyOpen(true);
+
+    useEffect(() => {
+        if (!sessionUid) {
+            setNotificationUnread({ system: 0, community: 0, total: 0 });
+            setNotificationLiveUpdate(null);
+            return;
+        }
+        let disposed = false;
+        const syncUnread = () => void getNotificationUnreadCounts()
+            .then((unread) => {
+                if (!disposed) setNotificationUnread(unread);
+            })
+            .catch(() => undefined);
+        syncUnread();
+        const unsubscribe = subscribeNotificationLive({
+            onUpdate: (update) => {
+                if (disposed) return;
+                setNotificationUnread(update.unread);
+                setNotificationLiveUpdate(update);
+            },
+            onOpen: () => {
+                if (disposed) return;
+                syncUnread();
+                setNotificationSyncVersion((version) => version + 1);
+            },
+        });
+        return () => {
+            disposed = true;
+            unsubscribe();
+        };
+    }, [sessionUid]);
 
     const [isDark, setIsDark] = useState(false);
 
@@ -154,7 +201,7 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
         if (visible) return;
         // UserGuide pauses itself while the UI is hidden and resumes at the same step.
         setLangOpen(false);
-        setGroupOpen(false);
+        setNotifyOpen(false);
         setStorageOpen(false);
         setSettingsOpen(false);
         setAnnouncementOpen(false);
@@ -173,39 +220,40 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
                             onClick={handleReset}
                             tooltip={t('headbar.tos')}
                             disabled={fullModalActionsDisabled}
-                            guideKey='headbar-tos'
+                            guideKey='tos'
                         />
                         <HeadItem
                             icon={hideUI}
                             onClick={handleHideUI}
                             tooltip={hideUITooltip}
                             ariaLabel={`${t('headbar.hideUI')} (${modKey()}+H)`}
-                            guideKey='headbar-hide-ui'
+                            guideKey='hide-ui'
                         />
                         <HeadItem
-                            icon={Group}
-                            onClick={handleGroup}
-                            tooltip={t('headbar.group')}
-                            guideKey='headbar-group'
+                            icon={NotificationIcon}
+                            onClick={handleNotification}
+                            tooltip={t('headbar.notification')}
+                            badge={notificationUnread.total > 0}
+                            guideKey='notify'
                         />
                         <HeadItem
                             icon={Darkmode}
                             onClick={handleDarkMode}
                             tooltip={isDark ? t('headbar.lightmode') : t('headbar.darkmode')}
-                            guideKey='headbar-dark-mode'
+                            guideKey='dark-mode'
                         />
                         <HeadItem
                             icon={i18n}
                             onClick={handleLanguage}
                             tooltip={t('headbar.language')}
-                            guideKey='headbar-language'
+                            guideKey='language'
                         />
                         <HeadItem
                             icon={Guide}
                             onClick={handleHelp}
                             tooltip={t('headbar.help')}
                             disabled={fullModalActionsDisabled}
-                            guideKey='headbar-help'
+                            guideKey='help'
                         />
                         <HeadItem
                             icon={AnnouncementIcon}
@@ -213,13 +261,13 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
                             tooltip={t('headbar.announcement')}
                             badge={hasUnreadAnnouncement}
                             disabled={fullModalActionsDisabled}
-                            guideKey='headbar-announcement'
+                            guideKey='announcement'
                         />
                         <HeadItem
                             icon={SettingsIcon}
                             onClick={handleSettings}
                             tooltip={t('headbar.settings')}
-                            guideKey='headbar-settings'
+                            guideKey='settings'
                         />
                     </HeadBar>
                 </div>
@@ -266,14 +314,14 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
                 }}
             />
 
-            {/* Groups Modal */}
-            <GroupsModal
-                open={groupOpen}
-                onClose={() => setGroupOpen(false)}
-                onChange={(o) => setGroupOpen(o)}
-                onSelected={(platform) => {
-                    console.log('Opened social platform:', platform);
-                }}
+            {/* Notification Modal */}
+            <NotifyModal
+                open={notifyOpen}
+                onClose={() => setNotifyOpen(false)}
+                onChange={(o) => setNotifyOpen(o)}
+                onUnreadChange={setNotificationUnread}
+                liveUpdate={notificationLiveUpdate}
+                syncVersion={notificationSyncVersion}
             />
 
             {/* Storage Modal */}

@@ -2,6 +2,8 @@ import type { MapCore } from '@/component/mapCore/map';
 import type { Map as LeafletMap } from 'leaflet';
 import useRegion from '@/store/region';
 import { useMarkerStore } from '@/store/marker';
+import { findMarkerById } from '@/data/marker';
+import { REGION_DICT } from '@/data/map';
 
 export interface SharedPointTarget {
     regionKey: string;
@@ -129,4 +131,21 @@ export const navigateToSharedPoint = (target: SharedPointTarget): void => {
     }
     pendingTarget = normalizedTarget;
     void flushPendingNavigation();
+};
+
+export const navigateToMarkerId = async (pointId: string): Promise<boolean> => {
+    const point = await findMarkerById(String(pointId));
+    if (!point) return false;
+
+    const regionKey = Object.entries(REGION_DICT).find(([, region]) => (
+        region.subregions.includes(point.subregId)
+    ))?.[0];
+    if (!regionKey) return false;
+
+    navigateToSharedPoint({
+        regionKey,
+        subregionKey: point.subregId,
+        pointId: point.id,
+    });
+    return true;
 };

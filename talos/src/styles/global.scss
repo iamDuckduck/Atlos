@@ -109,6 +109,8 @@ button {
 body {
     margin: 0;
     font-family: 'Novecento Medium', 'Novecento Cyrillic DemiBold', 'Novecento Vietnamese Medium', 'HMSans_EN', 'Fedra Sans Pro', 'UD_ShinGo DemiBold', 'Noto Sans SC', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
+    font-variant-numeric: lining-nums;
+    font-feature-settings: "lnum" 1, "onum" 0, "case" 1;
 }
 p {
     margin: 0;

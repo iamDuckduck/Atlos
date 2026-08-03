@@ -134,8 +134,6 @@
     font-weight: 700;
     font-family: 'Fedra Sans Pro', 'UD_ShinGo DemiBold', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
     text-transform: capitalize;
-    font-variant-ligatures: common-ligatures;
-    font-feature-settings: 'liga' 1, 'clig' 1, 'calt' 1;
     transition: transform .35s cubic-bezier(0.8, 0, 0.25, 1);
     line-height: 1.27;
     position: absolute;
@@ -318,7 +316,6 @@
     font-family: 'Fedra Sans Pro', sans-serif;
     font-size: .95rem;
     font-weight: 400;
-    font-variant-numeric: lining-nums;
     color: var(--auth-text);
     background: transparent;
     line-height: 1;
@@ -383,7 +380,6 @@
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: -2%;
-  font-variant-numeric: lining-nums;
   line-height: 1;
   transform: translateY(0.3rem);
   cursor: pointer;
@@ -541,7 +537,6 @@
   text-transform: capitalize;
   transform: translateY(1px);
   unicode-bidi: plaintext;
-  font-variant-numeric: lining-nums;
 }
 
 .switchModeButton {

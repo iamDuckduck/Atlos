@@ -165,7 +165,6 @@
         white-space: nowrap;
         font-weight: 400;
         font-size: 0.875rem;
-        font-variant-numeric: lining-nums;
         content: '\00b7''\2008' attr(data-status);
         color: var(--comment-muted);
     }
@@ -216,7 +215,6 @@
         color: var(--comment-muted);
         font-family: 'Fedra Sans Pro', "UD_ShinGo Regular", "Noto Sans Arabic", "Noto Sans Thai", sans-serif;
         font-style: italic;
-        font-feature-settings: "liga";
         font-size: 0.875em;
         font-weight: 500;
         letter-spacing: -.2px;
@@ -407,7 +405,6 @@
 .commentInput {
     font-family: 'Fedra Sans Pro', 'Noto Sans SC', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
     font-size: 0.9125rem;
-    font-feature-settings: "case" on;
     letter-spacing: -.2px;
     font-weight: 500;
     width: 100%;

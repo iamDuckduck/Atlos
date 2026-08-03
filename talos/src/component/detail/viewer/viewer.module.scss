@@ -362,7 +362,6 @@
     width: 20px;
     line-height: 1;
     letter-spacing: -0.5px;
-    font-variant-numeric: lining-nums;
 }
 
 .viewerTime {
@@ -377,7 +376,6 @@
     line-height: 1.2;
     white-space: nowrap;
     letter-spacing: -0.8px;
-    font-variant-numeric: lining-nums;
     cursor: help;
     > .viewerTimeLabel {
         display: inline-block;

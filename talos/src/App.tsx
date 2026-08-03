@@ -45,6 +45,7 @@ function App() {
     const {
         shortcutDocument,
         showVisibilityControl,
+        showUI,
         uiVisible,
         toggleUI,
     } = useUIVisibility();
@@ -54,7 +55,7 @@ function App() {
     const locatorAuthOpen = useLocatorStore((state) => state.authOpen);
 
     // Keyboard shortcuts & map multi-select
-    useKeyboardShortcuts(mapInstance, shortcutDocument);
+    useKeyboardShortcuts(mapInstance, shortcutDocument, { showUI });
     useMapMultiSelect(mapInstance);
     useLocator(mapInstance);
 

@@ -86,6 +86,7 @@
     "classnames": "^2.5.1",
     "d3": "^7.9.0",
     "html-react-parser": "^5.2.8",
+    "intl-messageformat": "^11.2.13",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "liquid-glass-react-positioning": "^1.1.1",

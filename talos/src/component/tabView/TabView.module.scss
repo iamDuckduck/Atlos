@@ -1,6 +1,6 @@
 @use '../../styles/palette.scss' as *;
 @use '../../styles/curves.scss' as *;
-
+@use '../../styles/size.scss' as *;
 :root,
 :root[data-theme='light'] {
     --tabview-active-bg: #{$primary-accent-4};
@@ -117,5 +117,12 @@
         overflow-wrap: anywhere;
         text-decoration: underline;
         text-underline-offset: 2px;
+    }
+}
+
+@media screen and (max-width: $mobile-bp) {
+    .description {
+        font-size: 1rem;
+        line-height: 1.25;
     }
 }

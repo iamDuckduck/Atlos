@@ -15,15 +15,16 @@ import {
     type IMarkerData,
 } from '@/data/marker';
 import { SUBREGION_DICT } from '@/data/map';
-import { formatRelativeTime, parseDateLike } from '@/utils/timeFormat';
+import { formatRelativeTime, parseTimestamp } from '@/utils/timeFormat';
 import { navigateToMarkerId } from '@/utils/navigation';
 import { useDevice } from '@/utils/device';
 import { openOemAuthModal } from '@/component/login/authEvents';
+import { AccessButton } from '@/component/login/access';
 import {
     getNotificationUnreadCounts,
     listNotifications,
     markAllNotificationsRead,
-    markNotificationRead,
+    markNotificationsRead,
     notificationCategoryForType,
     type NotificationCategory,
     type NotificationItem,
@@ -39,6 +40,16 @@ import DiscordLogo from '@/assets/images/UI/media/discord.svg?react';
 import SklandLogo from '@/assets/images/UI/media/skland.svg?react';
 import SkportLogo from '@/assets/images/UI/media/skport.svg?react';
 import { LinearBlur } from 'progressive-blur';
+import {
+    formatNotificationMessage,
+    type NotificationSubjectKind,
+    type NotificationTemplateName,
+} from './notificationMessage';
+import {
+    createNotificationReadBatcher,
+    createNotificationVisibilityObserver,
+    type NotificationReadBatcher,
+} from './notificationRead';
 import styles from './notify.module.scss';
 
 interface NotifyProps {
@@ -82,7 +93,7 @@ const emptyFeed = (): CategoryFeed => ({
 const SOCIAL_LINKS: SocialLink[] = [
     {
         icon: DiscordLogo,
-        url: 'https://discord.gg/9zDwGe9Sht',
+        url: 'https://discord.gg/BFMAKZSUG7',
         name: 'Discord',
         platform: 'discord',
     },
@@ -117,7 +128,7 @@ const NotificationEmptyState = ({
     </div>
 );
 
-const interpolateNodes = (
+const interpolateSimpleNodes = (
     template: string,
     replacements: Record<string, React.ReactNode>,
 ): React.ReactNode[] =>
@@ -135,9 +146,6 @@ const interpolateNodes = (
                 </React.Fragment>
             );
         });
-
-const capitalizeFirstLetter = (value: string, locale: string): string =>
-    value.replace(/\p{L}/u, (letter) => letter.toLocaleUpperCase(locale));
 
 const updateItemReadState = (
     items: NotificationItem[],
@@ -173,13 +181,16 @@ const mergeItems = (
     return [...current, ...incoming.filter((item) => !ids.has(item.id))];
 };
 
+const notificationCreatedAtMs = (item: NotificationItem): number =>
+    parseTimestamp(item.createdAt)?.getTime() ?? 0;
+
 const upsertItem = (
     items: NotificationItem[],
     incoming: NotificationItem,
 ): NotificationItem[] =>
     [incoming, ...items.filter((item) => item.id !== incoming.id)].sort(
         (left, right) =>
-            Date.parse(right.createdAt) - Date.parse(left.createdAt),
+            notificationCreatedAtMs(right) - notificationCreatedAtMs(left),
     );
 
 const markerPromiseCache = new Map<string, Promise<IMarkerData | null>>();
@@ -220,30 +231,25 @@ const NotificationMessage = ({
     const markerId = item.target.markerId;
     const [marker, setMarker] = useState<IMarkerData | null>(null);
     const kind = item.payload.kind;
-    const subjectKey =
+    const subjectKey: NotificationSubjectKind =
         kind === 'image'
             ? 'image'
             : kind === 'comment' ||
                 notificationCategoryForType(item.type) === 'community'
               ? 'comment'
               : 'submission';
-    let templateKey = 'notification.types.needsReview';
-    if (item.type === 'system.submission.approved')
-        templateKey = 'notification.types.approved';
+    let templateName: NotificationTemplateName = 'needsReview';
+    if (item.type === 'system.submission.approved') templateName = 'approved';
     if (item.type === 'system.remove_request.resolved')
-        templateKey = 'notification.types.removeResolved';
-    if (item.type === 'community.comment.reply')
-        templateKey = 'notification.types.reply';
+        templateName = 'removeResolved';
+    if (item.type === 'community.comment.reply') templateName = 'reply';
     if (item.type === 'community.comment.vote') {
-        templateKey = 'notification.types.vote';
+        templateName = 'vote';
     } else if (item.isMultiMsg) {
-        templateKey = 'notification.types.multiple';
+        templateName = 'multiple';
     }
-    const template = t(templateKey);
+    const template = t(`notification.types.${templateName}`);
     const translatedSubject = t(`notification.subject.${subjectKey}`);
-    const subjectText = /^\s*\{subject\}/.test(template)
-        ? capitalizeFirstLetter(translatedSubject, locale)
-        : translatedSubject;
     const poiType = item.target.poiType ?? marker?.type ?? '';
     const translatedPointName = poiType
         ? tGame(`markerType.key.${poiType}`)
@@ -291,31 +297,38 @@ const NotificationMessage = ({
     }, [markerId]);
 
     const canNavigate = Boolean(markerId) && !item.isMultiMsg;
-    const subject = canNavigate ? (
-        <button
-            type='button'
-            className={styles.keyword}
-            onClick={(event) => {
-                event.stopPropagation();
-                onNavigate(item);
-            }}
-        >
-            {subjectText}
-        </button>
-    ) : (
-        <span className={styles.keyword}>{subjectText}</span>
-    );
-    const point = pointLabel ? (
-        <span className={styles.pointName}>{pointLabel}</span>
-    ) : null;
+    const renderSubject = (parts: React.ReactNode[]) =>
+        canNavigate ? (
+            <button
+                type='button'
+                className={styles.keyword}
+                onClick={(event) => {
+                    event.stopPropagation();
+                    onNavigate(item);
+                }}
+            >
+                {parts}
+            </button>
+        ) : (
+            <span className={styles.keyword}>{parts}</span>
+        );
+    const renderPoint = (parts: React.ReactNode[]) =>
+        pointLabel ? <span className={styles.pointName}>{parts}</span> : null;
 
     return (
         <span className={styles.messageText}>
-            {interpolateNodes(template, {
-                subject,
-                point,
-                count: String(count),
-            })}
+            {React.Children.toArray(
+                formatNotificationMessage({
+                    template,
+                    locale,
+                    kind: subjectKey,
+                    subject: translatedSubject,
+                    point: pointLabel,
+                    count,
+                    renderSubject,
+                    renderPoint,
+                }),
+            )}
         </span>
     );
 };
@@ -336,16 +349,13 @@ const NotificationCard = ({
     onNavigate,
 }: NotificationCardProps) => {
     const t = useTranslateUI();
+    const locale = useLocale();
     const [collapsing, setCollapsing] = useState(false);
     const previousExpandedRef = useRef(expanded);
     const collapseTimerRef = useRef<number | undefined>(undefined);
-    const createdAt = parseDateLike(item.createdAt);
+    const createdAt = parseTimestamp(item.createdAt);
     const timeLabel = createdAt
-        ? formatRelativeTime(createdAt, {
-              precision: 'dateTime',
-              agoDisplay: 'hover',
-              agoLabel: t('idcard.ago'),
-          }).agoText
+        ? formatRelativeTime(createdAt, { locale })
         : '';
 
     useLayoutEffect(() => {
@@ -378,6 +388,7 @@ const NotificationCard = ({
     return (
         <article
             className={styles.notificationCard}
+            data-notification-id={item.id}
             data-type={item.type}
             data-expandable={item.isMultiMsg ? 'true' : 'false'}
             data-expanded={expanded ? 'true' : 'false'}
@@ -464,6 +475,9 @@ const NotifyModal: React.FC<NotifyProps> = ({
     const handledSyncVersionRef = useRef(syncVersion);
     const liveRevisionRef = useRef(0);
     const sessionRevisionRef = useRef(0);
+    const readIdsRef = useRef(new Set<string>());
+    const readBatcherRef =
+        useRef<NotificationReadBatcher<NotificationCategory> | null>(null);
     const notificationListRef = useRef<HTMLDivElement | null>(null);
     const [isListScrolledBottom, setIsListScrolledBottom] = useState(true);
 
@@ -535,8 +549,27 @@ const NotifyModal: React.FC<NotifyProps> = ({
         sessionRevisionRef.current += 1;
         setFeeds({ community: emptyFeed(), system: emptyFeed() });
         setExpandedIds(new Set());
+        readIdsRef.current.clear();
         liveRevisionRef.current = 0;
         if (!sessionUid) publishUnread(EMPTY_UNREAD);
+    }, [publishUnread, sessionUid]);
+
+    useEffect(() => {
+        if (!sessionUid) return undefined;
+        const sessionRevision = sessionRevisionRef.current;
+        const batcher = createNotificationReadBatcher({
+            send: markNotificationsRead,
+            onResult: (nextUnread) => {
+                if (sessionRevisionRef.current === sessionRevision)
+                    publishUnread(nextUnread);
+            },
+        });
+        readBatcherRef.current = batcher;
+        return () => {
+            batcher.dispose();
+            if (readBatcherRef.current === batcher)
+                readBatcherRef.current = null;
+        };
     }, [publishUnread, sessionUid]);
 
     useEffect(() => {
@@ -556,6 +589,7 @@ const NotifyModal: React.FC<NotifyProps> = ({
         const category = notificationCategoryForType(
             liveUpdate.notification.type,
         );
+        readIdsRef.current.delete(liveUpdate.notification.id);
         liveRevisionRef.current += 1;
         publishUnread(liveUpdate.unread);
         setFeeds((current) => ({
@@ -572,6 +606,7 @@ const NotifyModal: React.FC<NotifyProps> = ({
 
     useEffect(() => {
         if (!open) {
+            readIdsRef.current.clear();
             handledSyncVersionRef.current = syncVersion;
             return;
         }
@@ -582,7 +617,14 @@ const NotifyModal: React.FC<NotifyProps> = ({
 
     const handleRead = useCallback(
         (item: NotificationItem) => {
-            if (item.readAt || !sessionUser) return;
+            if (
+                item.readAt ||
+                !sessionUser ||
+                markingAll ||
+                readIdsRef.current.has(item.id)
+            )
+                return;
+            readIdsRef.current.add(item.id);
             const category = notificationCategoryForType(item.type);
             setFeeds((current) => ({
                 ...current,
@@ -594,11 +636,14 @@ const NotifyModal: React.FC<NotifyProps> = ({
                     ),
                 },
             }));
-            void markNotificationRead(category, item.id)
-                .then(publishUnread)
-                .catch(() => undefined);
+            const batcher = readBatcherRef.current;
+            if (batcher) batcher.enqueue(category, item.id);
+            else
+                void markNotificationsRead(category, [item.id])
+                    .then(publishUnread)
+                    .catch(() => undefined);
         },
-        [publishUnread, sessionUser],
+        [markingAll, publishUnread, sessionUser],
     );
 
     const handleToggle = useCallback(
@@ -636,6 +681,7 @@ const NotifyModal: React.FC<NotifyProps> = ({
         if (!sessionUser || unread.total === 0 || markingAll) return;
         setMarkingAll(true);
         try {
+            await readBatcherRef.current?.flush();
             await Promise.all([
                 markAllNotificationsRead('community'),
                 markAllNotificationsRead('system'),
@@ -720,6 +766,44 @@ const NotifyModal: React.FC<NotifyProps> = ({
         updateListScrollState,
     ]);
 
+    useEffect(() => {
+        if (!open || !sessionUser || activeFeed.loading || markingAll)
+            return undefined;
+        const list = notificationListRef.current;
+        if (!list || typeof IntersectionObserver === 'undefined')
+            return undefined;
+
+        const unreadItems = new Map(
+            activeFeed.items
+                .filter((item) => !item.readAt)
+                .map((item) => [item.id, item]),
+        );
+        const visibilityObserver = createNotificationVisibilityObserver({
+            root: list,
+            onRead: (id) => {
+                const item = unreadItems.get(id);
+                if (item) handleRead(item);
+            },
+        });
+        list.querySelectorAll<HTMLElement>(
+            '[data-notification-id][data-unread="true"]',
+        ).forEach((element) => {
+            const id = element.dataset.notificationId;
+            if (id && unreadItems.has(id))
+                visibilityObserver.observe(element, id);
+        });
+
+        return () => visibilityObserver.disconnect();
+    }, [
+        activeCategory,
+        activeFeed.items,
+        activeFeed.loading,
+        handleRead,
+        markingAll,
+        open,
+        sessionUser,
+    ]);
+
     return (
         <Modal
             open={open}
@@ -755,17 +839,20 @@ const NotifyModal: React.FC<NotifyProps> = ({
                     >
                         {!sessionUser ? (
                             <NotificationEmptyState>
-                                {interpolateNodes(t('notification.guest'), {
-                                    account: (
-                                        <button
-                                            type='button'
-                                            className={styles.emptyAction}
-                                            onClick={handleOpenAuth}
-                                        >
-                                            {t('notification.account')}
-                                        </button>
-                                    ),
-                                })}
+                                {interpolateSimpleNodes(
+                                    t('notification.guest'),
+                                    {
+                                        account: (
+                                            <button
+                                                type='button'
+                                                className={styles.emptyAction}
+                                                onClick={handleOpenAuth}
+                                            >
+                                                {t('notification.account')}
+                                            </button>
+                                        ),
+                                    },
+                                )}
                             </NotificationEmptyState>
                         ) : activeFeed.loading ? (
                             <p className={styles.statusState}>
@@ -793,21 +880,22 @@ const NotifyModal: React.FC<NotifyProps> = ({
                                     />
                                 ))}
                                 {activeFeed.nextCursor && (
-                                    <button
-                                        type='button'
-                                        className={styles.loadMore}
-                                        disabled={activeFeed.loadingMore}
-                                        onClick={() =>
-                                            void loadCategory(
-                                                activeCategory,
-                                                true,
-                                            )
-                                        }
-                                    >
-                                        {activeFeed.loadingMore
-                                            ? t('common.loading')
-                                            : t('notification.loadMore')}
-                                    </button>
+                                    <div className={styles.loadMore}>
+                                        <AccessButton
+                                            label={
+                                                activeFeed.loadingMore
+                                                    ? t('common.loading')
+                                                    : t('notification.loadMore')
+                                            }
+                                            disabled={activeFeed.loadingMore}
+                                            onClick={() =>
+                                                void loadCategory(
+                                                    activeCategory,
+                                                    true,
+                                                )
+                                            }
+                                        />
+                                    </div>
                                 )}
                             </>
                         )}

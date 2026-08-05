@@ -5,7 +5,14 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const shouldSkipSubset = args.includes('--skip-subset') || args.includes('--skip-subset-fonts');
-const unknownArgs = args.filter((arg) => !['--skip-subset', '--skip-subset-fonts'].includes(arg));
+const shouldSkipOg = args.includes('--skip-og') || args.includes('--skip-seo-og');
+const knownArgs = [
+  '--skip-subset',
+  '--skip-subset-fonts',
+  '--skip-og',
+  '--skip-seo-og',
+];
+const unknownArgs = args.filter((arg) => !knownArgs.includes(arg));
 
 if (unknownArgs.length > 0) {
   throw new Error(`Unknown deploy:all arguments: ${unknownArgs.join(', ')}`);
@@ -60,7 +67,7 @@ runSync('node', [
   '--skip-seo',
   ...(shouldSkipSubset ? ['--skip-subset'] : []),
 ]);
-runSync('pnpm', ['run', 'build:seo:og']);
+if (!shouldSkipOg) runSync('pnpm', ['run', 'build:seo:og']);
 
 const ossDistDir = path.resolve(ROOT, 'dist/oss');
 const r2DistDir = path.resolve(ROOT, 'dist/r2');

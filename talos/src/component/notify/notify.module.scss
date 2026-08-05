@@ -108,7 +108,7 @@
     }
 
     .notificationCard {
-        --card-accent: #{$primary-accent-6};
+        --card-accent: #{$primary-accent-7};
 
         position: relative;
         width: 100%;
@@ -139,7 +139,7 @@
         }
 
         &[data-unread='false'] {
-            opacity: 1;
+            opacity: 0.8;
         }
 
         &:hover {
@@ -152,7 +152,7 @@
         }
 
         &[data-type='system.submission.approved'] {
-            --card-accent: #{$primary-accent-4};
+            --card-accent: #1A673C;
         }
 
         &[data-type='system.remove_request.resolved'] {
@@ -327,6 +327,7 @@
         }
     }
 
+    /* Empty Case */
     .emptyState {
         width: 100%;
         display: flex;
@@ -334,7 +335,6 @@
         align-items: center;
         gap: 0.5rem;
     }
-
     .emptyDivider {
         position: relative;
         width: 95%;
@@ -363,7 +363,6 @@
             transform: translate(-50%, -50%) rotate(45deg);
         }
     }
-
     .emptyRule {
         margin: 0;
         color: var(--notify-empty-text);
@@ -375,7 +374,6 @@
         line-height: 1.2;
         text-align: center;
     }
-
     .emptyAction {
         position: relative;
         border: 0;
@@ -408,7 +406,6 @@
             outline: none;
         }
     }
-
     .statusState {
         margin: 0;
         flex: 1 0 auto;
@@ -418,23 +415,11 @@
         color: var(--notify-empty-text);
         font-size: 0.95rem;
     }
-
     .loadMore {
-        display: block;
+        width: min(60%, 18rem);
         margin: 0.25rem auto 0.75rem;
-        border: 0;
-        padding: 0.4rem 1rem;
-        color: var(--notify-card-bg);
-        background: var(--notify-text);
-        font: inherit;
-        cursor: pointer;
-
-        &:disabled {
-            cursor: default;
-            opacity: 0.55;
-        }
     }
-
+    /* Footer */
     .supportDivider {
         position: relative;
         z-index: 3;
@@ -450,29 +435,19 @@
         margin: 0 0 0.75rem;
         background: transparent;
 
-        &::before,
-        &::after {
+        &::before, &::after {
             content: '';
             height: var(--support-divider-height);
             flex: 1 1 0;
         }
 
         &::before {
-            background: linear-gradient(
-                90deg,
-                transparent 0%,
-                var(--notify-text) 100%
-            );
+            background: linear-gradient(90deg, transparent 0%, var(--notify-text) 100%);
         }
 
         &::after {
-            background: linear-gradient(
-                90deg,
-                var(--notify-text) 0%,
-                transparent 100%
-            );
+            background: linear-gradient(90deg, var(--notify-text) 0%, transparent 100%);
         }
-
         span {
             flex: 0 0 auto;
             color: var(--notify-text);
@@ -483,7 +458,6 @@
             text-transform: uppercase;
         }
     }
-
     .socialLinks {
         flex: 0 0 auto;
         display: grid;
@@ -508,23 +482,18 @@
             &[data-platform='github'] {
                 --social-icon-scale: 0.8;
             }
-
             &[data-platform='skland'] {
                 --social-icon-scale: 0.95;
             }
-
             &[data-platform='skport'] {
                 --social-icon-scale: 1.06;
             }
-
-            &:hover,
-            &:focus-visible {
+            &:hover, &:focus-visible {
                 opacity: 0.72;
-                transform: translateY(-1px);
+                transform: translateY(-2px);
                 outline: none;
             }
         }
-
         svg {
             display: block;
             width: 100%;

@@ -131,21 +131,31 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
             return;
         }
         let disposed = false;
-        const syncUnread = () => void getNotificationUnreadCounts()
-            .then((unread) => {
-                if (!disposed) setNotificationUnread(unread);
-            })
-            .catch(() => undefined);
+        let unreadRevision = 0;
+        const syncUnread = () => {
+            const requestRevision = unreadRevision;
+            void getNotificationUnreadCounts()
+                .then((unread) => {
+                    if (!disposed && unreadRevision === requestRevision)
+                        setNotificationUnread(unread);
+                })
+                .catch(() => undefined);
+        };
         syncUnread();
         const unsubscribe = subscribeNotificationLive({
             onUpdate: (update) => {
                 if (disposed) return;
+                unreadRevision += 1;
                 setNotificationUnread(update.unread);
                 setNotificationLiveUpdate(update);
             },
+            onReady: (unread) => {
+                if (disposed) return;
+                unreadRevision += 1;
+                setNotificationUnread(unread);
+            },
             onOpen: () => {
                 if (disposed) return;
-                syncUnread();
                 setNotificationSyncVersion((version) => version + 1);
             },
         });

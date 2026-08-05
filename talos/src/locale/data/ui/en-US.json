@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "Terms & Storage",
     "hideUI": "Hide UI",
-    "group": "Join related group",
+    "notification": "Notifications",
     "darkmode": "Switch to dark mode",
     "lightmode": "Switch to light mode",
     "language": "Choose language",
@@ -21,7 +21,7 @@
   },
   "search": {
     "placeholder": "Overall search...",
-    "results": "{count} result(s)",
+    "results": "{count, plural, one {# result} other {# results}}",
     "locatedAt": "Located at",
     "distributeAt": "Distributed at"
   },
@@ -146,9 +146,34 @@
       "tr-TR": "Turkish"
     }
   },
-  "group": {
-    "title": "Community & Media",
-    "visit": "Visit"
+  "notification": {
+    "title": "Notification",
+    "tabs": {
+      "community": "Interactions",
+      "system": "Moderations"
+    },
+    "markAllRead": "Mark all as read",
+    "empty": "No message. Messages related to your contributions will appear here.",
+    "guest": "Sign in with your {account} to receive relevant notification messages.",
+    "account": "OEM account",
+    "loadError": "Notifications could not be loaded.",
+    "loadMore": "Load more",
+    "support": "Contact & Support",
+    "visit": "Visit",
+    "noDetails": "No additional details.",
+    "subject": {
+      "image": "image",
+      "comment": "comment",
+      "submission": "submission"
+    },
+    "types": {
+      "approved": "Your <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> is now public.",
+      "needsReview": "Your <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> is awaiting manual review.",
+      "removeResolved": "Your withdrawn <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> has been processed.",
+      "reply": "There is a new reply to your <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag>.",
+      "vote": "Your <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> received {count, plural, one {# like} other {# likes}}.",
+      "multiple": "{count, plural, one {There is # status update} other {There are # status updates}} for your <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag>."
+    }
   },
   "tos": {
     "title": "Terms & Storage",
@@ -214,7 +239,7 @@
     "headbar": "Switches related to map settings are located in the <span class=\"keyword\">header bar</span>.",
     "tos": "The website's <span class=\"keyword\">Terms of Service</span> and <span class=\"keyword\">Data Management</span>.",
     "hideUI": "<span class=\"keyword\">Hide Website UI</span> to take screenshots or view edge markers.",
-    "group": "View <span class=\"keyword\">discussion groups</span> and <span class=\"keyword\">communities</span> related to this project.",
+    "notification": "Open <span class=\"keyword\">notifications</span> to view interactions and review results related to your contributions.",
     "darkMode": "Toggle the current <span class=\"keyword\">ambient light mode</span>.",
     "language": "Switch <span class=\"keyword\">interface language</span>.<br>Languages with <span class=\"keyword\">full game content translation support</span> include English, Simplified Chinese, Traditional Chinese, Japanese, Korean, French, German, Italian, Russian, Spanish, Indonesian, Portuguese, Thai, and Vietnamese.<br><span class=\"keyword\">UI-only languages</span> (interface translations only) include Arabic, Malay, Polish and Swedish.",
     "announcement": "View recent <span class=\"keyword\">website announcements</span>. Updates to terms of service and privacy policy will also be posted here.",
@@ -243,7 +268,6 @@
     "since": "Since",
     "logintip": "Click the avatar to sign in.",
     "registip": "Click the avatar to register.",
-    "ago": "Ago",
     "karma": "Karma",
     "loading": "Loading",
     "unassigned": "Unassigned",
@@ -402,7 +426,7 @@
     "now": "Sync Data to OEM Cloud",
     "already": "Everything is up to date",
     "done": "Synced to Cloud: {times} ago",
-    "syncing": "Syncing: {count} Points",
+    "syncing": "{count, plural, one {Syncing: # Point} other {Syncing: # Points}}",
     "failed": "Sync Failed ({reason})",
     "offline": "Offline",
     "dataConflict": "Data Conflict",

@@ -646,7 +646,7 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
                             {hasFullText && (
                                 <>
                                     <div className={styles.detailDivider} data-label={tUI('detail.label.note')}></div>
-                                    <div className={styles.detailAction}>
+                                    <div className={styles.detailAction} data-act="fullText">
                                         <a
                                             onClick={() => void handleOpenFullText()}
                                             role="button"
@@ -657,7 +657,7 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
                                 </>
                             )}
                             <div className={styles.detailDivider} data-label={tUI('detail.label.url')}></div>
-                            <div className={styles.detailAction}>
+                            <div className={styles.detailAction} data-act="share">
                                 <PopoverTooltip
                                     content={tUI('detail.copied')}
                                     placement="top"

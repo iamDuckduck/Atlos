@@ -3,8 +3,8 @@ import Modal from '@/component/modal/modal';
 import { AccessButton } from '@/component/login/access';
 import { REGION_DICT, SUBREGION_DICT } from '@/data/map';
 import { loadAllMarkers, type IMarkerData } from '@/data/marker';
-import { useTranslateGame, useTranslateUI } from '@/locale';
-import { formatRelativeTime, parseDateLike } from '@/utils/timeFormat';
+import { useLocale, useTranslateGame, useTranslateUI } from '@/locale';
+import { formatAbsoluteTime, formatRelativeTime, parseTimestamp } from '@/utils/timeFormat';
 import ConflictIcon from '@/assets/logos/conflict.svg?react';
 import styles from './conflict.module.scss';
 
@@ -27,14 +27,11 @@ interface SyncConflictModalProps {
 
 type SubregionCounts = Record<string, number>;
 
-const formatTime = (value: SyncConflictSource['updatedAt'], fallback: string, agoLabel: string): string => {
-    const date = parseDateLike(value);
+const formatTime = (value: SyncConflictSource['updatedAt'], fallback: string, locale: string): string => {
+    const date = parseTimestamp(value);
     if (!date) return fallback;
-    return formatRelativeTime(date, {
-        precision: 'dateTime',
-        agoDisplay: 'inline',
-        agoLabel,
-    }).label;
+    const absolute = formatAbsoluteTime(date, { locale, precision: 'dateTime' });
+    return `${absolute} (${formatRelativeTime(date, { locale })})`;
 };
 
 const REGION_CODE_MAP: Record<string, string> = {
@@ -132,6 +129,7 @@ const SyncConflictModal: React.FC<SyncConflictModalProps> = ({
 }) => {
     const t = useTranslateUI();
     const tGame = useTranslateGame();
+    const locale = useLocale();
     const [markers, setMarkers] = useState<IMarkerData[]>([]);
 
     useEffect(() => {
@@ -178,7 +176,7 @@ const SyncConflictModal: React.FC<SyncConflictModalProps> = ({
                                 <div className={styles.lastUpdate}>{formatTime(
                                     source.updatedAt,
                                     'N/A',
-                                    t('idcard.ago'),
+                                    locale,
                                 )}</div>
                             </div>
                             <div className={styles.metric}>

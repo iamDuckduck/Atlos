@@ -439,6 +439,9 @@
 
             &:hover { color: $primary-accent-6; }
         }
+        &[data-act='share'] > a {
+            cursor: copy;
+        }
     }
 }
 

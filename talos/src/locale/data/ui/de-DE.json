@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "Nutzungsbedingungen & Speicher",
     "hideUI": "Benutzeroberfläche ausblenden",
-    "group": "Gruppen beitreten",
+    "notification": "Benachrichtigungen",
     "darkmode": "In den Dunkelmodus wechseln",
     "lightmode": "In den Hellmodus wechseln",
     "language": "Sprache auswählen",
@@ -21,7 +21,7 @@
   },
   "search": {
     "placeholder": "Allgemeine Suche...",
-    "results": "{count} Ergebnis(se)",
+    "results": "{count, plural, one {# Ergebnis} other {# Ergebnisse}}",
     "locatedAt": "Gefunden in",
     "distributeAt": "Verteilt in"
   },
@@ -39,7 +39,7 @@
     "label": {
       "note": "Notiz",
       "url": "Link",
-      "comments": "Kommentare",
+      "comments": "Top-Kommentar",
       "collectionRate": "Sammelrate"
     },
     "tabs": {
@@ -81,7 +81,7 @@
       "edit": "Bearbeiten",
       "submitEdit": "Bearbeitung speichern",
       "undoEdit": "Bearbeitung verwerfen",
-      "recall": "Entfernung des Kommentars beantragen",
+      "recall": "Sofort ausblenden",
       "reviewing": "In Prüfung",
       "emptyWithRule": "Noch keine Kommentare. Bitte beachte beim Posten die <a href=\"{link}\">Community-Richtlinien</a>.",
       "ruleOnly": "Bitte beachte beim Posten die <a href=\"{link}\">Community-Richtlinien</a>.",
@@ -90,7 +90,7 @@
       "editFailed": "Kommentar konnte nicht aktualisiert werden."
     },
     "errors": {
-      "unsupportedType": "Nur JPEG-/PNG-/WebP-/AVIF-Bilder werden unterstützt.",
+      "unsupportedType": "Nur JPEG-/PNG-/WebP-/AVIF-/HEIC-Bilder werden unterstützt.",
       "fileTooLarge": "Die Bilddatei ist zu groß.",
       "imageDecodeFailed": "Dieses Bild konnte vom Browser nicht geöffnet werden.",
       "imageProcessingUnavailable": "Lokale Bildverarbeitung ist nicht verfügbar.",
@@ -146,9 +146,34 @@
       "tr-TR": "Türkisch"
     }
   },
-  "group": {
-    "title": "Community & Medien",
-    "visit": "Besuchen"
+  "notification": {
+    "title": "Benachrichtigungen",
+    "tabs": {
+      "community": "Interaktionen",
+      "system": "Prüfergebnisse"
+    },
+    "markAllRead": "Alle als gelesen markieren",
+    "empty": "Keine Nachrichten. Nachrichten zu deinen Beiträgen werden hier angezeigt.",
+    "guest": "Melde dich mit deinem {account} an, um relevante Benachrichtigungen zu erhalten.",
+    "account": "OEM-Konto",
+    "loadError": "Benachrichtigungen konnten nicht geladen werden.",
+    "loadMore": "Mehr laden",
+    "support": "Kontakt & Support",
+    "visit": "Besuchen",
+    "noDetails": "Keine weiteren Details.",
+    "subject": {
+      "image": "Bild",
+      "comment": "Kommentar",
+      "submission": "Beitrag"
+    },
+    "types": {
+      "approved": "Dein <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> ist jetzt öffentlich.",
+      "needsReview": "Dein <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> wartet auf eine manuelle Prüfung.",
+      "removeResolved": "Dein {kind, select, image {zurückgezogenes} other {zurückgezogener}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> wurde bearbeitet.",
+      "reply": "Zu deinem <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> wurde eine neue Antwort hinzugefügt.",
+      "vote": "Dein <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> hat {count, plural, one {# Like} other {# Likes}} erhalten.",
+      "multiple": "Es gibt {count, plural, one {# zugehörige Aktualisierung} other {# zugehörige Aktualisierungen}} für {kind, select, image {dein} other {deinen}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag>."
+    }
   },
   "tos": {
     "title": "Bedingungen & Speicher",
@@ -210,13 +235,13 @@
     "triggerHandle": "Schalter, die sich auf die Kartenanzeige beziehen, befinden sich unten in der Seitenleiste.<br>Sie können die Maus gedrückt halten, um sie <span class=\"keyword\">zu ziehen und zu bedienen.</span>",
     "triggerSwitch": "Klicken Sie, um den Schalterstatus umzuschalten.<br><ul><li><span class=\"keyword\">Markierungs-Cluster-Modus</span> ermöglicht die zusammengefasste Anzeige dichter Markierungen;</li><li><span class=\"keyword\">Regionsgrenzenanzeige</span> hebt jede Unterregion und ihre Grenzen im aktuellen Bereich hervor.</li><li><span class=\"keyword\">Regionsname</span> zeigt die In-Game-Regionsnamen an.</li></ul>",
     "scale": "Verwenden Sie die <span class=\"keyword\">Zoomsteuerung</span>, um den Kartenzoom anzuzeigen und zu manipulieren.<br>Mausrad oder Trackpad können zum Zoomen verwendet werden. Sie können auch zoomen, indem Sie auf die Tasten <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> oder irgendwo auf die Zoomleiste klicken.",
-    "filterList": "Die <span class=\"keyword\">Markierungsliste</span> listet die von Ihnen ausgewählten Markierungen auf; klicken Sie auf das Symbol, um die Auswahl aufzuheben.",
+    "filterList": "Die <span class=\"keyword\">Markierungsliste</span> zeigt die von Ihnen ausgewählten Markierungstypen; klicken Sie auf das Symbol, um die Auswahl aufzuheben.",
     "headbar": "Schalter, die sich auf die Karteneinstellungen beziehen, befinden sich in der <span class=\"keyword\">Kopfleiste</span>.",
     "tos": "Die <span class=\"keyword\">Nutzungsbedingungen</span> und das <span class=\"keyword\">Datenmanagement</span> der Website.",
     "hideUI": "<span class=\"keyword\">Website-UI ausblenden</span>, um Screenshots zu machen oder Randmarkierungen anzuzeigen.",
-    "group": "Sehen Sie sich <span class=\"keyword\">Diskussionsgruppen</span> und <span class=\"keyword\">Communitys</span> zu diesem Projekt an.",
+    "notification": "Öffne die <span class=\"keyword\">Benachrichtigungen</span>, um Interaktionen und Prüfergebnisse zu deinen Beiträgen anzuzeigen.",
     "darkMode": "Schalten Sie den aktuellen <span class=\"keyword\">Umgebungslichtmodus</span> um.",
-    "language": "<span class=\"keyword\">Oberflächensprache</span> wechseln.<br>Derzeit umfassen Sprachen mit <span class=\"keyword\">vollständiger Unterstützung für die Übersetzung von Spielinhalten</span> Englisch, vereinfachtes Chinesisch, traditionelles Chinesisch, Japanisch, Koreanisch, Französisch, Deutsch, Italienisch, Russisch, Spanisch, Indonesisch, Portugiesisch, Thailändisch und Vietnamesisch.<br>Sprachen mit <span class=\"keyword\">nur Oberflächenübersetzung</span> umfassen Arabisch, Malaiisch, Polnisch und Schwedisch.",
+    "language": "<span class=\"keyword\">Oberflächensprache</span> wechseln.<br>Derzeit umfassen Sprachen mit <span class=\"keyword\">vollständiger Unterstützung für die Übersetzung von Spielinhalten</span> Englisch, vereinfachtes Chinesisch, traditionelles Chinesisch, Japanisch, Koreanisch, Französisch, Deutsch, Italienisch, Russisch, Spanisch, Indonesisch, Portugiesisch, Thailändisch und Vietnamesisch.<br>Sprachen mit <span class=\"keyword\">nur Oberflächenübersetzung</span> umfassen Arabisch, Malaiisch, Polnisch, Schwedisch, Griechisch, Hindi, Ukrainisch und Türkisch.",
     "announcement": "Sehen Sie sich <span class=\"keyword\">Website-Ankündigungen</span> an. Updates zu Nutzungsbedingungen und Datenschutz finden Sie hier.",
     "help": "Starten Sie diesen <span class=\"keyword\">Leitfaden</span> neu.",
     "settings": "Öffnen Sie <span class=\"keyword\">Einstellungen</span>, um zu steuern, welchen lokalen Speicher die Karte verwendet, um sich Ihre Aktionen zu merken.",
@@ -243,7 +268,6 @@
     "since": "Seit",
     "logintip": "Avatar zum Anmelden.",
     "registip": "Avatar zum Registrieren.",
-    "ago": "vor",
     "karma": "Karma",
     "loading": "Wird geladen...",
     "unassigned": "Nicht zugewiesen",
@@ -294,7 +318,7 @@
         "105": "E-Mail wird nicht unterstützt",
         "111": "Passwort erforderlich",
         "112": "Passwort ungültig",
-        "113": "Passwörter nicht überein",
+        "113": "Passwörter stimmen nicht überein",
         "121": "Code erforderlich",
         "122": "Code ungültig",
         "123": "Code abgelaufen",
@@ -322,7 +346,7 @@
       "note": "Notiz",
       "noteNickname": "Sie können maximal 15 Buchstaben, Zahlen, Bindestriche und Unterstriche in Ihrem Benutzernamen verwenden.",
       "noteUID": "Die UID wird bei der ersten Einrichtung zugewiesen und kann nicht geändert werden. Sie können Ihren Benutzernamen jederzeit aktualisieren. Klicken Sie auf den Avatar-Bereich, um den Avatar zu wechseln.",
-      "auditLabel": "Prüfung",
+      "auditLabel": "Aktion",
       "importOfficial": "Von der offiziellen Karte importieren",
       "save": "Speichern",
       "saving": "Speichern...",
@@ -402,7 +426,7 @@
     "now": "Daten mit OEM Cloud synchronisieren",
     "already": "Mit Cloud synchronisiert",
     "done": "Synchronisiert - vor {times}",
-    "syncing": "Synchronisiere {count} Punkte",
+    "syncing": "{count, plural, one {Synchronisiere # Punkt} other {Synchronisiere # Punkte}}",
     "failed": "Synchronisierung fehlgeschlagen ({reason})",
     "offline": "Offline",
     "dataConflict": "Datenkonflikt",

@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "服務條款與存儲",
     "hideUI": "隱藏介面",
-    "group": "加入相關群組",
+    "notification": "通知",
     "darkmode": "切換至深色模式",
     "lightmode": "切換至淺色模式",
     "language": "選擇語言",
@@ -146,9 +146,34 @@
       "tr-TR": "土耳其語"
     }
   },
-  "group": {
-    "title": "社群與媒體",
-    "visit": "前往"
+  "notification": {
+    "title": "推播通知",
+    "tabs": {
+      "community": "互動通知",
+      "system": "覆核結果"
+    },
+    "markAllRead": "全部標記為已讀",
+    "empty": "暫無通知，與阁下貢獻有關之訊息會顯示於此。",
+    "guest": "登入{account}以接收可能的通知。",
+    "account": "OEM 帳戶",
+    "loadError": "通知載入失敗。",
+    "loadMore": "載入更多",
+    "support": "聯絡及支援",
+    "visit": "前往",
+    "noDetails": "暫無更多詳情。",
+    "subject": {
+      "image": "圖片",
+      "comment": "留言",
+      "submission": "內容"
+    },
+    "types": {
+      "approved": "你的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>已公開。",
+      "needsReview": "你的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>正待人工審核。",
+      "removeResolved": "你撤回的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>已完成處理。",
+      "reply": "你的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>有一則新回覆。",
+      "vote": "你的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>新獲 {count} 個讚好。",
+      "multiple": "你的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>有 {count} 條狀態更新。"
+    }
   },
   "tos": {
     "title": "協議與儲存",
@@ -214,13 +239,13 @@
     "headbar": "與地圖設置有關的開關位於<span class=\"keyword\">頂欄</span>。",
     "tos": "網站的<span class=\"keyword\">服務協議</span>與<span class=\"keyword\">數據管理</span>。",
     "hideUI": "<span class=\"keyword\">隱藏網站UI</span>以截圖或查看邊緣點位。",
-    "group": "查看與本項目有關的<span class=\"keyword\">討論群組</span>與<span class=\"keyword\">社區</span>。",
+    "notification": "開啟<span class=\"keyword\">推播通知</span>，查看與你的貢獻有關之互動通知及覆核結果。",
     "darkMode": "切換當前的<span class=\"keyword\">環境光模式</span>。",
     "language": "切換<span class=\"keyword\">介面語言</span>。<br><span class=\"keyword\">完全支持遊戲內容翻譯</span>的語言有英語，簡體中文，繁體中文，日語，韓語，法語，德語，意大利語，俄語，西班牙語，印尼語，葡萄牙語，泰語和越南語。<br><span class=\"keyword\">僅支持介面翻譯</span>的語言包括阿拉伯語，馬來語，波蘭語和瑞典語。",
     "announcement": "查看近期的<span class=\"keyword\">網站公告</span>，用戶協議等更新也會在此發布。",
     "help": "再次啟動此<span class=\"keyword\">引導程序</span>。",
     "settings": "開啟<span class=\"keyword\">偏好設定</span>，您可以控制地圖使用哪些本地儲存來記憶您的操作。",
-    "locator": "點擊<span class=\"keyword\">位置同步</span>按鈕，可以根據你的遊戲內位置在地圖上顯示當前位置。<br>綁定遊戲帳號後，你亦可以進入設定面板調整點位追蹤範圍。",
+    "locator": "點擊<span class=\"keyword\">位置同步</span>按鈕，可以根據你的遊戲內位置在地圖上顯示當前位置。<br>綁定遊戲帳戶後，你亦可以進入設定面板調整點位追蹤範圍。",
     "regionSwitch": "點擊切換遊戲內<span class=\"keyword\">不同的箱庭地圖</span>（主區域）。",
     "subregionSwitch": "鼠標<span class=\"keyword\">懸浮於主區域圖標</span>可顯示可用的子區域，單擊子區域圖標會跳轉到該子區域視圖。<br>同理，您也可選擇某區域的圖層。",
     "layerMain": "點擊<span class=\"keyword\">圖層圖標</span>可隨時返回<span class=\"keyword\">主圖層（M）</span>。",
@@ -231,7 +256,7 @@
     "pointIcon": "單擊點位圖標也可以將其標記為完成狀態。",
     "mobile": {
       "headbar": "與地圖設定相關的開關位於<span class=\"keyword\">右上角頂欄</span>。點擊右上角圖示展開以查看更多選項。",
-      "locator": "<span class=\"keyword\">位置同步</span>入口位於左上角。<br>綁定帳號後，點擊它會先展開為膠囊按鈕，並顯示同步設定入口；展開後再次點擊主按鈕才會切換同步狀態。",
+      "locator": "<span class=\"keyword\">位置同步</span>入口位於左上角。<br>綁定帳戶後，點擊它會先展開為膠囊按鈕，並顯示同步設定入口；展開後再次點擊主按鈕才會切換同步狀態。",
       "regionLayerSwitch": "點擊區域圖示可切換<span class=\"keyword\">不同的箱庭地圖</span>（主區域）。<br>點擊並按住主區域圖示可顯示可用的<span class=\"keyword\">子區域和圖層</span>，選擇子區域或圖層即可跳轉到對應視圖。",
       "divider": "這是可拖動的<span class=\"keyword\">分隔線</span>。<br>您可以向左或向右拖動分隔線，調整搜尋欄與點位列表的寬度比例，以符合您的使用習慣。",
       "drawer": "從螢幕底部<span class=\"keyword\">向上拉起抽屜</span>，即可檢視與管理點位篩選器。<br>您可以在這裡選擇想要在地圖上顯示的點位類型。",
@@ -243,7 +268,6 @@
     "since": "註冊於",
     "logintip": "點擊頭像以登入",
     "registip": "點擊頭像以註冊",
-    "ago": "前",
     "karma": "Karma",
     "loading": "載入中",
     "unassigned": "待分配",
@@ -349,13 +373,13 @@
       "UniStep0": "前往<a href='https://endfield.gryphline.com' target='_blank' rel='noopener noreferrer'>官方網站</a>，登入一次或確保已登入。",
       "CNStep1": "開啟<a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>Hypergryph API 連結</a>，複製完整回應。",
       "UniStep1": "開啟<a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>Gryphline API 連結</a>，複製完整回應。",
-      "Step2": "在下方貼上完整回應，閱讀條款後即可綁定帳號。",
+      "Step2": "在下方貼上完整回應，閱讀條款後即可綁定帳戶。",
       "changeBinding": "切換綁定",
       "unlink": "解除綁定",
       "bindWithCountdown": "綁定並啟用位置同步（{sec}）",
       "bind": "綁定並啟用位置同步",
-      "bindOnlyWithCountdown": "綁定帳號（{sec}）",
-      "bindOnly": "綁定帳號",
+      "bindOnlyWithCountdown": "綁定帳戶（{sec}）",
+      "bindOnly": "綁定帳戶",
       "locateAuth": "位置同步授權",
       "locateAuthBody": "啟用位置同步後將允許存取你的遊戲內位置資訊。是否啟用？",
       "authAndSync": "授權並開始同步"
@@ -390,7 +414,7 @@
       "10000": "位置同步工作階段已過期，請重新綁定。",
       "19001": "無法取得位置，請確認已登入遊戲。",
       "19002": "位置同步需要授權後才能開始。",
-      "noRole": "此帳號下未找到終末地角色。",
+      "noRole": "此帳戶下未找到終末地角色。",
       "tokenRequired": "請貼上完整回應或 Token。",
       "bindingFailed": "綁定失敗。",
       "roleRequired": "請選擇角色。",

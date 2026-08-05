@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "Điều khoản & Lưu trữ",
     "hideUI": "Ẩn giao diện",
-    "group": "Tham gia nhóm liên quan",
+    "notification": "Thông báo",
     "darkmode": "Chuyển sang chế độ tối",
     "lightmode": "Chuyển sang chế độ sáng",
     "language": "Chọn ngôn ngữ",
@@ -39,7 +39,7 @@
     "label": {
       "note": "Ghi chú",
       "url": "Liên kết",
-      "comments": "Bình luận",
+      "comments": "Bình luận hàng đầu",
       "collectionRate": "Tỷ lệ thu thập"
     },
     "tabs": {
@@ -58,7 +58,7 @@
     "viewer": {
       "author": "Người đăng",
       "uploadedAt": "Đã tải lên lúc",
-      "upvote": "Sửa chữa",
+      "upvote": "Ủng hộ",
       "flag": "Đánh dấu không chính xác",
       "unflag": "Bỏ đánh dấu",
       "uploadAno": "Tải lên khác",
@@ -81,7 +81,7 @@
       "edit": "Chỉnh sửa",
       "submitEdit": "Lưu chỉnh sửa",
       "undoEdit": "Hoàn tác chỉnh sửa",
-      "recall": "Yêu cầu gỡ bình luận",
+      "recall": "Ẩn ngay",
       "reviewing": "Đang duyệt",
       "emptyWithRule": "Chưa có bình luận nào. Vui lòng tuân thủ <a href=\"{link}\">nguyên tắc cộng đồng</a> khi đăng.",
       "ruleOnly": "Vui lòng tuân thủ <a href=\"{link}\">nguyên tắc cộng đồng</a> khi đăng.",
@@ -146,9 +146,34 @@
       "tr-TR": "Thổ Nhĩ Kỳ"
     }
   },
-  "group": {
-    "title": "Cộng đồng & Truyền thông",
-    "visit": "Truy cập"
+  "notification": {
+    "title": "Thông báo",
+    "tabs": {
+      "community": "Tương tác",
+      "system": "Kiểm duyệt"
+    },
+    "markAllRead": "Đánh dấu tất cả là đã đọc",
+    "empty": "Không có tin nhắn. Tin nhắn liên quan đến đóng góp của bạn sẽ xuất hiện tại đây.",
+    "guest": "Đăng nhập bằng {account} để nhận các thông báo liên quan.",
+    "account": "tài khoản OEM",
+    "loadError": "Không thể tải thông báo.",
+    "loadMore": "Tải thêm",
+    "support": "Liên hệ & Hỗ trợ",
+    "visit": "Truy cập",
+    "noDetails": "Không có thông tin chi tiết bổ sung.",
+    "subject": {
+      "image": "hình ảnh",
+      "comment": "bình luận",
+      "submission": "nội dung đóng góp"
+    },
+    "types": {
+      "approved": "<subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> của bạn hiện đã được công khai.",
+      "needsReview": "<subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> của bạn đang chờ kiểm duyệt thủ công.",
+      "removeResolved": "<subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> mà bạn đã thu hồi đã được xử lý.",
+      "reply": "Có câu trả lời mới cho <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> của bạn.",
+      "vote": "<subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> của bạn đã nhận được {count} lượt thích.",
+      "multiple": "<subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> của bạn có {count} cập nhật liên quan."
+    }
   },
   "tos": {
     "title": "Điều khoản & Lưu trữ",
@@ -210,13 +235,13 @@
     "triggerHandle": "Các công tắc liên quan đến hiển thị bản đồ nằm ở dưới cùng của thanh bên.<br>Bạn có thể giữ chuột để <span class=\"keyword\">kéo và thao tác chúng.</span>",
     "triggerSwitch": "Nhấp để chuyển đổi trạng thái công tắc.<br><ul><li><span class=\"keyword\">Chế độ Gộp Điểm</span> cho phép hiển thị các điểm dày đặc được gộp lại;</li><li><span class=\"keyword\">Hiển thị Ranh giới Khu vực</span> làm nổi bật từng khu vực con và ranh giới của nó trong khu vực hiện tại.</li><li><span class=\"keyword\">Hiển thị Tên Khu Vực</span> sẽ hiển thị tên khu vực trong trò chơi.</li></ul>",
     "scale": "Sử dụng <span class=\"keyword\">Điều khiển Thu phóng</span> để xem và thao tác thu phóng bản đồ.<br>Có thể sử dụng con lăn chuột hoặc bàn di chuột để thu phóng. Bạn cũng có thể thu phóng bằng cách nhấp vào nút <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> hoặc bất kỳ đâu trên thanh thu phóng.",
-    "filterList": "<span class=\"keyword\">Danh sách Điểm</span> liệt kê các điểm bạn đã chọn; nhấp vào biểu tượng để bỏ chọn.",
+    "filterList": "<span class=\"keyword\">Danh sách điểm</span> hiển thị các loại điểm bạn đã chọn; nhấp vào biểu tượng để bỏ chọn.",
     "headbar": "Các công tắc liên quan đến cài đặt bản đồ nằm ở <span class=\"keyword\">thanh trên cùng</span>.",
     "tos": "<span class=\"keyword\">Điều khoản Dịch vụ</span> và <span class=\"keyword\">Quản lý Dữ liệu</span> của trang web.",
     "hideUI": "<span class=\"keyword\">Ẩn Giao diện Trang web</span> để chụp ảnh màn hình hoặc xem các điểm ở rìa.",
-    "group": "Xem <span class=\"keyword\">nhóm thảo luận</span> và <span class=\"keyword\">cộng đồng</span> liên quan đến dự án này.",
+    "notification": "Mở <span class=\"keyword\">thông báo</span> để xem các tương tác và kết quả kiểm duyệt liên quan đến đóng góp của bạn.",
     "darkMode": "Chuyển đổi <span class=\"keyword\">chế độ ánh sáng môi trường</span> hiện tại.",
-    "language": "Chuyển đổi <span class=\"keyword\">ngôn ngữ giao diện</span>.<br>Hiện tại, các ngôn ngữ có <span class=\"keyword\">hỗ trợ dịch thuật nội dung trò chơi đầy đủ</span> bao gồm tiếng Anh, tiếng Trung Giản thể, tiếng Trung Phồn thể, tiếng Nhật, tiếng Hàn, tiếng Pháp, tiếng Đức, tiếng Ý, tiếng Nga, tiếng Tây Ban Nha, tiếng Indonesia, tiếng Bồ Đào Nha, tiếng Thái và tiếng Việt.<br>Các ngôn ngữ có <span class=\"keyword\">chỉ hỗ trợ dịch thuật giao diện</span> bao gồm tiếng Ả Rập, tiếng Mã Lai, tiếng Ba Lan và tiếng Thụy Điển.",
+    "language": "Chuyển đổi <span class=\"keyword\">ngôn ngữ giao diện</span>.<br>Hiện tại, các ngôn ngữ có <span class=\"keyword\">hỗ trợ dịch thuật nội dung trò chơi đầy đủ</span> bao gồm tiếng Anh, tiếng Trung Giản thể, tiếng Trung Phồn thể, tiếng Nhật, tiếng Hàn, tiếng Pháp, tiếng Đức, tiếng Ý, tiếng Nga, tiếng Tây Ban Nha, tiếng Indonesia, tiếng Bồ Đào Nha, tiếng Thái và tiếng Việt.<br>Các ngôn ngữ có <span class=\"keyword\">chỉ hỗ trợ dịch thuật giao diện</span> bao gồm tiếng Ả Rập, tiếng Mã Lai, tiếng Ba Lan, tiếng Thụy Điển, tiếng Hy Lạp, tiếng Hindi, tiếng Ukraina và tiếng Thổ Nhĩ Kỳ.",
     "announcement": "Xem <span class=\"keyword\">thông báo trang web</span> gần nhất. Các cập nhật về điều khoản dịch vụ và chính sách bảo mật cũng sẽ được đăng tại đây.",
     "help": "Khởi động lại <span class=\"keyword\">hướng dẫn</span> này.",
     "settings": "Mở <span class=\"keyword\">Cài đặt</span> để kiểm soát việc lưu trữ cục bộ mà bản đồ sử dụng để ghi nhớ các hành động của bạn.",
@@ -240,10 +265,9 @@
   },
   "idcard": {
     "group": "Nhóm: ",
-    "since": "Tham gia từ",
+    "since": "Từ",
     "logintip": "Nhấn avatar để đăng nhập.",
     "registip": "Nhấn avatar để đăng ký.",
-    "ago": "trước",
     "karma": "Karma",
     "loading": "Đang tải...",
     "unassigned": "Không gán",
@@ -410,7 +434,7 @@
     "conflict": {
       "title": "Xung đột dữ liệu",
       "local": "Cục bộ",
-      "remote": "Đám mây",
+      "remote": "Từ xa",
       "official": "Bản đồ chính thức",
       "oemDb": "OEM DB",
       "updatedAt": "Sửa đổi lần cuối",

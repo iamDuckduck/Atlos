@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "Regulamin i przechowywanie",
     "hideUI": "Ukryj interfejs",
-    "group": "Dołącz do powiązanej grupy",
+    "notification": "Powiadomienia",
     "darkmode": "Przełącz na tryb ciemny",
     "lightmode": "Przełącz na tryb jasny",
     "language": "Wybierz język",
@@ -21,7 +21,7 @@
   },
   "search": {
     "placeholder": "Wyszukiwanie globalne...",
-    "results": "{count} wynik(ów)",
+    "results": "{count, plural, one {# wynik} few {# wyniki} many {# wyników} other {# wyniku}}",
     "locatedAt": "Znaleziono w",
     "distributeAt": "Rozprowadzane w"
   },
@@ -39,7 +39,7 @@
     "label": {
       "note": "Notatka",
       "url": "Link",
-      "comments": "Komentarze",
+      "comments": "Najwyżej oceniony komentarz",
       "collectionRate": "Wskaźnik zbierania"
     },
     "tabs": {
@@ -81,7 +81,7 @@
       "edit": "Edytuj",
       "submitEdit": "Zapisz zmiany",
       "undoEdit": "Anuluj zmiany",
-      "recall": "Poproś o usunięcie komentarza",
+      "recall": "Ukryj natychmiast",
       "reviewing": "W weryfikacji",
       "emptyWithRule": "Nie ma jeszcze komentarzy. Podczas publikowania przestrzegaj <a href=\"{link}\">zasad społeczności</a>.",
       "ruleOnly": "Podczas publikowania przestrzegaj <a href=\"{link}\">zasad społeczności</a>.",
@@ -146,9 +146,34 @@
       "tr-TR": "Turecki"
     }
   },
-  "group": {
-    "title": "Społeczność i media",
-    "visit": "Odwiedź"
+  "notification": {
+    "title": "Powiadomienia",
+    "tabs": {
+      "community": "Interakcje",
+      "system": "Moderacja"
+    },
+    "markAllRead": "Oznacz wszystkie jako przeczytane",
+    "empty": "Brak wiadomości. Wiadomości dotyczące Twojego wkładu pojawią się tutaj.",
+    "guest": "Zaloguj się przy użyciu {account}, aby otrzymywać powiązane powiadomienia.",
+    "account": "konta OEM",
+    "loadError": "Nie udało się wczytać powiadomień.",
+    "loadMore": "Wczytaj więcej",
+    "support": "Kontakt i pomoc",
+    "visit": "Odwiedź",
+    "noDetails": "Brak dodatkowych szczegółów.",
+    "subject": {
+      "image": "obraz",
+      "comment": "komentarz",
+      "submission": "wkład"
+    },
+    "types": {
+      "approved": "Twój <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> jest teraz publiczny.",
+      "needsReview": "Twój <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> oczekuje na ręczną weryfikację.",
+      "removeResolved": "Twój wycofany <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> został przetworzony.",
+      "reply": "Dodano nową odpowiedź do Twojego <subjectTag>{kind, select, image {obrazu} comment {komentarza} submission {wkładu} other {{subject}}}</subjectTag> <pointTag>{point}</pointTag>.",
+      "vote": "Twój <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> otrzymał {count, plural, one {# polubienie} few {# polubienia} many {# polubień} other {# polubienia}}.",
+      "multiple": "Twój <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> ma {count, plural, one {# powiązaną aktualizację} few {# powiązane aktualizacje} many {# powiązanych aktualizacji} other {# powiązanej aktualizacji}}."
+    }
   },
   "tos": {
     "title": "Warunki i pamięć",
@@ -210,13 +235,13 @@
     "triggerHandle": "Przełączniki związane z wyświetlaniem mapy znajdują się na dole panelu bocznego.<br>Możesz przytrzymać mysz, aby <span class=\"keyword\">przeciągnąć i obsługiwać je.</span>",
     "triggerSwitch": "Kliknij, aby przełączyć stan.<br><ul><li><span class=\"keyword\">Tryb klastrowania znaczników</span> pozwala łączyć gęsto rozmieszczone znaczniki;</li><li><span class=\"keyword\">Wyświetlanie granic regionów</span> podświetla każdy podregion i jego granice w bieżącym obszarze.</li><li><span class=\"keyword\">Nazwy regionów</span> pokazują nazwy regionów w grze.</li></ul>",
     "scale": "Użyj <span class=\"keyword\">kontrolki przybliżenia</span>, aby zmieniać poziom powiększenia mapy.<br>Możesz użyć kółka myszy lub gładzika. Możesz także przybliżać, klikając <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> lub dowolne miejsce na pasku powiększenia.",
-    "filterList": "<span class=\"keyword\">Lista znaczników</span> pokazuje wybrane przez Ciebie znaczniki; kliknij ikonę, aby je odznaczyć.",
+    "filterList": "<span class=\"keyword\">Lista znaczników</span> pokazuje wybrane typy znaczników; kliknij ikonę, aby je odznaczyć.",
     "headbar": "Przełączniki związane z ustawieniami mapy znajdują się na <span class=\"keyword\">górnym pasku</span>.",
     "tos": "<span class=\"keyword\">Warunki korzystania</span> i <span class=\"keyword\">zarządzanie danymi</span> strony.",
     "hideUI": "<span class=\"keyword\">Ukryj interfejs strony</span>, aby robić zrzuty ekranu lub oglądać znaczniki na krawędziach.",
-    "group": "Zobacz <span class=\"keyword\">grupy dyskusyjne</span> i <span class=\"keyword\">społeczności</span> związane z tym projektem.",
+    "notification": "Otwórz <span class=\"keyword\">powiadomienia</span>, aby zobaczyć interakcje i wyniki weryfikacji dotyczące Twojego wkładu.",
     "darkMode": "Przełącz bieżący <span class=\"keyword\">tryb oświetlenia otoczenia</span>.",
-    "language": "Zmień <span class=\"keyword\">język interfejsu</span>.<br>Obecnie języki z <span class=\"keyword\">pełnym wsparciem tłumaczenia treści w grze</span> to angielski, chiński uproszczony, chiński tradycyjny, japoński, koreański, francuski, niemiecki, włoski, rosyjski, hiszpański, indonezyjski, portugalski, tajski i wietnamski.<br>Języki z <span class=\"keyword\">jedynie tłumaczeniem interfejsu</span> to arabski, malajski, polski i szwedzki.",
+    "language": "Zmień <span class=\"keyword\">język interfejsu</span>.<br>Obecnie języki z <span class=\"keyword\">pełnym wsparciem tłumaczenia treści w grze</span> to angielski, chiński uproszczony, chiński tradycyjny, japoński, koreański, francuski, niemiecki, włoski, rosyjski, hiszpański, indonezyjski, portugalski, tajski i wietnamski.<br>Języki z <span class=\"keyword\">jedynie tłumaczeniem interfejsu</span> to arabski, malajski, polski, szwedzki, grecki, hindi, ukraiński i turecki.",
     "announcement": "Zobacz <span class=\"keyword\">ogłoszenia strony</span>. Aktualizacje regulaminu i polityki prywatności będą również publikowane tutaj.",
     "help": "Uruchom ponownie ten <span class=\"keyword\">samouczek</span>.",
     "settings": "Otwórz <span class=\"keyword\">Preferencje</span>, aby kontrolować, jakiego lokalnego przechowywania danych mapa używa do zapamiętywania Twoich działań.",
@@ -243,7 +268,6 @@
     "since": "Od",
     "logintip": "Kliknij avatar – logowanie.",
     "registip": "Kliknij avatar – rejestracja.",
-    "ago": "temu",
     "karma": "Karma",
     "loading": "Ładowanie...",
     "unassigned": "Nie przypisany",
@@ -402,7 +426,7 @@
     "now": "Synchronizuj z OEM Cloud",
     "already": "Zsynchronizowano z chmurą",
     "done": "Zsynchronizowano - {times} temu",
-    "syncing": "Synchronizacja {count} punktów",
+    "syncing": "{count, plural, one {Synchronizacja # punktu} few {Synchronizacja # punktów} many {Synchronizacja # punktów} other {Synchronizacja # punktu}}",
     "failed": "Błąd synchronizacji ({reason})",
     "offline": "Offline",
     "dataConflict": "Konflikt danych",

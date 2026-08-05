@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "Villkor & Lagring",
     "hideUI": "Dölj UI",
-    "group": "Gå med i relaterad grupp",
+    "notification": "Aviseringar",
     "darkmode": "Växla till mörkt läge",
     "lightmode": "Växla till ljust läge",
     "language": "Välj språk",
@@ -81,7 +81,7 @@
       "edit": "Redigera",
       "submitEdit": "Spara ändringar",
       "undoEdit": "Ångra ändringar",
-      "recall": "Begär borttagning av kommentar",
+      "recall": "Dölj direkt",
       "reviewing": "Granskas",
       "emptyWithRule": "Inga kommentarer ännu. Följ <a href=\"{link}\">communityriktlinjerna</a> när du publicerar.",
       "ruleOnly": "Följ <a href=\"{link}\">communityriktlinjerna</a> när du publicerar.",
@@ -146,9 +146,34 @@
       "tr-TR": "Turkiska"
     }
   },
-  "group": {
-    "title": "Community & Media",
-    "visit": "Besök"
+  "notification": {
+    "title": "Aviseringar",
+    "tabs": {
+      "community": "Interaktioner",
+      "system": "Moderering"
+    },
+    "markAllRead": "Markera alla som lästa",
+    "empty": "Inga meddelanden. Meddelanden om dina bidrag visas här.",
+    "guest": "Logga in med ditt {account} för att få relevanta aviseringar.",
+    "account": "OEM-konto",
+    "loadError": "Aviseringarna kunde inte läsas in.",
+    "loadMore": "Läs in fler",
+    "support": "Kontakt och support",
+    "visit": "Besök",
+    "noDetails": "Det finns inga ytterligare uppgifter.",
+    "subject": {
+      "image": "bild",
+      "comment": "kommentar",
+      "submission": "bidrag"
+    },
+    "types": {
+      "approved": "{kind, select, submission {Ditt} other {Din}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> är nu {kind, select, submission {offentligt} other {offentlig}}.",
+      "needsReview": "{kind, select, submission {Ditt} other {Din}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> väntar på manuell granskning.",
+      "removeResolved": "{kind, select, submission {Ditt} other {Din}} återkallade <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> har behandlats.",
+      "reply": "Ett nytt svar har lagts till i {kind, select, submission {ditt} other {din}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag>.",
+      "vote": "{kind, select, submission {Ditt} other {Din}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> fick {count, plural, one {# gilla-markering} other {# gilla-markeringar}}.",
+      "multiple": "{kind, select, submission {Ditt} other {Din}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> har {count, plural, one {# relaterad uppdatering} other {# relaterade uppdateringar}}."
+    }
   },
   "tos": {
     "title": "Villkor & Lagring",
@@ -210,13 +235,13 @@
     "triggerHandle": "Reglage relaterade till kartvisning finns längst ner i sidofältet.<br>Du kan hålla ner musen för att <span class=\"keyword\">dra och hantera dem.</span>",
     "triggerSwitch": "Klicka för att växla status.<br><ul><li><span class=\"keyword\">Markörklusterläge</span> tillåter att täta markörer visas sammanslagna;</li><li><span class=\"keyword\">Regiongränsvisning</span> markerar varje underregion och dess gränser inom det aktuella området.</li><li><span class=\"keyword\">Regionnamn</span> visar regionnamn från spelet.</li></ul>",
     "scale": "Använd <span class=\"keyword\">Zoomkontrollen</span> för att se och hantera kartzoom.<br>Scrollhjul eller pekplatta kan användas för att zooma. Du kan också zooma genom att klicka på <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> knapparna eller var som helst på zoomfältet.",
-    "filterList": "<span class=\"keyword\">Markörlistan</span> listar de markörer du har valt; klicka på ikonen för att avmarkera.",
+    "filterList": "<span class=\"keyword\">Markörlistan</span> visar de markörtyper du har valt; klicka på ikonen för att avmarkera.",
     "headbar": "Inställningar relaterade till kartan finns i <span class=\"keyword\">toppmenyn</span>.",
     "tos": "Webbplatsens <span class=\"keyword\">Användarvillkor</span> och <span class=\"keyword\">Datahantering</span>.",
     "hideUI": "<span class=\"keyword\">Dölj Webbplatsens UI</span> för att ta skärmdumpar eller se kantmarkörer.",
-    "group": "Visa <span class=\"keyword\">diskussionsgrupper</span> och <span class=\"keyword\">communities</span> relaterade till detta projekt.",
+    "notification": "Öppna <span class=\"keyword\">aviseringar</span> för att se interaktioner och granskningsresultat för dina bidrag.",
     "darkMode": "Växla det nuvarande <span class=\"keyword\">omgivande ljusläget</span>.",
-    "language": "Byt <span class=\"keyword\">gränssnittsspråk</span>.<br>Språk med <span class=\"keyword\">fullt stöd för översättning av spelinnehåll</span> inkluderar engelska, förenklad kinesiska, traditionell kinesiska, japanska, koreanska, franska, tyska, italienska, ryska, spanska, indonesiska, portugisiska, thailändska och vietnamesiska.<br><span class=\"keyword\">Endast UI-språk</span> (endast gränssnittsöversättningar) inkluderar arabiska, malaysiska, polska och svenska.",
+    "language": "Byt <span class=\"keyword\">gränssnittsspråk</span>.<br>Språk med <span class=\"keyword\">fullt stöd för översättning av spelinnehåll</span> inkluderar engelska, förenklad kinesiska, traditionell kinesiska, japanska, koreanska, franska, tyska, italienska, ryska, spanska, indonesiska, portugisiska, thailändska och vietnamesiska.<br><span class=\"keyword\">Endast UI-språk</span> (endast gränssnittsöversättningar) inkluderar arabiska, malaysiska, polska, svenska, grekiska, hindi, ukrainska och turkiska.",
     "announcement": "Visa <span class=\"keyword\">webbplatsmeddelanden</span>. Uppdateringar av användarvillkor och sekretesspolicy kommer också att publiceras här.",
     "help": "Starta om denna <span class=\"keyword\">guide</span>.",
     "settings": "Öppna <span class=\"keyword\">Inställningar</span> för att kontrollera vilken lokal lagring kartan använder för att komma ihåg dina handlingar.",
@@ -243,7 +268,6 @@
     "since": "Sedan",
     "logintip": "Klicka avatar – logga in.",
     "registip": "Klicka avatar – registrera.",
-    "ago": "sedan",
     "karma": "Karma",
     "loading": "Laddar...",
     "unassigned": "Ej tilldelat",
@@ -287,7 +311,7 @@
       "ackLink": "<a href=\"{privacy}\">Sekretesspolicyn</a> och <a href=\"{tos}\">användarvillkoren</a>.",
       "hints": {
         "0": "Fel e-post eller lösenord",
-        "101": "-post krävs",
+        "101": "E-post krävs",
         "102": "Ogiltig e-postadress",
         "103": "E-posten används redan",
         "104": "E-posten hittades inte",
@@ -402,7 +426,7 @@
     "now": "Synkronisera med OEM Cloud",
     "already": "Synkroniserad med molnet",
     "done": "Synkroniserad - för {times} sedan",
-    "syncing": "Synkroniserar {count} punkter",
+    "syncing": "{count, plural, one {Synkroniserar # punkt} other {Synkroniserar # punkter}}",
     "failed": "Synkronisering misslyckades ({reason})",
     "offline": "Offline",
     "dataConflict": "Datakonflikt",

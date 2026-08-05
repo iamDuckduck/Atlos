@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './viewer.module.scss';
 import PopoverTooltip from '@/component/popover/popover';
-import { useTranslateUI } from '@/locale';
-import { formatRelativeTime, parseDateLike } from '@/utils/timeFormat';
+import { useLocale, useTranslateUI } from '@/locale';
+import { formatAbsoluteTime, formatRelativeTime, parseTimestamp } from '@/utils/timeFormat';
 import UpvoteIcon from '@/assets/images/UI/upvote.svg?react';
 import FlagIcon from '@/assets/images/UI/flag.svg?react';
 import ShareIcon from '@/assets/images/UI/share.svg?react';
@@ -112,6 +112,7 @@ const Viewer: React.FC<ViewerProps> = ({
     const [createdAtAgo, setCreatedAtAgo] = useState('');
     const [carouselHoverDirection, setCarouselHoverDirection] = useState<CarouselDirection | null>(null);
     const tUI = useTranslateUI();
+    const locale = useLocale();
     const carouselImages = useMemo(
         () => images?.length ? images : [],
         [images],
@@ -132,21 +133,15 @@ const Viewer: React.FC<ViewerProps> = ({
         ? Boolean(selectedImage.recallRequested || selectedImage.status === 'remove_request')
         : recallRequested;
 
-    const createdAtDate = useMemo(() => parseDateLike(currentCreatedAt), [currentCreatedAt]);
-    const createdAtLabel = createdAtDate ? formatRelativeTime(createdAtDate, {
-        precision: 'dateTime',
-        agoDisplay: 'hover',
-        agoLabel: tUI('idcard.ago'),
-    }).label : '';
+    const createdAtDate = useMemo(() => parseTimestamp(currentCreatedAt), [currentCreatedAt]);
+    const createdAtLabel = createdAtDate
+        ? formatAbsoluteTime(createdAtDate, { locale, precision: 'dateTime' })
+        : '';
     const refreshCreatedAtAgo = useCallback(() => {
         setCreatedAtAgo(createdAtDate
-            ? formatRelativeTime(createdAtDate, {
-                precision: 'dateTime',
-                agoDisplay: 'hover',
-                agoLabel: tUI('idcard.ago'),
-            }).hoverLabel
+            ? formatRelativeTime(createdAtDate, { locale })
             : '');
-    }, [createdAtDate, tUI]);
+    }, [createdAtDate, locale]);
     const flagLabel = currentFlagged ? tUI('detail.viewer.unflag') : tUI('detail.viewer.flag');
     const recallLabel = recallConfirming
         ? tUI('common.confirmAgain')

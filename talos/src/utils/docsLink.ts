@@ -8,7 +8,7 @@ import {
 const DOCS_BASE = 'https://blog.opendfieldmap.org';
 const LINK_RE = /<a\s+href=["']\{([a-zA-Z0-9_-]+)\}["']>(.*?)<\/a>/gi;
 
-export const DOCS_LOCALES = ['en', 'zh-cn', 'zh-hk', 'ja', 'ko'] as const;
+export const DOCS_LOCALES = ['en', 'zh-cn', 'zh-hk', 'ja', 'ko', 'ru'] as const;
 export type DocsLocale = (typeof DOCS_LOCALES)[number];
 
 export const DOCS = {
@@ -27,6 +27,7 @@ export const docsLocale = (locale?: string): DocsLocale => {
     if (normalized.startsWith('zh-hk') || normalized.startsWith('zh-tw')) return 'zh-hk';
     if (normalized.startsWith('ja')) return 'ja';
     if (normalized.startsWith('ko')) return 'ko';
+    if (normalized.startsWith('ru')) return 'ru';
     return 'en';
 };
 

@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "الشروط والتخزين",
     "hideUI": "إخفاء الواجهة",
-    "group": "الانضمام للمجتمع",
+    "notification": "الإشعارات",
     "darkmode": "الوضع الداكن",
     "lightmode": "الوضع الفاتح",
     "language": "اختيار اللغة",
@@ -21,7 +21,7 @@
   },
   "search": {
     "placeholder": "بحث شامل...",
-    "results": "{count} نتيجة",
+    "results": "{count, plural, zero {لا نتائج} one {نتيجة واحدة} two {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}",
     "locatedAt": "ضمن",
     "distributeAt": "يتواجد في"
   },
@@ -58,7 +58,7 @@
     "viewer": {
       "author": "الناشر",
       "uploadedAt": "تاريخ الرفع",
-      "upvote": "تأكيد",
+      "upvote": "تصويت مؤيد",
       "flag": "إبلاغ عن خطأ",
       "unflag": "إلغاء الإبلاغ",
       "uploadAno": "رفع صورة أخرى",
@@ -81,7 +81,7 @@
       "edit": "تعديل",
       "submitEdit": "حفظ التعديل",
       "undoEdit": "التراجع عن التعديل",
-      "recall": "طلب إزالة التعليق",
+      "recall": "إخفاء فورًا",
       "reviewing": "قيد المراجعة",
       "emptyWithRule": "لا توجد تعليقات بعد. يرجى الالتزام بـ<a href=\"{link}\">إرشادات المجتمع</a> عند النشر.",
       "ruleOnly": "يرجى الالتزام بـ<a href=\"{link}\">إرشادات المجتمع</a> عند النشر.",
@@ -90,7 +90,7 @@
       "editFailed": "تعذر تحديث التعليق."
     },
     "errors": {
-      "unsupportedType": "يُدعم فقط صيغ JPEG/PNG/WebP/AVIF.",
+      "unsupportedType": "تُدعم فقط صور JPEG/PNG/WebP/AVIF/HEIC.",
       "fileTooLarge": "حجم الصورة كبير جداً.",
       "imageDecodeFailed": "لم يتمكن المتصفح من قراءة الصورة.",
       "imageProcessingUnavailable": "معالجة الصور المحلية غير متاحة.",
@@ -146,9 +146,34 @@
       "tr-TR": "التركية"
     }
   },
-  "group": {
-    "title": "المجتمع والمنصات",
-    "visit": "زيارة"
+  "notification": {
+    "title": "الإشعارات",
+    "tabs": {
+      "community": "التفاعلات",
+      "system": "الإشراف"
+    },
+    "markAllRead": "تحديد الكل كمقروء",
+    "empty": "لا توجد رسائل. ستظهر هنا الرسائل المتعلقة بمساهماتك.",
+    "guest": "سجّل الدخول باستخدام {account} لتلقي الإشعارات ذات الصلة.",
+    "account": "حساب OEM",
+    "loadError": "تعذر تحميل الإشعارات.",
+    "loadMore": "تحميل المزيد",
+    "support": "التواصل والدعم",
+    "visit": "زيارة",
+    "noDetails": "لا توجد تفاصيل إضافية.",
+    "subject": {
+      "image": "الصورة",
+      "comment": "التعليق",
+      "submission": "المساهمة"
+    },
+    "types": {
+      "approved": "{kind, select, comment {أصبح} other {أصبحت}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, comment {الخاص بك متاحًا} other {الخاصة بك متاحة}} للعامة.",
+      "needsReview": "{kind, select, comment {ينتظر} other {تنتظر}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, comment {الخاص بك} other {الخاصة بك}} المراجعة اليدوية.",
+      "removeResolved": "تمت معالجة <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, comment {الذي} other {التي}} سحبته.",
+      "reply": "تمت إضافة رد جديد إلى <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, comment {الخاص بك} other {الخاصة بك}}.",
+      "vote": "{kind, select, comment {تلقى} other {تلقت}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, comment {الخاص بك} other {الخاصة بك}} {count, plural, zero {لا إعجابات} one {إعجابًا واحدًا} two {إعجابين} few {# إعجابات} many {# إعجابًا} other {# إعجاب}}.",
+      "multiple": "{count, plural, zero {لا توجد تحديثات مرتبطة} one {يوجد تحديث واحد مرتبط} two {يوجد تحديثان مرتبطان} few {توجد # تحديثات مرتبطة} many {يوجد # تحديثًا مرتبطًا} other {يوجد # تحديث مرتبط}} بشأن <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, comment {الخاص بك} other {الخاصة بك}}."
+    }
   },
   "tos": {
     "title": "الشروط والتخزين",
@@ -210,13 +235,13 @@
     "triggerHandle": "مفاتيح التحكم بالخريطة موجودة بأسفل الشريط الجانبي.<br>يمكنك <span class=\"keyword\">سحبها للتحكم بها</span>.",
     "triggerSwitch": "انقر لتغيير حالة المفتاح.<br><ul><li><span class=\"keyword\">وضع تجميع النقاط</span> لدمج العلامات المتقاربة؛</li><li><span class=\"keyword\">عرض الحدود</span> لإبراز كل منطقة فرعية وحدودها.</li><li><span class=\"keyword\">عرض أسماء المناطق</span> لإظهار أسماء المناطق كما في اللعبة.</li></ul>",
     "scale": "استخدم <span class=\"keyword\">أداة التكبير/التصغير</span> للتحكم بمستوى عرض الخريطة.<br>يمكنك استخدام عجلة الفأرة، أو أزرار <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> للتكبير والتصغير.",
-    "filterList": "تُظهر <span class=\"keyword\">قائمة العلامات</span> العناصر التي حددتها؛ انقر على الأيقونة لإلغاء التحديد.",
+    "filterList": "تعرض <span class=\"keyword\">قائمة العلامات</span> أنواع العلامات التي حددتها؛ انقر على الأيقونة لإلغاء التحديد.",
     "headbar": "إعدادات الخريطة موجودة في <span class=\"keyword\">الشريط العلوي</span>.",
     "tos": "<span class=\"keyword\">شروط الخدمة</span> و<span class=\"keyword\">إدارة البيانات</span> الخاصة بالموقع.",
     "hideUI": "<span class=\"keyword\">إخفاء الواجهة</span> لالتقاط شاشة نظيفة أو رؤية العلامات على الأطراف.",
-    "group": "استعرض <span class=\"keyword\">المجتمعات ومجموعات النقاش</span> المتعلقة بالمشروع.",
+    "notification": "افتح <span class=\"keyword\">الإشعارات</span> لعرض التفاعلات ونتائج المراجعة المتعلقة بمساهماتك.",
     "darkMode": "تبديل <span class=\"keyword\">المظهر الفاتح/الداكن</span>.",
-    "language": "تغيير <span class=\"keyword\">لغة الواجهة</span>.<br>اللغات <span class=\"keyword\">المدعومة بالكامل (لواجهة الموقع ومحتوى اللعبة)</span> تشمل: الإنجليزية، الصينية، اليابانية، الكورية، الفرنسية، الألمانية، الإيطالية، الروسية، الإسبانية، الإندونيسية، البرتغالية، التايلاندية، والفيتنامية.<br>اللغات <span class=\"keyword\">المدعومة للواجهة فقط</span> تشمل: العربية، الماليزية، البولندية، والسويدية.",
+    "language": "تغيير <span class=\"keyword\">لغة الواجهة</span>.<br>اللغات <span class=\"keyword\">المدعومة بالكامل (لواجهة الموقع ومحتوى اللعبة)</span> تشمل: الإنجليزية، الصينية المبسطة، الصينية التقليدية، اليابانية، الكورية، الفرنسية، الألمانية، الإيطالية، الروسية، الإسبانية، الإندونيسية، البرتغالية، التايلاندية، والفيتنامية.<br>اللغات <span class=\"keyword\">المدعومة للواجهة فقط</span> تشمل: العربية، الماليزية، البولندية، السويدية، اليونانية، الهندية، الأوكرانية، والتركية.",
     "announcement": "استعرض <span class=\"keyword\">إعلانات الموقع</span> والتحديثات الخاصة بسياسة الخصوصية.",
     "help": "إعادة تشغيل <span class=\"keyword\">الدليل التعريفي</span>.",
     "settings": "افتح <span class=\"keyword\">الإعدادات</span> للتحكم بخيارات التخزين المحلي وأداء الخريطة.",
@@ -243,7 +268,6 @@
     "since": "عضو منذ",
     "logintip": "انقر لتسجيل الدخول",
     "registip": "انقر لإنشاء حساب",
-    "ago": "مضت",
     "karma": "نقاط السمعة",
     "loading": "جارٍ التحميل",
     "unassigned": "غير معين",
@@ -401,8 +425,8 @@
   "sync": {
     "now": "مزامنة البيانات مع سحابة OEM",
     "already": "متطابق مع السحابة",
-    "done": "تمت المزامنة-· قبل {times}",
-    "syncing": "جاري مزامنة {count} نقطة",
+    "done": "تمت المزامنة قبل {times}",
+    "syncing": "{count, plural, zero {لا نقاط للمزامنة} one {جارٍ مزامنة نقطة واحدة} two {جارٍ مزامنة نقطتين} few {جارٍ مزامنة # نقاط} many {جارٍ مزامنة # نقطة} other {جارٍ مزامنة # نقطة}}",
     "failed": "فشلت المزامنة ({reason})",
     "offline": "غير متصل",
     "dataConflict": "تعارض في البيانات",

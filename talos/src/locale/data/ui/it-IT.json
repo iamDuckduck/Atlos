@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "Termini e Archiviazione",
     "hideUI": "Nascondi Interfaccia",
-    "group": "Unisciti al gruppo correlato",
+    "notification": "Notifiche",
     "darkmode": "Passa alla modalità scura",
     "lightmode": "Passa alla modalità chiara",
     "language": "Scegli la lingua",
@@ -21,7 +21,7 @@
   },
   "search": {
     "placeholder": "Ricerca globale...",
-    "results": "{count} risultato(i)",
+    "results": "{count, plural, one {# risultato} other {# risultati}}",
     "locatedAt": "Trovato in",
     "distributeAt": "Distribuito in"
   },
@@ -81,7 +81,7 @@
       "edit": "Modifica",
       "submitEdit": "Salva modifiche",
       "undoEdit": "Annulla modifiche",
-      "recall": "Richiedi rimozione commento",
+      "recall": "Nascondi subito",
       "reviewing": "In revisione",
       "emptyWithRule": "Non ci sono ancora commenti. Quando pubblichi, segui le <a href=\"{link}\">linee guida della community</a>.",
       "ruleOnly": "Quando pubblichi, segui le <a href=\"{link}\">linee guida della community</a>.",
@@ -146,9 +146,34 @@
       "tr-TR": "Turco"
     }
   },
-  "group": {
-    "title": "Comunità e Media",
-    "visit": "Visita"
+  "notification": {
+    "title": "Notifiche",
+    "tabs": {
+      "community": "Interazioni",
+      "system": "Moderazione"
+    },
+    "markAllRead": "Segna tutto come letto",
+    "empty": "Nessun messaggio. I messaggi relativi ai tuoi contributi appariranno qui.",
+    "guest": "Accedi con il tuo {account} per ricevere le notifiche pertinenti.",
+    "account": "account OEM",
+    "loadError": "Impossibile caricare le notifiche.",
+    "loadMore": "Carica altro",
+    "support": "Contatti e assistenza",
+    "visit": "Visita",
+    "noDetails": "Nessun dettaglio aggiuntivo.",
+    "subject": {
+      "image": "immagine",
+      "comment": "commento",
+      "submission": "contributo"
+    },
+    "types": {
+      "approved": "{kind, select, image {La tua} other {Il tuo}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> è ora {kind, select, image {pubblica} other {pubblico}}.",
+      "needsReview": "{kind, select, image {La tua} other {Il tuo}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> è in attesa di revisione manuale.",
+      "removeResolved": "{kind, select, image {La tua} other {Il tuo}} <subjectTag>{subject}</subjectTag> {kind, select, image {ritirata} other {ritirato}} <pointTag>{point}</pointTag> è {kind, select, image {stata elaborata} other {stato elaborato}}.",
+      "reply": "È stata aggiunta una nuova risposta {kind, select, image {alla tua} other {al tuo}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag>.",
+      "vote": "{kind, select, image {La tua} other {Il tuo}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> ha ricevuto {count} Mi piace.",
+      "multiple": "{kind, select, image {La tua} other {Il tuo}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> ha {count, plural, one {# aggiornamento correlato} other {# aggiornamenti correlati}}."
+    }
   },
   "tos": {
     "title": "Termini e Archiviazione",
@@ -210,13 +235,13 @@
     "triggerHandle": "Gli interruttori relativi alla visualizzazione della mappa si trovano nella parte inferiore della barra laterale.<br>Puoi tenere premuto il mouse per <span class=\"keyword\">trascinarli e azionarli.</span>",
     "triggerSwitch": "Clicca per attivare/disattivare lo stato dell'interruttore.<br><ul><li><span class=\"keyword\">La modalità di raggruppamento dei marcatori</span> consente di visualizzare i marcatori densi uniti;</li><li><span class=\"keyword\">La visualizzazione dei confini della regione</span> evidenzia ogni sottoregione e i suoi confini all'interno dell'area corrente.</li><li><span class=\"keyword\">Nomi delle regioni</span> mostra i nomi delle regioni nel gioco.</li></ul>",
     "scale": "Usa il <span class=\"keyword\">controllo dello zoom</span> per visualizzare e manipolare lo zoom della mappa.<br>La rotellina o il trackpad possono essere utilizzati per zoomare. Puoi anche zoomare cliccando sui pulsanti <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> o ovunque sulla barra dello zoom.",
-    "filterList": "L'<span class=\"keyword\">elenco dei marcatori</span> elenca i marcatori che hai selezionato; clicca sull'icona per deselezionare.",
+    "filterList": "L'<span class=\"keyword\">elenco dei marcatori</span> mostra i tipi di marcatori selezionati; clicca sull'icona per deselezionarli.",
     "headbar": "Gli interruttori relativi alle impostazioni della mappa si trovano nella <span class=\"keyword\">barra superiore</span>.",
     "tos": "I <span class=\"keyword\">Termini di servizio</span> e la <span class=\"keyword\">Gestione dei dati</span> del sito web.",
     "hideUI": "<span class=\"keyword\">Nascondi l'interfaccia utente del sito web</span> per fare screenshot o visualizzare i marcatori ai bordi.",
-    "group": "Visualizza <span class=\"keyword\">gruppi di discussione</span> e <span class=\"keyword\">comunità</span> relativi a questo progetto.",
+    "notification": "Apri le <span class=\"keyword\">notifiche</span> per vedere interazioni e risultati della revisione relativi ai tuoi contributi.",
     "darkMode": "Attiva/disattiva la <span class=\"keyword\">modalità luce ambientale</span> corrente.",
-    "language": "Cambia la <span class=\"keyword\">lingua dell'interfaccia</span>.<br>Attualmente, le lingue con <span class=\"keyword\">supporto completo per la traduzione dei contenuti del gioco</span> includono inglese, cinese semplificato, cinese tradizionale, giapponese, coreano, francese, tedesco, italiano, russo, spagnolo, indonesiano, portoghese, tailandese e vietnamita.<br>Le lingue con <span class=\"keyword\">solo supporto per la traduzione dell'interfaccia</span> includono arabo, malese, polacco e svedese.",
+    "language": "Cambia la <span class=\"keyword\">lingua dell'interfaccia</span>.<br>Attualmente, le lingue con <span class=\"keyword\">supporto completo per la traduzione dei contenuti del gioco</span> includono inglese, cinese semplificato, cinese tradizionale, giapponese, coreano, francese, tedesco, italiano, russo, spagnolo, indonesiano, portoghese, tailandese e vietnamita.<br>Le lingue con <span class=\"keyword\">solo supporto per la traduzione dell'interfaccia</span> includono arabo, malese, polacco, svedese, greco, hindi, ucraino e turco.",
     "announcement": "Visualizza le <span class=\"keyword\">notifiche del sito web</span>. Le aggiornamenti alle condizioni di servizio e alla politica sulla privacy verranno anche pubblicati qui.",
     "help": "Riavvia questa <span class=\"keyword\">guida</span>.",
     "settings": "Apri <span class=\"keyword\">Impostazioni</span> per controllare l'archivio locale utilizzato dalla mappa per ricordare le tue azioni.",
@@ -243,7 +268,6 @@
     "since": "Dal",
     "logintip": "Clicca sull'avatar per accedere.",
     "registip": "Clicca sull'avatar per registrarti",
-    "ago": "fa",
     "karma": "Karma",
     "loading": "Caricamento...",
     "unassigned": "Non assegnato",
@@ -290,7 +314,7 @@
         "101": "E-mail obbligatoria",
         "102": "E-mail non valida",
         "103": "E-mail occupata",
-        "104": "E-mail nulla",
+        "104": "E-mail non trovata",
         "105": "E-mail non supportata",
         "111": "Password richiesta",
         "112": "Password non valida",
@@ -299,14 +323,14 @@
         "122": "OTP non valida",
         "123": "OTP scaduta",
         "200": "Accesso concesso",
-        "201": "Conto creato",
+        "201": "Account creato",
         "202": "Password modificata",
-        "429": "Tariffa limitata",
+        "429": "Troppe richieste",
         "430": "Controllo di sicurezza",
-        "601": "Gettone scaduto",
+        "601": "Token scaduto",
         "602": "Sessione richiesta",
         "603": "Accesso negato",
-        "604": "Conflitto tra fornitori",
+        "604": "Conflitto del provider",
         "701": "Sovraccarico",
         "702": "Tempo scaduto",
         "703": "Manutenzione",
@@ -322,10 +346,10 @@
       "note": "Nota",
       "noteNickname": "Non puoi utilizzare più di 15 lettere, numeri, trattini e trattini bassi nel tuo nome utente.",
       "noteUID": "L'UID viene assegnato alla prima configurazione e non può essere modificato. Puoi aggiornare il tuo nome utente in qualsiasi momento. Fare clic sull'area avatar per cambiare avatar.",
-      "auditLabel": "Controllo",
+      "auditLabel": "Azione",
       "importOfficial": "Importa dalla mappa ufficiale",
       "save": "Salva modifiche",
-      "saving": "Risparmio...",
+      "saving": "Salvataggio...",
       "logout": "Disconnessione"
     }
   },
@@ -402,7 +426,7 @@
     "now": "Sincronizza con OEM Cloud",
     "already": "Sincronizzato con il cloud",
     "done": "Sincronizzato - {times} fa",
-    "syncing": "Sincronizzazione di {count} punti",
+    "syncing": "{count, plural, one {Sincronizzazione di # punto} other {Sincronizzazione di # punti}}",
     "failed": "Sincronizzazione non riuscita ({reason})",
     "offline": "Offline",
     "dataConflict": "Conflitto di dati",

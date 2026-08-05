@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { useTranslateUI } from '@/locale';
-import { formatRelativeTime, parseDateLike } from '@/utils/timeFormat';
+import { useLocale, useTranslateUI } from '@/locale';
+import { formatAbsoluteTime, formatRelativeTime, parseTimestamp } from '@/utils/timeFormat';
 import type { SessionUser, UserGroupCode } from './authTypes';
 
 type KarmaLevel = 0 | 1 | 2 | 3 | 4 | 5;
@@ -81,6 +81,7 @@ export const useIdCardProfileViewModel = ({
   authReady = true,
 }: UseIdCardProfileViewModelOptions): IdCardProfileViewModel => {
   const t = useTranslateUI();
+  const locale = useLocale();
 
   return useMemo(() => {
     if (!authReady && hasLoggedInBefore) {
@@ -128,18 +129,16 @@ export const useIdCardProfileViewModel = ({
     const groupText = `${group}${groupName}`;
 
     const since = t('idcard.since');
-    const ago = t('idcard.ago');
     const registipText = t('idcard.registip');
     const logintipText = t('idcard.logintip');
-    const registeredDate = parseDateLike(sessionUser?.registeredAt);
+    const registeredDate = parseTimestamp(sessionUser?.registeredAt);
     const ageText = isGuest
       ? hasLoggedInBefore ? logintipText : registipText
       : registeredDate
-      ? `${since} ${formatRelativeTime(registeredDate, {
+      ? `${since} ${formatAbsoluteTime(registeredDate, {
+          locale,
           precision: 'date',
-          agoDisplay: 'inline',
-          agoLabel: ago,
-        }).label}`
+        })} (${formatRelativeTime(registeredDate, { locale })})`
       : `${since} --`;
 
     const titleSource = isGuest ? 'g' : sessionUser?.titleCode || groupCode;
@@ -164,5 +163,5 @@ export const useIdCardProfileViewModel = ({
       karmaLevel,
       karmaTooltip,
     };
-  }, [authReady, fallbackUid, fallbackUsername, hasLoggedInBefore, sessionUser, t]);
+  }, [authReady, fallbackUid, fallbackUsername, hasLoggedInBefore, locale, sessionUser, t]);
 };

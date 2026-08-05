@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuthStore } from '@/store/auth';
 import type { IMarkerData } from '@/data/marker';
+import { parseTimestamp } from '@/utils/timeFormat';
 import {
     listUGCImages,
     listUGCMyImages,
@@ -31,8 +32,7 @@ export const getUpvoteCount = (image: UGCImage): number => (
 );
 
 const getImageCreatedAtTime = (image: UGCImage): number => {
-    const time = Date.parse(image.createdAt);
-    return Number.isNaN(time) ? Number.MAX_SAFE_INTEGER : time;
+    return parseTimestamp(image.createdAt)?.getTime() ?? Number.MAX_SAFE_INTEGER;
 };
 
 export type PointImagesState = {

@@ -3,7 +3,8 @@ import ProfileIcon from '@/assets/logos/profile.svg?react';
 import Modal from '@/component/modal/modal';
 import { requestEndfieldBinding } from '@/component/locator';
 import SyncConflictModal, { type SyncConflictChoice } from '@/component/sync/conflict';
-import { useTranslateUI } from '@/locale';
+import { useLocale, useTranslateUI } from '@/locale';
+import { formatIcuText } from '@/locale/messageFormat';
 import { useProgressSyncStore } from '@/store/progressSync';
 import { useUserRecordStore } from '@/store/userRecord';
 import { useDevice } from '@/utils/device';
@@ -14,7 +15,7 @@ import {
   loadOfficialMarksSnapshot,
   type OfficialMarksSnapshot,
 } from '@/utils/endfield/officialMarks';
-import { formatElapsedShort, parseDateLike } from '@/utils/timeFormat';
+import { formatElapsedShort, parseTimestamp } from '@/utils/timeFormat';
 import ProgressSyncHost from '@/component/progressSync/ProgressSyncHost';
 import { requestProgressSyncNow } from '@/component/progressSync/progressSyncController';
 import { AccessButton } from '../access';
@@ -63,6 +64,7 @@ const ProfileModal = ({
   handleLogout,
 }: ProfileModalProps) => {
   const t = useTranslateUI();
+  const locale = useLocale();
   const { isMobile } = useDevice();
   const { cardRef, handleCardMouseMove, handleCardMouseLeave } = useIdCardHoverAngle();
   const [isImportingOfficialMarks, setIsImportingOfficialMarks] = useState(false);
@@ -77,7 +79,7 @@ const ProfileModal = ({
   const shouldShowProfileError = profileOpen && Boolean(profileErrorText);
   const isProfileErrorRemoved = !shouldShowProfileError;
   const modalSize = isMobile ? 'full' : 'm';
-  const syncedAtDate = parseDateLike(progressSync.lastSyncedAt);
+  const syncedAtDate = parseTimestamp(progressSync.lastSyncedAt);
   const syncedAgo = syncedAtDate ? formatElapsedShort(syncedAtDate.getTime(), syncHintNow) : '';
   const syncPointCount = Math.max(progressSync.localPointCount, progressSync.remotePointCount);
   const isProgressSyncing = progressSync.status === 'checking' || progressSync.status === 'syncing';
@@ -97,7 +99,11 @@ const ProfileModal = ({
   const syncHint = SYNC_HINT_FAILED_STATUSES.has(progressSync.status)
     ? t('sync.failed').replace('{reason}', syncFailureReason)
     : SYNC_HINT_BUSY_STATUSES.has(progressSync.status)
-      ? t('sync.syncing').replace('{count}', String(syncPointCount))
+      ? formatIcuText({
+          template: t('sync.syncing'),
+          locale,
+          values: { count: syncPointCount },
+        })
       : syncedAgo
         ? t('sync.done').replace('{times}', syncedAgo)
         : '';

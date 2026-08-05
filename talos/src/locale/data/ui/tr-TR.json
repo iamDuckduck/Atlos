@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "Şartlar ve Depolama",
     "hideUI": "Arayüzü Gizle",
-    "group": "İlgili gruba katıl",
+    "notification": "Bildirimler",
     "darkmode": "Karanlık moda geç",
     "lightmode": "Aydınlık moda geç",
     "language": "Dil seçin",
@@ -81,7 +81,7 @@
       "edit": "Düzenle",
       "submitEdit": "Düzenlemeyi Kaydet",
       "undoEdit": "Düzenlemeyi Geri Al",
-      "recall": "Yorumu kaldırma isteği",
+      "recall": "Hemen gizle",
       "reviewing": "İnceleniyor",
       "emptyWithRule": "Henüz yorum yok. Gönderi paylaşırken lütfen <a href=\"{link}\">topluluk kurallarına</a> uyun.",
       "ruleOnly": "Gönderi paylaşırken lütfen <a href=\"{link}\">topluluk kurallarına</a> uyun.",
@@ -146,9 +146,34 @@
       "tr-TR": "Türkçe"
     }
   },
-  "group": {
-    "title": "Topluluk ve Medya",
-    "visit": "Ziyaret Et"
+  "notification": {
+    "title": "Bildirimler",
+    "tabs": {
+      "community": "Etkileşimler",
+      "system": "Moderasyon"
+    },
+    "markAllRead": "Tümünü okundu olarak işaretle",
+    "empty": "Mesaj yok. Katkılarınızla ilgili mesajlar burada gösterilecek.",
+    "guest": "İlgili bildirimleri almak için {account} ile oturum açın.",
+    "account": "OEM hesabınız",
+    "loadError": "Bildirimler yüklenemedi.",
+    "loadMore": "Daha fazla yükle",
+    "support": "İletişim ve Destek",
+    "visit": "Ziyaret Et",
+    "noDetails": "Ek ayrıntı yok.",
+    "subject": {
+      "image": "görsel",
+      "comment": "yorum",
+      "submission": "katkı"
+    },
+    "types": {
+      "approved": "Size ait <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> artık herkese açık.",
+      "needsReview": "Size ait <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> manuel inceleme bekliyor.",
+      "removeResolved": "Geri çektiğiniz <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> işlendi.",
+      "reply": "Size ait <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> için yeni bir yanıt eklendi.",
+      "vote": "Size ait <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {count} beğeni aldı.",
+      "multiple": "Size ait <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> için {count} ilgili güncelleme var."
+    }
   },
   "tos": {
     "title": "Şartlar ve Depolama",
@@ -210,13 +235,13 @@
     "triggerHandle": "Harita görünümüyle ilgili anahtarlar yan çubuğun alt kısmındadır.",
     "triggerSwitch": "Durumu değiştirmek için tıklayın.<br><ul><li><span class=\"keyword\">Küme Modu</span> yoğun işaretçileri birleşik gösterir;</li><li><span class=\"keyword\">Sınır Modu</span> alt bölgeleri vurgular;</li><li><span class=\"keyword\">Bölge İsimleri</span> oyun içi bölge adlarını gösterir.</li></ul>",
     "scale": "<span class=\"keyword\">Yakınlaştırma Kontrolünü</span> kullanarak haritayı ayarlayın.",
-    "filterList": "<span class=\"keyword\">İşaretçi Listesi</span>, seçtiğiniz işaretçileri listeler.",
+    "filterList": "<span class=\"keyword\">İşaretçi Listesi</span>, seçtiğiniz işaretçi türlerini gösterir; seçimi kaldırmak için simgeye tıklayın.",
     "headbar": "Harita ayarları <span class=\"keyword\">üst çubukta</span> bulunur.",
     "tos": "Web sitesinin <span class=\"keyword\">Hizmet Şartları</span> ve <span class=\"keyword\">Veri Yönetimi</span>.",
     "hideUI": "Ekran görüntüsü almak için <span class=\"keyword\">Arayüzü Gizle</span>.",
-    "group": "Proje ile ilgili <span class=\"keyword\">toplulukları</span> görüntüle.",
+    "notification": "Katkılarınızla ilgili etkileşimleri ve inceleme sonuçlarını görmek için <span class=\"keyword\">bildirimleri</span> açın.",
     "darkMode": "Mevcut <span class=\"keyword\">ortam ışığı modunu</span> değiştir.",
-    "language": "<span class=\"keyword\">Arayüz dilini</span> değiştir.",
+    "language": "<span class=\"keyword\">Arayüz dilini</span> değiştir.<br><span class=\"keyword\">Oyun içeriği tamamen çevrilen diller</span>: İngilizce, Basitleştirilmiş Çince, Geleneksel Çince, Japonca, Korece, Fransızca, Almanca, İtalyanca, Rusça, İspanyolca, Endonezce, Portekizce, Tayca ve Vietnamca.<br><span class=\"keyword\">Yalnızca arayüzü çevrilen diller</span>: Arapça, Malayca, Lehçe, İsveççe, Yunanca, Hintçe, Ukraynaca ve Türkçe.",
     "announcement": "Son <span class=\"keyword\">web sitesi duyurularını</span> görüntüle.",
     "help": "Bu <span class=\"keyword\">rehberi</span> yeniden başlat.",
     "settings": "<span class=\"keyword\">Tercihleri</span> açarak yerel depolamayı yönetin.",
@@ -243,7 +268,6 @@
     "since": "Katılım",
     "logintip": "Giriş yapmak için avatara tıklayın.",
     "registip": "Kayıt olmak için avatara tıklayın.",
-    "ago": "Önce",
     "karma": "Karma",
     "loading": "Yükleniyor",
     "unassigned": "Atanmamış",
@@ -402,7 +426,7 @@
     "now": "Verileri OEM Cloud ile Senkronize Et",
     "already": "Her şey güncel",
     "done": "Buluta Senkronize Edildi: {times} önce",
-    "syncing": "Senkronize ediliyor: {count} Nokta",
+    "syncing": "Senkronize ediliyor: {count} nokta",
     "failed": "Senkronizasyon Başarısız ({reason})",
     "offline": "Çevrimdışı",
     "dataConflict": "Veri Çakışması",

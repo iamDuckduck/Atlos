@@ -10,6 +10,7 @@ import { useLocale, useTranslateUI } from '@/locale';
 import { getItemIconUrl } from '@/utils/resource';
 import { navigateToSharedPoint } from '@/utils/navigation';
 import { useMarkerStore } from '@/store/marker.ts';
+import { formatIcuText } from '@/locale/messageFormat';
 import { useAdvancedSearch } from './useAdvancedSearch';
 
 interface SearchSharedProps {
@@ -125,10 +126,12 @@ const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%', mobile = fa
     }, [panelOpen, results.length, updateMaskVisibility]);
 
     const resultsText = useMemo(() => {
-        const templateRaw = t('search.results');
-        const template = typeof templateRaw === 'string' && templateRaw.trim() ? templateRaw : '{count} results';
-        return template.replace('{count}', String(results.length));
-    }, [results.length, t]);
+        return formatIcuText({
+            template: t('search.results'),
+            locale,
+            values: { count: results.length },
+        });
+    }, [locale, results.length, t]);
 
     return (
         <div

@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "Terma & Storan",
     "hideUI": "Sembunyikan UI",
-    "group": "Sertai kumpulan berkaitan",
+    "notification": "Pemberitahuan",
     "darkmode": "Tukar ke mod gelap",
     "lightmode": "Tukar ke mod cerah",
     "language": "Pilih bahasa",
@@ -21,7 +21,7 @@
   },
   "search": {
     "placeholder": "Carian global...",
-    "results": "{count} hasil(s)",
+    "results": "{count} hasil",
     "locatedAt": "Ditemukan di",
     "distributeAt": "Didistribusikan di"
   },
@@ -39,7 +39,7 @@
     "label": {
       "note": "Nota",
       "url": "Pautan",
-      "comments": "Komen",
+      "comments": "Komen teratas",
       "collectionRate": "Kadar pengumpulan"
     },
     "tabs": {
@@ -81,7 +81,7 @@
       "edit": "Edit",
       "submitEdit": "Simpan perubahan",
       "undoEdit": "Batalkan perubahan",
-      "recall": "Minta pemadaman komen",
+      "recall": "Sembunyikan sekarang",
       "reviewing": "Disemak",
       "emptyWithRule": "Belum ada komen. Sila ikut <a href=\"{link}\">garis panduan komuniti</a> semasa menyiarkan.",
       "ruleOnly": "Sila ikut <a href=\"{link}\">garis panduan komuniti</a> semasa menyiarkan.",
@@ -146,9 +146,34 @@
       "tr-TR": "Turkish"
     }
   },
-  "group": {
-    "title": "Komuniti & Media",
-    "visit": "Lawati"
+  "notification": {
+    "title": "Pemberitahuan",
+    "tabs": {
+      "community": "Interaksi",
+      "system": "Moderasi"
+    },
+    "markAllRead": "Tandai semua sebagai dibaca",
+    "empty": "Tiada mesej. Mesej berkaitan sumbangan anda akan dipaparkan di sini.",
+    "guest": "Log masuk dengan {account} anda untuk menerima pemberitahuan berkaitan.",
+    "account": "akaun OEM",
+    "loadError": "Pemberitahuan tidak dapat dimuatkan.",
+    "loadMore": "Muatkan lagi",
+    "support": "Hubungi & Sokongan",
+    "visit": "Lawati",
+    "noDetails": "Tiada butiran tambahan.",
+    "subject": {
+      "image": "imej",
+      "comment": "komen",
+      "submission": "sumbangan"
+    },
+    "types": {
+      "approved": "<subjectTag>{subject}</subjectTag> anda <pointTag>{point}</pointTag> kini dipaparkan kepada umum.",
+      "needsReview": "<subjectTag>{subject}</subjectTag> anda <pointTag>{point}</pointTag> sedang menunggu semakan manual.",
+      "removeResolved": "<subjectTag>{subject}</subjectTag> yang anda tarik balik <pointTag>{point}</pointTag> telah diproses.",
+      "reply": "Balasan baharu telah ditambahkan pada <subjectTag>{subject}</subjectTag> anda <pointTag>{point}</pointTag>.",
+      "vote": "<subjectTag>{subject}</subjectTag> anda <pointTag>{point}</pointTag> menerima {count} tanda suka.",
+      "multiple": "Terdapat {count} kemas kini berkaitan untuk <subjectTag>{subject}</subjectTag> anda <pointTag>{point}</pointTag>."
+    }
   },
   "tos": {
     "title": "Terma & Storan",
@@ -210,13 +235,13 @@
     "triggerHandle": "Suis berkaitan paparan peta berada di bahagian bawah bar sisi.<br>Anda boleh menahan tetikus untuk <span class=\"keyword\">menyeret dan mengendalikannya.</span>",
     "triggerSwitch": "Klik untuk menukar status suis.<br><ul><li><span class=\"keyword\">Mod Pengelompokan Penanda</span> membolehkan penanda yang padat dipaparkan secara digabungkan;</li><li><span class=\"keyword\">Paparan Sempadan Wilayah</span> menyerlahkan setiap sub-wilayah dan sempadannya dalam kawasan semasa.</li><li><span class=\"keyword\">Nama Wilayah</span> memaparkan nama wilayah dalam permainan.</li></ul>",
     "scale": "Gunakan <span class=\"keyword\">Kawalan Zum</span> untuk melihat dan mengawal zum peta.<br>Roda tatal atau trackpad boleh digunakan untuk zum. Anda juga boleh zum dengan mengklik butang <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> atau mana-mana tempat pada palang zum.",
-    "filterList": "<span class=\"keyword\">Senarai Penanda</span> menyenaraikan penanda yang anda pilih; klik ikon untuk nyahpilih.",
+    "filterList": "<span class=\"keyword\">Senarai Penanda</span> memaparkan jenis penanda yang anda pilih; klik ikon untuk nyahpilih.",
     "headbar": "Suis berkaitan tetapan peta berada di <span class=\"keyword\">bar kepala</span>.",
     "tos": "<span class=\"keyword\">Terma Perkhidmatan</span> dan <span class=\"keyword\">Pengurusan Data</span> laman web.",
     "hideUI": "<span class=\"keyword\">Sembunyikan UI Laman Web</span> untuk mengambil tangkapan skrin atau melihat penanda di tepi.",
-    "group": "Lihat <span class=\"keyword\">kumpulan perbincangan</span> dan <span class=\"keyword\">komuniti</span> yang berkaitan dengan projek ini.",
+    "notification": "Buka <span class=\"keyword\">pemberitahuan</span> untuk melihat interaksi dan hasil semakan berkaitan sumbangan anda.",
     "darkMode": "Togol <span class=\"keyword\">mod cahaya persekitaran</span> semasa.",
-    "language": "Tukar <span class=\"keyword\">bahasa antara muka</span>.<br>Pada masa ini, bahasa dengan <span class=\"keyword\">sokongan terjemahan kandungan permainan sepenuhnya</span> termasuk Inggeris, Cina Ringkas, Cina Tradisional, Jepun, Korea, Perancis, Jerman, Itali, Rusia, Sepanyol, Indonesia, Portugis, Thai dan Vietnam.<br>Bahasa dengan <span class=\"keyword\">hanya sokongan terjemahan antara muka</span> termasuk Arab, Melayu, Poland dan Sweden.",
+    "language": "Tukar <span class=\"keyword\">bahasa antara muka</span>.<br>Pada masa ini, bahasa dengan <span class=\"keyword\">sokongan terjemahan kandungan permainan sepenuhnya</span> termasuk Inggeris, Cina Ringkas, Cina Tradisional, Jepun, Korea, Perancis, Jerman, Itali, Rusia, Sepanyol, Indonesia, Portugis, Thai dan Vietnam.<br>Bahasa dengan <span class=\"keyword\">hanya sokongan terjemahan antara muka</span> termasuk Arab, Melayu, Poland, Sweden, Yunani, Hindi, Ukraine dan Turki.",
     "announcement": "Lihat <span class=\"keyword\">pengumuman situs web</span> terkini. Pembaruan kebijakan layanan dan privasi juga akan diposting di sini.",
     "help": "Mulakan semula <span class=\"keyword\">panduan</span> ini.",
     "settings": "Buka <span class=\"keyword\">Keutamaan</span> untuk mengawal storan setempat yang digunakan peta bagi mengingati tindakan anda.",
@@ -243,7 +268,6 @@
     "since": "Sejak",
     "logintip": "Klik avatar untuk log masuk.",
     "registip": "Klik avatar untuk mendaftar.",
-    "ago": "yang lalu",
     "karma": "Karma",
     "loading": "Memuatkan...",
     "unassigned": "N/A",
@@ -402,7 +426,7 @@
     "now": "Segerak ke OEM Cloud",
     "already": "Selari dengan Awan",
     "done": "Disegerakkan - {times} yang lalu",
-    "syncing": "Menyegerak {count} Titik",
+    "syncing": "Menyegerak {count} titik",
     "failed": "Gagal disegerakkan ({reason})",
     "offline": "Luar talian",
     "dataConflict": "Konflik Data",

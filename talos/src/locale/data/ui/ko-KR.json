@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "약관 및 저장소",
     "hideUI": "UI 숨기기",
-    "group": "관련 그룹 참여",
+    "notification": "알림",
     "darkmode": "어두운 모드로 전환",
     "lightmode": "밝은 모드로 전환",
     "language": "언어 선택",
@@ -38,8 +38,8 @@
     },
     "label": {
       "note": "메모",
-      "url": "관련 링크",
-      "comments": "댓글",
+      "url": "공유 링크",
+      "comments": "최다 추천 댓글",
       "collectionRate": "수집률"
     },
     "tabs": {
@@ -58,7 +58,7 @@
     "viewer": {
       "author": "작성자",
       "uploadedAt": "업로드 날짜",
-      "upvote": "지지",
+      "upvote": "추천",
       "flag": "부정확한 정보로 신고",
       "unflag": "신고 취소",
       "uploadAno": "다른 이미지 업로드",
@@ -146,14 +146,39 @@
       "tr-TR": "터키어"
     }
   },
-  "group": {
-    "title": "커뮤니티 및 미디어",
-    "visit": "방문"
+  "notification": {
+    "title": "알림",
+    "tabs": {
+      "community": "상호작용",
+      "system": "검토 결과"
+    },
+    "markAllRead": "모두 읽음으로 표시",
+    "empty": "메시지가 없습니다. 기여한 콘텐츠와 관련된 메시지가 여기에 표시됩니다.",
+    "guest": "관련 알림을 받으려면 {account}(으)로 로그인하세요.",
+    "account": "OEM 계정",
+    "loadError": "알림을 불러올 수 없습니다.",
+    "loadMore": "더 보기",
+    "support": "문의 및 지원",
+    "visit": "방문",
+    "noDetails": "추가 세부 정보가 없습니다.",
+    "subject": {
+      "image": "이미지",
+      "comment": "댓글",
+      "submission": "기여 콘텐츠"
+    },
+    "types": {
+      "approved": "{hasPoint, select, yes {<pointTag>{point}</pointTag>의 } other {}}<subjectTag>{subject}</subjectTag>{kind, select, comment {이} other {가}} 공개되었습니다.",
+      "needsReview": "{hasPoint, select, yes {<pointTag>{point}</pointTag>의 } other {}}<subjectTag>{subject}</subjectTag>{kind, select, comment {은} other {는}} 수동 검토를 기다리고 있습니다.",
+      "removeResolved": "철회한 {hasPoint, select, yes {<pointTag>{point}</pointTag>의 } other {}}<subjectTag>{subject}</subjectTag>{kind, select, comment {이} other {가}} 처리되었습니다.",
+      "reply": "{hasPoint, select, yes {<pointTag>{point}</pointTag>의 } other {}}<subjectTag>{subject}</subjectTag>에 새 답글이 추가되었습니다.",
+      "vote": "{hasPoint, select, yes {<pointTag>{point}</pointTag>의 } other {}}<subjectTag>{subject}</subjectTag>{kind, select, comment {이} other {가}} 좋아요 {count}개를 받았습니다.",
+      "multiple": "{hasPoint, select, yes {<pointTag>{point}</pointTag>의 } other {}}<subjectTag>{subject}</subjectTag>에 관련 업데이트가 {count}개 있습니다."
+    }
   },
   "tos": {
     "title": "약관 및 저장소",
     "calculating": "저장소 사용량 계산 중…",
-    "policy": "<p>저희는 Cookies를 사용하여 자동 로그인 정보를 저장하고, LocalStorage를 사용하여 UI 환경 설정 및 마커 진행 상황을 저장하며, CacheStorage를 사용하여 언어에 사용되는 글꼴 데이터 및 이미지 리소스를 저장합니다. 이러한 파일들을 통해 향후 웹사이트에 더 빠르게 접속할 수 있으며 오프라인 상태에서도 웹사이트를 이용할 수 있습니다.</p><p>웹사이트의 로컬 저장소를 삭제하면 기기의 공간을 절약할 수 있습니다. 하지만 다시 방문할 때 <span class=\"keyword\">이러한 파일을 로드하는 데 시간이 더 걸릴 수 있습니다</span>. 웹사이트 저장소를 비활성화하면 <span class=\"keyword\">다음 사용을 위해 데이터를 자동으로 기록할 수 없습니다</span>.</p><p>저희는 귀하의 데이터를 서버에 보고하지 않으므로 개인정보 보호 문제에 대해 걱정할 필요가 없습니다.</p><p>로컬 저장소 활성화 여부는 사용자가 직접 결정할 수 있습니다.</p>",
+    "policy": "<p>자동 로그인 정보는 Cookie에, UI 설정과 마커 진행도는 LocalStorage에, 언어별 글꼴과 이미지는 CacheStorage에 저장됩니다. 덕분에 다음 방문부터 더 빠르게 페이지를 열 수 있고 오프라인에서도 사이트를 이용할 수 있습니다.</p><p>사이트의 로컬 데이터를 삭제하면 기기의 저장 공간을 확보할 수 있습니다. 다만 다음 방문 시 <span class=\"keyword\">데이터를 다시 불러오는 데 시간이 더 걸릴 수 있습니다</span>. 사이트 저장 기능을 끄면 다음 이용을 위해 <span class=\"keyword\">설정과 진행도를 자동으로 저장할 수 없습니다</span>.</p><p>이 데이터는 서버로 전송되지 않습니다.</p><p>로컬 저장 기능의 사용 여부는 직접 선택할 수 있습니다.</p>",
     "filtersAndMarkers": "필터 및 마커 데이터",
     "warning": "<p><strong>경고:</strong> 저장된 데이터를 삭제하면 자동 로그인 정보, UI 설정 및 마커 진행 상황이 손실됩니다. 다음 방문 시 웹사이트 로딩이 평소보다 오래 걸릴 수 있습니다.</p><p>확신하시는 경우 삭제 버튼을 한 번 더 클릭해 주세요.</p>",
     "export": "데이터 내보내기",
@@ -180,8 +205,8 @@
     "theme": {
       "title": "테마",
       "hint": "선호하는 테마를 선택하세요. 자동 모드에서는 테마가 기기 설정에 따라 전환됩니다.",
-      "light": "라이트 모드",
-      "dark": "다크 모드",
+      "light": "라이트",
+      "dark": "다크",
       "auto": "시스템 따름"
     },
     "shortcuts": {
@@ -200,7 +225,7 @@
     }
   },
   "guide": {
-    "welcome": "<span class=\"keyword\">OPEN ENDFIELD MAP</span>에 오신 것을 환영합니다.<br>이 지도를 처음 사용하시는군요. 지도의 다양한 기능을 빠르게 이해하실 수 있도록 간단한 가이드 투어를 제공합니다.</p><p>언제든지 '<span class=\"keyword\">건너뛰기</span>' 버튼을 클릭하여 가이드를 종료하거나 상단 바의 도움말 버튼에서 다시 시작할 수 있습니다.",
+    "welcome": "<span class=\"keyword\">OPEN ENDFIELD MAP</span>에 오신 것을 환영합니다.<br>처음 사용하는 분들을 위해 지도의 주요 기능을 간단히 안내해 드립니다.</p><p>언제든지 「<span class=\"keyword\">건너뛰기</span>」를 눌러 안내를 종료할 수 있습니다. 상단 바의 도움말에서 다시 시작할 수도 있습니다.",
     "sidebarToggle": "클릭하여 <span class=\"keyword\">사이드바</span>를 펼칩니다.<br>사이드바에는 가장 자주 사용하는 마커 필터와 마커 표시와 밀접하게 관련된 스위치가 포함되어 있습니다.",
     "search": "<span class=\"keyword\">게임에서 지원하는 언어</span>로 검토할 마커를 검색하고 검색 결과에서 선택할 수 있습니다.",
     "filterContainer": "동일한 유형의 마커는 하나의 <span class=\"keyword\">필터</span>에 그룹화됩니다.<br>클릭하여 해당 유형의 마커 목록을 펼칩니다.",
@@ -210,13 +235,13 @@
     "triggerHandle": "지도 표시와 관련된 스위치는 사이드바 하단에 있습니다.<br>마우스를 길게 눌러 <span class=\"keyword\">드래그하여 조작</span>할 수 있습니다.",
     "triggerSwitch": "클릭하여 스위치 상태를 전환합니다.<br><ul><li><span class=\"keyword\">마커 클러스터링 모드</span>는 밀집된 마커를 병합하여 표시할 수 있게 합니다.</li><li><span class=\"keyword\">지역 경계 표시</span>는 현재 구역 내의 각 하위 구역과 그 경계를 강조 표시합니다.</li><li><span class=\"keyword\">지역 이름 표시</span>는 게임 내 지역 이름을 표시합니다.</li></ul>",
     "scale": "<span class=\"keyword\">줌 컨트롤</span>을 사용하여 지도 줌을 확인하고 조작합니다.<br>휠이나 트랙패드를 사용하여 줌할 수 있습니다. <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> 버튼이나 줌 바의 임의의 위치를 클릭하여 줌할 수도 있습니다.",
-    "filterList": "<span class=\"keyword\">마커 목록</span>에는 이미 선택한 마커가 나열되며, 아이콘을 클릭하여 선택을 취소할 수 있습니다.",
+    "filterList": "<span class=\"keyword\">마커 유형 목록</span>에는 현재 선택한 마커 유형이 표시됩니다. 아이콘을 클릭하면 선택을 해제할 수 있습니다.",
     "headbar": "지도 설정과 관련된 스위치는 <span class=\"keyword\">상단 바</span>에 있습니다.",
     "tos": "웹사이트의 <span class=\"keyword\">서비스 약관</span> 및 <span class=\"keyword\">데이터 관리</span>.",
     "hideUI": "스크린샷을 찍거나 가장자리 마커를 확인하기 위해 <span class=\"keyword\">웹사이트 UI 숨기기</span>.",
-    "group": "이 프로젝트와 관련된 <span class=\"keyword\">토론 그룹</span> 및 <span class=\"keyword\">커뮤니티</span>를 확인합니다.",
+    "notification": "<span class=\"keyword\">알림</span>을 열어 기여한 콘텐츠와 관련된 상호작용 및 검토 결과를 확인하세요.",
     "darkMode": "현재 <span class=\"keyword\">조명 모드</span>를 전환합니다.",
-    "language": "<span class=\"keyword\">인터페이스 언어</span>를 전환합니다.<br><span class=\"keyword\">게임 콘텐츠 번역을 완벽하게 지원</span>하는 언어는 영어, 중국어 간체, 중국어 번체, 일본어, 한국어, 프랑스어, 독일어, 이탈리아어, 러시아어, 스페인어, 인도네시아어, 포르투갈어, 타이어, 베트남어입니다.<br><span class=\"keyword\">인터페이스 번역만 지원</span>하는 언어에는 아랍어, 말레이어, 폴란드어, 스웨덴어가 포함됩니다.",
+    "language": "<span class=\"keyword\">표시 언어</span>를 변경합니다.<br>영어, 중국어 간체, 중국어 번체, 일본어, 한국어, 프랑스어, 독일어, 이탈리아어, 러시아어, 스페인어, 인도네시아어, 포르투갈어, 태국어, 베트남어는 <span class=\"keyword\">UI와 게임 콘텐츠를 모두</span> 지원합니다.<br>아랍어, 말레이어, 폴란드어, 스웨덴어, 그리스어, 힌디어, 우크라이나어, 터키어는 <span class=\"keyword\">UI만</span> 지원합니다.",
     "announcement": "최근 <span class=\"keyword\">웹사이트 공지사항</span>을 확인합니다. 서비스 약관 및 개인정보 보호 정책 업데이트도 여기에 게시됩니다.",
     "help": "이 <span class=\"keyword\">가이드</span>를 다시 시작합니다.",
     "settings": "<span class=\"keyword\">설정</span>을 열어 지도가 작업을 기억하는 데 사용하는 로컬 저장소를 제어합니다.",
@@ -243,7 +268,6 @@
     "since": "가입일",
     "logintip": "아바타로 로그인.",
     "registip": "아바타로 가입.",
-    "ago": "전",
     "karma": "카르마",
     "loading": "로딩 중…",
     "unassigned": "미할당",
@@ -266,7 +290,7 @@
       "pwdRegex": "8–20 글자; 대문자 1개 이상 포함",
       "emailRegex": "일회용 이메일 주소는 사용할 수 없습니다",
       "send": "보내다",
-      "sendResetLink": "다시 놓기",
+      "sendResetLink": "재설정 링크 전송",
       "resend": "재전송({count})",
       "dcLogin": "디스코드로 로그인",
       "gooLogin": "Google로 로그인",
@@ -294,7 +318,7 @@
         "105": "지원되지 않는 이메일입니다",
         "111": "비밀번호 필수",
         "112": "비밀번호가 잘못되었습니다.",
-        "113": "장애인 불일치",
+        "113": "비밀번호 불일치",
         "121": "OTP 필요",
         "122": "OTP가 유효하지 않음",
         "123": "OTP 만료됨",
@@ -302,7 +326,7 @@
         "201": "계정이 생성되었습니다",
         "202": "비밀번호가 변경되었습니다.",
         "429": "요금 제한",
-        "430": "보안 검색",
+        "430": "보안 확인 필요",
         "601": "토큰 만료됨",
         "602": "세션 필요",
         "603": "접근 불가",
@@ -315,17 +339,17 @@
       }
     },
     "profile": {
-      "title": "윤곽",
+      "title": "프로필",
       "avatarHint": "프로필 정보 열기",
       "nameEditHint": "사용자 이름 수정",
       "nickName": "별명",
       "note": "메모",
       "noteNickname": "사용자 이름에는 문자, 숫자, 하이픈, 밑줄을 15자 이하로 사용할 수 있습니다.",
       "noteUID": "UID는 최초 설정 시 할당되며 변경할 수 없습니다. 언제든지 사용자 이름을 업데이트할 수 있습니다. 아바타 영역을 클릭하면 아바타가 전환됩니다.",
-      "auditLabel": "심사",
+      "auditLabel": "작업",
       "importOfficial": "공식 지도에서 가져오기",
       "save": "변경 사항 저장",
-      "saving": "절약…",
+      "saving": "저장 중…",
       "logout": "로그아웃"
     }
   },

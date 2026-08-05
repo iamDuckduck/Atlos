@@ -5,7 +5,7 @@ import styles from './comments.module.scss';
 import { openOemAuthModal } from '@/component/login/authEvents';
 import { useAuthStore } from '@/store/auth';
 import { useLocale, useTranslateUI } from '@/locale';
-import { formatRelativeTime, parseDateLike } from '@/utils/timeFormat';
+import { formatRelativeTime, parseTimestamp } from '@/utils/timeFormat';
 import { docsLink, linkTpl } from '@/utils/docsLink';
 import type { IMarkerData } from '@/data/marker';
 import {
@@ -81,9 +81,10 @@ export const CommentExcerpt = memo(({
     actions,
 }: CommentExcerptProps) => {
     const tUI = useTranslateUI();
-    const createdAt = useMemo(() => parseDateLike(comment.createdAt), [comment.createdAt]);
+    const locale = useLocale();
+    const createdAt = useMemo(() => parseTimestamp(comment.createdAt), [comment.createdAt]);
     const timeLabel = createdAt
-        ? formatRelativeTime(createdAt, { precision: 'dateTime', agoDisplay: 'hover', agoLabel: tUI('idcard.ago') }).agoText
+        ? formatRelativeTime(createdAt, { locale })
         : '';
     const status = statusLabel(comment, timeLabel, tUI);
     const authorName = comment.author?.nickname;

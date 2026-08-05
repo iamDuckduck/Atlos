@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "Conditions et stockage",
     "hideUI": "Masquer l’interface utilisateur",
-    "group": "Rejoindre les groupes associés",
+    "notification": "Notifications",
     "darkmode": "Passer en mode sombre",
     "lightmode": "Passer en mode clair",
     "language": "Choisir la langue",
@@ -21,7 +21,7 @@
   },
   "search": {
     "placeholder": "Recherche générale...",
-    "results": "{count} résultat(s)",
+    "results": "{count, plural, one {# résultat} other {# résultats}}",
     "locatedAt": "Trouvé dans",
     "distributeAt": "Distribué dans"
   },
@@ -39,7 +39,7 @@
     "label": {
       "note": "Note",
       "url": "Lien associé",
-      "comments": "Commentaires",
+      "comments": "Commentaire le mieux noté",
       "collectionRate": "Taux de collecte"
     },
     "tabs": {
@@ -81,7 +81,7 @@
       "edit": "Modifier",
       "submitEdit": "Enregistrer les modifications",
       "undoEdit": "Annuler les modifications",
-      "recall": "Demander le retrait du commentaire",
+      "recall": "Masquer immédiatement",
       "reviewing": "En examen",
       "emptyWithRule": "Aucun commentaire pour le moment. Veuillez respecter les <a href=\"{link}\">règles de la communauté</a> lors de la publication.",
       "ruleOnly": "Veuillez respecter les <a href=\"{link}\">règles de la communauté</a> lors de la publication.",
@@ -146,9 +146,34 @@
       "tr-TR": "Turc"
     }
   },
-  "group": {
-    "title": "Communauté & médias",
-    "visit": "Visiter"
+  "notification": {
+    "title": "Notifications",
+    "tabs": {
+      "community": "Interactions",
+      "system": "Modération"
+    },
+    "markAllRead": "Tout marquer comme lu",
+    "empty": "Aucun message. Les messages liés à vos contributions apparaîtront ici.",
+    "guest": "Connectez-vous avec votre {account} pour recevoir les notifications pertinentes.",
+    "account": "compte OEM",
+    "loadError": "Impossible de charger les notifications.",
+    "loadMore": "Charger plus",
+    "support": "Contact et assistance",
+    "visit": "Visiter",
+    "noDetails": "Aucun détail supplémentaire.",
+    "subject": {
+      "image": "image",
+      "comment": "commentaire",
+      "submission": "contribution"
+    },
+    "types": {
+      "approved": "Votre <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> est désormais {kind, select, comment {public} other {publique}}.",
+      "needsReview": "Votre <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> attend une vérification manuelle.",
+      "removeResolved": "Votre <subjectTag>{subject}</subjectTag> {kind, select, comment {retiré} other {retirée}} <pointTag>{point}</pointTag> a été {kind, select, comment {traité} other {traitée}}.",
+      "reply": "Une nouvelle réponse a été ajoutée à votre <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag>.",
+      "vote": "Votre <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> a reçu {count, plural, one {# mention J’aime} other {# mentions J’aime}}.",
+      "multiple": "Votre <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> a reçu {count, plural, one {# mise à jour associée} other {# mises à jour associées}}."
+    }
   },
   "tos": {
     "title": "Conditions et Stockage",
@@ -210,13 +235,13 @@
     "triggerHandle": "Les commutateurs liés à l'affichage de la carte sont situés au bas de la barre latérale.<br>Vous pouvez maintenir la souris pour <span class=\"keyword\">les faire glisser et les utiliser.</span>",
     "triggerSwitch": "Cliquez pour basculer l'état du commutateur.<br><ul><li><span class=\"keyword\">Le mode de regroupement des marqueurs</span> permet d'afficher les marqueurs denses fusionnés;</li><li><span class=\"keyword\">L'affichage des limites de région</span> met en évidence chaque sous-région et ses limites dans la zone actuelle.</li><li><span class=\"keyword\">Noms de région</span> affiche les noms des régions du jeu.</li></ul>",
     "scale": "Utilisez le <span class=\"keyword\">contrôle de zoom</span> pour afficher et manipuler le zoom de la carte.<br>La molette ou le pavé tactile peuvent être utilisés pour zoomer. Vous pouvez également zoomer en cliquant sur les boutons <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> ou n'importe où sur la barre de zoom.",
-    "filterList": "La <span class=\"keyword\">liste des marqueurs</span> répertorie les marqueurs que vous avez sélectionnés ; cliquez sur l'icône pour désélectionner.",
+    "filterList": "La <span class=\"keyword\">liste des marqueurs</span> affiche les types de marqueurs sélectionnés ; cliquez sur l’icône pour les désélectionner.",
     "headbar": "Les commutateurs liés aux paramètres de la carte sont situés dans la <span class=\"keyword\">barre supérieure</span>.",
     "tos": "Les <span class=\"keyword\">Conditions d'utilisation</span> et la <span class=\"keyword\">Gestion des données</span> du site Web.",
     "hideUI": "<span class=\"keyword\">Masquer l'interface utilisateur</span> pour prendre des captures d'écran ou voir les marqueurs en bordure.",
-    "group": "Voir les <span class=\"keyword\">groupes de discussion</span> et les <span class=\"keyword\">communautés</span> liés à ce projet.",
+    "notification": "Ouvrez les <span class=\"keyword\">notifications</span> pour consulter les interactions et les résultats de vérification liés à vos contributions.",
     "darkMode": "Basculer le <span class=\"keyword\">mode d'éclairage ambiant</span> actuel.",
-    "language": "Changer la <span class=\"keyword\">langue de l'interface</span>.<br>Actuellement, les langues avec <span class=\"keyword\">un support complet de traduction du contenu du jeu</span> incluent l'anglais, le chinois simplifié, le chinois traditionnel, le japonais, le coréen, le français, l'allemand, l'italien, le russe, l'espagnol, l'indonésien, le portugais, le thaï et le vietnamien.<br>Les langues avec <span class=\"keyword\">uniquement le support de traduction de l'interface</span> incluent l'arabe, le malais, le polonais et le suédois.",
+    "language": "Changer la <span class=\"keyword\">langue de l'interface</span>.<br>Actuellement, les langues avec <span class=\"keyword\">un support complet de traduction du contenu du jeu</span> incluent l'anglais, le chinois simplifié, le chinois traditionnel, le japonais, le coréen, le français, l'allemand, l'italien, le russe, l'espagnol, l'indonésien, le portugais, le thaï et le vietnamien.<br>Les langues avec <span class=\"keyword\">uniquement le support de traduction de l'interface</span> incluent l'arabe, le malais, le polonais, le suédois, le grec, l'hindi, l'ukrainien et le turc.",
     "announcement": "Voir les <span class=\"keyword\">annonces du site web</span>. Les mises à jour des conditions d'utilisation et de la politique de confidentialité seront également publiées ici.",
     "help": "Redémarrer ce <span class=\"keyword\">guide</span>.",
     "settings": "Ouvrez les <span class=\"keyword\">Paramètres</span> pour contrôler le stockage local que la carte utilise pour mémoriser vos actions.",
@@ -243,7 +268,6 @@
     "since": "Depuis",
     "logintip": "Connexion via avatar",
     "registip": "Inscription via avatar",
-    "ago": "il y a",
     "karma": "Karma",
     "loading": "Chargement...",
     "unassigned": "Non attribué",
@@ -259,7 +283,7 @@
       "passwordReset": "Réinitialisation du mot de passe",
       "email": "E-mail:",
       "password": "Mot de passe:",
-      "newPassword": "Nouveau mot de passe :",
+      "newPassword": "Nouveau mot de passe :",
       "repeatPassword": "Répéter le mot de passe:",
       "verification": "Vérification:",
       "forgotPW": "Mot de passe oublié ?",
@@ -301,17 +325,17 @@
         "200": "Accès accordé",
         "201": "Compte créé",
         "202": "Mot de passe modifié",
-        "429": "Tarif Limité",
+        "429": "Trop de requêtes",
         "430": "Contrôle de sécurité",
         "601": "Jeton expiré",
-        "602": "Séance requise",
+        "602": "Session requise",
         "603": "Accès refusé",
         "604": "Conflit de fournisseur",
         "701": "Surchargé",
         "702": "Temps mort",
         "703": "Entretien",
-        "801": "Suspendu : vandalisme",
-        "802": "Suspendu : ACC refusé"
+        "801": "Suspendu : vandalisme",
+        "802": "Suspendu : ACC refusé"
       }
     },
     "profile": {
@@ -322,10 +346,10 @@
       "note": "Note",
       "noteNickname": "Vous ne pouvez pas utiliser plus de 15 lettres, chiffres, traits d’union et traits de soulignement dans votre nom d’utilisateur.",
       "noteUID": "L'UID est attribué lors de la première configuration et ne peut pas être modifié. Vous pouvez mettre à jour votre nom d'utilisateur à tout moment. Cliquez sur la zone de l'avatar pour changer d'avatar.",
-      "auditLabel": "Audit",
+      "auditLabel": "Action",
       "importOfficial": "Importer depuis la carte officielle",
       "save": "Enregistrer",
-      "saving": "Économie...",
+      "saving": "Enregistrement...",
       "logout": "Se déconnecter"
     }
   },
@@ -402,7 +426,7 @@
     "now": "Synchroniser avec OEM Cloud",
     "already": "Synchronisé avec le cloud",
     "done": "Synchronisé - il y a {times}",
-    "syncing": "Synchronisation de {count} points",
+    "syncing": "{count, plural, one {Synchronisation de # point} other {Synchronisation de # points}}",
     "failed": "Échec de la synchronisation ({reason})",
     "offline": "Hors ligne",
     "dataConflict": "Conflit de données",

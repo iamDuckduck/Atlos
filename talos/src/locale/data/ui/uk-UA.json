@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "Умови та сховище",
     "hideUI": "Сховати UI",
-    "group": "Спільнота",
+    "notification": "Сповіщення",
     "darkmode": "Темна тема",
     "lightmode": "Світла тема",
     "language": "Вибір мови",
@@ -21,7 +21,7 @@
   },
   "search": {
     "placeholder": "Пошук...",
-    "results": "{count} результат(ів)",
+    "results": "{count, plural, one {# результат} few {# результати} many {# результатів} other {# результату}}",
     "locatedAt": "Знаходиться в",
     "distributeAt": "Розподілено в"
   },
@@ -39,7 +39,7 @@
     "label": {
       "note": "Нотатка",
       "url": "Посилання",
-      "comments": "Коментарі",
+      "comments": "Найкращий коментар",
       "collectionRate": "Відсоток збору"
     },
     "tabs": {
@@ -81,7 +81,7 @@
       "edit": "Редагувати",
       "submitEdit": "Зберегти зміни",
       "undoEdit": "Скасувати зміни",
-      "recall": "Запросити видалення коментаря",
+      "recall": "Приховати зараз",
       "reviewing": "На перевірці",
       "emptyWithRule": "Коментарів поки немає. Під час публікації дотримуйтеся <a href=\"{link}\">правил спільноти</a>.",
       "ruleOnly": "Під час публікації дотримуйтеся <a href=\"{link}\">правил спільноти</a>.",
@@ -146,9 +146,34 @@
       "tr-TR": "Турецька"
     }
   },
-  "group": {
-    "title": "Спільнота та Медіа",
-    "visit": "Відвідати"
+  "notification": {
+    "title": "Сповіщення",
+    "tabs": {
+      "community": "Взаємодії",
+      "system": "Модерація"
+    },
+    "markAllRead": "Позначити все як прочитане",
+    "empty": "Повідомлень немає. Тут відображатимуться повідомлення, пов’язані з вашими матеріалами.",
+    "guest": "Увійдіть через {account}, щоб отримувати відповідні сповіщення.",
+    "account": "обліковий запис OEM",
+    "loadError": "Не вдалося завантажити сповіщення.",
+    "loadMore": "Завантажити ще",
+    "support": "Зв’язок і підтримка",
+    "visit": "Відвідати",
+    "noDetails": "Додаткових відомостей немає.",
+    "subject": {
+      "image": "зображення",
+      "comment": "коментар",
+      "submission": "матеріал"
+    },
+    "types": {
+      "approved": "{kind, select, image {Ваше} other {Ваш}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> тепер {kind, select, image {опубліковане} other {опублікований}}.",
+      "needsReview": "{kind, select, image {Ваше} other {Ваш}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> очікує на ручну перевірку.",
+      "removeResolved": "{kind, select, image {Ваше відкликане} other {Ваш відкликаний}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, image {опрацьоване} other {опрацьований}}.",
+      "reply": "До вашого <subjectTag>{kind, select, image {зображення} comment {коментаря} submission {матеріалу} other {{subject}}}</subjectTag> <pointTag>{point}</pointTag> додано нову відповідь.",
+      "vote": "{kind, select, image {Ваше} other {Ваш}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, image {отримало} other {отримав}} {count, plural, one {# вподобання} few {# вподобання} many {# вподобань} other {# вподобання}}.",
+      "multiple": "Для вашого <subjectTag>{kind, select, image {зображення} comment {коментаря} submission {матеріалу} other {{subject}}}</subjectTag> <pointTag>{point}</pointTag> є {count, plural, one {# пов’язане оновлення} few {# пов’язані оновлення} many {# пов’язаних оновлень} other {# пов’язаного оновлення}}."
+    }
   },
   "tos": {
     "title": "Умови та сховище",
@@ -210,13 +235,13 @@
     "triggerHandle": "Перемикачі відображення карти знаходяться внизу бічної панелі.",
     "triggerSwitch": "Натисніть для перемикання.<br><ul><li><span class=\"keyword\">Режим кластеризації</span> об'єднує щільні маркери;</li><li><span class=\"keyword\">Відображення кордонів</span> виділяє підзони;</li><li><span class=\"keyword\">Назви регіонів</span> показує назви з гри.</li></ul>",
     "scale": "Використовуйте <span class=\"keyword\">Управління масштабом</span>.",
-    "filterList": "У <span class=\"keyword\">Списку маркерів</span> показані вибрані маркери.",
+    "filterList": "У <span class=\"keyword\">списку маркерів</span> показано вибрані типи маркерів; натисніть значок, щоб скасувати вибір.",
     "headbar": "Налаштування карти розташовані у <span class=\"keyword\">верхній панелі</span>.",
     "tos": "<span class=\"keyword\">Умови використання</span> та <span class=\"keyword\">Управління даними</span> сайту.",
     "hideUI": "<span class=\"keyword\">Сховати UI</span> для створення скриншотів.",
-    "group": "Переглянути <span class=\"keyword\">групи обговорень</span>.",
+    "notification": "Відкрийте <span class=\"keyword\">сповіщення</span>, щоб переглянути взаємодії та результати перевірки ваших матеріалів.",
     "darkMode": "Перемикнути <span class=\"keyword\">режим освітлення</span>.",
-    "language": "Змінити <span class=\"keyword\">мову інтерфейсу</span>.",
+    "language": "Змінити <span class=\"keyword\">мову інтерфейсу</span>.<br>Мови з <span class=\"keyword\">повним перекладом ігрового вмісту</span>: англійська, спрощена китайська, традиційна китайська, японська, корейська, французька, німецька, італійська, російська, іспанська, індонезійська, португальська, тайська та в’єтнамська.<br><span class=\"keyword\">Мови лише з перекладом інтерфейсу</span>: арабська, малайська, польська, шведська, грецька, гінді, українська та турецька.",
     "announcement": "Переглянути останні <span class=\"keyword\">оголошення сайту</span>.",
     "help": "Перезапустити <span class=\"keyword\">екскурсію</span>.",
     "settings": "Відкрити <span class=\"keyword\">Налаштування</span>.",
@@ -243,7 +268,6 @@
     "since": "З",
     "logintip": "Натисніть на аватар для входу.",
     "registip": "Натисніть на аватар для реєстрації.",
-    "ago": "Тому",
     "karma": "Карма",
     "loading": "Завантаження",
     "unassigned": "Не призначено",
@@ -402,7 +426,7 @@
     "now": "Синхронізувати дані в OEM Cloud",
     "already": "Все актуально",
     "done": "Синхронізовано: {times} тому",
-    "syncing": "Синхронізація: {count} точок",
+    "syncing": "{count, plural, one {Синхронізація: # точка} few {Синхронізація: # точки} many {Синхронізація: # точок} other {Синхронізація: # точки}}",
     "failed": "Помилка синхронізації ({reason})",
     "offline": "Офлайн",
     "dataConflict": "Конфлікт даних",

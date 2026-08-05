@@ -6,6 +6,7 @@ import { useTranslateGame } from '@/locale';
 import { getAppViewport } from '@/component/scale/pip';
 import PopoverTooltip from '@/component/popover/popover';
 import { useAppViewport } from '@/utils/device';
+import { parseTimestamp } from '@/utils/timeFormat';
 import { isRecordToolEnabled } from '@/devtools/loadDevTool';
 import {
     peekUGCImages,
@@ -49,8 +50,7 @@ const getPreviewUpvoteCount = (image: UGCImage): number => (
 );
 
 const getPreviewCreatedAtTime = (image: UGCImage): number => {
-    const time = Date.parse(image.createdAt);
-    return Number.isNaN(time) ? Number.MAX_SAFE_INTEGER : time;
+    return parseTimestamp(image.createdAt)?.getTime() ?? Number.MAX_SAFE_INTEGER;
 };
 
 const selectPreviewImage = (images: UGCImage[]): UGCImage | null => (

@@ -28,7 +28,6 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    margin: 0.5rem;
     overflow: hidden;
     min-height: 0;
     transition: background-color 0.35s $adagio-curve;
@@ -101,8 +100,7 @@
         }
     }
 
-    ul,
-    ol {
+    ul, ol {
         padding-left: 1.4em;
         margin-bottom: 0.8em;
 
@@ -112,8 +110,11 @@
     }
 
     strong {
-        font-weight: 700;
+        font-weight: 820;
         color: var(--ann-content-heading);
+        &::before, &::after {
+            content: '\2006';
+        }
     }
 
     img {
@@ -128,6 +129,9 @@
         align-items: center;
         justify-content: center;
         position: relative;
+        @media screen and (max-width: $mobile-bp) {
+            max-width: 80%;
+        }
     }
 
     a {

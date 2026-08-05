@@ -2,7 +2,7 @@
   "headbar": {
     "tos": "Termos e Armazenamento",
     "hideUI": "Ocultar Interface",
-    "group": "Junte-se ao grupo relacionado",
+    "notification": "Notificações",
     "darkmode": "Mudar para modo escuro",
     "lightmode": "Mudar para modo claro",
     "language": "Escolher idioma",
@@ -21,7 +21,7 @@
   },
   "search": {
     "placeholder": "Busca geral...",
-    "results": "{count} resultado(s)",
+    "results": "{count, plural, one {# resultado} other {# resultados}}",
     "locatedAt": "Localizado em",
     "distributeAt": "Distribuído em"
   },
@@ -81,7 +81,7 @@
       "edit": "Editar",
       "submitEdit": "Salvar alterações",
       "undoEdit": "Desfazer alterações",
-      "recall": "Solicitar remoção do comentário",
+      "recall": "Ocultar agora",
       "reviewing": "Em análise",
       "emptyWithRule": "Ainda não há comentários. Ao publicar, siga as <a href=\"{link}\">diretrizes da comunidade</a>.",
       "ruleOnly": "Ao publicar, siga as <a href=\"{link}\">diretrizes da comunidade</a>.",
@@ -146,9 +146,34 @@
       "tr-TR": "Turco"
     }
   },
-  "group": {
-    "title": "Comunidade e Mídia",
-    "visit": "Visitar"
+  "notification": {
+    "title": "Notificações",
+    "tabs": {
+      "community": "Interações",
+      "system": "Moderação"
+    },
+    "markAllRead": "Marcar tudo como lido",
+    "empty": "Nenhuma mensagem. As mensagens relacionadas às suas contribuições aparecerão aqui.",
+    "guest": "Entre com sua {account} para receber notificações relevantes.",
+    "account": "conta OEM",
+    "loadError": "Não foi possível carregar as notificações.",
+    "loadMore": "Carregar mais",
+    "support": "Contato e suporte",
+    "visit": "Visitar",
+    "noDetails": "Nenhum detalhe adicional.",
+    "subject": {
+      "image": "imagem",
+      "comment": "comentário",
+      "submission": "contribuição"
+    },
+    "types": {
+      "approved": "{kind, select, comment {Seu} other {Sua}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> agora está {kind, select, comment {público} other {pública}}.",
+      "needsReview": "{kind, select, comment {Seu} other {Sua}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> aguarda análise manual.",
+      "removeResolved": "{kind, select, comment {Seu} other {Sua}} <subjectTag>{subject}</subjectTag> {kind, select, comment {retirado} other {retirada}} <pointTag>{point}</pointTag> foi {kind, select, comment {processado} other {processada}}.",
+      "reply": "Uma nova resposta foi adicionada {kind, select, comment {ao seu} other {à sua}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag>.",
+      "vote": "{kind, select, comment {Seu} other {Sua}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> recebeu {count, plural, one {# curtida} other {# curtidas}}.",
+      "multiple": "{kind, select, comment {Seu} other {Sua}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> tem {count, plural, one {# atualização relacionada} other {# atualizações relacionadas}}."
+    }
   },
   "tos": {
     "title": "Termos e Armazenamento",
@@ -210,13 +235,13 @@
     "triggerHandle": "Os interruptores relacionados à exibição do mapa estão localizados na parte inferior da barra lateral.<br>Você pode segurar o mouse para <span class=\"keyword\">arrastá-los e operá-los.</span>",
     "triggerSwitch": "Clique para alternar o estado do interruptor.<br><ul><li><span class=\"keyword\">O modo de agrupamento de marcadores</span> permite que marcadores densos sejam exibidos mesclados;</li><li><span class=\"keyword\">A exibição de limites de região</span> destaca cada sub-região e seus limites dentro da área atual.</li><li><span class=\"keyword\">Nomes de região</span> mostra os nomes das regiões no jogo.</li></ul>",
     "scale": "Use o <span class=\"keyword\">controle de zoom</span> para visualizar e manipular o zoom do mapa.<br>A roda de rolagem ou o trackpad podem ser usados para ampliar. Você também pode ampliar clicando nos botões <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> ou em qualquer lugar na barra de zoom.",
-    "filterList": "A <span class=\"keyword\">lista de marcadores</span> lista os marcadores que você selecionou; clique no ícone para desmarcar.",
+    "filterList": "A <span class=\"keyword\">lista de marcadores</span> mostra os tipos de marcadores selecionados; clique no ícone para desmarcá-los.",
     "headbar": "Os interruptores relacionados às configurações do mapa estão localizados na <span class=\"keyword\">barra superior</span>.",
     "tos": "Os <span class=\"keyword\">Termos de Serviço</span> e o <span class=\"keyword\">Gerenciamento de Dados</span> do site.",
     "hideUI": "<span class=\"keyword\">Ocultar a interface do usuário do site</span> para tirar capturas de tela ou visualizar marcadores de borda.",
-    "group": "Veja <span class=\"keyword\">grupos de discussão</span> e <span class=\"keyword\">comunidades</span> relacionados a este projeto.",
+    "notification": "Abra as <span class=\"keyword\">notificações</span> para ver interações e resultados da análise relacionados às suas contribuições.",
     "darkMode": "Alternar o <span class=\"keyword\">modo de luz ambiente</span> atual.",
-    "language": "Alternar <span class=\"keyword\">idioma da interface</span>.<br>Atualmente, os idiomas com <span class=\"keyword\">suporte completo à tradução de conteúdo do jogo</span> incluem inglês, chinês simplificado, chinês tradicional, japonês, coreano, francês, alemão, italiano, russo, espanhol, indonésio, português, tailandês e vietnamita.<br>Os idiomas com <span class=\"keyword\">apenas suporte à tradução de interface</span> incluem árabe, malaio, polonês e sueco.",
+    "language": "Alternar <span class=\"keyword\">idioma da interface</span>.<br>Atualmente, os idiomas com <span class=\"keyword\">suporte completo à tradução de conteúdo do jogo</span> incluem inglês, chinês simplificado, chinês tradicional, japonês, coreano, francês, alemão, italiano, russo, espanhol, indonésio, português, tailandês e vietnamita.<br>Os idiomas com <span class=\"keyword\">apenas suporte à tradução de interface</span> incluem árabe, malaio, polonês, sueco, grego, hindi, ucraniano e turco.",
     "announcement": "Veja as <span class=\"keyword\">notificações do site</span> mais recentes. As atualizações das condições de serviço e da política de privacidade também serão postadas aqui.",
     "help": "Reiniciar este <span class=\"keyword\">guia</span>.",
     "settings": "Abra as <span class=\"keyword\">Preferências</span> para controlar qual armazenamento local o mapa usa para lembrar suas ações.",
@@ -243,7 +268,6 @@
     "since": "Desde",
     "logintip": "Clique no avatar para entrar",
     "registip": "Clique no avatar para se cadastrar",
-    "ago": "atrás",
     "karma": "Karma",
     "loading": "Carregando...",
     "unassigned": "Não atribuído",
@@ -322,7 +346,7 @@
       "note": "Observação",
       "noteNickname": "Você pode usar no máximo 15 caracteres (letras, números, hífens e sublinhado).",
       "noteUID": "O UID é definido no primeiro cadastro e não pode ser alterado. O nome de usuário pode ser atualizado a qualquer momento. Clique no avatar para trocar a imagem.",
-      "auditLabel": "Auditoria",
+      "auditLabel": "Ação",
       "importOfficial": "Importar do Mapa Oficial",
       "save": "Salvar alterações",
       "saving": "Salvando...",
@@ -402,7 +426,7 @@
     "now": "Sincronizar com OEM Cloud",
     "already": "Sincronizado com a nuvem",
     "done": "Sincronizado - há {times}",
-    "syncing": "Sincronizando {count} pontos",
+    "syncing": "{count, plural, one {Sincronizando # ponto} other {Sincronizando # pontos}}",
     "failed": "Falha ao sincronizar ({reason})",
     "offline": "Offline",
     "dataConflict": "Conflito de dados",

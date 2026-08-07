@@ -43,7 +43,7 @@ const HeadBarMobileFallback: React.FC<HeadBarMobileFallbackProps> = ({ children,
             className={styles.headbarFallback}
             style={{
                 position: 'fixed',
-                top: '1rem',
+                top: 'max(1rem, env(safe-area-inset-top, 0px))',
                 right: '1rem',
             }}
         >

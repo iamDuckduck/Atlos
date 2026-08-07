@@ -88,7 +88,7 @@ ol.bindStep {
 
 .mobileLocatorShell {
     position: fixed;
-    top: 1rem;
+    top: max(1rem, env(safe-area-inset-top, 0px));
     left: 1rem;
     z-index: 920;
     width: 64px;

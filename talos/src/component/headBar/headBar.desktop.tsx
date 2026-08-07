@@ -31,7 +31,7 @@ const HeadBarDesktop: React.FC<HeadBarDesktopProps> = ({ children, compact = fal
             positioning='top-right'
             style={{
                 position: 'fixed',
-                top: '1rem',
+                top: 'max(1rem, env(safe-area-inset-top, 0px))',
                 right: '1rem',
                 backgroundColor: 'var(--headbar-bg)',
                 borderRadius: '50%',

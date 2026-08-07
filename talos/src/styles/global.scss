@@ -36,6 +36,14 @@
     --theme-transition-ease: #{$moderato-curve};
 }
 
+html,
+body,
+#root {
+    width: 100%;
+    height: 100%;
+    background-color: var(--map-bg, #{$light-1});
+}
+
 /*
     Enable default color/background/ transitions only during a theme switch window.
     These transition can be overrided for UX need.

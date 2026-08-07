@@ -88,6 +88,18 @@ const startFaviconSystemFollow = () => {
     }
 };
 
+const updateThemeColor = (mode: Theme) => {
+    const fallbackColor = mode === 'dark' ? '#111111' : '#f2f2eb';
+    const mapBackground = getComputedStyle(document.documentElement)
+        .getPropertyValue('--map-bg')
+        .trim();
+    const color = mapBackground || fallbackColor;
+
+    document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+        meta.setAttribute('content', color);
+    });
+};
+
 export const applyTheme = (mode: Theme, withTransition = true) => {
     const root = document.documentElement;
     if (withTransition) {
@@ -101,6 +113,7 @@ export const applyTheme = (mode: Theme, withTransition = true) => {
         }, ms);
     }
     root.setAttribute('data-theme', mode);
+    updateThemeColor(mode);
 };
 
 export const getSystemTheme = (): Theme =>

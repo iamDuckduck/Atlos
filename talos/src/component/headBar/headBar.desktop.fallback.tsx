@@ -12,7 +12,7 @@ const HeadBarDesktopFallback: React.FC<HeadBarDesktopFallbackProps> = ({ childre
             className={`${styles.headbarFallback} ${compact ? styles.compactFallback : ''}`}
             style={{
                 position: 'fixed',
-                top: '1rem',
+                top: 'max(1rem, env(safe-area-inset-top, 0px))',
                 right: '1rem',
             }}
         >

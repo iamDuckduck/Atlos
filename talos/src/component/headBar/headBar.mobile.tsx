@@ -69,7 +69,7 @@ const HeadBarMobile: React.FC<HeadBarMobileProps> = ({ children, forceExpanded =
             border2Transition='none'
             style={{
                 position: 'fixed',
-                top: '1rem',
+                top: 'max(1rem, env(safe-area-inset-top, 0px))',
                 right: '1rem',
                 backgroundColor: 'var(--headbar-bg)',
                 borderRadius: '36px',

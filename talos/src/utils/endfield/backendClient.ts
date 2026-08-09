@@ -34,6 +34,7 @@ export type AgreeRes = {
 export type EFPositionEnvelope = {
     data: PositionResponse['data'];
     binding?: EFBindingSummary;
+    socketTicket?: string;
 };
 
 export type EFOfficialMarksResponse = {
@@ -228,15 +229,32 @@ export const agreePolicy = (role?: { roleId?: string; serverId?: number | string
             : {}),
     });
 
-export const getEFPosition = (options: { includeBinding?: boolean } = {}): Promise<{ data: PositionResponse['data']; binding?: EFBindingSummary }> =>
-    requestJson(LOCATOR_API_BASE, options.includeBinding ? '/position?binding=1' : '/position');
+export const getEFPosition = (options: {
+    includeBinding?: boolean;
+    includeSocketTicket?: boolean;
+} = {}): Promise<{
+    data: PositionResponse['data'];
+    binding?: EFBindingSummary;
+    socketTicket?: string;
+}> => {
+    const search = new URLSearchParams();
+    if (options.includeBinding) search.set('binding', '1');
+    if (options.includeSocketTicket) search.set('socket_ticket', '1');
+    const query = search.toString();
+    const path = query ? `/position?${query}` : '/position';
+    return requestJson(LOCATOR_API_BASE, path);
+};
 
 export const getEFOfficialMarks = (): Promise<EFOfficialMarksResponse> =>
     requestJson(SYNC_API_BASE, '/official');
 
-export const openEFPositionSocket = (options: { includeBinding?: boolean } = {}): WebSocket => {
-    const path = options.includeBinding ? '/position-stream?binding=1' : '/position-stream';
-    const url = new URL(`${LOCATOR_API_BASE}${path}`);
+export const openEFPositionSocket = (options: {
+    includeBinding?: boolean;
+    socketTicket?: string | null;
+} = {}): WebSocket => {
+    const url = new URL(`${LOCATOR_API_BASE}/position-stream`);
+    if (options.includeBinding) url.searchParams.set('binding', '1');
+    if (options.socketTicket) url.searchParams.set('ticket', options.socketTicket);
     url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
     return new WebSocket(url.toString());
 };

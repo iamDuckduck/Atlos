@@ -123,6 +123,8 @@ const LOCATOR_MOVE_ANIMATION_MS = 900;
 const LOCATOR_POSITION_EPSILON = 0.0001;
 const POSITION_UNAVAILABLE_RETRY_MS = 5000;
 const EXPIRED_CREDENTIAL_RETRY_MS = 1000;
+const LOCATOR_SOCKET_RETRY_DELAYS_MS = [1000, 2000, 4000] as const;
+const LOCATOR_SOCKET_STEADY_RETRY_MS = 30_000;
 
 type UpKind = 'expired' | 'notInGame' | 'policy';
 
@@ -188,6 +190,8 @@ export function useLocator(map: L.Map | undefined): void {
     const trackerRunningRef = useRef(false);
     const pollTimerRef = useRef<number | null>(null);
     const socketRef = useRef<WebSocket | null>(null);
+    const socketTicketRef = useRef<string | null>(null);
+    const socketReconnectAttemptRef = useRef(0);
     const trackerLayerRef = useRef<L.LayerGroup | null>(null);
     const markerRef = useRef<L.Marker | null>(null);
     const lastSyncedRegionRef = useRef<string | null>(null);
@@ -242,6 +246,8 @@ export function useLocator(map: L.Map | undefined): void {
                 socketRef.current.close(1000, 'locator stopped');
                 socketRef.current = null;
             }
+            socketTicketRef.current = null;
+            socketReconnectAttemptRef.current = 0;
         };
 
         const pauseForErr = (error: EFBackendError) => {
@@ -616,7 +622,8 @@ export function useLocator(map: L.Map | undefined): void {
                 if (!trackerRunningRef.current || disposed) return;
 
                 try {
-                    const response = await getEFPosition();
+                    const response = await getEFPosition({ includeSocketTicket: true });
+                    socketTicketRef.current = response.socketTicket ?? null;
                     applyPositionUpdate(response.data);
                     if (response.data.isOnline === false) {
                         scheduleNextPoll((config.intervalMs ?? DEFAULT_LOCATOR_INTERVAL_MS) * 3);
@@ -651,7 +658,9 @@ export function useLocator(map: L.Map | undefined): void {
                 }
 
                 let sawPosition = false;
-                const socket = openEFPositionSocket();
+                const socket = openEFPositionSocket({
+                    socketTicket: socketTicketRef.current,
+                });
                 socketRef.current = socket;
 
                 socket.addEventListener('message', (event) => {
@@ -660,6 +669,7 @@ export function useLocator(map: L.Map | undefined): void {
                         const message = JSON.parse(String(event.data)) as EFPositionSocketMessage;
                         if (message.type === 'position') {
                             sawPosition = true;
+                            socketReconnectAttemptRef.current = 0;
                             applyPositionUpdate(message.data);
                             return;
                         }
@@ -684,7 +694,18 @@ export function useLocator(map: L.Map | undefined): void {
                         socketRef.current = null;
                     }
                     if (disposed || !trackerRunningRef.current) return;
-                    scheduleNextPoll(sawPosition ? (config.intervalMs ?? DEFAULT_LOCATOR_INTERVAL_MS) : 250);
+                    if (sawPosition) {
+                        socketReconnectAttemptRef.current = 0;
+                        scheduleNextPoll(config.intervalMs ?? DEFAULT_LOCATOR_INTERVAL_MS);
+                        return;
+                    }
+
+                    const attempt = socketReconnectAttemptRef.current;
+                    socketReconnectAttemptRef.current += 1;
+                    const delay = attempt < LOCATOR_SOCKET_RETRY_DELAYS_MS.length
+                        ? LOCATOR_SOCKET_RETRY_DELAYS_MS[attempt]
+                        : LOCATOR_SOCKET_STEADY_RETRY_MS;
+                    scheduleNextPoll(delay);
                 });
 
                 socket.addEventListener('error', () => {
@@ -699,9 +720,10 @@ export function useLocator(map: L.Map | undefined): void {
             window.addEventListener(LOCATOR_RETURN_CURRENT_EVENT, returnToCurrentPosition);
 
             trackerRunningRef.current = true;
-            void getEFPosition({ includeBinding: true })
+            void getEFPosition({ includeBinding: true, includeSocketTicket: true })
                 .then((response) => {
                     if (disposed) return;
+                    socketTicketRef.current = response.socketTicket ?? null;
                     applyPositionUpdate(response.data);
                     useLocatorStore.getState().setViewMode('tracking');
                     startPositionSocket();

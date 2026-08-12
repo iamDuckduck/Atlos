@@ -21,6 +21,7 @@ import {
     useSetUserGuideStepCompleted,
     useSetUserGuideStepCompletedBulk,
     useReplaceUserGuideStepCompleted,
+    CURRENT_USER_GUIDE_VERSION,
 } from '@/store/userGuide';
 import { GuideSpotlight } from './spotlight/spotlight';
 import { useDesktopGuideSteps } from './procedure/steps.desktop';
@@ -28,8 +29,6 @@ import { useMobileGuideSteps } from './procedure/steps.mobile';
 import { DEFAULT_REGION } from '@/data/map';
 import { useAppViewport, useDevice } from '@/utils/device';
 import useRegion from '@/store/region';
-
-const CURRENT_GUIDE_VERSION = '1.0.0';
 
 interface UserGuideProps {
     map?: L.Map;
@@ -143,10 +142,10 @@ const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
     useEffect(() => {
         if (!i18nReady || !visible) return;
 
-        if (userGuideVersion !== CURRENT_GUIDE_VERSION) {
+        if (userGuideVersion !== CURRENT_USER_GUIDE_VERSION) {
             // Atomic reset to avoid race that can cause STEP-0 to be treated as completed.
             replaceUserGuideStepCompleted(buildAllStepsCompletionMap(false));
-            setUserGuideVersion(CURRENT_GUIDE_VERSION);
+            setUserGuideVersion(CURRENT_USER_GUIDE_VERSION);
             setUserGuideCompletedVersion('');
             didAutoOpenRef.current = true;
             wasOpenRef.current = true; // Mark as already opened
@@ -156,7 +155,7 @@ const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
             return;
         }
 
-        if (userGuideCompletedVersion === CURRENT_GUIDE_VERSION) {
+        if (userGuideCompletedVersion === CURRENT_USER_GUIDE_VERSION) {
             notifyReady();
             return;
         }
@@ -281,7 +280,7 @@ const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
                 // Reset transition state
                 isTransitioningRef.current = false;
                 
-                setUserGuideCompletedVersion(CURRENT_GUIDE_VERSION);
+                setUserGuideCompletedVersion(CURRENT_USER_GUIDE_VERSION);
                 replaceUserGuideStepCompleted(buildAllStepsCompletionMap(true));
                 setForceDetailOpen(false);
                 setForceRegionSubOpen(false);

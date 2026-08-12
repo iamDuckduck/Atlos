@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export const CURRENT_USER_GUIDE_VERSION = '1.0.0';
+
 interface IUserGuideStore {
   version: string;
   setVersion: (version: string) => void;
@@ -99,6 +101,13 @@ export const useUserGuideStore = create<IUserGuideStore>()(
     },
   ),
 );
+
+export const completeCurrentUserGuide = (): void => {
+  useUserGuideStore.setState({
+    version: CURRENT_USER_GUIDE_VERSION,
+    completedVersion: CURRENT_USER_GUIDE_VERSION,
+  });
+};
 
 // Export hooks for easy use
 export const useUserGuideVersion = () => useUserGuideStore((s) => s.version);

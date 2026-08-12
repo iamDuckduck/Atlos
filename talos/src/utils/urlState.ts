@@ -17,6 +17,7 @@ import {
 import { REGION_DICT } from '@/data/map';
 import { getLangFromUrlCode, getLangUrlCode } from '@/utils/lang';
 import { navigateToSharedPoint } from '@/utils/navigation';
+import { completeCurrentUserGuide } from '@/store/userGuide';
 
 // URL 參數名稱
 const PARAM_LANG = 'l';
@@ -26,6 +27,15 @@ const PARAM_REGION = 'r';
 const PARAM_SUBREGION = 's';
 const PARAM_POINT = 'p';
 const PARAM_POINT_TOKEN = 'x';
+const MAP_URL_PARAMS = [
+    PARAM_LANG,
+    PARAM_FILTER,
+    PARAM_TYPE,
+    PARAM_REGION,
+    PARAM_SUBREGION,
+    PARAM_POINT,
+    PARAM_POINT_TOKEN,
+] as const;
 const AUTH_URL_PARAM_WHITELIST = new Set(['token', 'email', 'error', 'domain']);
 const POINT_SHARE_SHORT_ORIGIN = 'https://oem.re';
 const POINT_SHARE_CN_ORIGIN = 'https://opendfieldmap.cn';
@@ -566,6 +576,13 @@ export const applyUrlParams = async (): Promise<void> => {
 
     const params = new URLSearchParams(window.location.search);
     const pathPointToken = getPathPointToken(window.location.pathname);
+
+    // Shared/deep links have an explicit destination. Completing the current
+    // guide before React mounts prevents its auto-open from replacing that
+    // destination with the guide's default region.
+    if (pathPointToken || MAP_URL_PARAMS.some((param) => params.has(param))) {
+        completeCurrentUserGuide();
+    }
 
     // 應用語言參數（以用户本地优先）
     const langParam = params.get(PARAM_LANG);

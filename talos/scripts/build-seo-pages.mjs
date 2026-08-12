@@ -128,7 +128,7 @@ const seoOgConcurrency = Number.isFinite(requestedSeoOgConcurrency) && requested
   ? requestedSeoOgConcurrency
   : defaultSeoOgConcurrency;
 const SEO_STATE_VERSION = 1;
-const OG_RENDER_SIGNATURE_VERSION = 2;
+const OG_RENDER_SIGNATURE_VERSION = 3;
 const FILE_FINGERPRINT_VERSION = 2;
 
 const fileFingerprintCache = new Map();
@@ -395,6 +395,16 @@ async function loadMarkers(typeMap) {
     }
   }
   return markers;
+}
+
+function deduplicateMarkersByPositionAndType(markers) {
+  const seen = new Set();
+  return markers.filter((marker) => {
+    const key = JSON.stringify([marker.type, marker.x, marker.y, marker.z]);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 async function loadLocaleLabels(locale) {
@@ -1261,20 +1271,38 @@ async function generateOgImage(point) {
   const tileZoom = getOgTileZoom(region);
   const centerPixel = markerToTileImagePixel(point.marker, region, tileZoom);
   const markerCenter = tileImagePixelToOgPixel(centerPixel, centerPixel);
-  const composites = [];
+  const mainTileComposites = [];
+  const layerTileComposites = [];
   const offsets = getOgTileOffsets();
   const suffix = tileSuffixForTier(point.marker.tier);
   for (const [x, y] of offsets) {
-    const loaded = suffix
-      ? await addTileComposite(composites, point.regionKey, tileZoom, centerPixel, point.marker.tier, x, y)
-      : false;
-    if (!loaded) {
-      await addTileComposite(composites, point.regionKey, tileZoom, centerPixel, 0, x, y, '');
+    await addTileComposite(mainTileComposites, point.regionKey, tileZoom, centerPixel, 0, x, y, '');
+    if (suffix) {
+      await addTileComposite(layerTileComposites, point.regionKey, tileZoom, centerPixel, point.marker.tier, x, y);
     }
   }
 
+  const mapTileComposites = suffix
+    ? [{
+        input: await sharp({
+          create: {
+            width: SAMPLE_IMAGE_WIDTH,
+            height: SAMPLE_IMAGE_HEIGHT,
+            channels: 4,
+            background: { r: 0, g: 0, b: 0, alpha: 0 },
+          },
+        })
+          .composite(mainTileComposites)
+          .modulate({ brightness: 0.5 })
+          .png()
+          .toBuffer(),
+        left: 0,
+        top: 0,
+      }, ...layerTileComposites]
+    : mainTileComposites;
+
   const sampleBackgroundBuffer = await sharp(await createMapPatternSampleBackground())
-    .composite(composites)
+    .composite(mapTileComposites)
     .jpeg({ quality: 90 })
     .toBuffer();
   const workBackgroundBuffer = await sharp(sampleBackgroundBuffer)
@@ -1501,8 +1529,10 @@ function buildTilePathsForPoint(point) {
   return offsets.flatMap(([x, y]) => {
     const tileX = Math.floor((centerPixel.x + x) / TILE_IMAGE_SIZE);
     const tileY = Math.floor((centerPixel.y + y) / TILE_IMAGE_SIZE);
-    const primary = path.resolve(CLIPS_DIR, point.regionKey, String(tileZoom), `${tileX}_${tileY}${suffix}.webp`);
-    return [primary];
+    const main = path.resolve(CLIPS_DIR, point.regionKey, String(tileZoom), `${tileX}_${tileY}.webp`);
+    if (!suffix) return [main];
+    const layer = path.resolve(CLIPS_DIR, point.regionKey, String(tileZoom), `${tileX}_${tileY}${suffix}.webp`);
+    return [main, layer];
   });
 }
 
@@ -1543,7 +1573,12 @@ async function buildOgWorklist(points, sharedOgFingerprints, previousOgState) {
   for (const point of points) {
     const signature = await buildOgSignature(point, sharedOgFingerprints);
     nextState.entries[point.token] = { signature };
-    if (previousOgState.entries?.[point.token]?.signature !== signature || !(await pathExists(point.ogImagePath))) {
+    if (
+      shouldForceImages
+      || shouldForceAllImages
+      || previousOgState.entries?.[point.token]?.signature !== signature
+      || !(await pathExists(point.ogImagePath))
+    ) {
       worklist.push(point);
     }
   }
@@ -1593,7 +1628,7 @@ async function build() {
   const labels = localeLabels;
   const bodyTypes = new Set([...fallbackBodyTypes, ...localeBodyTypes]);
 
-  let markers = await loadMarkers(typeMap);
+  let markers = deduplicateMarkersByPositionAndType(await loadMarkers(typeMap));
   markers = markers
     .map((marker) => {
       const token = encodePointIdToken(marker.id);
@@ -1756,7 +1791,12 @@ async function build() {
           : await buildFallbackOgSignature(point, sharedOgFingerprints);
         nextOgState.entries[point.token] = { signature: ogSignature };
         const previousSignature = previousOgState.entries?.[point.token]?.signature;
-        if (previousSignature !== ogSignature || !(await pathExists(point.ogImagePath))) {
+        if (
+          shouldForceImages
+          || shouldForceAllImages
+          || previousSignature !== ogSignature
+          || !(await pathExists(point.ogImagePath))
+        ) {
           if (shouldBuildPointImages) {
             await generateOgImage(point);
           } else {

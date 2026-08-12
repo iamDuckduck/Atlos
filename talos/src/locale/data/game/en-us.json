@@ -61,12 +61,6 @@
             "protocol_space": "Protocol Space",
             "exploration_level": "Exploration Level",
             "ew_terminal": "EW Terminal",
-            "dorm_trade": "dorm_trade",
-            "seed_trade": "seed_trade",
-            "clinic_trade": "clinic_trade",
-            "lounge_trade": "lounge_trade",
-            "taikoo_trade": "taikoo_trade",
-            "bubbletea_trade": "bubbletea_trade",
             "wood": "Wood",
             "originium_ore": "Originium Ore",
             "originium_spot": "Originium Spot",
@@ -479,6 +473,7 @@
             "nar_digital_map02_14016_1": "Memo: Tianshi",
             "nar_digital_map02_14024_1": "Comm Log: A Sentimental One",
             "nar_sm1l1m2_3": "A Piece of Scrap Paper",
+            "nar_collection_map01_10_1": "Powerful Explosive Suite Coupon",
             "nar_collection_map02_95_1": "Talisman",
             "nar_collection_map02_13006_1": "Ancient Jade Slips",
             "nar_media_map01_117_1": "Recording: Victim of an Attack",
@@ -500,19 +495,28 @@
             "nar_media_map02_12144_1": "Recording: A Water Purification Scientist",
             "nar_media_map02_13005_1": "Recording: Terrified Individuals",
             "nar_media_map02_14008_1": "Idle Chatter: Yinglungs",
-            "nar_media_map02_14032_1": "Memo: An Yinglung Who Fell"
+            "nar_media_map02_14032_1": "Memo: An Yinglung Who Fell",
+            "andong": "Anton (Anton's Garden Shop)",
+            "maji": "Maggie (Prize Exchange)",
+            "xiemiao": "Semyon (Weapon Sales Point)",
+            "lunnade": "Lonnard (Corner Store)",
+            "e2m6env05": "Vendor (Fraissy's Groceries)",
+            "puyuan": "Pu Yuan (Vendor Stall)",
+            "azai": "Tian Ah Zai (Eureka Teashop)",
+            "jumei": "Ju Mei (BAMM-BOWL Fusion Bistro)",
+            "weiermolin": "Wellmorin (Seed-Expert's Shop)"
         },
         "category": {
             "collection": "Collection",
             "exploration": "exploration",
             "combat": "Combat",
-            "npc": "NPC",
             "natural": "Natural",
             "valuable": "Valuable",
             "facility": "Facility",
             "boss": "Boss",
             "mob": "Monster",
-            "archives": "Archives"
+            "archives": "Archives",
+            "npc": "NPC"
         },
         "types": {
             "poi": "POI",
@@ -573,7 +577,7 @@
         "FileCtgr": {
             "paper": "Manuscripts",
             "digital": "E-Files",
-            "collection": "Reports",
+            "collection": "Peculiars",
             "media": "Multimedia"
         },
         "researchId": {

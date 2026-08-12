@@ -61,12 +61,6 @@
             "protocol_space": "Spazio protocollare",
             "exploration_level": "Livello di esplorazione",
             "ew_terminal": "Terminale AP",
-            "dorm_trade": "Mercante del dormitorio",
-            "seed_trade": "Mercante di semi",
-            "clinic_trade": "Mercante della clinica",
-            "lounge_trade": "Mercante della sala",
-            "taikoo_trade": "Mercante Paleo",
-            "bubbletea_trade": "Mercante di Bubble Tea",
             "wood": "Legno",
             "originium_ore": "Minerale di Originium",
             "originium_spot": "Vena di Originium",
@@ -479,6 +473,7 @@
             "nar_digital_map02_14016_1": "Nota: Tianshi",
             "nar_digital_map02_14024_1": "Registro comunicazioni: Sentimentalismo",
             "nar_sm1l1m2_3": "Un pezzo di carta straccia",
+            "nar_collection_map01_10_1": "Coupon per set di esplosivi ultrapotenti",
             "nar_collection_map02_95_1": "Talismano",
             "nar_collection_map02_13006_1": "Antiche tavolette di giada",
             "nar_media_map01_117_1": "Registrazione: Vittima di un attacco",
@@ -500,19 +495,28 @@
             "nar_media_map02_12144_1": "Registrazione: Specialista della purificazione dell'acqua",
             "nar_media_map02_13005_1": "Registrazione: Persone terrorizzate",
             "nar_media_map02_14008_1": "Chiacchiere: Yinglung",
-            "nar_media_map02_14032_1": "Nota: Un Yinglung caduto"
+            "nar_media_map02_14032_1": "Nota: Un Yinglung caduto",
+            "andong": "Anton (Negozio di articoli per il giardinaggio di Anton)",
+            "maji": "Maggie (Scambio premi)",
+            "xiemiao": "Semyon (Punto vendita armi)",
+            "lunnade": "Lonnard (Bottega)",
+            "e2m6env05": "Mercante (Alimentari da Fraissy)",
+            "puyuan": "Pu Yuan (Chiosco del mercante)",
+            "azai": "Tian Ah Zai (Sala da tè di Eureka)",
+            "jumei": "Ju Mei (Bistrò fusion BAMM-BOWL)",
+            "weiermolin": "Wellmorin (Negozio specializzato in semi)"
         },
         "category": {
             "collection": "Collezione",
             "exploration": "Esplorazione",
             "combat": "Combattim.",
-            "npc": "PNG",
             "natural": "Naturale",
             "valuable": "Risorsa chiave",
             "facility": "Struttura",
             "boss": "Boss",
             "mob": "Mostro",
-            "archives": "Archivi"
+            "archives": "Archivi",
+            "npc": "PNG"
         },
         "types": {
             "poi": "Punto di interesse",
@@ -573,7 +577,7 @@
         "FileCtgr": {
             "paper": "Manoscritti",
             "digital": "E-File",
-            "collection": "Rapporti",
+            "collection": "Curiosità",
             "media": "Reperti multimediali"
         },
         "researchId": {

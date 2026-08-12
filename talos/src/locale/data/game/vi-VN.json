@@ -61,12 +61,6 @@
             "protocol_space": "Không Gian Giao Thức",
             "exploration_level": "Cấp Khám Phá",
             "ew_terminal": "Trạm Cảnh Báo Sớm",
-            "dorm_trade": "Thương Nhân Ký Túc Xá",
-            "seed_trade": "Thương Nhân Hạt Giống",
-            "clinic_trade": "Thương Nhân Phòng Y Tế",
-            "lounge_trade": "Thương Nhân Phòng Chờ",
-            "taikoo_trade": "Thương Nhân Cổ Đại",
-            "bubbletea_trade": "Thương Nhân Trà Sữa",
             "wood": "Gỗ",
             "originium_ore": "Quặng Originium",
             "originium_spot": "Vân Mạch Originium",
@@ -479,6 +473,7 @@
             "nar_digital_map02_14016_1": "Ghi Chú: Thiên Sư",
             "nar_digital_map02_14024_1": "Nhật Ký Liên Lạc: Người Đa Cảm",
             "nar_sm1l1m2_3": "Mảnh Giấy Vụn",
+            "nar_collection_map01_10_1": "Phiếu Giảm Giá Bộ Thuốc Nổ Uy Lực",
             "nar_collection_map02_95_1": "Bùa hộ mệnh",
             "nar_collection_map02_13006_1": "Thẻ Ngọc Cổ",
             "nar_media_map01_117_1": "Bản Ghi: Nạn Nhân Của Cuộc Tấn Công",
@@ -500,19 +495,28 @@
             "nar_media_map02_12144_1": "Ghi Âm: Một Nhà Khoa Học Thanh Lọc Nước",
             "nar_media_map02_13005_1": "Bản Ghi: Nhân Chứng Khiếp Sợ",
             "nar_media_map02_14008_1": "Chuyện Phiếm: Đội Đặc Nhiệm",
-            "nar_media_map02_14032_1": "Ghi Chú: Một Đội Đặc Nhiệm Đã Ngã Xuống"
+            "nar_media_map02_14032_1": "Ghi Chú: Một Đội Đặc Nhiệm Đã Ngã Xuống",
+            "andong": "Anton (Cửa Hàng Rau Củ Của Anton)",
+            "maji": "Maggie (Đổi Thưởng)",
+            "xiemiao": "Semyon (Điểm Bán Vũ Khí)",
+            "lunnade": "Lonnard (Cửa Hàng Góc Phố)",
+            "e2m6env05": "Thương Nhân (Cửa Hàng Tạp Hóa của Fraissy)",
+            "puyuan": "Pu Yuan (Sạp Hàng Buôn Bán)",
+            "azai": "Tian Ah Zai (Tiệm Trà Eureka)",
+            "jumei": "Ju Mei (Nhà Hàng Hợp Hương BAMM-BOWL)",
+            "weiermolin": "Wellmorin (Cửa Hàng Chuyên Gia Hạt Giống)"
         },
         "category": {
             "collection": "Bộ Sưu Tập",
             "exploration": "Khám Phá",
             "combat": "Chiến Đấu",
-            "npc": "NPC",
             "natural": "Tự Nhiên",
             "valuable": "Giá Trị",
             "facility": "Công Trình",
             "boss": "Boss",
             "mob": "Quái Vật",
-            "archives": "Lưu trữ"
+            "archives": "Lưu trữ",
+            "npc": "NPC"
         },
         "types": {
             "poi": "Điểm Quan Tâm",
@@ -573,7 +577,7 @@
         "FileCtgr": {
             "paper": "Bản Thảo",
             "digital": "Hồ Sơ-E",
-            "collection": "Báo Cáo",
+            "collection": "Đặc Biệt",
             "media": "Đa Phương Tiện"
         },
         "researchId": {

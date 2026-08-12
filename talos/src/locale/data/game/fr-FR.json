@@ -61,12 +61,6 @@
             "protocol_space": "Espace de Protocole",
             "exploration_level": "Niveau d'exploration",
             "ew_terminal": "Terminal AP",
-            "dorm_trade": "Marchand du dortoir",
-            "seed_trade": "Marchand de graines",
-            "clinic_trade": "Marchand de la clinique",
-            "lounge_trade": "Marchand du salon",
-            "taikoo_trade": "Marchand Paléo",
-            "bubbletea_trade": "Marchand de Bubble Tea",
             "wood": "Bois",
             "originium_ore": "Minerai d'originium",
             "originium_spot": "Veine d'originium",
@@ -479,6 +473,7 @@
             "nar_digital_map02_14016_1": "Mémo : Tianshi",
             "nar_digital_map02_14024_1": "Journal de communication : que d'émotions",
             "nar_sm1l1m2_3": "Un bout de papier",
+            "nar_collection_map01_10_1": "Bon pour une gamme d'explosifs puissants",
             "nar_collection_map02_95_1": "Talisman",
             "nar_collection_map02_13006_1": "Ancienne tablette de jade",
             "nar_media_map01_117_1": "Enregistrement : victime d'une attaque",
@@ -500,19 +495,28 @@
             "nar_media_map02_12144_1": "Enregistrement : spécialiste de la purification de l'eau",
             "nar_media_map02_13005_1": "Enregistrement : des individus terrifiés",
             "nar_media_map02_14008_1": "Bavardage : Yinglungs",
-            "nar_media_map02_14032_1": "Note d'un membre des Yinglungs tombé au combat"
+            "nar_media_map02_14032_1": "Note d'un membre des Yinglungs tombé au combat",
+            "andong": "Anton (Jardinerie d'Anton)",
+            "maji": "Maggie (Échange de prix)",
+            "xiemiao": "Semyon (Lieu de vente d'armes)",
+            "lunnade": "Lonnard (Magasin de proximité)",
+            "e2m6env05": "Vendeur (Épicerie de Fraissy)",
+            "puyuan": "Pu Yuan (Étal de vendeur)",
+            "azai": "Tian Ah Zai (Boutique de thé d'Eurêka)",
+            "jumei": "Ju Mei (Bistrot fusion BAMM-BOL)",
+            "weiermolin": "Wellmorin (Boutique L'as de la graine)"
         },
         "category": {
             "collection": "Collection",
             "exploration": "Exploration",
             "combat": "Combat",
-            "npc": "PNJ",
             "natural": "Naturel",
             "valuable": "Objet de valeur",
             "facility": "Installation",
             "boss": "Boss",
             "mob": "Monstre",
-            "archives": "Archives"
+            "archives": "Archives",
+            "npc": "PNJ"
         },
         "types": {
             "poi": "Point d'intérêt",
@@ -573,7 +577,7 @@
         "FileCtgr": {
             "paper": "Manuscrits",
             "digital": "Dossiers électroniques",
-            "collection": "Rapports",
+            "collection": "Raretés",
             "media": "Multimédia"
         },
         "researchId": {

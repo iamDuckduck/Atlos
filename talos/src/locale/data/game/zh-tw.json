@@ -61,12 +61,6 @@
             "protocol_space": "協議空間",
             "exploration_level": "探索等級",
             "ew_terminal": "襲擊預警終端",
-            "dorm_trade": "工人之家商人",
-            "seed_trade": "種子商人",
-            "clinic_trade": "礦區診所商人",
-            "lounge_trade": "工人休息室商人",
-            "taikoo_trade": "太古商人",
-            "bubbletea_trade": "奶茶店商人",
             "wood": "原木",
             "originium_ore": "源石礦",
             "originium_spot": "源石礦脈",
@@ -479,6 +473,7 @@
             "nar_digital_map02_14016_1": "天師的留言",
             "nar_digital_map02_14024_1": "感慨者的通訊",
             "nar_sm1l1m2_3": "一張殘破的紙片",
+            "nar_collection_map01_10_1": "高威力爆炸物組合兌換券",
             "nar_collection_map02_95_1": "護身符",
             "nar_collection_map02_13006_1": "古舊玉簡",
             "nar_media_map01_117_1": "遇襲者的留聲",
@@ -500,19 +495,28 @@
             "nar_media_map02_12144_1": "淨水研究者的錄音",
             "nar_media_map02_13005_1": "驚恐者的留聲",
             "nar_media_map02_14008_1": "應龍隊員們的閒聊",
-            "nar_media_map02_14032_1": "犧牲應龍的留聲"
+            "nar_media_map02_14032_1": "犧牲應龍的留聲",
+            "andong": "安東（安東的綠植店）",
+            "maji": "瑪姬（獎品兌換處）",
+            "xiemiao": "謝苗（武器販售點）",
+            "lunnade": "倫納德（雜貨店）",
+            "e2m6env05": "商人（芙蕾絲雜貨鋪）",
+            "puyuan": "蒲元（行商小鋪）",
+            "azai": "田阿仔（岳研香茶舖）",
+            "jumei": "菊妹（「飯筒」新潮餐飲店）",
+            "weiermolin": "維爾莫林（種子達人的小店）"
         },
         "category": {
             "collection": "收集物",
             "exploration": "探索",
             "combat": "戰鬥",
-            "npc": "NPC",
             "natural": "自然資源",
             "valuable": "珍貴材料",
             "facility": "地圖設施",
             "boss": "領袖",
             "mob": "敵人",
-            "archives": "檔案"
+            "archives": "檔案",
+            "npc": "NPC"
         },
         "types": {
             "poi": "興趣點",
@@ -573,7 +577,7 @@
         "FileCtgr": {
             "paper": "紙本紀錄",
             "digital": "電子檔案",
-            "collection": "調查報告",
+            "collection": "藏品",
             "media": "多媒體"
         },
         "researchId": {

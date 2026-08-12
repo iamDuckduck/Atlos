@@ -61,12 +61,6 @@
             "protocol_space": "協約空間",
             "exploration_level": "探索レベル",
             "ew_terminal": "襲撃警備端末",
-            "dorm_trade": "労働者の家商人",
-            "seed_trade": "種商人",
-            "clinic_trade": "鉱区診療所商人",
-            "lounge_trade": "労働者休憩室商人",
-            "taikoo_trade": "太古商人",
-            "bubbletea_trade": "ミルクティー店商人",
             "wood": "木材",
             "originium_ore": "源石鉱",
             "originium_spot": "源石鉱脈",
@@ -479,6 +473,7 @@
             "nar_digital_map02_14016_1": "天師のメッセージ",
             "nar_digital_map02_14024_1": "感慨に浸る者の通信",
             "nar_sm1l1m2_3": "破れたメモ",
+            "nar_collection_map01_10_1": "高威力爆発物セットの引換券",
             "nar_collection_map02_95_1": "お守り",
             "nar_collection_map02_13006_1": "古びた玉簡",
             "nar_media_map01_117_1": "襲撃された人の録音",
@@ -500,19 +495,28 @@
             "nar_media_map02_12144_1": "浄水の研究者の録音",
             "nar_media_map02_13005_1": "驚き怯える者の録音",
             "nar_media_map02_14008_1": "応龍隊員たちの雑談",
-            "nar_media_map02_14032_1": "犠牲になった応龍隊員のメモ"
+            "nar_media_map02_14032_1": "犠牲になった応龍隊員のメモ",
+            "andong": "アントン（アントンの植物販売店）",
+            "maji": "マギー（賞品交換所）",
+            "xiemiao": "セミョーン（武器販売所）",
+            "lunnade": "ロナード（雑貨店）",
+            "e2m6env05": "商人（ヴェラス雑貨店）",
+            "puyuan": "プー・ユェン（行商人の売店）",
+            "azai": "テン・アザイ（岳研香茶舗）",
+            "jumei": "ジユ（「食いしん房」トレンド飲食店）",
+            "weiermolin": "ウェルモリン（種達人の売店）"
         },
         "category": {
             "collection": "収集物",
             "exploration": "探索",
             "combat": "戦闘",
-            "npc": "NPC",
             "natural": "天然資源",
             "valuable": "貴重素材",
             "facility": "マップ施設",
             "boss": "ボス",
             "mob": "敵",
-            "archives": "アーカイブ"
+            "archives": "アーカイブ",
+            "npc": "NPC"
         },
         "types": {
             "poi": "興味ポイント",
@@ -573,7 +577,7 @@
         "FileCtgr": {
             "paper": "紙の資料",
             "digital": "デジタルファイル",
-            "collection": "調査報告",
+            "collection": "思い出",
             "media": "マルチメディア"
         },
         "researchId": {

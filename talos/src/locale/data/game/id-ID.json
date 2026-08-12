@@ -61,12 +61,6 @@
             "protocol_space": "Dimensi Protokol",
             "exploration_level": "Level Eksplorasi",
             "ew_terminal": "Terminal PD",
-            "dorm_trade": "Pedagang Asrama",
-            "seed_trade": "Pedagang Benih",
-            "clinic_trade": "Pedagang Klinik",
-            "lounge_trade": "Pedagang Lounge",
-            "taikoo_trade": "Pedagang Paleo",
-            "bubbletea_trade": "Pedagang Bubble Tea",
             "wood": "Kayu",
             "originium_ore": "Bijih Originium",
             "originium_spot": "Sulur Originium",
@@ -479,6 +473,7 @@
             "nar_digital_map02_14016_1": "Memo: Tianshi",
             "nar_digital_map02_14024_1": "Log Komunikasi: Orang yang Sentimental",
             "nar_sm1l1m2_3": "Lembaran Kertas Bekas",
+            "nar_collection_map01_10_1": "Kupon Set Bahan Peledak Kuat",
             "nar_collection_map02_95_1": "Jimat",
             "nar_collection_map02_13006_1": "Lempeng Giok Kuno",
             "nar_media_map01_117_1": "Rekaman: Korban Serangan",
@@ -500,19 +495,28 @@
             "nar_media_map02_12144_1": "Rekaman: Ilmuwan Pemurnian Air",
             "nar_media_map02_13005_1": "Rekaman: Orang-orang yang Ketakutan",
             "nar_media_map02_14008_1": "Obrolan Tanpa Topik: Anggota Yinglung",
-            "nar_media_map02_14032_1": "Memo: Seorang Yinglung yang Gugur"
+            "nar_media_map02_14032_1": "Memo: Seorang Yinglung yang Gugur",
+            "andong": "Anton (Toko Kebun Anton)",
+            "maji": "Maggie (Penukaran Hadiah)",
+            "xiemiao": "Semyon (Titik Jual Senjata)",
+            "lunnade": "Lonnard (Toko Pojok)",
+            "e2m6env05": "Penjual (Toko Kelontong Fraissy)",
+            "puyuan": "Pu Yuan (Kios Penjual)",
+            "azai": "Tian Ah Zai (Kedai Teh Eureka)",
+            "jumei": "Ju Mei (Bistro Fusi BAMM-BUUU)",
+            "weiermolin": "Wellmorin (Toko Ahli Benih)"
         },
         "category": {
             "collection": "Koleksi",
             "exploration": "Eksplorasi",
             "combat": "Pertarungan",
-            "npc": "NPC",
             "natural": "Alami",
             "valuable": "Barang Berharga",
             "facility": "Fasilitas",
             "boss": "Bos",
             "mob": "Monster",
-            "archives": "Arsip"
+            "archives": "Arsip",
+            "npc": "NPC"
         },
         "types": {
             "poi": "Titik Menarik",
@@ -573,7 +577,7 @@
         "FileCtgr": {
             "paper": "Naskah",
             "digital": "E-File",
-            "collection": "Laporan",
+            "collection": "Aneh",
             "media": "Multimedia"
         },
         "researchId": {

@@ -61,12 +61,6 @@
             "protocol_space": "Espaço do Protocolo",
             "exploration_level": "Nível de Exploração",
             "ew_terminal": "Terminal de AA",
-            "dorm_trade": "Comerciante do Dormitório",
-            "seed_trade": "Comerciante de Sementes",
-            "clinic_trade": "Comerciante da Clínica",
-            "lounge_trade": "Comerciante do Salão",
-            "taikoo_trade": "Comerciante Paleo",
-            "bubbletea_trade": "Comerciante de Bubble Tea",
             "wood": "Madeira",
             "originium_ore": "Minério de Originium",
             "originium_spot": "Veio de Originium",
@@ -479,6 +473,7 @@
             "nar_digital_map02_14016_1": "Memo: Tianshi",
             "nar_digital_map02_14024_1": "Log de Comunicação: Um Sentimental",
             "nar_sm1l1m2_3": "Um Pedaço de Papel de Rascunho",
+            "nar_collection_map01_10_1": "Cupom de Conjunto Explosivo Poderoso",
             "nar_collection_map02_95_1": "Talismã",
             "nar_collection_map02_13006_1": "Tiras de Jade Antigas",
             "nar_media_map01_117_1": "Gravação: Vítima de um Ataque",
@@ -500,19 +495,28 @@
             "nar_media_map02_12144_1": "Gravação: Uma Cientista de Purificação de Água",
             "nar_media_map02_13005_1": "Gravação: Indivíduos Aterrorizados",
             "nar_media_map02_14008_1": "Conversa Informal: Yinglungs",
-            "nar_media_map02_14032_1": "Memo: Um Yinglung que Não Resistiu"
+            "nar_media_map02_14032_1": "Memo: Um Yinglung que Não Resistiu",
+            "andong": "Anton (Loja de Jardinagem de Anton)",
+            "maji": "Maggie (Troca de Prêmios)",
+            "xiemiao": "Semyon (Ponto de Venda de Armas)",
+            "lunnade": "Lonnard (Loja da Esquina)",
+            "e2m6env05": "Fornecedor (Mercearia da Fraissy)",
+            "puyuan": "Pu Yuan (Loja do Vendedor)",
+            "azai": "Tian Ah Zai (Casa de Chá de Eureka)",
+            "jumei": "Ju Mei (Bistrô Fusion BAMM-BOWL)",
+            "weiermolin": "Wellmorin (Loja do Especialista em Sementes)"
         },
         "category": {
             "collection": "Coleção",
             "exploration": "Exploração",
             "combat": "Combate",
-            "npc": "NPC",
             "natural": "Natural",
             "valuable": "Item de Valor",
             "facility": "Instalação",
             "boss": "Chefe",
             "mob": "Monstro",
-            "archives": "Arquivos"
+            "archives": "Arquivos",
+            "npc": "NPC"
         },
         "types": {
             "poi": "Ponto de Interesse",
@@ -573,7 +577,7 @@
         "FileCtgr": {
             "paper": "Manuscritos",
             "digital": "Arquivos Eletrônicos",
-            "collection": "Relatórios",
+            "collection": "Peculiaridades",
             "media": "Multimídia"
         },
         "researchId": {

@@ -61,12 +61,6 @@
             "protocol_space": "프로토콜 공간",
             "exploration_level": "탐색 레벨",
             "ew_terminal": "습격 경보 단말기",
-            "dorm_trade": "노동자의 집 상인",
-            "seed_trade": "씨앗 상인",
-            "clinic_trade": "광구 진료소 상인",
-            "lounge_trade": "노동자 휴게실 상인",
-            "taikoo_trade": "태고 상인",
-            "bubbletea_trade": "밀크티 가게 상인",
             "wood": "원목",
             "originium_ore": "광석 광석",
             "originium_spot": "광석 광맥",
@@ -479,6 +473,7 @@
             "nar_digital_map02_14016_1": "천사의 메시지",
             "nar_digital_map02_14024_1": "감회에 젖은 이의 통신",
             "nar_sm1l1m2_3": "찢어진 쪽지 조각",
+            "nar_collection_map01_10_1": "고위력 폭발물 키트 교환권",
             "nar_collection_map02_95_1": "호신부",
             "nar_collection_map02_13006_1": "오래된 옥간",
             "nar_media_map01_117_1": "습격당한 사람들이 남긴 메시지",
@@ -500,19 +495,28 @@
             "nar_media_map02_12144_1": "정수 연구원의 녹음",
             "nar_media_map02_13005_1": "공포에 사로잡힌 사람들의 녹음",
             "nar_media_map02_14008_1": "응룡 대원들의 잡담",
-            "nar_media_map02_14032_1": "전사한 응룡 대원이 남긴 음성"
+            "nar_media_map02_14032_1": "전사한 응룡 대원이 남긴 음성",
+            "andong": "안톤(안톤의 식물 상점)",
+            "maji": "매기(상품 교환소)",
+            "xiemiao": "세묜(무기 판매처)",
+            "lunnade": "로너드(잡화점)",
+            "e2m6env05": "상인(프레이시 잡화점)",
+            "puyuan": "포원(행상인의 가게)",
+            "azai": "전자이(악연 찻집)",
+            "jumei": "국매('대식가'의 트렌디한 레스토랑)",
+            "weiermolin": "웰모린(씨앗 수집가의 상점)"
         },
         "category": {
             "collection": "수집물",
             "exploration": "탐험",
             "combat": "전투",
-            "npc": "NPC",
             "natural": "천연자원",
             "valuable": "희귀 재료",
             "facility": "지도 시설",
             "boss": "보스",
             "mob": "적",
-            "archives": "아카이브"
+            "archives": "아카이브",
+            "npc": "NPC"
         },
         "types": {
             "poi": "관심 지점",
@@ -573,7 +577,7 @@
         "FileCtgr": {
             "paper": "문서 기록",
             "digital": "전자 파일",
-            "collection": "조사 보고서",
+            "collection": "소장품",
             "media": "멀티미디어"
         },
         "researchId": {

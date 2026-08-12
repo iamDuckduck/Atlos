@@ -61,12 +61,6 @@
             "protocol_space": "Protokoll-Dimension",
             "exploration_level": "Erkundungslevel",
             "ew_terminal": "FW-Terminal",
-            "dorm_trade": "Wohnheim-Händler",
-            "seed_trade": "Saatgut-Händler",
-            "clinic_trade": "Klinik-Händler",
-            "lounge_trade": "Lounge-Händler",
-            "taikoo_trade": "Paläo-Händler",
-            "bubbletea_trade": "Bubble-Tea-Händler",
             "wood": "Holz",
             "originium_ore": "Originium-Erz",
             "originium_spot": "Originium-Ader",
@@ -479,6 +473,7 @@
             "nar_digital_map02_14016_1": "Notiz: Tianshi",
             "nar_digital_map02_14024_1": "Kommunikationslog: Sentimentalität",
             "nar_sm1l1m2_3": "Ein Stück Schmierpapier",
+            "nar_collection_map01_10_1": "Gutschein für Hochwirksamen Sprengstoff",
             "nar_collection_map02_95_1": "Talisman",
             "nar_collection_map02_13006_1": "Uralte Jade-Tafeln",
             "nar_media_map01_117_1": "Aufzeichnung: Opfer eines Angriffs",
@@ -500,19 +495,28 @@
             "nar_media_map02_12144_1": "Aufzeichnung: Fachkraft für Wasseraufbereitung",
             "nar_media_map02_13005_1": "Aufzeichnung: Verängstigte Personen",
             "nar_media_map02_14008_1": "Geplauder: Yinglungs",
-            "nar_media_map02_14032_1": "Notiz: Ein Yinglung, der fiel"
+            "nar_media_map02_14032_1": "Notiz: Ein Yinglung, der fiel",
+            "andong": "Anton (Antons Gärtnereibedarf)",
+            "maji": "Maggie (Preisaustausch)",
+            "xiemiao": "Semjon (Waffenverkaufspunkt)",
+            "lunnade": "Lonnard (Eckladen)",
+            "e2m6env05": "Lieferantin (Fraissys Lebensmittel)",
+            "puyuan": "Pu Yuan (Verkaufsstand)",
+            "azai": "Tian Ah Zai (Eureka-Teestube)",
+            "jumei": "Ju Mei (BAM-BOOM Fusion Bistro)",
+            "weiermolin": "Wellmorin (Laden des Saatgutexperten)"
         },
         "category": {
             "collection": "Sammlung",
             "exploration": "Erkundung",
             "combat": "Kampf",
-            "npc": "NPC",
             "natural": "Natur",
             "valuable": "Wertgegenstand",
             "facility": "Anlage",
             "boss": "Boss",
             "mob": "Monster",
-            "archives": "Archive"
+            "archives": "Archive",
+            "npc": "NPC"
         },
         "types": {
             "poi": "Interessanter Ort",
@@ -573,7 +577,7 @@
         "FileCtgr": {
             "paper": "Manuskripte",
             "digital": "E-Dateien",
-            "collection": "Berichte",
+            "collection": "Ungewöhnliches",
             "media": "Multimedia"
         },
         "researchId": {

@@ -17,6 +17,12 @@
 .binderWrap {
     break-inside: avoid;
     overflow: visible;
+    // Chrome applies overscroll-behavior to non-scrollable elements as well.
+    // Keep wheel/touch scrolling chained to the sidebar while hovering a binder.
+    &,
+    * {
+        overscroll-behavior: auto;
+    }
     margin-bottom: .625rem;
     padding: 6px 12px 4px 12px;
     position: relative;
@@ -113,7 +119,6 @@
 .binderItem {
     user-select: none;
     touch-action: pan-y;
-    overscroll-behavior: auto;
     min-height: 2.5rem;
 
     display: grid;

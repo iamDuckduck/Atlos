@@ -621,7 +621,7 @@ export const Detail = ({ inline = false, className }: DetailProps) => {
                                                         item.data.total > 0
                                                             ? item.data.collected / item.data.total
                                                             : 0,
-                                                }}
+                                                } as React.CSSProperties}
                                             ></div>
                                         ))}
                                     </div>

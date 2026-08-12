@@ -4,7 +4,10 @@ import {
     CURRENT_USER_GUIDE_VERSION,
     useUserGuideStore,
 } from '@/store/userGuide';
-import { applyUrlParams } from './urlState';
+import {
+    applyUrlParams,
+    shouldSuppressInitialAutoOverlays,
+} from './urlState';
 
 describe('URL state user guide handling', () => {
     beforeEach(() => {
@@ -31,6 +34,7 @@ describe('URL state user guide handling', () => {
             version: CURRENT_USER_GUIDE_VERSION,
             completedVersion: CURRENT_USER_GUIDE_VERSION,
         });
+        expect(shouldSuppressInitialAutoOverlays()).toBe(true);
     });
 
     it('does not complete the guide for authentication-only parameters', async () => {
@@ -42,5 +46,6 @@ describe('URL state user guide handling', () => {
             version: '',
             completedVersion: '',
         });
+        expect(shouldSuppressInitialAutoOverlays()).toBe(false);
     });
 });

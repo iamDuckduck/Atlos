@@ -41,6 +41,10 @@ const POINT_SHARE_SHORT_ORIGIN = 'https://oem.re';
 const POINT_SHARE_CN_ORIGIN = 'https://opendfieldmap.cn';
 const POINT_SHARE_CN_HOSTNAME = 'opendfieldmap.cn';
 
+let suppressInitialAutoOverlays = false;
+
+export const shouldSuppressInitialAutoOverlays = (): boolean => suppressInitialAutoOverlays;
+
 const BASE62_ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const BASE62_CHAR_TO_VALUE = new Map<string, bigint>(
     BASE62_ALPHABET.split('').map((char, index) => [char, BigInt(index)]),
@@ -576,11 +580,18 @@ export const applyUrlParams = async (): Promise<void> => {
 
     const params = new URLSearchParams(window.location.search);
     const pathPointToken = getPathPointToken(window.location.pathname);
+    const hasMapUrlState = Boolean(
+        pathPointToken || MAP_URL_PARAMS.some((param) => params.has(param)),
+    );
+
+    // The URL is cleaned before React mounts, so retain this startup-only flag
+    // for flows that must not interrupt an explicit shared-link destination.
+    suppressInitialAutoOverlays = hasMapUrlState;
 
     // Shared/deep links have an explicit destination. Completing the current
     // guide before React mounts prevents its auto-open from replacing that
     // destination with the guide's default region.
-    if (pathPointToken || MAP_URL_PARAMS.some((param) => params.has(param))) {
+    if (hasMapUrlState) {
         completeCurrentUserGuide();
     }
 

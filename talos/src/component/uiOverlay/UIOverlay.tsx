@@ -43,6 +43,7 @@ import Guide from '../../assets/logos/guide.svg?react';
 import SettingsIcon from '../../assets/logos/settings.svg?react';
 import AnnouncementIcon from '../../assets/logos/announce.svg?react';
 import { useAnnouncementFlow } from './useAnnFlow';
+import { shouldSuppressInitialAutoOverlays } from '@/utils/urlState';
 
 const AnnouncementModal = lazy(() => import('@/component/announcement/announcement'));
 
@@ -94,6 +95,7 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
     const setAnnouncementFlowReady = useUiPrefsStore((s) => s.setAnnouncementFlowReady);
     const mobileDrawerSnapIndex = useMobileDrawerSnapIndex();
     const [autoOpenedOnce, setAutoOpenedOnce] = useState(false);
+    const [suppressInitialAutoOpen] = useState(shouldSuppressInitialAutoOverlays);
 
     useEffect(() => {
         setAnnouncementFlowReady(false);
@@ -105,6 +107,11 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
         if (!userGuideReady) return;
         if (isUserGuideOpen) return;
 
+        if (suppressInitialAutoOpen) {
+            setAnnouncementFlowReady(true);
+            return;
+        }
+
         if (hasUnreadAnnouncement && !autoOpenedOnce) {
             setAnnouncementOpen(true);
             setIsAnnouncementOpen(true);
@@ -113,7 +120,7 @@ const UIOverlay: React.FC<UIOverlayProps> = ({
         }
 
         setAnnouncementFlowReady(true);
-    }, [visible, announcementChecked, userGuideReady, isUserGuideOpen, hasUnreadAnnouncement, autoOpenedOnce, setAnnouncementFlowReady, setIsAnnouncementOpen]);
+    }, [visible, announcementChecked, userGuideReady, isUserGuideOpen, suppressInitialAutoOpen, hasUnreadAnnouncement, autoOpenedOnce, setAnnouncementFlowReady, setIsAnnouncementOpen]);
 
     const handleReset = () => {
         setStorageOpen(true);

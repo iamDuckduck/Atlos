@@ -411,10 +411,8 @@ export const exportMarkerData = (
 export const importMarkerData = (
   content: string,
   callbacks: {
-    clearPoints: () => void;
-    addPoint: (id: string) => void;
+    replacePoints: (ids: string[]) => void;
     setFilter: (filter: string[]) => void;
-    getSelectedPoints: () => string[];
     setSelected: (id: string, value: boolean) => void;
     getActivePoints?: () => string[];
     getFilter?: () => string[];
@@ -443,10 +441,9 @@ export const importMarkerData = (
       console.warn(`[Import] activePoints (${rawActivePoints.length}) < 30% of selectedPoints (${rawSelectedPoints.length}) — recovered to ${effectiveActivePoints.length} entries by merging`);
     }
 
-    // Merge active points (add new ones, keep existing)
-    effectiveActivePoints.forEach((id: string) => {
-      callbacks.addPoint(id);
-    });
+    // Merge active points (add new ones, keep existing) as one external replacement.
+    const existingActivePoints = callbacks.getActivePoints?.() ?? [];
+    callbacks.replacePoints([...existingActivePoints, ...effectiveActivePoints]);
 
     // Merge filter (combine and deduplicate)
     if (callbacks.getFilter) {

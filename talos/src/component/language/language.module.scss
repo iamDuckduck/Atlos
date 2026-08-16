@@ -172,6 +172,12 @@
     &[lang='id-ID'], &[lang='ms-MY'] {
         line-height: 0.77;
     }
+    &[lang='ar-SA'] {
+        font-family: 'Noto Sans Arabic', sans-serif;
+    }
+    &[lang='th-TH'] {
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
 }
 .langDisplay {
     grid-area: langDisplay;

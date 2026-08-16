@@ -10,9 +10,9 @@ import {
 
 import styles from './marker.module.scss';
 import { useMarkerStore } from '@/store/marker';
-import { getActivePoints, useUserRecordStore } from '@/store/userRecord';
+import { getActivePoints } from '@/store/userRecord';
 import { useUiPrefsStore } from '@/store/uiPrefs';
-import { useHistoryStore } from '@/store/history';
+import { commitPointProgress } from '@/store/history';
 import { batchCheckSelectedPoints, isLassoSelected } from '@/component/settings/useMapMultiSelect';
 import { getLayerByTier, getLayerTier, useLayerStore, type LayerType } from '@/store/layer';
 import { REGION_DICT } from '@/data/map';
@@ -40,7 +40,7 @@ export const MARKER_ICON_DICT = Object.values(MARKER_TYPE_DICT).reduce<
         acc[typeInfo.key] = divIcon({
             // iconUrl,
             iconSize: [32, 32],
-            iconAnchor: [16, 16],
+            iconAnchor: [16, 32],
             popupAnchor: [0, 0],
             tooltipAnchor: [0, 0],
             className: styles.FrameMarkerIcon,
@@ -103,24 +103,29 @@ const switchToMarkerLayer = (markerData: IMarkerData): void => {
     layerStore.setCurrentLayer(targetLayer);
 };
 
-const syncMarkerStateClasses = (inner: HTMLElement, markerId: string): void => {
+export const syncMarkerCollectedStacking = (layer: L.Marker, collected: boolean): void => {
+    const markerRoot = layer.getElement?.() as HTMLElement | null;
+    if (!markerRoot) return;
+    markerRoot.classList.toggle(styles.completedMarker, collected);
+    markerRoot.classList.toggle(styles.incompleteMarker, !collected);
+};
+
+const syncMarkerStateClasses = (layer: L.Marker, markerId: string): void => {
+    const inner = getMarkerInnerElement(layer);
+    if (!inner) return;
     const markerStore = useMarkerStore.getState();
     const selectedAfter = markerStore.selectedPoints.includes(markerId)
         || markerStore.temporarySelectedPoints.includes(markerId);
     const checkedAfter = getActivePoints().includes(markerId);
     inner.classList.toggle(styles.selected, selectedAfter);
     inner.classList.toggle(styles.checked, checkedAfter);
+    syncMarkerCollectedStacking(layer, checkedAfter);
 };
 
 const checkSingleMarker = (id: string): void => {
-    useUserRecordStore.getState().addPoint(id);
+    commitPointProgress(`Collect ${id}`, { collect: [id] });
     useMarkerStore.getState().setSelected(id, false);
     useMarkerStore.getState().setTemporarySelected(id, false);
-};
-
-const undoCheckSingleMarker = (id: string): void => {
-    useUserRecordStore.getState().deletePoint(id);
-    useMarkerStore.getState().setSelected(id, true);
 };
 
 const handleMarkerClickState = (markerData: IMarkerData, layer: L.Marker, handlers?: MarkerStateHandlers): void => {
@@ -137,25 +142,13 @@ const handleMarkerClickState = (markerData: IMarkerData, layer: L.Marker, handle
 
     if (!selectedNow && !checkedNow) {
         useMarkerStore.getState().setSelected(markerData.id, true);
-        const id = markerData.id;
-        useHistoryStore.getState().push({
-            label: `Select ${id}`,
-            undo: () => useMarkerStore.getState().setSelected(id, false),
-            redo: () => useMarkerStore.getState().setSelected(id, true),
-        });
     } else if (selectedNow && !checkedNow) {
         const keepVisibleAfterCheck = handlers?.beforeCheck?.(markerData, { filterWasActive }) ?? false;
         const allSelected = useMarkerStore.getState().selectedPoints;
         if (isLassoSelected(markerData.id) && allSelected.length > 1 && batchCheckSelectedPoints(allSelected)) {
             // batch check handled
         } else {
-            const id = markerData.id;
-            checkSingleMarker(id);
-            useHistoryStore.getState().push({
-                label: `Check ${id}`,
-                undo: () => undoCheckSingleMarker(id),
-                redo: () => checkSingleMarker(id),
-            });
+            checkSingleMarker(markerData.id);
         }
 
         const shouldHideCompleted = useUiPrefsStore.getState().prefsHideCompletedMarkers;
@@ -165,25 +158,13 @@ const handleMarkerClickState = (markerData: IMarkerData, layer: L.Marker, handle
             inner.classList.remove(styles.disappearing);
         }
     } else {
-        const wasSelected = selectedNow;
         const id = markerData.id;
-        useUserRecordStore.getState().deletePoint(id);
+        commitPointProgress(`Uncollect ${id}`, { uncollect: [id] });
         useMarkerStore.getState().setSelected(id, false);
         useMarkerStore.getState().setTemporarySelected(id, false);
-        useHistoryStore.getState().push({
-            label: `Uncheck ${id}`,
-            undo: () => {
-                useUserRecordStore.getState().addPoint(id);
-                useMarkerStore.getState().setSelected(id, wasSelected);
-            },
-            redo: () => {
-                useUserRecordStore.getState().deletePoint(id);
-                useMarkerStore.getState().setSelected(id, false);
-            },
-        });
     }
 
-    syncMarkerStateClasses(inner, markerData.id);
+    syncMarkerStateClasses(layer, markerData.id);
 };
 
 const emitPreviewEnter = (markerData: IMarkerData): void => {
@@ -232,12 +213,7 @@ const RENDERER_DICT: Record<
             syncMarkerTierAttribute(layer, markerData);
             // entry fade-in
             inner.classList.add(styles.appearing);
-            const { selectedPoints, temporarySelectedPoints } = useMarkerStore.getState();
-            const isSelected = selectedPoints.includes(markerData.id)
-                || temporarySelectedPoints.includes(markerData.id);
-            if (isSelected) inner.classList.add(styles.selected);
-            const collected = getActivePoints();
-            if (collected.includes(markerData.id)) inner.classList.add(styles.checked);
+            syncMarkerStateClasses(layer, markerData.id);
             // 等待动画完成后移除 appearing class
             const onAnimationEnd = () => {
                 inner.classList.remove(styles.appearing);
@@ -270,7 +246,7 @@ const RENDERER_DICT: Record<
         // - 需要pointer-events: none 使 subIcon 不接收鼠标事件
         const markerIcon = divIcon({
             iconSize: [32, 32],
-            iconAnchor: [16, 16],
+            iconAnchor: [16, 32],
             popupAnchor: [0, 0],
             tooltipAnchor: [0, 0],
             className: styles.FrameMarkerIcon,
@@ -294,12 +270,7 @@ const RENDERER_DICT: Record<
             syncMarkerTierAttribute(layer, markerData);
             // entry fade-in
             inner.classList.add(styles.appearing);
-            const { selectedPoints, temporarySelectedPoints } = useMarkerStore.getState();
-            const isSelected = selectedPoints.includes(markerData.id)
-                || temporarySelectedPoints.includes(markerData.id);
-            if (isSelected) inner.classList.add(styles.selected);
-            const collected = getActivePoints();
-            if (collected.includes(markerData.id)) inner.classList.add(styles.checked);
+            syncMarkerStateClasses(layer, markerData.id);
             // 等待动画完成后移除 appearing class
             const onAnimationEnd = () => {
                 inner.classList.remove(styles.appearing);
@@ -350,6 +321,7 @@ export function getMarkerLayer(
             if (inner) {
                 syncMarkerTierAttribute(layer, markerData);
                 inner.classList.add(styles.checked);
+                syncMarkerCollectedStacking(layer, true);
             }
         }, 0);
     }

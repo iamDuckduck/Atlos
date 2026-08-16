@@ -11,14 +11,20 @@ const outputPath = path.join(root, 'src/data/marker/stats.json');
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
 const normalizeRawMarker = (raw) => {
-  if (Array.isArray(raw)) {
-    return {
-      id: raw[0],
-      type: raw[5],
-    };
-  }
-  return raw;
+  const marker = Array.isArray(raw)
+    ? { id: raw[0], z: raw[1], x: raw[2], y: raw[3], type: raw[5] }
+    : raw;
+
+  return {
+    ...marker,
+    z: marker?.z ?? marker?.pos?.[0] ?? 0,
+    x: marker?.x ?? marker?.pos?.[1] ?? 0,
+    y: marker?.y ?? marker?.pos?.[2] ?? 0,
+  };
 };
+
+const getPositionTypeKey = (marker) =>
+  JSON.stringify([marker.type, marker.x, marker.y, marker.z]);
 
 const increment = (target, key) => {
   target[key] = (target[key] || 0) + 1;
@@ -29,6 +35,7 @@ const stats = {
   subregion: {},
   region: {},
 };
+const seenPositionTypes = new Set();
 
 const files = fs
   .readdirSync(dataDir)
@@ -44,6 +51,9 @@ for (const file of files) {
     const marker = normalizeRawMarker(rawMarker);
     const type = marker?.type || '';
     if (!type) continue;
+    const positionTypeKey = getPositionTypeKey(marker);
+    if (seenPositionTypes.has(positionTypeKey)) continue;
+    seenPositionTypes.add(positionTypeKey);
     increment(stats.world, type);
     increment(subregionCounts, type);
   }

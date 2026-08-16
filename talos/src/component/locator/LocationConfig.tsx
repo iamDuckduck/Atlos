@@ -7,6 +7,7 @@ import profileStyles from '@/component/login/profile/profile.module.scss';
 import { Trigger } from '@/component/trigger/trigger';
 import { useAuthStore } from '@/store/auth';
 import { useLocale, useTranslateUI } from '@/locale';
+import { docsLink, linksTpl } from '@/utils/docsLink';
 import {
     getEFBindingStatus,
     unlinkEFBinding,
@@ -20,8 +21,8 @@ import {
 } from '@/utils/endfield/config';
 import { getCachedBinding, setCachedBinding } from '@/utils/backendCache';
 import ConfigIcon from '@/assets/images/UI/config.svg?react';
-import { LOCATOR_REMINDER_SCOPE_OPTIONS } from './proximityReminderConfig';
-import { docsUrl, disableSession } from './session';
+import { LOCATOR_REMINDER_SCOPE_OPTIONS } from './proximityConfig';
+import { disableSession } from './session';
 import styles from './Locator.module.scss';
 
 const SCOPES: EFTrackerScope[] = LOCATOR_REMINDER_SCOPE_OPTIONS;
@@ -211,7 +212,7 @@ const LocationConfig: React.FC<LocationConfigProps> = ({
             onBindingRemoved?.();
             onClose();
         } catch (err) {
-            setError(err instanceof Error ? err.message : (t('locator.errors.unlinkFailed') || 'Failed to unlink binding.'));
+            setError(err instanceof Error ? err.message : (t('locator.errors.unlinkFailed')));
         } finally {
             setSaving(false);
         }
@@ -219,17 +220,20 @@ const LocationConfig: React.FC<LocationConfigProps> = ({
 
     const tag = tagFor(binding?.serverName);
     const server = binding?.serverName
-        || (binding?.serverId !== undefined ? `${t('locator.binding.serverFallback') || 'Server'} ${binding.serverId}` : '-');
+        || (binding?.serverId !== undefined ? `${t('locator.config.server')} ${binding.serverId}` : '-');
     const name = binding?.nickname || binding?.roleId || '-';
     const roleId = binding?.roleId || '-';
-    const dataUrl = docsUrl(locale, 'data-collection');
+    const dataUrl = docsLink(locale, 'dataCollection');
+    const featureNote = useMemo(() => (
+        linksTpl(t('locator.config.configNote'), { data: dataUrl })
+    ), [dataUrl, t]);
 
     return (
         <Modal
             open={open}
             size="m"
             onClose={onClose}
-            title={t('locator.config.title') || 'Tracking Config'}
+            title={t('locator.config.title')}
             icon={<ConfigIcon />}
             iconScale={0.8}
         >
@@ -288,7 +292,7 @@ const LocationConfig: React.FC<LocationConfigProps> = ({
                     ))}
                 </div>
 
-                <div className={profileStyles.profileDivider} data-label={t('locator.config.featureTitle') || 'Feature'}></div>
+                <div className={profileStyles.profileDivider} data-label={t('locator.config.featureTitle')}></div>
                 <div className={styles.featureGrid}>
                     <Trigger
                         isActive={trackPoints}
@@ -310,11 +314,7 @@ const LocationConfig: React.FC<LocationConfigProps> = ({
                     />
                 </div>
                 <div className={styles.featureNote}>
-                    {t('locator.config.configNote1')}
-                    <a href={dataUrl} target="_blank" rel="noopener noreferrer">
-                        {t('locator.binding.dataCollection')}
-                    </a>
-                    {t('locator.config.configNote2')}
+                    {featureNote}
                 </div>
 
                 <div

@@ -7,55 +7,40 @@ interface SelectionLayerProps {
 }
 
 export const SelectionLayer = ({ containerRef }: SelectionLayerProps) => {
-    const { isSelecting, selectionBox } = useBoxSelection(containerRef);
+    const selectionBoxRef = useRef<HTMLDivElement | null>(null);
+    const { isSelecting } = useBoxSelection(containerRef, selectionBoxRef);
     
-    const [fadingState, setFadingState] = useState<{ box: typeof selectionBox, active: boolean } | null>(null);
-    const lastBoxRef = useRef(selectionBox);
-
-    // Track the latest non-null box
-    if (selectionBox) {
-        lastBoxRef.current = selectionBox;
-    }
+    const [isVisible, setIsVisible] = useState(false);
+    const [isFading, setIsFading] = useState(false);
 
     useLayoutEffect(() => {
         if (isSelecting) {
-            // Started selection, clear fading
-            setFadingState(null);
+            setIsVisible(true);
+            setIsFading(false);
             return;
         }
 
-        if (!lastBoxRef.current) return;
+        if (!isVisible) return;
 
-        // Ended selection: render box at opacity 1 first, then fade out next frame.
-        setFadingState({ box: lastBoxRef.current, active: false });
+        setIsFading(false);
         const raf = requestAnimationFrame(() => {
-            setFadingState((prev) => (prev ? { ...prev, active: true } : prev));
+            setIsFading(true);
         });
 
         const timer = setTimeout(() => {
-            setFadingState(null);
+            setIsVisible(false);
         }, 300);
 
         return () => {
             cancelAnimationFrame(raf);
             clearTimeout(timer);
         };
-    }, [isSelecting]);
-
-    const box = isSelecting ? selectionBox : fadingState?.box;
-    const isFading = !isSelecting && fadingState?.active;
-
-    if (!box) return null;
+    }, [isSelecting, isVisible]);
 
     return (
         <div
-            className={`${styles.selectionBox} ${isFading ? styles.fadeOut : ''}`}
-            style={{
-                left: Math.min(box.startX, box.endX),
-                top: Math.min(box.startY, box.endY),
-                width: Math.abs(box.endX - box.startX),
-                height: Math.abs(box.endY - box.startY),
-            }}
+            ref={selectionBoxRef}
+            className={`${styles.selectionBox} ${isVisible ? '' : styles.hidden} ${isFading ? styles.fadeOut : ''}`}
         />
     );
 };

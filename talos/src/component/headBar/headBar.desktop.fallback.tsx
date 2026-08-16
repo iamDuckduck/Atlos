@@ -3,19 +3,22 @@ import React from 'react';
 
 interface HeadBarDesktopFallbackProps {
     children: React.ReactNode;
+    compact?: boolean;
 }
 
-const HeadBarDesktopFallback: React.FC<HeadBarDesktopFallbackProps> = ({ children }) => {
+const HeadBarDesktopFallback: React.FC<HeadBarDesktopFallbackProps> = ({ children, compact = false }) => {
     return (
         <div
-            className={styles.headbarFallback}
+            className={`${styles.headbarFallback} ${compact ? styles.compactFallback : ''}`}
             style={{
                 position: 'fixed',
-                top: '1rem',
+                top: 'max(1rem, env(safe-area-inset-top, 0px))',
                 right: '1rem',
             }}
         >
-            <div className={styles.headbar}>{children}</div>
+            <div className={`${styles.headbar} ${compact ? styles.visibilityOnly : ''}`}>
+                {children}
+            </div>
         </div>
     );
 };

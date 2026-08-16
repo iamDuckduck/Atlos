@@ -1,6 +1,6 @@
 import { MARKER_TYPE_DICT, type IMarkerType } from '@/data/marker';
 import type { EFTrackerScope } from '@/utils/endfield/config';
-import { LOCATOR_REMINDER_STRATEGIES, type LocatorReminderRule } from './proximityReminderConfig';
+import { LOCATOR_REMINDER_STRATEGIES, type LocatorReminderRule } from './proximityConfig';
 
 type MarkerTypeWithName = IMarkerType & {
     name?: string;

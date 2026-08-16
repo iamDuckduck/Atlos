@@ -7,14 +7,14 @@
   --ug-tooltip-header-color: #{$black-0};
   --ug-tooltip-progress-color: #{$grey-1};
 
-  --invert-bg: 1;
+  --ug-image-invert: 1;
 }
 :root[data-theme='dark'] {
   --ug-wrapper-glow-bg: #{$black-1};
   --ug-tooltip-header-color: #{$white-1};
   --ug-tooltip-progress-color: #{$white-3};
 
-  --invert-bg: 0;
+  --ug-image-invert: 0;
 }
 
 .wrapper {
@@ -50,7 +50,7 @@
       inset: -.5rem;
       z-index: -1;
       opacity: .4;
-      filter: invert(var(--invert-bg));
+      filter: invert(var(--ug-image-invert));
       transition: filter .3s $adagio-curve;
     }
 

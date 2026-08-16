@@ -2,14 +2,15 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './viewer.module.scss';
 import PopoverTooltip from '@/component/popover/popover';
-import { useTranslateUI } from '@/locale';
-import { formatRelativeTime, parseDateLike } from '@/utils/timeFormat';
+import { useLocale, useTranslateUI } from '@/locale';
+import { formatAbsoluteTime, formatRelativeTime, parseTimestamp } from '@/utils/timeFormat';
 import UpvoteIcon from '@/assets/images/UI/upvote.svg?react';
 import FlagIcon from '@/assets/images/UI/flag.svg?react';
 import ShareIcon from '@/assets/images/UI/share.svg?react';
 import RecallIcon from '@/assets/images/UI/recall.svg?react';
 import Carousel from '@/component/carousel';
 import type { UGCImage } from '@/utils/ugcClient';
+import ShortActions, { type ShortActionItem } from '@/component/uploader/shortActions';
 
 type CarouselDirection = 'previous' | 'next';
 
@@ -58,13 +59,19 @@ interface ViewerProps {
     recallRequested?: boolean;
     canFlag?: boolean;
     canRecall?: boolean;
+    recallOnly?: boolean;
     actionPending?: boolean;
+    recallConfirming?: boolean;
     shareCopied?: boolean;
     onToggleUpvote?: () => void;
     onToggleFlag?: () => void;
     onShare?: () => void;
     onToggleRecall?: () => void;
+    onRecallBlur?: () => void;
     onSelectedImageIdChange?: (imageId: string) => void;
+    canAppendUpload?: boolean;
+    onRequestUpload?: () => void;
+    uploading?: boolean;
     onClose: () => void;
 }
 
@@ -83,13 +90,19 @@ const Viewer: React.FC<ViewerProps> = ({
     recallRequested = false,
     canFlag = true,
     canRecall = false,
+    recallOnly = false,
     actionPending = false,
+    recallConfirming = false,
     shareCopied = false,
     onToggleUpvote,
     onToggleFlag,
     onShare,
     onToggleRecall,
+    onRecallBlur,
     onSelectedImageIdChange,
+    canAppendUpload = false,
+    onRequestUpload,
+    uploading = false,
     onClose,
 }) => {
     type Phase = 'unmounted' | 'entering' | 'open' | 'exiting';
@@ -99,6 +112,7 @@ const Viewer: React.FC<ViewerProps> = ({
     const [createdAtAgo, setCreatedAtAgo] = useState('');
     const [carouselHoverDirection, setCarouselHoverDirection] = useState<CarouselDirection | null>(null);
     const tUI = useTranslateUI();
+    const locale = useLocale();
     const carouselImages = useMemo(
         () => images?.length ? images : [],
         [images],
@@ -119,23 +133,31 @@ const Viewer: React.FC<ViewerProps> = ({
         ? Boolean(selectedImage.recallRequested || selectedImage.status === 'remove_request')
         : recallRequested;
 
-    const createdAtDate = useMemo(() => parseDateLike(currentCreatedAt), [currentCreatedAt]);
-    const createdAtLabel = createdAtDate ? formatRelativeTime(createdAtDate, {
-        precision: 'dateTime',
-        agoDisplay: 'hover',
-        agoLabel: tUI('idcard.ago'),
-    }).label : '';
+    const createdAtDate = useMemo(() => parseTimestamp(currentCreatedAt), [currentCreatedAt]);
+    const createdAtLabel = createdAtDate
+        ? formatAbsoluteTime(createdAtDate, { locale, precision: 'dateTime' })
+        : '';
     const refreshCreatedAtAgo = useCallback(() => {
         setCreatedAtAgo(createdAtDate
-            ? formatRelativeTime(createdAtDate, {
-                precision: 'dateTime',
-                agoDisplay: 'hover',
-                agoLabel: tUI('idcard.ago'),
-            }).hoverLabel
+            ? formatRelativeTime(createdAtDate, { locale })
             : '');
-    }, [createdAtDate, tUI]);
+    }, [createdAtDate, locale]);
     const flagLabel = currentFlagged ? tUI('detail.viewer.unflag') : tUI('detail.viewer.flag');
-    const recallLabel = currentRecallRequested ? tUI('detail.viewer.unrecall') : tUI('detail.viewer.recall');
+    const recallLabel = recallConfirming
+        ? tUI('common.confirmAgain')
+        : currentRecallRequested ? tUI('detail.viewer.unrecall') : tUI('detail.viewer.recall');
+    const uploadLabel = tUI('detail.viewer.uploadAno');
+    const viewerShortActions = useMemo<ShortActionItem[]>(() => (
+        [{
+            id: 'upload',
+            label: uploadLabel,
+            icon: <RecallIcon />,
+            iconClassName: styles.viewerShortActionUploadIcon,
+            disabled: !canAppendUpload,
+            active: uploading,
+            onClick: onRequestUpload,
+        }]
+    ), [canAppendUpload, onRequestUpload, uploadLabel, uploading]);
 
     const handleCarouselLayerClick = useCallback((
         event: React.MouseEvent<HTMLDivElement>,
@@ -281,6 +303,7 @@ const Viewer: React.FC<ViewerProps> = ({
                                 {!imageLoaded && (
                                     <div className={styles.viewerSkeleton} aria-hidden="true" />
                                 )}
+                                <ShortActions className={styles.viewerShortActions} items={viewerShortActions} />
                                 <img
                                     src={visibleImageUrl}
                                     alt={visibleAlt}
@@ -319,28 +342,32 @@ const Viewer: React.FC<ViewerProps> = ({
                         </div>
                     </div>
                     <div className={styles.viewerActions}>
-                        <PopoverTooltip content={tUI('detail.viewer.upvote')} placement="top" gap={4}>
-                            <button
-                                type="button"
-                                className={styles.viewerActionButton}
-                                data-active={currentUpvoted ? 'true' : 'false'}
-                                disabled={actionPending || !onToggleUpvote}
-                                onClick={onToggleUpvote}
-                                aria-pressed={currentUpvoted}
-                                aria-label='Upvote'
-                            >
-                                <UpvoteIcon />
-                                <span className={styles.viewerUpvoteCount}>{currentUpvoteCount}</span>
-                            </button>
-                        </PopoverTooltip>
-                        <span className={styles.viewerActionDivider} aria-hidden="true"></span>
-                        {canFlag && (
-                            <PopoverTooltip content={flagLabel} placement="top" gap={4}>
+                        {!recallOnly && (
+                            <>
+                                <PopoverTooltip content={tUI('detail.viewer.upvote')} placement="top" gap={4}>
+                                    <button
+                                        type="button"
+                                        className={styles.viewerActionButton}
+                                        data-active={currentUpvoted ? 'true' : 'false'}
+                                        disabled={!onToggleUpvote}
+                                        onClick={onToggleUpvote}
+                                        aria-pressed={currentUpvoted}
+                                        aria-label='Upvote'
+                                    >
+                                        <UpvoteIcon />
+                                        <span className={styles.viewerUpvoteCount}>{currentUpvoteCount}</span>
+                                    </button>
+                                </PopoverTooltip>
+                                <span className={styles.viewerActionDivider} aria-hidden="true"></span>
+                            </>
+                        )}
+                        {!recallOnly && canFlag && (
+                            <PopoverTooltip key={`flag:${currentFlagged ? 'on' : 'off'}`} content={flagLabel} placement="top" gap={4}>
                                 <button
                                     type="button"
                                     className={styles.viewerActionButton}
                                     data-active={currentFlagged ? 'true' : 'false'}
-                                    disabled={actionPending || !onToggleFlag}
+                                    disabled={!onToggleFlag}
                                     onClick={onToggleFlag}
                                     aria-pressed={currentFlagged}
                                     aria-label='Flag'
@@ -349,34 +376,44 @@ const Viewer: React.FC<ViewerProps> = ({
                                 </button>
                             </PopoverTooltip>
                         )}
-                        <PopoverTooltip
-                            content={shareCopied ? tUI('detail.copied') : tUI('detail.viewer.share')}
-                            placement="top"
-                            gap={4}
-                            visible={shareCopied ? true : undefined}
-                        >
-                            <button
-                                type="button"
-                                className={styles.viewerActionButton}
-                                disabled={!onShare}
-                                onClick={onShare}
-                                aria-label='Share'
+                        {!recallOnly && (
+                            <PopoverTooltip
+                                content={shareCopied ? tUI('detail.copied') : tUI('detail.viewer.share')}
+                                placement="top"
+                                gap={4}
+                                visible={shareCopied ? true : undefined}
                             >
-                                <ShareIcon />
-                            </button>
-                        </PopoverTooltip>
+                                <button
+                                    type="button"
+                                    className={styles.viewerActionButton}
+                                    disabled={!onShare}
+                                    onClick={onShare}
+                                    aria-label='Share'
+                                >
+                                    <ShareIcon />
+                                </button>
+                            </PopoverTooltip>
+                        )}
                         {canRecall && (
                             <>
-                                <span className={styles.viewerActionDivider} aria-hidden="true"></span>
-                                <PopoverTooltip content={recallLabel} placement="top" gap={4}>
+                                {!recallOnly && <span className={styles.viewerActionDivider} aria-hidden="true"></span>}
+                                <PopoverTooltip
+                                    key={`recall:${recallConfirming ? 'confirm' : 'idle'}`}
+                                    content={recallLabel}
+                                    placement="top"
+                                    gap={4}
+                                >
                                     <button
                                         type="button"
                                         className={styles.viewerActionButton}
+                                        data-action="recall"
                                         data-active={currentRecallRequested ? 'true' : 'false'}
+                                        data-confirming={recallConfirming ? 'true' : 'false'}
                                         disabled={actionPending || !onToggleRecall}
                                         onClick={onToggleRecall}
+                                        onBlur={onRecallBlur}
                                         aria-pressed={currentRecallRequested}
-                                        aria-label='Recall'
+                                        aria-label={recallLabel}
                                     >
                                         <RecallIcon />
                                     </button>

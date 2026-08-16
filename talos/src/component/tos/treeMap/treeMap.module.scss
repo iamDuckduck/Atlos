@@ -5,7 +5,6 @@
     --treeMap-parent-fill: #{$mid};
     --treeMap-leaf-fill: #{$white-2};
     --treeMap-highlight-fill: #{$primary-accent-4};
-    --treeMap-text-fill: #{$black-1};
 }
 :root[data-theme='dark'] {
     --treeMap-root-stroke: #{$dim-1};
@@ -13,7 +12,6 @@
     --treeMap-parent-fill: #{$mid};
     --treeMap-leaf-fill: #{$white-2};
     --treeMap-highlight-fill: #{$primary-accent-4};
-    --treeMap-text-fill: #{$light-1};
 }
 .wrapper {
   width: 100%;
@@ -36,7 +34,7 @@
   height: 100%;
   display: block;
   font-family: 'Roboto Slab', sans-serif;
-  font-size: 10px;
+  font-size: 0.625rem;
 }
 .node {
   cursor: pointer;

@@ -1,6 +1,9 @@
 /** @type {import("stylelint").Config} */
 export default {
     extends: ['stylelint-config-standard', 'stylelint-config-standard-scss'],
+    ignoreFiles: [
+        'dist/**/*',
+    ],
     rules: {
         // empty-line
         'at-rule-empty-line-before': null,

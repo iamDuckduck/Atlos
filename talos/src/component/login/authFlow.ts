@@ -1,5 +1,6 @@
 import { createAuthClient } from 'better-auth/client';
 import type { SessionUser } from './authTypes';
+import { parseTimestamp, type TimestampInput } from '@/utils/timeFormat';
 import { getCurrentLocale } from '@/locale';
 
 export class AuthFlowError extends Error {
@@ -66,34 +67,11 @@ const pickRedirectUrl = (payload: unknown): string | null => {
 };
 
 const normalizeTimestampMs = (value: unknown): string | undefined => {
-  if (value instanceof Date) {
-    const ms = value.getTime();
-    if (!Number.isFinite(ms)) return undefined;
-    return String(Math.floor(ms));
+  if (!(value instanceof Date) && typeof value !== 'number' && typeof value !== 'string') {
+    return undefined;
   }
-
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    const ms = value < 1_000_000_000_000 ? value * 1000 : value;
-    return String(Math.floor(ms));
-  }
-
-  if (typeof value === 'string' && value.trim()) {
-    const raw = value.trim();
-
-    if (/^\d+$/.test(raw)) {
-      const numeric = Number(raw);
-      if (!Number.isFinite(numeric)) return undefined;
-      const ms = numeric < 1_000_000_000_000 ? numeric * 1000 : numeric;
-      return String(Math.floor(ms));
-    }
-
-    const parsedMs = Date.parse(raw);
-    if (Number.isFinite(parsedMs)) {
-      return String(Math.floor(parsedMs));
-    }
-  }
-
-  return undefined;
+  const date = parseTimestamp(value as TimestampInput);
+  return date ? String(Math.floor(date.getTime())) : undefined;
 };
 
 const mapRoleToGroupCode = (role?: string): SessionUser['groupCode'] => {
@@ -316,41 +294,14 @@ export const exchangeAuthCode = async (code: string): Promise<SessionUser> => {
   return user;
 };
 
-export const startDiscordAuth = async (
-  callbackURL: string
+export type OAuthProvider = 'discord' | 'github' | 'google';
+
+export const startOAuth = async (
+  provider: OAuthProvider,
+  callbackURL: string,
 ): Promise<{ redirectUrl: string }> => {
   const response = await authClient.signIn.social({
-    provider: 'discord',
-    callbackURL,
-    disableRedirect: true,
-  });
-
-  if (response.error) {
-    throw new AuthFlowError(
-      pickApiErrorMessage(
-        response.error,
-        `Auth request failed (${response.error.status ?? 'unknown'})`
-      ),
-      {
-        status: response.error.status,
-        code: pickApiErrorCode(response.error),
-      }
-    );
-  }
-
-  const redirectUrl = pickRedirectUrl(response.data);
-  if (redirectUrl) {
-    return { redirectUrl };
-  }
-
-  throw new Error('Backend did not return an OAuth redirect URL.');
-};
-
-export const startGoogleAuth = async (
-  callbackURL: string
-): Promise<{ redirectUrl: string }> => {
-  const response = await authClient.signIn.social({
-    provider: 'google',
+    provider,
     callbackURL,
     disableRedirect: true,
   });

@@ -9,13 +9,63 @@ import PopoverTooltip from '@/component/popover/popover';
 import { useLocale, useTranslateUI } from '@/locale';
 import { getItemIconUrl } from '@/utils/resource';
 import { navigateToSharedPoint } from '@/utils/navigation';
-import { trackedSwitchFilter } from '@/store/trackedActions';
 import { useMarkerStore } from '@/store/marker.ts';
+import { formatIcuText } from '@/locale/messageFormat';
 import { useAdvancedSearch } from './useAdvancedSearch';
 
-interface SearchSharedProps {
-    width?: number | string;
+export interface ExternalSearchProps {
+    value: string;
+    resultCount: number;
+    placeholder: string;
+    onChange: (value: string) => void;
 }
+
+export interface SearchSharedProps {
+    width?: number | string;
+    mobile?: boolean;
+    external?: ExternalSearchProps;
+}
+
+const ExternalSearchSurface: React.FC<ExternalSearchProps & Pick<SearchSharedProps, 'mobile' | 'width'>> = ({
+    value,
+    resultCount,
+    placeholder,
+    onChange,
+    mobile = false,
+    width = '100%',
+}) => {
+    const hasQuery = value.trim().length > 0;
+    const locale = useLocale();
+    const t = useTranslateUI();
+    const resultsText = formatIcuText({
+        template: t('search.results'),
+        locale,
+        values: { count: resultCount },
+    });
+    return (
+        <div
+            className={`${styles.searchContainer} ${mobile ? styles.mobile : ''}`}
+            style={{ width }}
+        >
+            <form className={styles.searchForm} onSubmit={(event) => event.preventDefault()}>
+                <div className={styles.searchInputWrapper}>
+                    <div className={styles.searchInputRow} data-has-count={hasQuery ? 'true' : 'false'}>
+                        <div className={styles.searchIcon}><SearchIcon className={styles.icon} /></div>
+                        <input
+                            type="text"
+                            data-search-input="true"
+                            className={styles.searchInput}
+                            placeholder={placeholder}
+                            value={value}
+                            onChange={(event) => onChange(event.target.value)}
+                        />
+                        {hasQuery && <span className={styles.searchResultCountInline}>{resultsText}</span>}
+                    </div>
+                </div>
+            </form>
+        </div>
+    );
+};
 
 const REGION_ICON_DICT: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
     Valley_4: Valley4,
@@ -44,7 +94,7 @@ const HighlightText = ({ text, keyword }: { text: string; keyword: string }) => 
     );
 };
 
-const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%' }) => {
+const MapSearchShared: React.FC<Omit<SearchSharedProps, 'external'>> = ({ width = '100%', mobile = false }) => {
     const { searchString, setSearchString } = useMarkerStore();
     const activeFilters = useMarkerStore((s) => s.filter);
     const locale = useLocale();
@@ -63,19 +113,19 @@ const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%' }) => {
 
     const clickableResults = useMemo(() => results.map((group) => {
         const canNavigate = !!group.uniquePoint;
-        const locateText = String(t('search.locatePoint') || '');
-        const selectText = String(t('search.selectType') || '');
+        const locateText = t('search.locatePoint');
+        const selectText = t('search.selectType');
         return {
             ...group,
             canNavigate,
-            clickTitle: canNavigate ? (locateText || 'Locate point') : (selectText || 'Select type'),
+            clickTitle: canNavigate ? (locateText) : (selectText),
         };
     }), [results, t]);
 
     const onResultClick = useCallback((group: (typeof clickableResults)[number]) => {
         if (group.uniquePoint) {
             if (!activeFilters.includes(group.typeKey)) {
-                trackedSwitchFilter(group.typeKey);
+                useMarkerStore.getState().switchFilter(group.typeKey);
             }
             navigateToSharedPoint({
                 regionKey: group.uniquePoint.regionKey,
@@ -84,7 +134,7 @@ const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%' }) => {
             });
             return;
         }
-        trackedSwitchFilter(group.typeKey);
+        useMarkerStore.getState().switchFilter(group.typeKey);
     }, [activeFilters]);
 
     const updateMaskVisibility = useCallback(() => {
@@ -125,13 +175,18 @@ const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%' }) => {
     }, [panelOpen, results.length, updateMaskVisibility]);
 
     const resultsText = useMemo(() => {
-        const templateRaw = t('search.results');
-        const template = typeof templateRaw === 'string' && templateRaw.trim() ? templateRaw : '{count} results';
-        return template.replace('{count}', String(results.length));
-    }, [results.length, t]);
+        return formatIcuText({
+            template: t('search.results'),
+            locale,
+            values: { count: results.length },
+        });
+    }, [locale, results.length, t]);
 
     return (
-        <div className={styles.searchContainer} style={{ width }}>
+        <div
+            className={`${styles.searchContainer} ${mobile ? styles.mobile : ''}`}
+            style={{ width }}
+        >
             <form className={styles.searchForm}>
                 <div className={styles.searchInputWrapper} data-expanded={panelOpen ? 'true' : 'false'}>
                     <div className={styles.searchInputRow} data-has-count={hasQuery ? 'true' : 'false'}>
@@ -140,6 +195,7 @@ const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%' }) => {
                         </div>
                         <input
                             type='text'
+                            data-search-input="true"
                             className={styles.searchInput}
                             placeholder={t('search.placeholder')}
                             value={searchString}
@@ -274,5 +330,9 @@ const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%' }) => {
         </div>
     );
 };
+
+const SearchShared: React.FC<SearchSharedProps> = ({ external, ...props }) => (
+    external ? <ExternalSearchSurface {...external} {...props} /> : <MapSearchShared {...props} />
+);
 
 export default SearchShared;

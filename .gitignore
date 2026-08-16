@@ -30,7 +30,11 @@ dist-ssr
 
 talos/public/clips
 talos/public/files
+talos/public/points
+talos/public/seo
 talos/public/search
+talos/public/robots.txt
+talos/public/sitemap*.xml
 talos/originData
 talos/src/assets/fonts/UD_ShinGo
 talos/src/assets/fonts/Harmony
@@ -43,8 +47,15 @@ talos/src/assets/images/marker
 talos/src/locale/data/ui/*.fixed.json
 talos/src/locale/data/ui/reports
 talos/src/data/marker/stats.json
+talos/scripts/logs/
+talos/src/data/marker/diff.generated.json
+talos/.pages-dist/
+talos/.cache/
+talos/locale/data
+talos/rum
 
 ref/
+seo-og/
 stats.json
 
 # Local-only map label placement tool (UI should not be merged)
@@ -58,3 +69,5 @@ talos/.stylelintcache
 /talos/src/asset
 
 *.glyphs
+*.test.ts
+*.generated.ts

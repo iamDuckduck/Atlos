@@ -24,6 +24,26 @@
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
+    transition: gap 0.2s $moderato-curve;
+
+    &.visibilityOnly {
+        gap: 0;
+
+        .headbarItem.compactHidden {
+            width: 0;
+            padding-right: 0;
+            padding-left: 0;
+            opacity: 0;
+            overflow: hidden;
+            pointer-events: none;
+            transform: scale(0.75);
+            transition:
+                width 0.3s $moderato-curve,
+                padding 0.3s $moderato-curve,
+                opacity 0.16s ease-out,
+                transform 0.3s $moderato-curve;
+        }
+    }
 }
 
 .headbarItem {
@@ -46,7 +66,7 @@
         pointer-events: none;
     }
 
-    &[data-guide='headbar-dark-mode']>.headbarIcon {
+    &[data-guide='dark-mode']>.headbarIcon {
         transition: transform 0.45s $moderato-curve;
         transform: var(--darkmode-rotate);
     }
@@ -77,6 +97,11 @@
         top: -50%; // Scale the element so the border-radius remains visually correct; otherwise the offset will exaggerate the corner radius.
         animation: badgePulse 1s cubic-bezier(0, 0, 0.2, 1) infinite;
     }
+}
+
+.badge[data-badge='notify'] {
+    top: -1px;
+    right: -3px;
 }
 
 @keyframes badgePulse {
@@ -222,8 +247,30 @@
         }
     }
 
+    &.visibilityOnly {
+        width: 48px;
+        height: 48px;
 
-    .headbarItem[data-guide='headbar-dark-mode']>.headbarIcon {
+        .headbarGrid {
+            grid-template-columns: 48px;
+            grid-template-rows: 48px;
+            gap: 0;
+        }
+
+        .headbarItem:not(.compactHidden) {
+            grid-column: 1;
+            grid-row: 1;
+            width: 48px;
+            height: 48px;
+            opacity: 1;
+            overflow: visible;
+            pointer-events: auto;
+            transition: opacity 0.2s ease-out;
+        }
+    }
+
+
+    .headbarItem[data-guide='dark-mode']>.headbarIcon {
         transform: var(--darkmode-rotate);
         transition: transform 0.45s $moderato-curve;
     }
@@ -251,5 +298,10 @@
     }
     &:has(.headbarMobile.expanded) {
         padding: 12px
+    }
+
+    &.compactFallback {
+        padding-right: 7px;
+        padding-left: 7px;
     }
 }

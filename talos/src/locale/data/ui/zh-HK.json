@@ -2,13 +2,17 @@
   "headbar": {
     "tos": "服務條款與存儲",
     "hideUI": "隱藏介面",
-    "group": "加入相關群組",
+    "notification": "通知",
     "darkmode": "切換至深色模式",
     "lightmode": "切換至淺色模式",
     "language": "選擇語言",
     "help": "取得協助",
     "announcement": "公告",
     "settings": "偏好設定"
+  },
+  "mapControls": {
+    "layerSelect": "圖層選擇",
+    "locationTracking": "啟用位置同步"
   },
   "trigger": {
     "boundaryMode": "地區邊界顯示",
@@ -32,23 +36,58 @@
       "main": "主區域",
       "sub": "子區域"
     },
+    "label": {
+      "note": "注解",
+      "url": "分享連結",
+      "comments": "精選留言",
+      "collectionRate": "收集率"
+    },
+    "tabs": {
+      "collectAll": "一鍵收集同類點",
+      "general": "點位詳情",
+      "comments": "留言區"
+    },
     "noInfo": "暫無資訊，使用 {paste} / {click} 上載點位截圖",
-    "communityRule1": "上載前，請詳閱並遵循",
-    "communityRule2": "OEM 社群守則",
+    "communityRule": "上載前，請詳閱並遵循 <a href=\"{link}\">OEM 社群守則</a>",
     "uploading": "上載中…",
     "uploadPending": "提交成功，待審核後顯示。",
     "readFullText": "點此查看全文。",
     "share": "複製此點位之分享連結。",
     "copied": "連結已複製",
+    "collectionRateSource": "全服收集率為{nums} – 統計自 OEM Cloud",
     "viewer": {
       "author": "貢獻者",
       "uploadedAt": "上載時間",
       "upvote": "維護此點位",
       "flag": "標記為不準確",
       "unflag": "取消標記",
+      "uploadAno": "上載另一張圖片",
       "share": "分享此點位",
-      "recall": "申請撤回此圖片",
-      "unrecall": "取消撤回申請"
+      "recall": "撤回此圖片",
+      "unrecall": "取消撤回"
+    },
+    "comments": {
+      "placeholder": "傾兩句？",
+      "submit": "發布留言",
+      "actions": "留言操作",
+      "translate": "翻譯",
+      "showOriginal": "顯示原文",
+      "translatedFrom": "翻譯自{language}",
+      "translating": "翻譯中…",
+      "translateFailed": "翻譯失敗",
+      "upvote": "讚好",
+      "downvote": "反對",
+      "reply": "回覆帖文",
+      "edit": "編輯留言",
+      "submitEdit": "提交編輯內容",
+      "undoEdit": "撤銷編輯",
+      "recall": "撤回此留言",
+      "reviewing": "審核中",
+      "emptyWithRule": "暫無留言。發布內容請遵循<a href=\"{link}\">社群守則</a>。",
+      "ruleOnly": "發布內容請遵循<a href=\"{link}\">社群守則</a>。",
+      "loadFailed": "留言載入失敗。",
+      "submitFailed": "留言發布失敗。",
+      "editFailed": "留言編輯失敗。"
     },
     "errors": {
       "unsupportedType": "僅接收 JPEG/PNG/WebP/AVIF/HEIC 檔案",
@@ -65,12 +104,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
       "supportedBy": "由 Observator 6 提供支援"
-    }
+    },
+    "newlyAdded": "當前版本新增"
   },
   "language": {
     "title": "語言",
@@ -101,12 +141,39 @@
       "th-TH": "泰語",
       "vi-VN": "越南語",
       "el-GR": "希臘語",
-      "hi-IN": "印地語"
+      "hi-IN": "印地語",
+      "uk-UA": "烏克蘭語",
+      "tr-TR": "土耳其語"
     }
   },
-  "group": {
-    "title": "社群與媒體",
-    "visit": "前往"
+  "notification": {
+    "title": "推播通知",
+    "tabs": {
+      "community": "互動通知",
+      "system": "覆核結果"
+    },
+    "markAllRead": "全部標記為已讀",
+    "empty": "暫無通知，與阁下貢獻有關之訊息會顯示於此。",
+    "guest": "登入{account}以接收可能的通知。",
+    "account": "OEM 帳戶",
+    "loadError": "通知載入失敗。",
+    "loadMore": "載入更多",
+    "support": "聯絡及支援",
+    "visit": "前往",
+    "noDetails": "暫無更多詳情。",
+    "subject": {
+      "image": "圖片",
+      "comment": "留言",
+      "submission": "內容"
+    },
+    "types": {
+      "approved": "你的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>已公開。",
+      "needsReview": "你的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>正待人工審核。",
+      "removeResolved": "你撤回的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>已完成處理。",
+      "reply": "你的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>有一則新回覆。",
+      "vote": "你的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>新獲 {count} 個讚好。",
+      "multiple": "你的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>有 {count} 條狀態更新。"
+    }
   },
   "tos": {
     "title": "協議與儲存",
@@ -145,6 +212,8 @@
     "shortcuts": {
       "title": "快捷鍵",
       "hint": "可用的鍵盤快捷操作。",
+      "toggleUI": "顯示/隱藏介面",
+      "quickSearch": "快速查找",
       "exportData": "匯出資料",
       "importData": "匯入資料",
       "undo": "復原",
@@ -170,13 +239,13 @@
     "headbar": "與地圖設置有關的開關位於<span class=\"keyword\">頂欄</span>。",
     "tos": "網站的<span class=\"keyword\">服務協議</span>與<span class=\"keyword\">數據管理</span>。",
     "hideUI": "<span class=\"keyword\">隱藏網站UI</span>以截圖或查看邊緣點位。",
-    "group": "查看與本項目有關的<span class=\"keyword\">討論群組</span>與<span class=\"keyword\">社區</span>。",
+    "notification": "開啟<span class=\"keyword\">推播通知</span>，查看與你的貢獻有關之互動通知及覆核結果。",
     "darkMode": "切換當前的<span class=\"keyword\">環境光模式</span>。",
     "language": "切換<span class=\"keyword\">介面語言</span>。<br><span class=\"keyword\">完全支持遊戲內容翻譯</span>的語言有英語，簡體中文，繁體中文，日語，韓語，法語，德語，意大利語，俄語，西班牙語，印尼語，葡萄牙語，泰語和越南語。<br><span class=\"keyword\">僅支持介面翻譯</span>的語言包括阿拉伯語，馬來語，波蘭語和瑞典語。",
     "announcement": "查看近期的<span class=\"keyword\">網站公告</span>，用戶協議等更新也會在此發布。",
     "help": "再次啟動此<span class=\"keyword\">引導程序</span>。",
     "settings": "開啟<span class=\"keyword\">偏好設定</span>，您可以控制地圖使用哪些本地儲存來記憶您的操作。",
-    "locator": "點擊<span class=\"keyword\">位置同步</span>按鈕，可以根據你的遊戲內位置在地圖上顯示當前位置。<br>綁定遊戲帳號後，你亦可以進入設定面板調整點位追蹤範圍。",
+    "locator": "點擊<span class=\"keyword\">位置同步</span>按鈕，可以根據你的遊戲內位置在地圖上顯示當前位置。<br>綁定遊戲帳戶後，你亦可以進入設定面板調整點位追蹤範圍。",
     "regionSwitch": "點擊切換遊戲內<span class=\"keyword\">不同的箱庭地圖</span>（主區域）。",
     "subregionSwitch": "鼠標<span class=\"keyword\">懸浮於主區域圖標</span>可顯示可用的子區域，單擊子區域圖標會跳轉到該子區域視圖。<br>同理，您也可選擇某區域的圖層。",
     "layerMain": "點擊<span class=\"keyword\">圖層圖標</span>可隨時返回<span class=\"keyword\">主圖層（M）</span>。",
@@ -187,23 +256,18 @@
     "pointIcon": "單擊點位圖標也可以將其標記為完成狀態。",
     "mobile": {
       "headbar": "與地圖設定相關的開關位於<span class=\"keyword\">右上角頂欄</span>。點擊右上角圖示展開以查看更多選項。",
-      "locator": "<span class=\"keyword\">位置同步</span>入口位於左上角。<br>綁定帳號後，點擊它會先展開為膠囊按鈕，並顯示同步設定入口；展開後再次點擊主按鈕才會切換同步狀態。",
+      "locator": "<span class=\"keyword\">位置同步</span>入口位於左上角。<br>綁定帳戶後，點擊它會先展開為膠囊按鈕，並顯示同步設定入口；展開後再次點擊主按鈕才會切換同步狀態。",
       "regionLayerSwitch": "點擊區域圖示可切換<span class=\"keyword\">不同的箱庭地圖</span>（主區域）。<br>點擊並按住主區域圖示可顯示可用的<span class=\"keyword\">子區域和圖層</span>，選擇子區域或圖層即可跳轉到對應視圖。",
       "divider": "這是可拖動的<span class=\"keyword\">分隔線</span>。<br>您可以向左或向右拖動分隔線，調整搜尋欄與點位列表的寬度比例，以符合您的使用習慣。",
       "drawer": "從螢幕底部<span class=\"keyword\">向上拉起抽屜</span>，即可檢視與管理點位篩選器。<br>您可以在這裡選擇想要在地圖上顯示的點位類型。",
       "selectorSelect": "具體的<span class=\"keyword\">點位選擇器</span>。點擊可切換選擇狀態，被選擇的點位會出現在地圖上。<br>您可以看到在當前區域此類點位的總數，以及您已標記的數量。"
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">注意：</span>當前遊戲版本為<span class=\"keyword\">1.0.13</span>，地圖的資料集版本為<span class=\"keyword\">0.8.25</span>。我們需要時間來更新資料，更新時間可能晚於遊戲版本更新，有勞管理員等待。如你想及時追蹤我們的更新，請加入<a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='加入Discord'>Discord伺服器</a>，或<a href='https://qm.qq.com/q/kwN5idvvWw' class='embed' target='_blank' rel='noopener' aria-label='加入QQ'>QQ群組1075906513</a>。<br><br>亦都推薦您使用如下相關的工具網站：<ul><li><span class=\"keyword\">遊戲Wiki：</span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='訪問遊戲Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">藍圖分享：</span><a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='訪問Talos Pioneers'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "當前地圖數據集已經是最新版本。<br><br>如需反饋問題，您可以加入<a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='加入Discord'>Discord伺服器</a>，或<a href='https://qm.qq.com/q/kwN5idvvWw' class='embed' target='_blank' rel='noopener' aria-label='加入QQ'>QQ群組1075906513</a>。<br><br>也推薦您使用如下相關的工具網站：<ul><li><span class=\"keyword\">遊戲Wiki：</span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='訪問遊戲Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">藍圖分享：</span><a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='訪問Talos Pioneers'>https://talospioneers.com</a></li></ul>"
-  },
   "idcard": {
     "group": "用戶組：",
     "since": "註冊於",
     "logintip": "點擊頭像以登入",
     "registip": "點擊頭像以註冊",
-    "ago": "前",
     "karma": "Karma",
     "loading": "載入中",
     "unassigned": "待分配",
@@ -230,8 +294,10 @@
       "resend": "重新發送({count})",
       "dcLogin": "使用 Discord 登入",
       "gooLogin": "使用 Google 登入",
+      "ghLogin": "使用 GitHub 登入",
       "dcRegis": "使用 Discord 註冊",
       "gooRegis": "使用 Google 註冊",
+      "ghRegis": "使用 GitHub 註冊",
       "connecting": "連線中...",
       "resetLink": "請輸入需要重設密碼的電郵，我們将向阁下已註冊的信箱寄送一封包含密碼重設連結的郵件。<br><br>確認發送後，請檢查收件匣與垃圾郵件夾。",
       "resetRequire": "請輸入您的新密碼並正確重複一次。<br><br>我們即將為閣下進行密碼重設。",
@@ -242,7 +308,7 @@
       "switchToLoginPrefix": "若已有帳戶，",
       "switchToLoginAction": "請點此登入。",
       "ack": "如繼續操作，即表明閣下已詳閱並認可我們之",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">私隱政策</a>與<a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">使用條款</a>。",
+      "ackLink": "<a href=\"{privacy}\">私隱政策</a>與<a href=\"{tos}\">使用條款</a>。",
       "hints": {
         "0": "帳戶/密碼錯誤",
         "101": "請填寫電郵",
@@ -300,24 +366,20 @@
     "binding": {
       "title": "綁定帳户",
       "docsLead": "若繼續綁定，即表示你已閱讀並同意以下條款與聲明：",
-      "tos": "使用條款",
-      "privacy": "私隱政策",
-      "dataCollection": "資料收集清單",
-      "disclaimer": "免責聲明",
+      "docsLinks": "<a href=\"{tos}\">使用條款</a> · <a href=\"{privacy}\">私隱政策</a> · <a href=\"{data}\">資料收集清單</a> · <a href=\"{disclaimer}\">免責聲明</a>",
       "chinaTab": "國服 (Hypergryph)",
       "globalTab": "國際服 (Gryphline)",
       "CNStep0": "前往<a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>官方網站</a>，登入一次或確保已登入。",
       "UniStep0": "前往<a href='https://endfield.gryphline.com' target='_blank' rel='noopener noreferrer'>官方網站</a>，登入一次或確保已登入。",
       "CNStep1": "開啟<a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>Hypergryph API 連結</a>，複製完整回應。",
       "UniStep1": "開啟<a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>Gryphline API 連結</a>，複製完整回應。",
-      "Step2": "在下方貼上完整回應，閱讀條款後即可綁定帳號。",
-      "serverFallback": "伺服器",
+      "Step2": "在下方貼上完整回應，閱讀條款後即可綁定帳戶。",
       "changeBinding": "切換綁定",
       "unlink": "解除綁定",
       "bindWithCountdown": "綁定並啟用位置同步（{sec}）",
       "bind": "綁定並啟用位置同步",
-      "bindOnlyWithCountdown": "綁定帳號（{sec}）",
-      "bindOnly": "綁定帳號",
+      "bindOnlyWithCountdown": "綁定帳戶（{sec}）",
+      "bindOnly": "綁定帳戶",
       "locateAuth": "位置同步授權",
       "locateAuthBody": "啟用位置同步後將允許存取你的遊戲內位置資訊。是否啟用？",
       "authAndSync": "授權並開始同步"
@@ -346,14 +408,13 @@
       "trackPoints": "追蹤點位",
       "centerOnPosition": "角色光標置中",
       "heatmap": "熱力圖",
-      "configNote1": "啟用此功能代表你已接受我們的 ",
-      "configNote2": " 與其他條款。"
+      "configNote": "啟用此功能代表你已接受我們的 <a href=\"{data}\">資料收集清單</a> 與其他條款。"
     },
     "errors": {
       "10000": "位置同步工作階段已過期，請重新綁定。",
       "19001": "無法取得位置，請確認已登入遊戲。",
       "19002": "位置同步需要授權後才能開始。",
-      "noRole": "此帳號下未找到終末地角色。",
+      "noRole": "此帳戶下未找到終末地角色。",
       "tokenRequired": "請貼上完整回應或 Token。",
       "bindingFailed": "綁定失敗。",
       "roleRequired": "請選擇角色。",
@@ -401,6 +462,7 @@
     "all": "全部",
     "selected": "選取項目",
     "confirm": "確認",
+    "confirmAgain": "再次點擊確認",
     "loading": "載入中⋯",
     "enable": "啟用",
     "disable": "禁用",

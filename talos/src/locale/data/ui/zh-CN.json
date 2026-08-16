@@ -2,13 +2,17 @@
   "headbar": {
     "tos": "服务条款与储存",
     "hideUI": "隐藏界面",
-    "group": "加入相关群组",
+    "notification": "通知",
     "darkmode": "切换到深色模式",
     "lightmode": "切换到浅色模式",
     "language": "选择语言",
     "help": "获取帮助",
     "announcement": "公告",
     "settings": "偏好设置"
+  },
+  "mapControls": {
+    "layerSelect": "图层选择",
+    "locationTracking": "启用位置同步"
   },
   "trigger": {
     "boundaryMode": "地区边界显示",
@@ -32,23 +36,58 @@
       "main": "主区域",
       "sub": "子区域"
     },
+    "label": {
+      "note": "注记",
+      "url": "相关链接",
+      "comments": "热门讨论",
+      "collectionRate": "收集率"
+    },
+    "tabs": {
+      "collectAll": "一键收集同类点",
+      "general": "点位详情",
+      "comments": "讨论区"
+    },
     "noInfo": "暂无信息，使用 {paste} / {click} 上传点位截图",
-    "communityRule1": "上传前，请您详阅并遵循",
-    "communityRule2": "OEM 社区守则",
+    "communityRule": "上传前，请您详阅并遵循 <a href=\"{link}\">OEM 社区守则</a>",
     "uploading": "正在上传…",
     "uploadPending": "已提交，等待审核后展示。",
     "readFullText": "点此查看全文。",
     "share": "复制此点位的分享链接。",
     "copied": "链接已复制",
+    "collectionRateSource": "全服收集率为{nums} – 统计自 OEM Cloud",
     "viewer": {
       "author": "作者",
       "uploadedAt": "上传于",
       "upvote": "维护此点位",
       "flag": "标记为不准确",
       "unflag": "取消标记",
+      "uploadAno": "上传另一张图片",
       "share": "分享",
-      "recall": "申请撤回此图片",
+      "recall": "撤回此图片",
       "unrecall": "取消撤回"
+    },
+    "comments": {
+      "placeholder": "说些什么吧！",
+      "submit": "发布留言",
+      "actions": "留言操作",
+      "translate": "翻译",
+      "showOriginal": "显示原文",
+      "translatedFrom": "翻译自{language}",
+      "translating": "翻译中…",
+      "translateFailed": "翻译失败",
+      "upvote": "点赞",
+      "downvote": "不喜欢",
+      "reply": "回复帖文",
+      "edit": "修改留言",
+      "submitEdit": "提交修改",
+      "undoEdit": "撤销修改",
+      "recall": "撤回此留言",
+      "reviewing": "审核中",
+      "emptyWithRule": "暂无留言。发布内容请遵循<a href=\"{link}\">社区守则</a>。",
+      "ruleOnly": "发布内容请遵循<a href=\"{link}\">社区守则</a>。",
+      "loadFailed": "留言加载失败。",
+      "submitFailed": "留言发布失败。",
+      "editFailed": "留言修改失败。"
     },
     "errors": {
       "unsupportedType": "仅支持 JPEG/PNG/WebP/AVIF/HEIC 图片",
@@ -65,12 +104,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
       "supportedBy": "由 Observator 6 提供支持"
-    }
+    },
+    "newlyAdded": "当前版本新增"
   },
   "language": {
     "title": "语言",
@@ -101,12 +141,39 @@
       "th-TH": "泰语",
       "vi-VN": "越南语",
       "el-GR": "希腊语",
-      "hi-IN": "印地语"
+      "hi-IN": "印地语",
+      "uk-UA": "乌克兰语",
+      "tr-TR": "土耳其语"
     }
   },
-  "group": {
-    "title": "社区与媒体",
-    "visit": "访问"
+  "notification": {
+    "title": "消息通知",
+    "tabs": {
+      "community": "互动消息",
+      "system": "审核结果"
+    },
+    "markAllRead": "全部标记为已读",
+    "empty": "暂无消息。与您贡献相关的消息会在此处显示。",
+    "guest": "登入{account}以接收可能的消息。",
+    "account": "OEM 账号",
+    "loadError": "通知加载失败。",
+    "loadMore": "加载更多",
+    "support": "联系与支持",
+    "visit": "访问",
+    "noDetails": "暂无更多详情。",
+    "subject": {
+      "image": "图片",
+      "comment": "留言",
+      "submission": "内容"
+    },
+    "types": {
+      "approved": "您的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>已公开。",
+      "needsReview": "您的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>正在等待人工审核。",
+      "removeResolved": "您撤回的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>已完成处理。",
+      "reply": "您的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>收到了一条新回复。",
+      "vote": "您的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>收到了 {count} 个点赞。",
+      "multiple": "您的<subjectTag>{subject}</subjectTag><pointTag>{point}</pointTag>有 {count} 条状态更新。"
+    }
   },
   "tos": {
     "title": "协议与存储",
@@ -145,6 +212,8 @@
     "shortcuts": {
       "title": "快捷键",
       "hint": "可用的键盘快捷操作。",
+      "toggleUI": "显示/隐藏界面",
+      "quickSearch": "快速查找",
       "exportData": "导出数据",
       "importData": "导入数据",
       "undo": "撤销",
@@ -170,7 +239,7 @@
     "headbar": "与地图设置有关的开关位于<span class=\"keyword\">顶栏</span>。",
     "tos": "网站的<span class=\"keyword\">服务协议</span>与<span class=\"keyword\">数据管理</span>。",
     "hideUI": "<span class=\"keyword\">隐藏网站UI</span>以截图或查看边缘点位。",
-    "group": "查看与本项目有关的<span class=\"keyword\">讨论群组</span>与<span class=\"keyword\">社区</span>。",
+    "notification": "打开<span class=\"keyword\">消息通知</span>，查看与您的贡献相关的互动消息和审核结果。",
     "darkMode": "切换当前的<span class=\"keyword\">环境光模式</span>。",
     "language": "切换<span class=\"keyword\">界面语言</span>。<br><span class=\"keyword\">完全支持游戏内容翻译</span>的语言有英语，简体中文，繁体中文，日语，韩语，法语，德语，意大利语，俄语，西班牙语，印度尼西亚语，葡萄牙语，泰语和越南语。<br><span class=\"keyword\">仅支持界面翻译</span>的语言包括阿拉伯语，马来语，波兰语和瑞典语。",
     "announcement": "查看近期的<span class=\"keyword\">网站公告</span>，用户协议等更新也会在此发布。",
@@ -194,16 +263,11 @@
       "selectorSelect": "具体的<span class=\"keyword\">点位选择器</span>。点击以切换选择状态，被选择的点位会出现在地图上。<br>您可以看到在当前区域此类点位的总数，以及您已经标记的数量。"
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">注意：</span>当前游戏版本为<span class=\"keyword\">1.0.13</span>，地图的数据集版本为<span class=\"keyword\">0.8.25</span>。我们需要时间来更新数据，更新时间可能晚于游戏版本更新，有劳管理员等待。如您希望及时追踪我们的更新，请加入<a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='加入Discord'>Discord服务器</a>，或<a href='https://qm.qq.com/q/kwN5idvvWw' class='embed' target='_blank' rel='noopener' aria-label='加入QQ'>QQ群组1075906513</a>。<br><br>也推荐您使用如下相关的工具网站：<ul><li><span class=\"keyword\">游戏Wiki：</span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='访问游戏Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">蓝图分享：</span><a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='访问Talos Pioneers'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "当前地图数据已经是最新版本。<br><br>如需反馈问题，您可以加入<a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='加入Discord'>Discord服务器</a>，或<a href='https://qm.qq.com/q/kwN5idvvWw' class='embed' target='_blank' rel='noopener' aria-label='加入QQ'>QQ群组1075906513</a>。<br><br>也推荐您使用如下相关的工具网站：<ul><li><span class=\"keyword\">游戏Wiki：</span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='访问游戏Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">蓝图分享：</span><a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='访问Talos Pioneers'>https://talospioneers.com</a></li></ul>"
-  },
   "idcard": {
     "group": "用户组：",
     "since": "注册于",
     "logintip": "点击头像以登录",
     "registip": "点击头像以注册",
-    "ago": "前",
     "karma": "Karma",
     "loading": "加载中",
     "unassigned": "待分配",
@@ -230,8 +294,10 @@
       "resend": "重新发送({count})",
       "dcLogin": "使用 Discord 登录",
       "gooLogin": "使用 Google 登录",
+      "ghLogin": "使用 GitHub 登录",
       "dcRegis": "使用 Discord 注册",
       "gooRegis": "使用 Google 注册",
+      "ghRegis": "使用 GitHub 注册",
       "connecting": "连接中…",
       "resetLink": "请输入需要重置密码的邮箱，我们会往您已经注册的邮箱发送一封包含密码重置链接的邮件。<br><br>确认发送后，请检查您的收件箱与垃圾桶。",
       "resetRequire": "请输入您的新密码并且正确重复此密码。<br><br>我们马上会为您重置密码。",
@@ -242,7 +308,7 @@
       "switchToLoginPrefix": "若已有账号，",
       "switchToLoginAction": "请点此登录。",
       "ack": "若继续操作，即表明您已阅读并同意我们的",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">隐私权政策</a>与<a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">使用条款</a>。",
+      "ackLink": "<a href=\"{privacy}\">隐私权政策</a>与<a href=\"{tos}\">使用条款</a>。",
       "hints": {
         "0": "账号/密码错误",
         "101": "请填写邮箱",
@@ -300,10 +366,7 @@
     "binding": {
       "title": "绑定账号",
       "docsLead": "若继续绑定，即表明您已阅读并同意下列条款与声明：",
-      "tos": "使用条款",
-      "privacy": "隐私权政策",
-      "dataCollection": "信息收集清单",
-      "disclaimer": "责任豁免声明",
+      "docsLinks": "<a href=\"{tos}\">使用条款</a> · <a href=\"{privacy}\">隐私权政策</a> · <a href=\"{data}\">信息收集清单</a> · <a href=\"{disclaimer}\">责任豁免声明</a>",
       "chinaTab": "国服 (Hypergryph)",
       "globalTab": "国际服 (Gryphline)",
       "CNStep0": "前往<a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>游戏官网</a>，登录一次或确保处于登录状态。",
@@ -311,7 +374,6 @@
       "CNStep1": "访问<a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>鹰角网络登录态API</a>，复制网页全文。",
       "UniStep1": "访问 <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>Gryphline 登录态API</a>，复制网页全文。",
       "Step2": "在下方粘贴全文，阅读我们的条款与声明后，您可以绑定账号。",
-      "serverFallback": "服务器",
       "changeBinding": "切换绑定",
       "unlink": "解除绑定",
       "bindWithCountdown": "绑定并启用位置同步（{sec}）",
@@ -346,8 +408,7 @@
       "trackPoints": "追踪点位",
       "centerOnPosition": "角色光标居中",
       "heatmap": "热力图",
-      "configNote1": "启用此功能表明您已接受我们的 ",
-      "configNote2": " 与其他条款。"
+      "configNote": "启用此功能表明您已接受我们的 <a href=\"{data}\">信息收集清单</a> 与其他条款。"
     },
     "errors": {
       "10000": "位置同步会话已过期，请重新绑定。",
@@ -401,6 +462,7 @@
     "all": "全部",
     "selected": "选中项",
     "confirm": "确认",
+    "confirmAgain": "再次点击确认",
     "loading": "加载中⋯",
     "enable": "启用",
     "disable": "禁用",

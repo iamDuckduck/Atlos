@@ -9,6 +9,7 @@ import Button from '../button/button';
 import { clearAllStorage, clearStorageItem, exportMarkerData, importMarkerData } from '@/utils/storage';
 import { useDevice } from '@/utils/device';
 import { useUserRecordStore } from '@/store/userRecord';
+import { replacePointProgressFromExternal } from '@/store/history';
 import { useMarkerStore } from '@/store/marker';
 
 export interface ToSProps {
@@ -143,10 +144,8 @@ const TOSModal: React.FC<ToSProps> = ({ open, onClose, onChange }) => {
     reader.onload = (event) => {
       const content = event.target?.result as string;
       const success = importMarkerData(content, {
-        clearPoints: () => useUserRecordStore.getState().clearPoints(),
-        addPoint: (id: string) => useUserRecordStore.getState().addPoint(id),
+        replacePoints: replacePointProgressFromExternal,
         setFilter: (filter: string[]) => useMarkerStore.getState().setFilter(filter),
-        getSelectedPoints: () => useMarkerStore.getState().selectedPoints,
         setSelected: (id: string, value: boolean) => useMarkerStore.getState().setSelected(id, value),
         getActivePoints: () => useUserRecordStore.getState().activePoints,
         getFilter: () => useMarkerStore.getState().filter,
@@ -172,7 +171,7 @@ const TOSModal: React.FC<ToSProps> = ({ open, onClose, onChange }) => {
       icon={<ToSIcon aria-hidden="true" />}
     >
       <div className={styles.storageContainer}>
-          {parse(t('tos.policy') || '')}
+          {parse(t('tos.policy'))}
       </div>
       <div className={styles.storageController} data-device={deviceType}>
         <div className={styles.storageMap}>

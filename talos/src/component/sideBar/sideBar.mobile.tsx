@@ -1,15 +1,14 @@
-import React, { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LinearBlur } from "progressive-blur";
 import mobileStyles from './sideBar.mobile.module.scss';
 
-import Search from '../search/search';
+import SearchMobile from '../search/search.mobile';
 import FilterListMobile from '../filterList/filterList.mobile';
 import Drawer from '../drawer/drawer';
 import { Trigger } from '../trigger/trigger';
 import MarkFilter from '../markFilter/markFilter';
 import { MarkFilterDragProvider } from '../markFilter/reorderContext';
 import MarkSelector from '../markSelector/markSelector';
-import Notice from '../notice/notice';
 import Detail from '../detail/detail';
 import SupportModal from '../support/support';
 
@@ -18,6 +17,7 @@ import GithubIcon from '../../assets/images/UI/media/ghicon.svg?react';
 import DiscordIcon from '../../assets/images/UI/media/discordicon.svg?react';
 import QQIcon from '../../assets/images/UI/media/qqicon.svg?react';
 import BskyIcon from '../../assets/images/UI/media/bluesky.svg?react';
+import XIcon from '../../assets/images/UI/media/x.svg?react';
 
 // Category icons
 import BossIcon from '../../assets/images/category/boss.svg?react';
@@ -29,12 +29,15 @@ import CollectionIcon from '../../assets/images/category/collection.svg?react';
 import CombatIcon from '../../assets/images/category/combat.svg?react';
 import NpcIcon from '../../assets/images/category/npc.svg?react';
 import FacilityIcon from '../../assets/images/category/facility.svg?react';
+import ArchivesIcon from '../../assets/images/category/archives.svg?react';
 
 import { DEFAULT_SUBCATEGORY_ORDER, MARKER_TYPE_DICT, MARKER_TYPE_TREE, REGION_TYPE_COUNT_MAP, type IMarkerType } from '@/data/marker';
+import { VERSION_NEW_FILTER_GROUPS, useVersionNewMarkerCounts } from '@/data/marker/versionNew';
 import useRegion from '@/store/region';
 import { useTranslateGame, useTranslateUI } from '@/locale';
 import { useFilter, useMarkerStore } from '@/store/marker';
 import { useTriggerCluster, useTriggerBoundary, useTriggerlabelName, useSetTriggerCluster, useSetTriggerBoundary, useSetTriggerlabelName, useSetMobileDrawerSnapIndex, useMobileDrawerSnapIndex } from '@/store/uiPrefs';
+import { useAppViewport } from '@/utils/device';
 
 const CATEGORY_ICON_MAP: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
     boss: BossIcon,
@@ -42,7 +45,7 @@ const CATEGORY_ICON_MAP: Record<string, React.FC<React.SVGProps<SVGSVGElement>>>
     natural: NaturalIcon,
     valuable: ValuableIcon,
     collection: CollectionIcon,
-    archives: CollectionIcon,
+    archives: ArchivesIcon,
     combat: CombatIcon,
     npc: NpcIcon,
     facility: FacilityIcon,
@@ -68,8 +71,9 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
   const tGame = useTranslateGame();
 
   const [supportOpen, setSupportOpen] = useState(false);
+  const versionNewCounts = useVersionNewMarkerCounts();
 
-  const [vh, setVh] = useState<number>(typeof window !== 'undefined' ? window.innerHeight : 800);
+  const { height: vh } = useAppViewport();
   const filterList = useFilter();
   const searchString = useMarkerStore((s) => s.searchString);
   const currentRegion = useRegion((s) => s.currentRegionKey);
@@ -92,12 +96,6 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
   const setTrigOptimal = useSetTriggerlabelName();
   const setDrawerSnapIndex = useSetMobileDrawerSnapIndex();
 
-  useEffect(() => {
-    const onResize = () => setVh(window.innerHeight);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
-
   const rootRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const topRowRef = useRef<HTMLDivElement>(null);
@@ -109,7 +107,6 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
   const [topRowBaseHeight, setTopRowBaseHeight] = useState(0);
   const [rightContentWidth, setRightContentWidth] = useState(0);
   const prevHasSearchQueryRef = useRef(false);
-  const preSearchSnapIndexRef = useRef<number | null>(null);
   const hasSearchQuery = searchString.trim().length > 0;
 
   const snap0 = useMemo(() => {
@@ -168,13 +165,12 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
     return () => scroller.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Sync currentSnap to store for UIOverlay to use
-  useEffect(() => {
-    if (hasSearchQuery) return;
-    if (drawerSnapIndex !== currentSnap) {
-      setDrawerSnapIndex(currentSnap);
+  const handleSnapChange = useCallback((index: number) => {
+    setCurrentSnap(index);
+    if (drawerSnapIndex !== index) {
+      setDrawerSnapIndex(index);
     }
-  }, [currentSnap, drawerSnapIndex, hasSearchQuery, setDrawerSnapIndex]);
+  }, [drawerSnapIndex, setDrawerSnapIndex]);
 
   const snapsNormalized = snaps;
   const minSnap = snaps[0] ?? 0;
@@ -186,24 +182,15 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
     const maxIndex = Math.max(0, snaps.length - 1);
 
     if (!wasSearching && hasSearchQuery) {
-      preSearchSnapIndexRef.current = drawerSnapIndex;
-      if (drawerSnapIndex !== maxIndex) {
-        setDrawerSnapIndex(maxIndex);
-      }
-    }
-
-    if (wasSearching && !hasSearchQuery) {
-      const prevIndex = preSearchSnapIndexRef.current;
-      if (typeof prevIndex === 'number') {
-        const restored = Math.max(0, Math.min(maxIndex, prevIndex));
-        if (drawerSnapIndex !== restored) {
-          setDrawerSnapIndex(restored);
-        }
+      const targetIndex = Math.min(1, maxIndex);
+      const currentIndex = drawerSnapIndex ?? currentSnap;
+      if (currentIndex < targetIndex) {
+        setDrawerSnapIndex(targetIndex);
       }
     }
 
     prevHasSearchQueryRef.current = hasSearchQuery;
-  }, [hasSearchQuery, snaps.length, drawerSnapIndex, setDrawerSnapIndex]);
+  }, [currentSnap, hasSearchQuery, snaps.length, drawerSnapIndex, setDrawerSnapIndex]);
 
   const hasFilterList = useMemo(
     () => filterList.some((item) => MARKER_TYPE_DICT[item]?.category?.main !== 'files'),
@@ -257,7 +244,6 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
   const atRightEdge = showDivider && (searchExpanded || leftRatio >= rightBound - 0.01);
   const resolvedTopRowBaseHeight = topRowBaseHeight > 0 ? topRowBaseHeight : topRowHeight;
   const topBlurExtraHeight = Math.max(0, topRowHeight - resolvedTopRowBaseHeight);
-
   // Update ref when state changes
   useEffect(() => {
     leftRatioRef.current = leftRatio;
@@ -350,6 +336,9 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
   return (
     <div
       className={`${mobileStyles.sidebarContainer} ${!visible ? mobileStyles.hidden : ''}`}
+      data-sidebar-layout="mobile"
+      aria-hidden={!visible}
+      inert={!visible}
       ref={rootRef}
       style={{ '--top-blur-extra': `${topBlurExtraHeight}px` } as React.CSSProperties}
     >
@@ -360,17 +349,21 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
         snap={snaps}
         snapThreshold={[50, 50, 50]}
         handleSize={16}
-        dragDisabled={hasSearchQuery}
         fullWidth={true}
         className={mobileStyles.mobileDrawer}
         handleClassName={mobileStyles.mobileDrawerHandle}
         contentClassName={mobileStyles.mobileDrawerContent}
         backdropClassName={mobileStyles.mobileDrawerBackdrop}
         onProgressChange={handleProgress}
+        onSnapChange={handleSnapChange}
         style={{ bottom: 0 }}
         snapToIndex={drawerSnapIndex}
       >
-        <div className={`${mobileStyles.contentWrapper} ${hasSearchQuery ? mobileStyles.searchMode : ''}`} ref={contentRef}>
+        <div
+          className={`${mobileStyles.contentWrapper} ${hasSearchQuery ? mobileStyles.searchMode : ''}`}
+          data-sidebar-scroll="true"
+          ref={contentRef}
+        >
           <div className={mobileStyles.sidebarContent}>
             {/* Top row: Search + FilterList with draggable divider */}
             <div className={mobileStyles.topRow} ref={topRowRef}>
@@ -380,7 +373,7 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
                 onFocus={handleSearchFocus}
                 onClick={handleSearchFocus}
               >
-                <Search />
+                <SearchMobile />
               </div>
               {showDivider && (
                 <div
@@ -405,11 +398,29 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
               )}
             </div>
 
-            {/* Detail slot between top row and filters */}
-            <div className={mobileStyles.detailSlot}><Detail inline /></div>
+            <Detail inline className={mobileStyles.mobileDetail} />
 
             <div className={mobileStyles.filters}>
               <MarkFilterDragProvider>
+                {VERSION_NEW_FILTER_GROUPS.map((group) => (
+                  <MarkFilter
+                    idKey={group.key}
+                    title={t(group.titleKey)}
+                    dataCategory="versionNew"
+                    key={group.key}
+                    initialEmpty={false}
+                    variant="versionNew"
+                    reorderable={false}
+                  >
+                    {group.types.map((typeInfo) => (
+                      <MarkSelector
+                        key={typeInfo.key}
+                        typeInfo={typeInfo}
+                        countOverride={versionNewCounts[typeInfo.key]}
+                      />
+                    ))}
+                  </MarkFilter>
+                ))}
                 {DEFAULT_SUBCATEGORY_ORDER_LIST.filter((k) =>
                   Object.prototype.hasOwnProperty.call(MARKER_TYPE_TREE, k),
                 )
@@ -438,7 +449,6 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
                   })}
               </MarkFilterDragProvider>
             </div>
-            <Notice />
             <div className={mobileStyles.idCardContainer}>
                 <Suspense fallback={null}>
                   <IDCard />
@@ -487,6 +497,16 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
               <BskyIcon />
             </a>
             <a
+                href="https://x.com/OpenEndfieldMap"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={mobileStyles.socialLink}
+                data-platform="X/Twitter"
+                aria-label="X/Twitter"
+            >
+                <XIcon />
+            </a>
+            <a
               href="https://qm.qq.com/q/BVsCJgzBL2"
               target="_blank"
               rel="noopener noreferrer"
@@ -512,7 +532,7 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
         {/* Top blur: visible when not at snap-0 and not scrolled to top */}
         <LinearBlur
           side='top'
-          strength={32}
+          strength={8}
           falloffPercentage={80}
           className={`${mobileStyles.topBlur} ${currentSnap > 0 && !isScrolledTop ? mobileStyles.visible : ''}`}
         />
@@ -520,7 +540,7 @@ const SideBarMobile: React.FC<SideBarProps> = ({ onToggle, visible = true }) => 
         {/* Bottom blur: visible when not at snap-0 and not scrolled to bottom */}
         <LinearBlur
           side='bottom'
-          strength={16}
+          strength={2}
           falloffPercentage={100}
           className={`${mobileStyles.bottomBlur} ${currentSnap > 0 && !isScrolledBottom ? mobileStyles.visible : ''}`}
         />

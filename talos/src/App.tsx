@@ -8,6 +8,9 @@ import UIOverlay from './component/uiOverlay/UIOverlay';
 import SideBar from './component/sideBar/sideBar';
 import DomainBanner from './component/domain/domain';
 import LocatorBanner from '@/component/locator/LocatorBanner';
+// Critical locator recovery UI: keep it in the entry bundle so policy errors cannot be blocked by a missing chunk.
+import LocationAuth from '@/component/locator/LocationAuth';
+import EndfieldBindingHost from '@/component/locator/EndfieldBindingHost';
 // import SupportAutoPopup from '@/component/support/SupportAutoPopup';
 import { MetaHelper } from './component/MetaHelper';
 
@@ -18,11 +21,9 @@ import { useMapMultiSelect } from '@/component/settings/useMapMultiSelect';
 import { useLocator } from '@/component/map/useLocator';
 import { useIsUserGuideOpen } from '@/store/uiPrefs';
 import { useLocatorStore } from '@/component/locator/state';
-import { getAppDocument, subscribePictureInPictureState } from '@/component/scale/pip';
+import { useUIVisibility } from '@/component/uiOverlay/useUIVisibility';
 
 const UserGuide = lazy(() => import('@/component/userGuide/UserGuide'));
-const LocationAuth = lazy(() => import('@/component/locator/LocationAuth'));
-const EndfieldBindingHost = lazy(() => import('@/component/locator/EndfieldBindingHost'));
 
 declare global {
     interface Window {
@@ -41,14 +42,20 @@ function App() {
     const [mapInstance, setMapInstance] = useState<L.Map | undefined>(
         undefined,
     );
-    const [uiVisible, setUiVisible] = useState(true);
+    const {
+        shortcutDocument,
+        showVisibilityControl,
+        showUI,
+        uiVisible,
+        toggleUI,
+    } = useUIVisibility();
     const [shouldLoadUserGuide, setShouldLoadUserGuide] = useState(false);
     const [userGuideReady, setUserGuideReady] = useState(false);
     const isUserGuideOpen = useIsUserGuideOpen();
     const locatorAuthOpen = useLocatorStore((state) => state.authOpen);
 
     // Keyboard shortcuts & map multi-select
-    useKeyboardShortcuts(mapInstance);
+    useKeyboardShortcuts(mapInstance, shortcutDocument, { showUI });
     useMapMultiSelect(mapInstance);
     useLocator(mapInstance);
 
@@ -111,70 +118,28 @@ function App() {
         }
     };
 
-    const handleHideUI = () => {
-        setUiVisible(false);
-    };
-
-    // Show UI on any click or page visibility change
-    useEffect(() => {
-        const activeDocument = getAppDocument();
-        const showUI = () => {
-            setUiVisible(true);
-        };
-
-        const handleClick = (e: MouseEvent) => {
-            if (!uiVisible) {
-                e.stopPropagation();
-                showUI();
-            }
-        };
-
-        const handleVisibilityChange = () => {
-            if (activeDocument.visibilityState === 'visible') {
-                showUI();
-            }
-        };
-
-        if (!uiVisible) {
-            // Use capture phase to catch clicks before they reach other elements
-            activeDocument.addEventListener('click', handleClick, true);
-            activeDocument.addEventListener(
-                'visibilitychange',
-                handleVisibilityChange,
-            );
-        }
-
-        return () => {
-            activeDocument.removeEventListener('click', handleClick, true);
-            activeDocument.removeEventListener(
-                'visibilitychange',
-                handleVisibilityChange,
-            );
-        };
-    }, [uiVisible]);
-
-    useEffect(() => subscribePictureInPictureState(() => {
-        setUiVisible(true);
-    }), []);
-
     return (
         <StrictMode>
             <MetaHelper />
-            <DomainBanner />
-            <LocatorBanner />
-            {locatorAuthOpen && (
-                <Suspense fallback={null}>
-                    <LocationAuth />
-                </Suspense>
+            {uiVisible && (
+                <>
+                    <DomainBanner />
+                    <LocatorBanner />
+                    {locatorAuthOpen && (
+                        <LocationAuth />
+                    )}
+                    <EndfieldBindingHost />
+                </>
             )}
-            <Suspense fallback={null}>
-                <EndfieldBindingHost />
-            </Suspense>
             {/*<SupportAutoPopup />*/}
             <div className='app theme-transition-scope' style={{ '--sidebar-width': `${sidebarWidth}px` } as CSSProperties}>
                 {shouldLoadUserGuide && (
                     <Suspense fallback={null}>
-                        <UserGuide map={mapInstance} onReady={() => setUserGuideReady(true)} />
+                        <UserGuide
+                            map={mapInstance}
+                            visible={uiVisible}
+                            onReady={() => setUserGuideReady(true)}
+                        />
                     </Suspense>
                 )}
                 {/* Map layer - always fill the entire window */}
@@ -184,7 +149,8 @@ function App() {
                     map={mapInstance}
                     isSidebarOpen={isSidebarOpen}
                     visible={uiVisible}
-                    onHideUI={handleHideUI}
+                    showVisibilityControl={showVisibilityControl}
+                    onToggleUI={toggleUI}
                     userGuideReady={userGuideReady}
                 />
                 {/* Sidebar layer - floats over the map */}

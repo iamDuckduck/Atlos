@@ -1,81 +1,88 @@
-/**
- * Undo / Redo history store for user-facing actions.
- *
- * Tracked actions:
- *   1. MarkSelector filter toggle / batch-toggle
- *   2. Marker point status toggle (single or batch — a batch counts as one step)
- *
- * Design:
- *   - Generic command pattern with `undo()` / `redo()` callbacks per entry.
- *   - Max 25 steps (configurable via UNDO_LIMIT).
- *   - Batch operations (e.g. multi-select → mark all checked) are pushed as a
- *     single history entry.
- */
-
 import { create } from 'zustand';
+import { useUserRecordStore } from '@/store/userRecord';
 
-// ─── Types ───────────────────────────────────────────────────
+export type PointProgressDelta = {
+    collect?: Iterable<string>;
+    uncollect?: Iterable<string>;
+};
 
-export interface HistoryEntry {
-    /** Human-readable label (for potential UI display) */
+export type PointProgressHistoryEntry = {
     label: string;
-    /** Callback to reverse this action */
-    undo: () => void;
-    /** Callback to re-apply this action */
-    redo: () => void;
-}
+    collectedIds: string[];
+    uncollectedIds: string[];
+};
 
 interface IHistoryStore {
-    past: HistoryEntry[];
-    future: HistoryEntry[];
-
-    /** Push a new undoable action (clears redo stack) */
-    push: (entry: HistoryEntry) => void;
-    /** Undo the most recent action */
+    past: PointProgressHistoryEntry[];
+    future: PointProgressHistoryEntry[];
     undo: () => void;
-    /** Redo the most recently undone action */
     redo: () => void;
-    /** Whether undo is available */
     canUndo: () => boolean;
-    /** Whether redo is available */
     canRedo: () => boolean;
-    /** Clear all history */
     clear: () => void;
 }
 
 const UNDO_LIMIT = 25;
 
+const normalizePointIds = (ids?: Iterable<string>): string[] => (
+    ids ? [...new Set([...ids].map((id) => String(id)).filter(Boolean))] : []
+);
+
+const replaceActivePoints = (ids: Iterable<string>): boolean => {
+    const next = normalizePointIds(ids);
+    const current = useUserRecordStore.getState().activePoints;
+    if (current.length === next.length && current.every((id, index) => id === next[index])) {
+        return false;
+    }
+    useUserRecordStore.setState({ activePoints: next, updatedAt: Date.now() });
+    return true;
+};
+
+const applyPointProgressDelta = (delta: PointProgressDelta): PointProgressHistoryEntry | null => {
+    const current = useUserRecordStore.getState().activePoints;
+    const currentSet = new Set(current);
+    const uncollectSet = new Set(normalizePointIds(delta.uncollect));
+    const collectIds = normalizePointIds(delta.collect);
+    const next = current.filter((id) => !uncollectSet.has(id));
+    const nextSet = new Set(next);
+
+    for (const id of collectIds) {
+        if (nextSet.has(id)) continue;
+        nextSet.add(id);
+        next.push(id);
+    }
+
+    const collectedIds = next.filter((id) => !currentSet.has(id));
+    const uncollectedIds = current.filter((id) => !nextSet.has(id));
+    if (collectedIds.length === 0 && uncollectedIds.length === 0) return null;
+
+    replaceActivePoints(next);
+    return { label: '', collectedIds, uncollectedIds };
+};
+
+const applyHistoryEntry = (entry: PointProgressHistoryEntry, reverse: boolean): void => {
+    applyPointProgressDelta(reverse
+        ? { collect: entry.uncollectedIds, uncollect: entry.collectedIds }
+        : { collect: entry.collectedIds, uncollect: entry.uncollectedIds });
+};
+
 export const useHistoryStore = create<IHistoryStore>()((set, get) => ({
     past: [],
     future: [],
 
-    push: (entry) => {
-        set((state) => ({
-            past: [...state.past, entry].slice(-UNDO_LIMIT),
-            future: [],
-        }));
-    },
-
     undo: () => {
         const { past, future } = get();
-        if (past.length === 0) return;
-
         const entry = past[past.length - 1];
-        entry.undo();
-
-        set({
-            past: past.slice(0, -1),
-            future: [entry, ...future],
-        });
+        if (!entry) return;
+        applyHistoryEntry(entry, true);
+        set({ past: past.slice(0, -1), future: [entry, ...future] });
     },
 
     redo: () => {
         const { past, future } = get();
-        if (future.length === 0) return;
-
         const entry = future[0];
-        entry.redo();
-
+        if (!entry) return;
+        applyHistoryEntry(entry, false);
         set({
             past: [...past, entry].slice(-UNDO_LIMIT),
             future: future.slice(1),
@@ -84,11 +91,28 @@ export const useHistoryStore = create<IHistoryStore>()((set, get) => ({
 
     canUndo: () => get().past.length > 0,
     canRedo: () => get().future.length > 0,
-
     clear: () => set({ past: [], future: [] }),
 }));
 
-// ─── Convenience hooks ───────────────────────────────────────
+export const commitPointProgress = (label: string, delta: PointProgressDelta): boolean => {
+    const applied = applyPointProgressDelta(delta);
+    if (!applied) return false;
+    const entry = { ...applied, label };
+    useHistoryStore.setState((state) => ({
+        past: [...state.past, entry].slice(-UNDO_LIMIT),
+        future: [],
+    }));
+    return true;
+};
 
-export const useCanUndo = () => useHistoryStore((s) => s.past.length > 0);
-export const useCanRedo = () => useHistoryStore((s) => s.future.length > 0);
+export const replacePointProgressFromExternal = (ids: Iterable<string>): void => {
+    replaceActivePoints(ids);
+    useHistoryStore.getState().clear();
+};
+
+export const applyPointProgressSilently = (delta: PointProgressDelta): boolean => (
+    applyPointProgressDelta(delta) !== null
+);
+
+export const useCanUndo = () => useHistoryStore((state) => state.past.length > 0);
+export const useCanRedo = () => useHistoryStore((state) => state.future.length > 0);

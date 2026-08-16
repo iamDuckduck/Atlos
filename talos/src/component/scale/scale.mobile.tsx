@@ -17,6 +17,8 @@ const ScaleMobile = ({ map }: { map: L.Map }) => {
     const touchStartRef = useRef<number | null>(null);
     const initialZoomRef = useRef<number | null>(null);
     const frameRef = useRef<number | null>(null);
+    const zoomFrameRef = useRef<number | null>(null);
+    const pendingZoomRef = useRef<number | null>(null);
 
     // Derived ratio was unused; removed to avoid unused variable warning
 
@@ -24,41 +26,69 @@ const ScaleMobile = ({ map }: { map: L.Map }) => {
         if (frameRef.current) cancelAnimationFrame(frameRef.current);
         frameRef.current = requestAnimationFrame(() => {
             wrapRef.current?.style.setProperty('--scale', s.toString());
+            frameRef.current = null;
         });
     }, []);
 
     const snapZoom = useCallback(
         (z: number) => {
-            const snap = map?.options?.zoomSnap ?? 0.1;
-            return clamp(Math.round(z / snap) * snap, bounds.min, bounds.max);
+            const clamped = clamp(z, bounds.min, bounds.max);
+            const snap = map?.options?.zoomSnap ?? 0;
+            if (snap <= 0) return clamped;
+            return clamp(Math.round(clamped / snap) * snap, bounds.min, bounds.max);
         },
         [map, bounds]
     );
 
+    const cancelPendingZoom = useCallback(() => {
+        if (zoomFrameRef.current !== null) {
+            cancelAnimationFrame(zoomFrameRef.current);
+            zoomFrameRef.current = null;
+        }
+    }, []);
+
+    const scheduleZoom = useCallback((zoom: number) => {
+        pendingZoomRef.current = zoom;
+        if (zoomFrameRef.current !== null || !map) return;
+
+        zoomFrameRef.current = requestAnimationFrame(() => {
+            zoomFrameRef.current = null;
+            const pendingZoom = pendingZoomRef.current;
+            pendingZoomRef.current = null;
+            if (pendingZoom !== null) {
+                map.setZoom(pendingZoom, { animate: false });
+            }
+        });
+    }, [map]);
+
     // --- Touch handlers ---
     const onTouchStart = useCallback((e: React.TouchEvent) => {
         e.stopPropagation();
+        cancelPendingZoom();
+        pendingZoomRef.current = null;
         map?.dragging.disable();
         setDragging(true);
         const y = e.touches[0].clientY;
         touchStartRef.current = y;
         initialZoomRef.current = zoomLevel;
-    }, [map, zoomLevel]);
+    }, [map, zoomLevel, cancelPendingZoom]);
 
     const onTouchMove = useCallback((e: React.TouchEvent) => {
         e.stopPropagation();
-        if (!touchStartRef.current || !wrapRef.current || initialZoomRef.current == null) return;
+        if (touchStartRef.current === null || !wrapRef.current || initialZoomRef.current === null) return;
         const deltaY = touchStartRef.current - e.touches[0].clientY;
         const h = wrapRef.current.getBoundingClientRect().height || 1;
         const dz = (deltaY / h) * (bounds.max - bounds.min);
         const newZoom = clamp(initialZoomRef.current + dz, bounds.min, bounds.max);
         setUIScale(calcScale(newZoom, bounds.min, bounds.max));
-        map?.setZoom(newZoom, { animate: false });
-    }, [map, bounds, setUIScale]);
+        scheduleZoom(newZoom);
+    }, [bounds, setUIScale, scheduleZoom]);
 
     const onTouchEnd = useCallback(() => {
         if (!map) return;
-        const clamped = snapZoom(map.getZoom());
+        cancelPendingZoom();
+        const clamped = snapZoom(pendingZoomRef.current ?? map.getZoom());
+        pendingZoomRef.current = null;
         map.setZoom(clamped, { animate: true });
         setZoomLevel(clamped);
         setUIScale(calcScale(clamped, bounds.min, bounds.max));
@@ -66,7 +96,7 @@ const ScaleMobile = ({ map }: { map: L.Map }) => {
         map.dragging.enable();
         touchStartRef.current = null;
         initialZoomRef.current = null;
-    }, [map, bounds, snapZoom, setUIScale]);
+    }, [map, bounds, snapZoom, setUIScale, cancelPendingZoom]);
 
     // --- Sync with map zoom ---
     useEffect(() => {
@@ -100,6 +130,11 @@ const ScaleMobile = ({ map }: { map: L.Map }) => {
             map.off('talos:regionSwitched', updateBounds);
         };
     }, [map, setUIScale]);
+
+    useEffect(() => () => {
+        if (frameRef.current !== null) cancelAnimationFrame(frameRef.current);
+        cancelPendingZoom();
+    }, [cancelPendingZoom]);
 
     return (
         <div className={`${styles.scaleContainerMobile} ${dragging ? styles.dragging : ''}`}>

@@ -3,7 +3,8 @@ import ProfileIcon from '@/assets/logos/profile.svg?react';
 import Modal from '@/component/modal/modal';
 import { requestEndfieldBinding } from '@/component/locator';
 import SyncConflictModal, { type SyncConflictChoice } from '@/component/sync/conflict';
-import { useTranslateUI } from '@/locale';
+import { useLocale, useTranslateUI } from '@/locale';
+import { formatIcuText } from '@/locale/messageFormat';
 import { useProgressSyncStore } from '@/store/progressSync';
 import { useUserRecordStore } from '@/store/userRecord';
 import { useDevice } from '@/utils/device';
@@ -14,7 +15,7 @@ import {
   loadOfficialMarksSnapshot,
   type OfficialMarksSnapshot,
 } from '@/utils/endfield/officialMarks';
-import { formatElapsedShort, parseDateLike } from '@/utils/timeFormat';
+import { formatElapsedShort, parseTimestamp } from '@/utils/timeFormat';
 import ProgressSyncHost from '@/component/progressSync/ProgressSyncHost';
 import { requestProgressSyncNow } from '@/component/progressSync/progressSyncController';
 import { AccessButton } from '../access';
@@ -63,6 +64,7 @@ const ProfileModal = ({
   handleLogout,
 }: ProfileModalProps) => {
   const t = useTranslateUI();
+  const locale = useLocale();
   const { isMobile } = useDevice();
   const { cardRef, handleCardMouseMove, handleCardMouseLeave } = useIdCardHoverAngle();
   const [isImportingOfficialMarks, setIsImportingOfficialMarks] = useState(false);
@@ -77,7 +79,7 @@ const ProfileModal = ({
   const shouldShowProfileError = profileOpen && Boolean(profileErrorText);
   const isProfileErrorRemoved = !shouldShowProfileError;
   const modalSize = isMobile ? 'full' : 'm';
-  const syncedAtDate = parseDateLike(progressSync.lastSyncedAt);
+  const syncedAtDate = parseTimestamp(progressSync.lastSyncedAt);
   const syncedAgo = syncedAtDate ? formatElapsedShort(syncedAtDate.getTime(), syncHintNow) : '';
   const syncPointCount = Math.max(progressSync.localPointCount, progressSync.remotePointCount);
   const isProgressSyncing = progressSync.status === 'checking' || progressSync.status === 'syncing';
@@ -97,7 +99,11 @@ const ProfileModal = ({
   const syncHint = SYNC_HINT_FAILED_STATUSES.has(progressSync.status)
     ? t('sync.failed').replace('{reason}', syncFailureReason)
     : SYNC_HINT_BUSY_STATUSES.has(progressSync.status)
-      ? t('sync.syncing').replace('{count}', String(syncPointCount))
+      ? formatIcuText({
+          template: t('sync.syncing'),
+          locale,
+          values: { count: syncPointCount },
+        })
       : syncedAgo
         ? t('sync.done').replace('{times}', syncedAgo)
         : '';
@@ -242,13 +248,12 @@ const ProfileModal = ({
             </div>
           )}
 
-          <div className={styles.profileDivider} data-label={t('idcard.profile.note') || 'Note'}></div>
+          <div className={styles.profileDivider} data-label={t('idcard.profile.note')}></div>
 
           <div className={styles.profileNote}>
-            <p>{t('idcard.profile.noteNickname') || 'You can use letters, numbers, and underscores in your username.'}</p>
+            <p>{t('idcard.profile.noteNickname')}</p>
             <p>
-              {t('idcard.profile.noteUID') ||
-                'UID is assigned on first setup and cannot be changed. You can update your username any time.'}
+              {t('idcard.profile.noteUID')}
             </p>
           </div>
 
@@ -261,7 +266,7 @@ const ProfileModal = ({
             {profileErrorText}
           </div>
 
-          <div className={styles.profileDivider} data-label={t('idcard.profile.auditLabel') || 'Audit'}></div>
+          <div className={styles.profileDivider} data-label={t('idcard.profile.auditLabel')}></div>
 
           <div className={styles.profileActions}>
             <div className={styles.profileActionWide}>
@@ -280,7 +285,7 @@ const ProfileModal = ({
                 }}
                 disabled={isSavingProfile || isImportingOfficialMarks}
                 label={isImportingOfficialMarks
-                  ? t('common.loading') || 'Loading...'
+                  ? t('common.loading')
                   : t('idcard.profile.importOfficial')}
               />
             </div>
@@ -290,15 +295,15 @@ const ProfileModal = ({
               }}
               disabled={isSavingProfile}
               label={isSavingProfile
-                ? t('idcard.profile.saving') || 'Saving...'
-                : t('idcard.profile.save') || 'Save Changes'}
+                ? t('idcard.profile.saving')
+                : t('idcard.profile.save')}
             />
             <AccessButton
               onClick={() => {
                 void handleLogout();
               }}
               disabled={isSavingProfile}
-              label={t('idcard.profile.logout') || 'Sign Out'}
+              label={t('idcard.profile.logout')}
             />
           </div>
         </div>

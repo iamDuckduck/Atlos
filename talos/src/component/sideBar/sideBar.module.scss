@@ -21,6 +21,7 @@ $transition-speed: 0.3s;
     --github: #24292f;
     --qq: #4397F7;
     --bsky: #007fff;
+    --twitter: #000000;
     --support: #{$primary-accent-6};
 }
 :root[data-theme='dark'] {
@@ -39,6 +40,7 @@ $transition-speed: 0.3s;
     --github: #{$primary-accent-4};
     --qq: #8ab8ec;
     --bsky: #66b2ff;
+    --twitter: #{$light-2};
     --support: #{$primary-accent-5};
 }
 
@@ -49,7 +51,7 @@ $transition-speed: 0.3s;
     top: 0;
     left: 0;
     height: 100%;
-    width: var(--sidebar-width, 300px);
+    width: var(--sidebar-width, 500px);
     z-index: 1000;
     pointer-events: none;
     opacity: 1;
@@ -57,12 +59,12 @@ $transition-speed: 0.3s;
         transform $transition-speed ease-in-out,
         opacity 0.2s ease-out;
 
-    transform: translateX(calc(-1 * var(--sidebar-width, 300px)));
+    transform: translateX(calc(-1 * var(--sidebar-width, 500px)));
 
     &.open {
         transform: translateX(0);
         > .sidebarToggle {
-            right: calc(var(--sidebar-width, 300px) - 75px);
+            right: calc(var(--sidebar-width, 500px) - 5rem);
             transition: 0.3s ease-in-out;
         }
     }
@@ -87,7 +89,7 @@ $transition-speed: 0.3s;
         color: $grey-1;
         backdrop-filter: blur(35px) brightness(120%);
 
-        box-shadow: 4px 0 8px rgba($black-0, 0.25);
+        box-shadow: 3px 0 4px rgba($black-0, 0.15);
         pointer-events: auto;
         transform: none;
         display: flex;
@@ -125,7 +127,7 @@ $transition-speed: 0.3s;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding-top: 1.5rem;
+            padding-top: var(--sidebar-id-card-padding-top, 1.5rem);
             margin-bottom: 0.5rem;
         }
         .copyright, .socialBar {
@@ -251,6 +253,23 @@ $transition-speed: 0.3s;
                         }
                     }
                 }
+                &[data-platform="X/Twitter"] {
+                    > svg {
+                        width: 0.92rem;
+                        height: 0.92rem;
+                    }
+                    &::after {
+                        content: "Twitter";
+                    }
+                    &:hover {
+                        svg {
+                            fill: var(--twitter);
+                        }
+                        &::after {
+                            color: var(--twitter)
+                        }
+                    }
+                }
                 &[data-platform="qq"] {
                     transform: translateX(-2px);
                     margin-right: 2px;
@@ -356,7 +375,7 @@ $transition-speed: 0.3s;
     .sidebarToggle {
         position: absolute;
         top: 0;
-        right: -$toggle-btn-size; /* Position button outside sidebar area */
+        right: -5.375rem; /* Position button outside sidebar area */
         width: $toggle-btn-size;
         height: $toggle-btn-size;
         background-color: transparent;
@@ -405,13 +424,25 @@ $transition-speed: 0.3s;
 
 .selectionBox {
     position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
     border: 1px solid var(--sidebar-box-sel-border);
     background-color: var(--sidebar-box-sel-bg);
     pointer-events: none;
     backdrop-filter: contrast(1.1) brightness(1.05);
     z-index: 10000;
     opacity: 1;
+    transform: translate3d(0, 0, 0);
     transition: opacity 0.25s ease-out;
+    will-change: transform, width, height, opacity;
+    contain: layout paint style;
+    &.hidden {
+        opacity: 0;
+        visibility: hidden;
+        transition: none;
+    }
     &.fadeOut {
         opacity: 0;
     }

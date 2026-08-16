@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useCallback, useMemo, useRef as useReactRef, useState } from 'react';
+import React, { lazy, Suspense, useCallback, useEffect, useMemo, useRef as useReactRef, useState } from 'react';
 import styles from './sideBar.module.scss';
 import drawerStyles from './triggerDrawer.module.scss';
 
@@ -17,13 +17,12 @@ import NpcIcon from '../../assets/images/category/npc.svg?react';
 import FacilityIcon from '../../assets/images/category/facility.svg?react';
 import ArchivesIcon from '../../assets/images/category/archives.svg?react';
 
-import Search from '../search/search';
+import SearchDesktop from '../search/search.desktop';
 import Drawer from '../drawer/drawer';
 import { Trigger, TriggerBar } from '../trigger/trigger';
 import MarkFilter from '../markFilter/markFilter';
 import { MarkFilterDragProvider } from '../markFilter/reorderContext';
 import MarkSelector from '../markSelector/markSelector';
-import Notice from '../notice/notice';
 import SupportModal from '../support/support';
 
 // Social media icons
@@ -31,16 +30,36 @@ import GithubIcon from '../../assets/images/UI/media/ghicon.svg?react';
 import DiscordIcon from '../../assets/images/UI/media/discordicon.svg?react';
 import QQIcon from '../../assets/images/UI/media/qqicon.svg?react';
 import BskyIcon from '../../assets/images/UI/media/bluesky.svg?react';
+import XIcon from '../../assets/images/UI/media/x.svg?react';
 
 import { DEFAULT_SUBCATEGORY_ORDER, MARKER_TYPE_TREE, REGION_TYPE_COUNT_MAP, type IMarkerType } from '@/data/marker';
+import { VERSION_NEW_FILTER_GROUPS, useVersionNewMarkerCounts } from '@/data/marker/versionNew';
 import useRegion from '@/store/region';
 import { BINDER_GROUPS_BY_SUB } from '@/data/marker/binder';
 import MarkBinder from '../markBinder/markBinder';
 import { useTranslateGame, useTranslateUI } from '@/locale';
-import { useSetSidebarOpen, useSidebarOpen, useSidebarWidth, useSetSidebarWidth, useIncrementLayoutVersion, useTriggerCluster, useTriggerBoundary, useTriggerlabelName, useSetTriggerCluster, useSetTriggerBoundary, useSetTriggerlabelName, useDesktopDrawerSnapIndex } from '@/store/uiPrefs';
+import {
+    SIDEBAR_MIN_WIDTH,
+    SIDEBAR_THREE_COLUMN_MIN_WIDTH,
+    clampSidebarWidth,
+    getSidebarMaxWidth,
+    useDesktopDrawerSnapIndex,
+    useIncrementLayoutVersion,
+    useSetSidebarOpen,
+    useSetSidebarWidth,
+    useSetTriggerBoundary,
+    useSetTriggerCluster,
+    useSetTriggerlabelName,
+    useSidebarOpen,
+    useSidebarWidth,
+    useTriggerBoundary,
+    useTriggerCluster,
+    useTriggerlabelName,
+} from '@/store/uiPrefs';
 import { useMultiRegionMarkerCount, useSearchString } from '@/store/marker';
 import { SelectionLayer } from './selectionLayer';
 import { computeBinderColumns } from './binderMasonry';
+import { useDevice } from '@/utils/device';
 
 //console.log('[MARKER]', MARKER_TYPE_TREE);
 
@@ -68,19 +87,20 @@ interface SideBarProps {
     visible?: boolean;
 }
 
-const MIN_WIDTH = 300;
-const MAX_WIDTH = 500;
-const WIDE_THRESHOLD = 400;
+const FOUR_COLUMN_THRESHOLD = 700;
 
 const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProps) => {
     const t = useTranslateUI();
     const tGame = useTranslateGame();
     const searchString = useSearchString();
+    const versionNewCounts = useVersionNewMarkerCounts();
     const isOpen = useSidebarOpen();
     const setIsOpen = useSetSidebarOpen();
     const sidebarWidth = useSidebarWidth();
     const setSidebarWidth = useSetSidebarWidth();
     const incrementLayoutVersion = useIncrementLayoutVersion();
+    const { width: viewportWidth } = useDevice();
+    const maxWidth = getSidebarMaxWidth(viewportWidth);
     // Persistent trigger states
     const trigCluster = useTriggerCluster();
     const trigBoundary = useTriggerBoundary();
@@ -95,16 +115,23 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
 
     const sidebarRef = React.useRef<HTMLDivElement>(null);
     const resizeStartX = useReactRef(0);
-    const resizeStartW = useReactRef(MIN_WIDTH);
+    const resizeStartW = useReactRef(SIDEBAR_MIN_WIDTH);
 
-    const clampWidth = (startW: number, dx: number) =>
-        Math.round(Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, startW + dx)));
+    const clampWidth = useCallback((startW: number, dx: number) =>
+        clampSidebarWidth(startW + dx, maxWidth), [maxWidth]);
 
     const setAppCssVar = (w: number, source?: HTMLElement | null) => {
         const ownerDocument = source?.ownerDocument ?? document;
         const el = ownerDocument.querySelector<HTMLElement>('.app');
         el?.style.setProperty('--sidebar-width', `${w}px`);
     };
+
+    useEffect(() => {
+        const clampedWidth = clampSidebarWidth(sidebarWidth, maxWidth);
+        if (clampedWidth !== sidebarWidth) {
+            setSidebarWidth(clampedWidth, maxWidth);
+        }
+    }, [maxWidth, setSidebarWidth, sidebarWidth]);
 
     const onResizeStart = useCallback((e: React.PointerEvent) => {
         if (!isOpen) return;
@@ -114,27 +141,27 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
         resizeStartX.current = e.clientX;
         resizeStartW.current = sidebarWidth;
         (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen, sidebarWidth]);
+    }, [isOpen, resizeStartW, resizeStartX, sidebarWidth]);
 
     const onResizeMove = useCallback((e: React.PointerEvent) => {
         if (!isResizing) return;
         const newW = clampWidth(resizeStartW.current, e.clientX - resizeStartX.current);
         setAppCssVar(newW, e.currentTarget as HTMLElement);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isResizing]);
+    }, [clampWidth, isResizing, resizeStartW, resizeStartX]);
 
     const onResizeEnd = useCallback((e: React.PointerEvent) => {
         if (!isResizing) return;
         setIsResizing(false);
         (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
         const newW = clampWidth(resizeStartW.current, e.clientX - resizeStartX.current);
-        setSidebarWidth(newW);
+        setSidebarWidth(newW, maxWidth);
         requestAnimationFrame(() => incrementLayoutVersion());
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isResizing, setSidebarWidth, incrementLayoutVersion]);
+    }, [clampWidth, incrementLayoutVersion, isResizing, maxWidth, resizeStartW, resizeStartX, setSidebarWidth]);
 
-    const isWide = sidebarWidth >= WIDE_THRESHOLD;
+    const filterColumns: 2 | 3 | 4 =
+        sidebarWidth >= FOUR_COLUMN_THRESHOLD ? 4 :
+        sidebarWidth >= SIDEBAR_THREE_COLUMN_MIN_WIDTH ? 3 :
+        2;
 
     const binderTypeKeys = useMemo(
         () => Object.values(BINDER_GROUPS_BY_SUB)
@@ -159,7 +186,6 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
         const typeDisplayName = String(tGame(`markerType.key.${typeKey}`) ?? '').toLowerCase();
         return typeKey.toLowerCase().includes(lowerSearch) || typeDisplayName.includes(lowerSearch);
     }, [lowerSearch, tGame]);
-
     const emptyCategories = useMemo(() => {
         const regionTypeCounts = REGION_TYPE_COUNT_MAP[currentRegionKey] ?? {};
         return new Set(
@@ -170,7 +196,6 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
             ),
         );
     }, [currentRegionKey]);
-
     useMemo(() => {
         if (!currentRegion) return null;
         return {
@@ -192,7 +217,12 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
     };
 
     return (
-        <div className={`${styles.sidebarContainer} ${isOpen ? styles.open : ''} ${!visible ? styles.hidden : ''}`}>
+        <div
+            className={`${styles.sidebarContainer} ${isOpen ? styles.open : ''} ${!visible ? styles.hidden : ''}`}
+            data-sidebar-layout="desktop"
+            aria-hidden={!visible}
+            inert={!visible}
+        >
             <button
                 className={`${styles.sidebarToggle} ${isOpen ? styles.open : ''} ${!visible ? styles.hidden : ''}`}
                 onClick={toggleSidebar}
@@ -215,14 +245,34 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                 <div className={styles.headIcon}>
                     <img
                         src={Icon}
-                        alt={String(t('sidebar.alt.supportedBy'))}
+                        alt={t('sidebar.alt.supportedBy')}
                         draggable={'false'}
                     />
                 </div>
-                <div className={styles.sidebarContent}>
-                    <Search />
+                <div className={styles.sidebarContent} data-sidescroll="true" data-sidebar-scroll="true">
+                    <SearchDesktop />
                     <div className={styles.filters}>
                         <MarkFilterDragProvider>
+                            {VERSION_NEW_FILTER_GROUPS.map((group) => (
+                                <MarkFilter
+                                    idKey={group.key}
+                                    title={t(group.titleKey)}
+                                    dataCategory="versionNew"
+                                    key={group.key}
+                                    columns={filterColumns}
+                                    initialEmpty={false}
+                                    variant="versionNew"
+                                    reorderable={false}
+                                >
+                                    {group.types.map((typeInfo) => (
+                                        <MarkSelector
+                                            key={typeInfo.key}
+                                            typeInfo={typeInfo}
+                                            countOverride={versionNewCounts[typeInfo.key]}
+                                        />
+                                    ))}
+                                </MarkFilter>
+                            ))}
                             {(
                                 DEFAULT_SUBCATEGORY_ORDER_LIST.filter(
                                     (k) => Object.prototype.hasOwnProperty.call(MARKER_TYPE_TREE, k),
@@ -237,7 +287,7 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                                     const types: IMarkerType[] = MARKER_TYPE_TREE[subCategory] ?? [];
                                     const CategoryIcon = CATEGORY_ICON_MAP[subCategory];
                                     const binderData = BINDER_GROUPS_BY_SUB[subCategory];
-                                    const showBinder = isWide && binderData;
+                                    const showBinder = filterColumns >= 3 && Boolean(binderData);
                                     const binderColumns = binderData
                                         ? computeBinderColumns(
                                             binderData.groups,
@@ -252,7 +302,7 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                             icon={CategoryIcon}
                             dataCategory={subCategory}
                             key={subCategory}
-                            wide={isWide}
+                            columns={filterColumns}
                             binderMode={!!showBinder}
                             initialEmpty={emptyCategories.has(subCategory)}
                         >
@@ -271,7 +321,10 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                                                         </div>
                                                     </div>
                                                     {binderData.remaining.length > 0 && (
-                                                        <div className={styles.remainingSection}>
+                                                        <div
+                                                            className={styles.remainingSection}
+                                                            style={{ gridTemplateColumns: `repeat(${filterColumns}, minmax(0, 1fr))` }}
+                                                        >
                                                             {binderData.remaining.map((typeInfo) => (
                                                                 <MarkSelector key={typeInfo.key} typeInfo={typeInfo} />
                                                             ))}
@@ -288,7 +341,6 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                                 })}
                         </MarkFilterDragProvider>
                     </div>
-                    <Notice />
                     <div className={styles.idCardContainer}>
                         <Suspense fallback={null}>
                             <IDCard />
@@ -329,7 +381,17 @@ const SideBarDesktop = ({ currentRegion, onToggle, visible = true }: SideBarProp
                         data-platform="bluesky"
                         aria-label="Bluesky"
                     >
-                    <BskyIcon />
+                        <BskyIcon />
+                    </a>
+                    <a
+                        href="https://x.com/OpenEndfieldMap"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.socialLink}
+                        data-platform="X/Twitter"
+                        aria-label="X/Twitter"
+                    >
+                        <XIcon />
                     </a>
                     <a
                         href="https://qm.qq.com/q/BVsCJgzBL2"

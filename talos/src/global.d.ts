@@ -2,10 +2,10 @@
 declare global {
     const __ASSETS_HOST: string;
     const __APP_VERSION__: string;
+    const __SEARCH_DOC_VERSIONS__: Readonly<Record<string, string>>;
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     interface Window {
-
+        __OEM_ACCEPT_LANGUAGE__?: string;
     }
 
     namespace NodeJS {

@@ -1,12 +1,14 @@
 import Modal from '@/component/modal/modal';
 import DiscordIcon from '@/assets/images/UI/media/discordicon.svg?react';
+import GitHubIcon from '@/assets/images/UI/media/ghicon.svg?react';
 import GoogleIcon from '@/assets/images/UI/media/google.svg?react';
 import LoginIcon from '@/assets/logos/login.svg?react';
 import RegisterIcon from '@/assets/logos/register.svg?react';
 import parse from 'html-react-parser';
 import { type FormEvent, type KeyboardEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslateUI } from '@/locale';
+import { useLocale, useTranslateUI } from '@/locale';
 import { useDevice } from '@/utils/device';
+import { docsLinks, linksTpl } from '@/utils/docsLink';
 import {
   OTP_COOLDOWN_SECONDS,
   canShowSendVerificationButton,
@@ -28,28 +30,27 @@ import {
   validateSendVerificationCode,
   validateSubmit,
 } from './authState';
+import type { OAuthProvider } from '../authFlow';
 import styles from './access.module.scss';
 
 interface AccessProps {
   open: boolean;
   setOpen: (open: boolean) => void;
+  onDismiss?: () => void;
   activeTab: AuthMode;
   setActiveTab: (mode: AuthMode) => void;
   resetToken?: string | null;
   resetEmail?: string;
   isSubmitting: boolean;
   authError: string | null;
-  handleDiscordAuthClick: () => Promise<void>;
-  handleGoogleAuthClick?: () => Promise<void>;
+  handleOAuthClick: (provider: OAuthProvider) => Promise<void>;
   onAutoSubmit?: (payload: { mode: AuthMode; values: AuthValues }) => void | Promise<void>;
   onRequestVerificationCode?: (payload: { email: string; mode: AuthMode }) => Promise<boolean>;
   onRequestPasswordReset?: (payload: { email: string }) => Promise<boolean>;
 }
 
-type OAuthPlatform = 'discord' | 'google';
-
 interface AccessButtonProps {
-  platform?: OAuthPlatform;
+  platform?: OAuthProvider;
   label: string;
   disabled?: boolean;
   onClick: () => void;
@@ -107,19 +108,20 @@ const createSubmitSignature = (payload: { mode: AuthMode; values: AuthValues }):
 const Access = ({
   open,
   setOpen,
+  onDismiss,
   activeTab,
   setActiveTab,
   resetToken,
   resetEmail = '',
   isSubmitting,
   authError,
-  handleDiscordAuthClick,
-  handleGoogleAuthClick,
+  handleOAuthClick,
   onAutoSubmit,
   onRequestVerificationCode,
   onRequestPasswordReset,
 }: AccessProps) => {
   const t = useTranslateUI();
+  const locale = useLocale();
   const { isMobile } = useDevice();
   const [emailValue, setEmailValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
@@ -128,7 +130,7 @@ const Access = ({
   const [fieldHintCodes, setFieldHintCodes] = useState<Partial<Record<AuthField, AuthHintCode>>>({});
   const [touchedFields, setTouchedFields] = useState<Record<AuthField, boolean>>(INITIAL_TOUCHED_FIELDS);
   const [otpCooldownSeconds, setOtpCooldownSeconds] = useState(0);
-  const [oauthPendingPlatform, setOauthPendingPlatform] = useState<OAuthPlatform | null>(null);
+  const [oauthPendingPlatform, setOauthPendingPlatform] = useState<OAuthProvider | null>(null);
   const [lastAutoSubmitSignature, setLastAutoSubmitSignature] = useState<string | null>(null);
 
   const isRegisterMode = activeTab === 'register';
@@ -137,6 +139,16 @@ const Access = ({
   const resetNoteText = isResetSubmitStage
     ? parse(t('idcard.auth.resetRequire'))
     : parse(t('idcard.auth.resetLink'));
+  const docLinks = useMemo(() => docsLinks(locale), [locale]);
+  const ackLinkText = useMemo(() => (
+    linksTpl(
+      t('idcard.auth.ackLink'),
+      {
+        privacy: docLinks.privacy,
+        tos: docLinks.tos,
+      },
+    )
+  ), [docLinks, t]);
 
   const authValues: AuthValues = {
     email: emailValue,
@@ -146,10 +158,10 @@ const Access = ({
   };
 
   const modalTitle = isResetMode
-    ? t('idcard.auth.passwordReset') || 'Password Reset'
+    ? t('idcard.auth.passwordReset')
     : isRegisterMode
-      ? t('idcard.auth.register') || 'Register'
-      : t('idcard.auth.login') || 'Login';
+      ? t('idcard.auth.register')
+      : t('idcard.auth.login');
 
   const modalIcon = isResetMode
     ? <LoginIcon />
@@ -195,7 +207,7 @@ const Access = ({
       return null;
     }
 
-    return t('idcard.auth.forgotPW') || 'Forgot password?';
+    return t('idcard.auth.forgotPW');
   }, [fieldHintCodes.password, isRegisterMode, isResetMode, t]);
 
   const setFieldCode = useCallback((field: AuthField, code: AuthHintCode | null) => {
@@ -262,8 +274,8 @@ const Access = ({
   const shouldShowPwdRegex = isRegisterMode && touchedFields.password && fieldHintCodes.password === 112;
   const shouldShowEmailRegex = isRegisterMode && touchedFields.email && fieldHintCodes.email === 105;
   const isRegexRemoved = !open || (!shouldShowPwdRegex && !shouldShowEmailRegex);
-  const emailRegexText = t('idcard.auth.emailRegex') || 'Disposable email addresses are not allowed';
-  const pwdRegexText = t('idcard.auth.pwdRegex') || '8–20 characters; at least one uppercase';
+  const emailRegexText = t('idcard.auth.emailRegex');
+  const pwdRegexText = t('idcard.auth.pwdRegex');
   const regexText = shouldShowEmailRegex ? emailRegexText : pwdRegexText;
 
   const shouldShowSendVerificationButton = canShowSendVerificationButton(activeTab, authValues);
@@ -623,43 +635,48 @@ const Access = ({
     setOtpCooldownSeconds(OTP_COOLDOWN_SECONDS);
   };
 
-  const resendTemplate = t('idcard.auth.resend') || 'Resend ({count})';
+  const resendTemplate = t('idcard.auth.resend');
   const sendButtonLabel = otpCooldownSeconds > 0
     ? resendTemplate.replace('{count}', String(otpCooldownSeconds))
     : isResetMode
-      ? t('idcard.auth.sendResetLink') || 'Reset'
-      : t('idcard.auth.send') || 'Send';
+      ? t('idcard.auth.sendResetLink')
+      : t('idcard.auth.send');
   const modalSize = isMobile ? 'full' : 'l';
 
-  const oauthLabelByPlatform: Record<OAuthPlatform, string> = {
+  const oauthLabelByPlatform: Record<OAuthProvider, string> = {
     discord: isRegisterMode
-      ? t('idcard.auth.dcRegis') || 'Continue with Discord'
-      : t('idcard.auth.dcLogin') || 'Sign in with Discord',
+      ? t('idcard.auth.dcRegis')
+      : t('idcard.auth.dcLogin'),
     google: isRegisterMode
-      ? t('idcard.auth.gooRegis') || 'Continue with Google'
-      : t('idcard.auth.gooLogin') || 'Sign in with Google',
+      ? t('idcard.auth.gooRegis')
+      : t('idcard.auth.gooLogin'),
+    github: isRegisterMode
+      ? t('idcard.auth.ghRegis')
+      : t('idcard.auth.ghLogin'),
   };
 
-  const getOauthButtonLabel = (platform: OAuthPlatform): string =>
+  const oauthMethods = [
+    { platform: 'google', icon: <GoogleIcon /> },
+    { platform: 'discord', icon: <DiscordIcon /> },
+    { platform: 'github', icon: <GitHubIcon /> },
+  ] satisfies { platform: OAuthProvider; icon: ReactNode }[];
+
+  const getOauthButtonLabel = (platform: OAuthProvider): string =>
     oauthPendingPlatform === platform
-      ? t('idcard.auth.connecting') || 'Connecting...'
+      ? t('idcard.auth.connecting')
       : oauthLabelByPlatform[platform];
 
-  const isOauthButtonDisabled = (platform: OAuthPlatform): boolean =>
+  const isOauthButtonDisabled = (platform: OAuthProvider): boolean =>
     isSubmitting || (oauthPendingPlatform !== null && oauthPendingPlatform !== platform);
 
   const handleOAuthMethodClick = async (
-    platform: OAuthPlatform,
-    handler?: () => Promise<void>,
+    platform: OAuthProvider,
   ) => {
-    if (!handler) {
-      return;
-    }
     if (isOauthButtonDisabled(platform)) {
       return;
     }
     setOauthPendingPlatform(platform);
-    await handler();
+    await handleOAuthClick(platform);
   };
 
   return (
@@ -668,7 +685,10 @@ const Access = ({
       size={modalSize}
       title={modalTitle}
       icon={modalIcon}
-      onClose={() => setOpen(false)}
+      onClose={() => {
+        onDismiss?.();
+        setOpen(false);
+      }}
       onChange={setOpen}
       iconScale={0.8}
     >
@@ -676,7 +696,7 @@ const Access = ({
           <form className={styles.emailAuthForm} onSubmit={handleSubmit} onKeyDown={handleFormKeyDown} noValidate>
             <div className={styles.inputRow}>
               <label htmlFor="access-email" className={styles.prtsIoLabel}>
-                <span className={styles.prtsIoItem}>{t('idcard.auth.email') || 'EMAIL:'}</span>
+                <span className={styles.prtsIoItem}>{t('idcard.auth.email')}</span>
                 {emailHintText ? (
                   <span className={styles.prtsHint} data-type={emailHintType ?? 'err'} data-text={emailHintText}>
                     {emailHintText}
@@ -721,7 +741,7 @@ const Access = ({
             >
               <label htmlFor="access-password" className={styles.prtsIoLabel}>
                 <span className={styles.prtsIoItem}>
-                  {(isResetMode ? t('idcard.auth.newPassword') : t('idcard.auth.password')) || 'PASSWORD:'}
+                  {(isResetMode ? t('idcard.auth.newPassword') : t('idcard.auth.password'))}
                 </span>
                 {passwordHintText ? (
                   <span className={styles.prtsHint} data-type={passwordHintType ?? 'err'} data-text={passwordHintText}>
@@ -764,7 +784,7 @@ const Access = ({
                 aria-hidden="false"
               >
                 <label htmlFor="access-repeat-password" className={styles.prtsIoLabel}>
-                  <span className={styles.prtsIoItem}>{t('idcard.auth.repeatPassword') || 'REPEAT:'}</span>
+                  <span className={styles.prtsIoItem}>{t('idcard.auth.repeatPassword')}</span>
                   {repeatPasswordHintText ? (
                     <span className={styles.prtsHint} data-type={repeatPasswordHintType ?? 'err'} data-text={repeatPasswordHintText}>
                       {repeatPasswordHintText}
@@ -794,7 +814,7 @@ const Access = ({
               aria-hidden={!isRegisterMode}
             >
               <label htmlFor="access-verification-code" className={styles.prtsIoLabel}>
-                <span className={styles.prtsIoItem}>{t('idcard.auth.verification') || 'CODE:'}</span>
+                <span className={styles.prtsIoItem}>{t('idcard.auth.verification')}</span>
                 {verificationHintText ? (
                   <span className={styles.prtsHint} data-type={verificationHintType ?? 'err'} data-text={verificationHintText}>
                     {verificationHintText}
@@ -848,31 +868,24 @@ const Access = ({
               <p className={styles.resetNote}>{resetNoteText}</p>
             ) : (
             <div className={styles.oauthMethods}>
-              <AccessButton
-                platform="discord"
-                disabled={isOauthButtonDisabled('discord')}
-                onClick={() => {
-                  void handleOAuthMethodClick('discord', handleDiscordAuthClick);
-                }}
-                label={getOauthButtonLabel('discord')}
-              >
-                <DiscordIcon />
-              </AccessButton>
-              <AccessButton
-                platform="google"
-                disabled={isOauthButtonDisabled('google') || !handleGoogleAuthClick}
-                onClick={() => {
-                  void handleOAuthMethodClick('google', handleGoogleAuthClick);
-                }}
-                label={getOauthButtonLabel('google')}
-              >
-                <GoogleIcon />
-              </AccessButton>
+              {oauthMethods.map(({ platform, icon }) => (
+                <AccessButton
+                  key={platform}
+                  platform={platform}
+                  disabled={isOauthButtonDisabled(platform)}
+                  onClick={() => {
+                    void handleOAuthMethodClick(platform);
+                  }}
+                  label={getOauthButtonLabel(platform)}
+                >
+                  {icon}
+                </AccessButton>
+              ))}
             </div>
             )}
 
           <p className={styles.authSwitchLine}>
-            <span>{isResetMode ? (t('idcard.auth.backTo') || 'Back to') : (isRegisterMode
+            <span>{isResetMode ? (t('idcard.auth.backTo')) : (isRegisterMode
               ? t('idcard.auth.switchToLoginPrefix')
               : t('idcard.auth.switchToRegisterPrefix'))}</span>
             <button
@@ -881,7 +894,7 @@ const Access = ({
               onClick={() => handleModeSwitch(isResetMode ? 'login' : (isRegisterMode ? 'login' : 'register'))}
             >
               {isResetMode
-                ? (t('idcard.auth.signIn') || 'Sign in')
+                ? (t('idcard.auth.signIn'))
                 : isRegisterMode
                   ? t('idcard.auth.switchToLoginAction')
                   : t('idcard.auth.switchToRegisterAction')}
@@ -889,7 +902,7 @@ const Access = ({
           </p>
           <div className={styles.acknowledgement}>
             <span>{t('idcard.auth.ack')}</span>
-            <span>{parse(t('idcard.auth.ackLink'))}</span>
+            <span>{ackLinkText}</span>
           </div>
         </div>
       </div>

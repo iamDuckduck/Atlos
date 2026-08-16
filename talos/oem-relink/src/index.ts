@@ -1,7 +1,21 @@
+import { SEO_POINT_PREVIEWS, type SeoPointPreview, type SeoPointPreviewLocale } from './seo-preview.generated';
+
 const TARGET_CN_ORIGIN = 'https://opendfieldmap.cn';
 const TARGET_ORG_ORIGIN = 'https://opendfieldmap.org';
+const TARGET_CN_CDN_ORIGIN = 'https://cdn.opendfieldmap.cn';
+const TARGET_ORG_CDN_ORIGIN = 'https://cdn.opendfieldmap.org';
+const CDN_PREFIXES = {
+	cn: {
+		prod: '/_dev/endfield/atlos',
+		beta: '/_beta/endfield/atlos',
+	},
+	org: {
+		prod: '/_dev/endfield/atlos',
+		beta: '/_beta/endfield/atlos',
+	},
+} as const;
 const ROOT_SHORT_DOMAIN = 'oem.re';
-const WORKER_VERSION = '20260408.02';
+const WORKER_VERSION = '20260627.01';
 const PREVIEW_TITLE = 'Open Endfield Map';
 const PREVIEW_DESCRIPTION =
 	'Open Endfield Map is an open-source interactive map for Arknights: Endfield.';
@@ -17,6 +31,11 @@ const SOCIAL_PREVIEW_BOT_KEYWORDS: string[] = [
 type CountrySource = {
 	byHeader?: string;
 	byCfCountry?: string;
+};
+
+type ResolvedSeoPointPreview = SeoPointPreview & {
+	image: string;
+	url: string;
 };
 
 type RedirectMode = 'geo' | 'org' | 'cn';
@@ -200,11 +219,64 @@ const shouldServeSocialPreview = (userAgent: string, forcePreview: boolean): boo
 const buildPreviewImageUrl = (targetOrigin: string): string =>
 	new URL('/og_preview.jpg', targetOrigin).toString();
 
-const buildSocialPreviewHtml = (redirectUrl: string, targetOrigin: string): string => {
+const POINT_TOKEN_PATTERN = /^[0-9a-zA-Z]{7}$/;
+
+const getPointPreviewToken = (requestUrl: URL): string | null => {
+	const queryToken = requestUrl.searchParams.get('x')?.trim();
+	if (queryToken && POINT_TOKEN_PATTERN.test(queryToken)) return queryToken;
+	const pathToken = requestUrl.pathname.replace(/^\/+|\/+$/g, '');
+	if (pathToken && POINT_TOKEN_PATTERN.test(pathToken)) return pathToken;
+	return null;
+};
+
+const resolveTargetKind = (targetOrigin: string): 'cn' | 'org' => {
+	const targetUrl = new URL(targetOrigin);
+	return targetUrl.hostname.endsWith('opendfieldmap.cn') ? 'cn' : 'org';
+};
+
+const resolveTargetChannel = (targetOrigin: string): 'beta' | 'prod' => {
+	const targetUrl = new URL(targetOrigin);
+	return targetUrl.hostname.startsWith('beta.') ? 'beta' : 'prod';
+};
+
+const resolvePreviewLocale = (targetKind: 'cn' | 'org'): SeoPointPreviewLocale =>
+	targetKind === 'cn' ? 'zh' : 'en';
+
+const buildPointCanonicalUrl = (targetOrigin: string, token: string): string =>
+	new URL(`/${encodeURIComponent(token)}/`, targetOrigin).toString();
+
+const buildPointOgImageUrl = (targetKind: 'cn' | 'org', channel: 'beta' | 'prod', token: string): string => {
+	const cdnOrigin = targetKind === 'cn' ? TARGET_CN_CDN_ORIGIN : TARGET_ORG_CDN_ORIGIN;
+	const variant = targetKind === 'cn' ? 'oss' : 'r2';
+	const prefix = CDN_PREFIXES[targetKind][channel];
+	return `${cdnOrigin}${prefix}/seo/og/${variant}/${encodeURIComponent(token)}.jpg`;
+};
+
+const resolvePointPreviewForTarget = (requestUrl: URL, targetOrigin: string): ResolvedSeoPointPreview | null => {
+	const token = getPointPreviewToken(requestUrl);
+	if (!token) return null;
+	const targetKind = resolveTargetKind(targetOrigin);
+	const channel = resolveTargetChannel(targetOrigin);
+	const locale = resolvePreviewLocale(targetKind);
+	const preview = SEO_POINT_PREVIEWS[locale][token] ?? null;
+	if (!preview) return null;
+	return {
+		...preview,
+		url: buildPointCanonicalUrl(targetOrigin, token),
+		image: buildPointOgImageUrl(targetKind, channel, token),
+	};
+};
+
+const buildSocialPreviewHtml = (redirectUrl: string, targetOrigin: string, pointPreview?: ResolvedSeoPointPreview | null): string => {
 	const escapedRedirectUrl = escapeHtml(redirectUrl);
-	const escapedTitle = escapeHtml(PREVIEW_TITLE);
-	const escapedDescription = escapeHtml(PREVIEW_DESCRIPTION);
-	const previewImage = escapeHtml(buildPreviewImageUrl(targetOrigin));
+	const previewUrl = pointPreview?.url || redirectUrl;
+	const previewTitle = pointPreview?.title || PREVIEW_TITLE;
+	const previewDescription = pointPreview?.description || PREVIEW_DESCRIPTION;
+	const previewImageUrl = pointPreview?.image || buildPreviewImageUrl(targetOrigin);
+	const escapedPreviewUrl = escapeHtml(previewUrl);
+	const escapedTitle = escapeHtml(previewTitle);
+	const escapedDescription = escapeHtml(previewDescription);
+	const previewImage = escapeHtml(previewImageUrl);
 
 	return `<!doctype html>
         <html lang="en">
@@ -217,7 +289,7 @@ const buildSocialPreviewHtml = (redirectUrl: string, targetOrigin: string): stri
         <meta property="og:type" content="website" />
         <meta property="og:title" content="${escapedTitle}" />
         <meta property="og:description" content="${escapedDescription}" />
-        <meta property="og:url" content="${escapedRedirectUrl}" />
+        <meta property="og:url" content="${escapedPreviewUrl}" />
         <meta property="og:image" content="${previewImage}" />
 
         <meta name="twitter:card" content="summary_large_image" />
@@ -386,7 +458,8 @@ export default {
 		const hostReason = `host=${hostDecision.key}; ${target.reason}`;
 
 		if (isSocialPreview) {
-			return new Response(buildSocialPreviewHtml(redirectUrl, target.origin), {
+			const pointPreview = resolvePointPreviewForTarget(requestUrl, target.origin);
+			return new Response(buildSocialPreviewHtml(redirectUrl, target.origin, pointPreview), {
 				status: 200,
 				headers: {
 					'content-type': 'text/html; charset=utf-8',
@@ -401,6 +474,7 @@ export default {
 					'x-oem-relink-host-key': hostDecision.key,
 					'x-oem-relink-mode': mode,
 					'x-oem-relink-social-preview': '1',
+					'x-oem-relink-point-preview': pointPreview ? '1' : '0',
 				},
 			});
 		}

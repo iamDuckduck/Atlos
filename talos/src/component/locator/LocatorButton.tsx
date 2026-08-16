@@ -6,6 +6,7 @@ import { useTranslateUI } from '@/locale';
 import { getEFBindingStatus } from '@/utils/endfield/backendClient';
 import { getCachedBinding, setCachedBinding } from '@/utils/backendCache';
 import { SubregionSwitch } from '@/component/regSwitch/regSwitch';
+import PopoverTooltip from '@/component/popover/popover';
 import regSwitchStyles from '@/component/regSwitch/regSwitch.module.scss';
 import styles from './Locator.module.scss';
 import LocateCloseIcon from '@/assets/images/UI/locateclose.svg?react';
@@ -30,12 +31,13 @@ const resolveIcon = (viewMode: LocatorViewMode): React.FC =>
 
 interface LocatorButtonProps {
     variant?: LocatorButtonVariant;
+    isSidebarOpen?: boolean;
 }
 
 const LocationBinding = lazy(() => import('./LocationBinding'));
 const LocationConfig = lazy(() => import('./LocationConfig'));
 
-const LocatorButton: React.FC<LocatorButtonProps> = ({ variant = 'desktop' }) => {
+const LocatorButton: React.FC<LocatorButtonProps> = ({ variant = 'desktop', isSidebarOpen = false }) => {
     const t = useTranslateUI();
     const sessionUser = useAuthStore((state) => state.sessionUser);
     const uid = sessionUser?.uid;
@@ -231,7 +233,7 @@ const LocatorButton: React.FC<LocatorButtonProps> = ({ variant = 'desktop' }) =>
                         className={styles.mobileLocatorButton}
                         data-active={viewMode !== 'off'}
                         onClick={handleMobileClick}
-                        aria-label={t('locator.title') || 'Locator'}
+                        aria-label={t('locator.title')}
                     >
                         <Icon />
                     </button>
@@ -243,7 +245,7 @@ const LocatorButton: React.FC<LocatorButtonProps> = ({ variant = 'desktop' }) =>
                             collapseMobileShell();
                             setConfigOpen(true);
                         }}
-                        aria-label={t('locator.config.title') || 'Tracking Config'}
+                        aria-label={t('locator.config.title')}
                         tabIndex={mobileExpanded ? 0 : -1}
                     >
                         <ConfigIcon />
@@ -293,41 +295,47 @@ const LocatorButton: React.FC<LocatorButtonProps> = ({ variant = 'desktop' }) =>
     return (
         <>
             <div className={classNames(regSwitchStyles.regswitch, styles.locatorSwitch)}>
-                <div
-                    className={classNames(
-                        regSwitchStyles.regItem,
-                        styles.locatorButton,
-                        viewMode !== 'off' && regSwitchStyles.selected,
-                    )}
-                    data-guide="locator-button"
-                    onClick={handleClick}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={t('locator.title') || 'Locator'}
-                    onKeyDown={(event) => {
-                        if (event.key !== 'Enter' && event.key !== ' ') return;
-                        event.preventDefault();
-                        handleClick();
-                    }}
+                <PopoverTooltip
+                    content={t('mapControls.locationTracking')}
+                    placement="left"
+                    disabled={!isSidebarOpen}
                 >
-                    <div className={regSwitchStyles.icon}>
-                        <Icon />
+                    <div
+                        className={classNames(
+                            regSwitchStyles.regItem,
+                            styles.locatorButton,
+                            viewMode !== 'off' && regSwitchStyles.selected,
+                        )}
+                        data-guide="locator-button"
+                        onClick={handleClick}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={t('mapControls.locationTracking')}
+                        onKeyDown={(event) => {
+                            if (event.key !== 'Enter' && event.key !== ' ') return;
+                            event.preventDefault();
+                            handleClick();
+                        }}
+                    >
+                        <div className={regSwitchStyles.icon}>
+                            <Icon />
+                        </div>
+                        {bound && (
+                            <SubregionSwitch
+                                showIndicator={false}
+                                items={[
+                                    {
+                                        key: 'binding',
+                                        icon: ConfigIcon,
+                                        tooltip: t('locator.config.title'),
+                                        ariaLabel: t('locator.config.title'),
+                                        onClick: () => setConfigOpen(true),
+                                    },
+                                ]}
+                            />
+                        )}
                     </div>
-                    {bound && (
-                        <SubregionSwitch
-                            showIndicator={false}
-                            items={[
-                                {
-                                    key: 'binding',
-                                    icon: ConfigIcon,
-                                    tooltip: t('locator.config.title'),
-                                    ariaLabel: t('locator.config.title'),
-                                    onClick: () => setConfigOpen(true),
-                                },
-                            ]}
-                        />
-                    )}
-                </div>
+                </PopoverTooltip>
             </div>
             {bindingMounted && (
                 <Suspense fallback={null}>

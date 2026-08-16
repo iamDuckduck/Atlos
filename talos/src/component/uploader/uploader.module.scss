@@ -3,11 +3,13 @@
 
 :root, :root[data-theme='light'] {
     --uploader-placeholder: #{$grey-1};
+    --uploader-pending-holder: #{$light-1};
     --uploader-image-border: #{$light-2};
 }
 
 :root[data-theme='dark'] {
     --uploader-placeholder: #{$grey-1};
+    --uploader-pending-holder: #{$light-1};
     --uploader-image-border: #{$light-2};
 }
 
@@ -24,6 +26,8 @@
         0 0 4px 0.5px rgba($black-0, 0.6),
         0 0 4px 2px rgba($light-2, 0.6) inset;
     overflow: hidden;
+    overscroll-behavior-y: auto;
+    touch-action: pan-y;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -123,10 +127,12 @@
         display: grid;
         grid-template-columns: minmax(3rem, 24%) 1fr minmax(3rem, 24%);
         pointer-events: auto;
+        touch-action: pan-y;
+        overscroll-behavior-y: auto;
         cursor: pointer;
         opacity: 0;
         transition: opacity 0.2s ease;
-        filter: drop-shadow(0px 0px 3px rgba($black-0, 0.5));
+        filter: drop-shadow(0 0 3px rgba($black-0, 0.5));
 
         &::before,
         &::after {
@@ -159,15 +165,53 @@
         }
     }
 
+    .previewShortActions {
+        --short-action-content-opacity: 0;
+        --short-action-disabled-bg: #{rgba($white-0, 0)};
+        --short-action-disabled-content-opacity: 0;
+        --short-action-bg: #{rgba($white-0, 0)};
+        --short-action-blur: 0px;
+        --short-action-shadow: #{0 0 0 rgba($black-0, 0)};
+
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 4;
+        visibility: hidden;
+        pointer-events: none;
+        transition: visibility 0s linear 0.2s;
+
+        button {
+            transform: translateY(-2px);
+        }
+    }
+
     &:hover .carouselLayer {
         opacity: 1;
     }
 
+    &:hover .previewShortActions,
+    &:focus-within .previewShortActions {
+        --short-action-content-opacity: 1;
+        --short-action-disabled-bg: #{rgba($white-0, 0.1)};
+        --short-action-disabled-content-opacity: 0.42;
+        --short-action-bg: var(--actionbtn-bg);
+        --short-action-blur: 4px;
+        --short-action-shadow: #{0 0 4px rgba($black-0, 0.4)};
+
+        visibility: visible;
+        pointer-events: auto;
+        transition-delay: 0s;
+
+        button {
+            transform: translateY(0);
+        }
+    }
+
     .noImage {
-        position: relative;
         z-index: 2;
         color: var(--uploader-placeholder);
-        font-family: 'Novecento Demibold','Novecento Vietnamese DemiBold', 'Novecento Cyrillic DemiBold', 'FedraSansPro Bold', 'UD_ShinGo DemiBold', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
+        font-family: 'Novecento Demibold','Novecento Vietnamese DemiBold', 'Novecento Cyrillic DemiBold', 'Fedra Sans Pro', 'UD_ShinGo DemiBold', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
         font-weight: 700;
         font-size: 0.875rem;
         max-width: 92%;
@@ -185,8 +229,8 @@
 
         .communityRule {
             margin-top: 4px;
-            font-family: 'FedraSansPro Normal', HMSans, 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
-            font-size: 13px;
+            font-family: 'Fedra Sans Pro', HMSans, 'UD_ShinGo Regular', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
+            font-size: 0.8125rem;
             letter-spacing: -0.2px;
             font-weight: 500;
             text-align: center;
@@ -219,6 +263,18 @@
     }
 }
 
+.previewShortActionRecallIcon {
+    display: inline-flex;
+    transform: rotate(90deg);
+}
+
+.pointImage.pending > img + .noImage, .carouselLayer + .noImage, .previewShortActions + .noImage {
+    position: absolute;
+    color: var(--uploader-pending-holder);
+    mix-blend-mode: luminosity;
+    text-shadow: 0 0 3px $black-0;
+}
+
 .imageInput {
     display: none;
 }
@@ -226,8 +282,7 @@
 .uploadHint {
     color: var(--uploader-placeholder);
     font-family: Raleway, 'UD_ShinGo Regular', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
-    font-variant-numeric: lining-nums;
-    font-size: 14px;
+    font-size: .875rem;
     letter-spacing: -0.5px;
     text-transform: uppercase;
     text-align: center;

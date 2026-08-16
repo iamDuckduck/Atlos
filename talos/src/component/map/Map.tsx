@@ -7,6 +7,7 @@ import { useLabel } from './useLabel';
 import { useLink } from './useLink';
 import { UsePreview } from './usePreview';
 import { DEFAULT_REGION, REGION_DICT } from '@/data/map';
+import { isMapOverdragged, toMapBounds } from './mapOverdrag';
 
 interface MapProps {
     onMapReady?: (mapInstance: L.Map) => void;
@@ -26,7 +27,9 @@ const Map: React.FC<MapProps> = ({ onMapReady }) => {
         }
     }, [map, onMapReady]);
 
-    const maxZoom = (currentRegion ? REGION_DICT[currentRegion]?.maxZoom : undefined) ?? REGION_DICT[DEFAULT_REGION].maxZoom;
+    const maxZoom =
+        (currentRegion ? REGION_DICT[currentRegion]?.maxZoom : undefined) ??
+        REGION_DICT[DEFAULT_REGION].maxZoom;
     useLabel(map, currentRegion, maxZoom);
     const { linkTooltipElement } = useLink(map, currentRegion, maxZoom);
     const { PreviewElement } = UsePreview(map);
@@ -34,25 +37,16 @@ const Map: React.FC<MapProps> = ({ onMapReady }) => {
     useEffect(() => {
         if (!map) return;
 
-        const update = () => {
-            rafIdRef.current = null;
-            const maxBounds = map.options.maxBounds;
-            if (!maxBounds) return;
-                        const max =
-                                maxBounds instanceof L.LatLngBounds
-                                        ? maxBounds
-                                        : Array.isArray(maxBounds) && maxBounds.length === 2
-                                            ? L.latLngBounds(maxBounds[0], maxBounds[1])
-                                            : null;
-                        if (!max) return;
-            const view = map.getBounds();
-
-            const sw = view.getSouthWest();
-            const ne = view.getNorthEast();
-            const over = !(max.contains(sw) && max.contains(ne));
+        const setOverdrag = (over: boolean) => {
             if (over === isOverdragRef.current) return;
             isOverdragRef.current = over;
             setIsOverdrag(over);
+        };
+
+        const update = () => {
+            rafIdRef.current = null;
+            const max = toMapBounds(map.options.maxBounds);
+            setOverdrag(max ? isMapOverdragged(map, max) : false);
         };
 
         const onDrag = () => {
@@ -61,12 +55,15 @@ const Map: React.FC<MapProps> = ({ onMapReady }) => {
         };
 
         const clear = () => {
-            if (!isOverdragRef.current) return;
-            isOverdragRef.current = false;
-            setIsOverdrag(false);
+            if (rafIdRef.current !== null) {
+                cancelAnimationFrame(rafIdRef.current);
+                rafIdRef.current = null;
+            }
+            setOverdrag(false);
         };
 
         map.on('drag', onDrag);
+        map.on('move', onDrag);
         map.on('dragend', clear);
         map.on('zoomstart', clear);
         map.on('movestart', clear);
@@ -74,6 +71,7 @@ const Map: React.FC<MapProps> = ({ onMapReady }) => {
 
         return () => {
             map.off('drag', onDrag);
+            map.off('move', onDrag);
             map.off('dragend', clear);
             map.off('zoomstart', clear);
             map.off('movestart', clear);

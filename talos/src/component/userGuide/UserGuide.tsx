@@ -15,25 +15,30 @@ import {
 import {
     useUserGuideVersion,
     useSetUserGuideVersion,
+    useUserGuideCompletedVersion,
+    useSetUserGuideCompletedVersion,
     useUserGuideStepCompleted,
     useSetUserGuideStepCompleted,
     useSetUserGuideStepCompletedBulk,
     useReplaceUserGuideStepCompleted,
+    CURRENT_USER_GUIDE_VERSION,
 } from '@/store/userGuide';
 import { GuideSpotlight } from './spotlight/spotlight';
 import { useDesktopGuideSteps } from './procedure/steps.desktop';
 import { useMobileGuideSteps } from './procedure/steps.mobile';
-import { useDevice } from '@/utils/device';
-
-const CURRENT_GUIDE_VERSION = '1.0.0';
+import { DEFAULT_REGION } from '@/data/map';
+import { useAppViewport, useDevice } from '@/utils/device';
+import useRegion from '@/store/region';
 
 interface UserGuideProps {
     map?: L.Map;
+    visible?: boolean;
     onReady?: () => void;
 }
 
-const UserGuide = ({ map, onReady }: UserGuideProps) => {
+const UserGuide = ({ map, visible = true, onReady }: UserGuideProps) => {
     const { isMobile } = useDevice();
+    const { width: viewportWidth, height: viewportHeight } = useAppViewport();
     const initialGuideDeviceRef = useRef<'mobile' | 'desktop'>(isMobile ? 'mobile' : 'desktop');
     const isUserGuideOpen = useIsUserGuideOpen();
     const setIsUserGuideOpen = useSetIsUserGuideOpen();
@@ -44,10 +49,20 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
     const setMobileDrawerSnapIndex = useSetMobileDrawerSnapIndex();
     const userGuideVersion = useUserGuideVersion();
     const setUserGuideVersion = useSetUserGuideVersion();
+    const userGuideCompletedVersion = useUserGuideCompletedVersion();
+    const setUserGuideCompletedVersion = useSetUserGuideCompletedVersion();
     const stepCompleted = useUserGuideStepCompleted();
     const setUserGuideStepCompleted = useSetUserGuideStepCompleted();
     const setUserGuideStepCompletedBulk = useSetUserGuideStepCompletedBulk();
     const replaceUserGuideStepCompleted = useReplaceUserGuideStepCompleted();
+
+    useEffect(() => {
+        if (!isUserGuideOpen) return;
+        const regionState = useRegion.getState();
+        if (regionState.currentRegionKey !== DEFAULT_REGION) {
+            regionState.setCurrentRegion(DEFAULT_REGION);
+        }
+    }, [isUserGuideOpen]);
 
     // Load steps based on device type
     const desktopSteps = useDesktopGuideSteps(map);
@@ -70,12 +85,12 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
 
     const isElementInViewport = useCallback((el: HTMLElement) => {
         const rect = el.getBoundingClientRect();
-        const vw = window.innerWidth || 0;
-        const vh = window.innerHeight || 0;
+        const vw = viewportWidth || 0;
+        const vh = viewportHeight || 0;
         const isVisible = rect.width > 0 && rect.height > 0;
         const inView = rect.bottom > 0 && rect.right > 0 && rect.top < vh && rect.left < vw;
         return { rect, isVisible, inView, vw, vh };
-    }, []);
+    }, [viewportHeight, viewportWidth]);
 
     // Track i18n loading status
     const [i18nReady, setI18nReady] = useState(false);
@@ -122,19 +137,25 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
 
     // Initialize/upgrade guide state.
     // - On version bump: reset all steps to incomplete and open guide.
-    // - Otherwise: ensure missing step keys default to incomplete.
-    // - Auto-open guide until all steps are completed.
+    // - Completion is version-wide, so changing responsive layouts cannot reopen it.
+    // - Otherwise: ensure missing step keys default to incomplete and resume progress.
     useEffect(() => {
-        if (!i18nReady) return;
+        if (!i18nReady || !visible) return;
 
-        if (userGuideVersion !== CURRENT_GUIDE_VERSION) {
+        if (userGuideVersion !== CURRENT_USER_GUIDE_VERSION) {
             // Atomic reset to avoid race that can cause STEP-0 to be treated as completed.
             replaceUserGuideStepCompleted(buildAllStepsCompletionMap(false));
-            setUserGuideVersion(CURRENT_GUIDE_VERSION);
+            setUserGuideVersion(CURRENT_USER_GUIDE_VERSION);
+            setUserGuideCompletedVersion('');
             didAutoOpenRef.current = true;
             wasOpenRef.current = true; // Mark as already opened
             setStepIndex(0);
             setIsUserGuideOpen(true);
+            notifyReady();
+            return;
+        }
+
+        if (userGuideCompletedVersion === CURRENT_USER_GUIDE_VERSION) {
             notifyReady();
             return;
         }
@@ -148,8 +169,7 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
             setUserGuideStepCompletedBulk(missingUpdates);
         }
 
-        const hasIncomplete = steps.some((s) => stepCompleted[s.id] !== true);
-        if (!didAutoOpenRef.current && deviceMatchesInitialGuide && hasIncomplete) {
+        if (!didAutoOpenRef.current && deviceMatchesInitialGuide) {
             didAutoOpenRef.current = true;
             wasOpenRef.current = true; // Mark as already opened to prevent the second effect from resetting stepIndex
             const resumeIndex = firstIncompleteIndex();
@@ -160,10 +180,12 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
     }, [
         i18nReady,
         userGuideVersion,
+        userGuideCompletedVersion,
         steps,
         stepCompleted,
         setIsUserGuideOpen,
         setUserGuideVersion,
+        setUserGuideCompletedVersion,
         setUserGuideStepCompleted,
         setUserGuideStepCompletedBulk,
         replaceUserGuideStepCompleted,
@@ -171,16 +193,19 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
         firstIncompleteIndex,
         notifyReady,
         deviceMatchesInitialGuide,
+        visible,
     ]);
 
     // Custom spotlight tracking
     const [currentTarget, setCurrentTarget] = useState<Element | null>(null);
 
     useEffect(() => {
-        if (!isUserGuideOpen) {
+        if (!visible || !isUserGuideOpen) {
             setCurrentTarget(null);
-            setStepIndex(0);
-            wasOpenRef.current = false;
+            if (!isUserGuideOpen) {
+                setStepIndex(0);
+                wasOpenRef.current = false;
+            }
             return;
         }
 
@@ -244,7 +269,7 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
         return () => {
             cancelled = true;
         };
-    }, [isUserGuideOpen, stepIndex, steps, firstIncompleteIndex, isElementInViewport]);
+    }, [visible, isUserGuideOpen, stepIndex, steps, firstIncompleteIndex, isElementInViewport]);
 
     const handleJoyrideCallback = useCallback(
         (data: CallBackProps) => {
@@ -255,6 +280,7 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
                 // Reset transition state
                 isTransitioningRef.current = false;
                 
+                setUserGuideCompletedVersion(CURRENT_USER_GUIDE_VERSION);
                 replaceUserGuideStepCompleted(buildAllStepsCompletionMap(true));
                 setForceDetailOpen(false);
                 setForceRegionSubOpen(false);
@@ -373,6 +399,7 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
             setMobileDrawerSnapIndex,
             setIsUserGuideOpen,
             setUserGuideStepCompleted,
+            setUserGuideCompletedVersion,
             replaceUserGuideStepCompleted,
             buildAllStepsCompletionMap,
         ],
@@ -381,7 +408,7 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
     return (
         <>
             <GuideSpotlight
-                active={isUserGuideOpen}
+                active={isUserGuideOpen && visible}
                 getCurrentTarget={() => currentTarget}
                 padding={10}
                 onAdvance={() => {
@@ -393,7 +420,7 @@ const UserGuide = ({ map, onReady }: UserGuideProps) => {
             <Joyride
                 key={joyrideKey}
                 steps={steps}
-                run={isUserGuideOpen && i18nReady}
+                run={isUserGuideOpen && i18nReady && visible}
                 stepIndex={stepIndex}
                 continuous={true}
                 debug={false}

@@ -128,24 +128,82 @@ const json = (data: unknown, status = 200, origin = '*'): Response =>
     },
   });
 
-const isSearchDocBaseArray = (value: unknown): value is Array<Omit<SearchDoc, 'binderTokens' | 'binderDisplay'> & Partial<Pick<SearchDoc, 'binderTokens' | 'binderDisplay'>>> => {
-  if (!Array.isArray(value)) return false;
-  return value.every((item) => {
-    if (!item || typeof item !== 'object') return false;
-    const row = item as Record<string, unknown>;
-    return (
-      typeof row.docId === 'string' &&
-      typeof row.pointId === 'string' &&
-      typeof row.typeKey === 'string' &&
-      typeof row.typeMain === 'string' &&
-      typeof row.title === 'string' &&
-      typeof row.aliases === 'string' &&
-      typeof row.regionKey === 'string' &&
-      typeof row.subregionId === 'string' &&
-      typeof row.body === 'string' &&
-      typeof row.cjk === 'string'
-    );
+const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null;
+
+const buildSearchDoc = (value: {
+  docId: unknown;
+  pointId: unknown;
+  typeKey: unknown;
+  typeMain: unknown;
+  title: unknown;
+  aliases: unknown;
+  binderTokens?: unknown;
+  binderDisplay?: unknown;
+  regionKey: unknown;
+  subregionId: unknown;
+  body: unknown;
+  cjk: unknown;
+}): SearchDoc | null => {
+  if (
+    typeof value.docId !== 'string' ||
+    typeof value.pointId !== 'string' ||
+    typeof value.typeKey !== 'string' ||
+    typeof value.typeMain !== 'string' ||
+    typeof value.title !== 'string' ||
+    typeof value.aliases !== 'string' ||
+    typeof value.regionKey !== 'string' ||
+    typeof value.subregionId !== 'string' ||
+    typeof value.body !== 'string' ||
+    typeof value.cjk !== 'string'
+  ) {
+    return null;
+  }
+
+  return {
+    docId: value.docId,
+    pointId: value.pointId,
+    typeKey: value.typeKey,
+    typeMain: value.typeMain,
+    title: value.title,
+    aliases: value.aliases,
+    binderTokens: typeof value.binderTokens === 'string' ? value.binderTokens : '',
+    binderDisplay: typeof value.binderDisplay === 'string' ? value.binderDisplay : '',
+    regionKey: value.regionKey,
+    subregionId: value.subregionId,
+    body: value.body,
+    cjk: value.cjk,
+  };
+};
+
+const parseSearchDocs = (value: unknown): SearchDoc[] => {
+  if (!Array.isArray(value)) return [];
+
+  const docs: SearchDoc[] = [];
+  value.forEach((item) => {
+    const doc = Array.isArray(item)
+      ? buildSearchDoc({
+        docId: item[0],
+        pointId: item[1],
+        typeKey: item[2],
+        typeMain: item[3],
+        title: item[4],
+        aliases: item[5],
+        binderTokens: item[6],
+        binderDisplay: item[7],
+        regionKey: item[8],
+        subregionId: item[9],
+        body: item[10],
+        cjk: item[11],
+      })
+      : isObjectRecord(item)
+        ? buildSearchDoc(item as unknown as Parameters<typeof buildSearchDoc>[0])
+        : null;
+
+    if (doc) docs.push(doc);
   });
+
+  return docs;
 };
 
 const normalizeDocsLocale = (locale: string | null): string => {
@@ -185,13 +243,9 @@ const loadDocsFromLocale = async (env: Env, locale: string): Promise<SearchDoc[]
 
   if (!res.ok) return null;
 
-  const data = (await res.json()) as unknown;
-  if (!isSearchDocBaseArray(data) || data.length === 0) return null;
-  return data.map((row) => ({
-    ...row,
-    binderTokens: typeof row.binderTokens === 'string' ? row.binderTokens : '',
-    binderDisplay: typeof row.binderDisplay === 'string' ? row.binderDisplay : '',
-  }));
+  const data = await res.json();
+  const docs = parseSearchDocs(data);
+  return docs.length > 0 ? docs : null;
 };
 
 const loadDocs = async (env: Env, locale: string): Promise<SearchDoc[]> => {

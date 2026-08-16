@@ -1,3 +1,4 @@
+/* global __SEARCH_DOC_VERSIONS__ */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
     loadAllMarkers,
@@ -7,7 +8,7 @@ import {
     WORLD_TYPE_COUNT_MAP,
 } from '@/data/marker';
 import { SUBREGION_DICT } from '@/data/map';
-import { FULL_LANGS, UI_ONLY_LANGS, useTranslateGame } from '@/locale';
+import { hasFullSupport, isUIOnly, resolveFileContentLocale, useTranslateGame } from '@/locale';
 import useRegion from '@/store/region';
 
 interface SearchDoc {
@@ -141,14 +142,15 @@ const DOC_LIMIT = 600;
 const SEARCH_DEBOUNCE_MS = 180;
 const BASE_URL = (import.meta.env.BASE_URL as string | undefined) || '/';
 const PREBUILT_DOCS_BASE_PATH = `${BASE_URL.replace(/\/$/, '')}/search/docs`;
+const SEARCH_DOC_VERSIONS = typeof __SEARCH_DOC_VERSIONS__ !== 'undefined'
+    ? __SEARCH_DOC_VERSIONS__
+    : {};
 
 const DEFAULT_SEARCH_ENDPOINT = 'https://oem-search.cirisus.workers.dev/search';
 const REMOTE_SEARCH_ENDPOINT =
     (import.meta.env.VITE_SEARCH_ENDPOINT as string | undefined)?.trim() || DEFAULT_SEARCH_ENDPOINT;
 const PROD_WORKER_FIRST = false;
 
-const supportedFullLocaleSet = new Set<string>(FULL_LANGS as readonly string[]);
-const uiOnlyLocaleSet = new Set<string>(UI_ONLY_LANGS as readonly string[]);
 const CJK_RE = /[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]/;
 
 const normalizeText = (value: string): string =>
@@ -170,16 +172,64 @@ const normalizeBinderKey = (value: string): string =>
     value.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/(^_|_$)/g, '');
 
 const normalizeDocsLocale = (locale: string): string => {
-    if (locale === 'zh-HK') return 'zh-TW';
-    if (supportedFullLocaleSet.has(locale)) return locale;
-    if (uiOnlyLocaleSet.has(locale)) return 'en-US';
+    if (hasFullSupport(locale)) return resolveFileContentLocale(locale);
+    if (isUIOnly(locale)) return 'en-US';
     return 'en-US';
 };
 
-const buildDocsPath = (locale: string): string => `${PREBUILT_DOCS_BASE_PATH}/${locale}.json`;
+const buildDocsPath = (locale: string): string => {
+    const path = `${PREBUILT_DOCS_BASE_PATH}/${locale}.json`;
+    const revision = SEARCH_DOC_VERSIONS[locale];
+    return revision ? `${path}?v=${encodeURIComponent(revision)}` : path;
+};
 
 const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
     typeof value === 'object' && value !== null;
+
+const buildSearchDoc = (value: {
+    docId: unknown;
+    pointId: unknown;
+    typeKey: unknown;
+    typeMain: unknown;
+    title: unknown;
+    aliases: unknown;
+    binderTokens?: unknown;
+    binderDisplay?: unknown;
+    regionKey: unknown;
+    subregionId: unknown;
+    body: unknown;
+    cjk: unknown;
+}): SearchDoc | null => {
+    if (
+        typeof value.docId !== 'string' ||
+        typeof value.pointId !== 'string' ||
+        typeof value.typeKey !== 'string' ||
+        typeof value.typeMain !== 'string' ||
+        typeof value.title !== 'string' ||
+        typeof value.aliases !== 'string' ||
+        typeof value.regionKey !== 'string' ||
+        typeof value.subregionId !== 'string' ||
+        typeof value.body !== 'string' ||
+        typeof value.cjk !== 'string'
+    ) {
+        return null;
+    }
+
+    return {
+        docId: value.docId,
+        pointId: value.pointId,
+        typeKey: value.typeKey,
+        typeMain: value.typeMain,
+        title: value.title,
+        aliases: value.aliases,
+        binderTokens: typeof value.binderTokens === 'string' ? value.binderTokens : '',
+        binderDisplay: typeof value.binderDisplay === 'string' ? value.binderDisplay : '',
+        regionKey: value.regionKey,
+        subregionId: value.subregionId,
+        body: value.body,
+        cjk: value.cjk,
+    };
+};
 
 const parseWorkerSearchResponse = (value: unknown): WorkerSearchResponse | null => {
     if (!isObjectRecord(value)) return null;
@@ -231,33 +281,30 @@ const parseWorkerSearchResponse = (value: unknown): WorkerSearchResponse | null 
     return { hits };
 };
 
-const isSearchDocBase = (value: unknown): value is Omit<SearchDoc, 'binderTokens' | 'binderDisplay'> & Partial<Pick<SearchDoc, 'binderTokens' | 'binderDisplay'>> => {
-    if (!isObjectRecord(value)) return false;
-    return (
-        typeof value.docId === 'string' &&
-        typeof value.pointId === 'string' &&
-        typeof value.typeKey === 'string' &&
-        typeof value.typeMain === 'string' &&
-        typeof value.title === 'string' &&
-        typeof value.aliases === 'string' &&
-        typeof value.regionKey === 'string' &&
-        typeof value.subregionId === 'string' &&
-        typeof value.body === 'string' &&
-        typeof value.cjk === 'string'
-    );
-};
-
 const parsePrebuiltDocs = (value: unknown): SearchDoc[] => {
     if (!Array.isArray(value)) return [];
     const docs: SearchDoc[] = [];
 
     value.forEach((item) => {
-        if (!isSearchDocBase(item)) return;
-        docs.push({
-            ...item,
-            binderTokens: typeof item.binderTokens === 'string' ? item.binderTokens : '',
-            binderDisplay: typeof item.binderDisplay === 'string' ? item.binderDisplay : '',
-        });
+        const doc = Array.isArray(item)
+            ? buildSearchDoc({
+                docId: item[0],
+                pointId: item[1],
+                typeKey: item[2],
+                typeMain: item[3],
+                title: item[4],
+                aliases: item[5],
+                binderTokens: item[6],
+                binderDisplay: item[7],
+                regionKey: item[8],
+                subregionId: item[9],
+                body: item[10],
+                cjk: item[11],
+            })
+            : isObjectRecord(item)
+                ? buildSearchDoc(item as unknown as Parameters<typeof buildSearchDoc>[0])
+                : null;
+        if (doc) docs.push(doc);
     });
 
     return docs;
@@ -696,6 +743,8 @@ export const useAdvancedSearch = (query: string, locale: string) => {
     const activeTokenRef = useRef(0);
     const lastFetchKeyRef = useRef('');
     const lastDocsRef = useRef<SearchHitDoc[]>([]);
+    const tGameRef = useRef(tGame);
+    tGameRef.current = tGame;
 
     const normalizedQuery = useMemo(() => normalizeText(query), [query]);
     const normalizedSearchQuery = normalizedQuery;
@@ -704,8 +753,8 @@ export const useAdvancedSearch = (query: string, locale: string) => {
         let timeoutId = 0;
         const run = async () => {
             if (!normalizedSearchQuery) {
-                setResults([]);
-                setLoading(false);
+                setResults((current) => current.length === 0 ? current : []);
+                setLoading((current) => current ? false : current);
                 lastFetchKeyRef.current = '';
                 lastDocsRef.current = [];
                 return;
@@ -718,7 +767,7 @@ export const useAdvancedSearch = (query: string, locale: string) => {
             const fetchKey = `${docsLocale}@@${normalizedSearchQuery}`;
 
             if (fetchKey === lastFetchKeyRef.current && lastDocsRef.current.length > 0) {
-                setResults(toGroups(lastDocsRef.current, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGame));
+                setResults(toGroups(lastDocsRef.current, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGameRef.current));
                 setLoading(false);
                 return;
             }
@@ -807,7 +856,7 @@ export const useAdvancedSearch = (query: string, locale: string) => {
                         if (payload && payload.hits.length > 0) {
                             lastFetchKeyRef.current = fetchKey;
                             lastDocsRef.current = payload.hits;
-                            setResults(toGroups(payload.hits, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGame));
+                            setResults(toGroups(payload.hits, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGameRef.current));
                             setLoading(false);
                             return;
                         }
@@ -822,7 +871,7 @@ export const useAdvancedSearch = (query: string, locale: string) => {
                 if (activeTokenRef.current !== token) return;
                 lastFetchKeyRef.current = fetchKey;
                 lastDocsRef.current = localDocs;
-                setResults(toGroups(localDocs, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGame));
+                setResults(toGroups(localDocs, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGameRef.current));
                 setLoading(false);
                 return;
             }
@@ -832,7 +881,7 @@ export const useAdvancedSearch = (query: string, locale: string) => {
 
             lastFetchKeyRef.current = fetchKey;
             lastDocsRef.current = finalDocs;
-            setResults(toGroups(finalDocs, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGame));
+            setResults(toGroups(finalDocs, normalizedSearchQuery, currentRegionKey, currentSubregionKey, tGameRef.current));
             setLoading(false);
         };
 
@@ -843,7 +892,7 @@ export const useAdvancedSearch = (query: string, locale: string) => {
         return () => {
             window.clearTimeout(timeoutId);
         };
-    }, [normalizedSearchQuery, locale, currentRegionKey, currentSubregionKey, tGame]);
+    }, [normalizedSearchQuery, locale, currentRegionKey, currentSubregionKey]);
 
     return {
         results,

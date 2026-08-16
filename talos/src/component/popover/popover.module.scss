@@ -36,6 +36,7 @@
     box-shadow: 0 4px 12px var(--tooltip-shadow-2);
     margin: 0;
     backdrop-filter: blur(6px) brightness(1.2);
+    pointer-events: none;
     
     inset: unset;
     

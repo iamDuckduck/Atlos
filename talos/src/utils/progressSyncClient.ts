@@ -6,6 +6,38 @@ const PROGRESS_API_BASE = `${getAuthBase()}/progress/v1`;
 
 type CloudProgressMeta = Pick<CloudProgress, 'revision' | 'markerIndexHash' | 'updatedAt'>;
 
+export type CloudArchiveProgress = {
+    revision: string;
+    archiveIndexHash: string;
+    updatedAt: number | null;
+    archiveIds: string[];
+};
+
+type CloudArchiveProgressMeta = Pick<CloudArchiveProgress, 'revision' | 'archiveIndexHash' | 'updatedAt'>;
+
+export type ArchiveProgressManifestPayload = {
+    archiveIndexHash: string;
+    archiveIds: string[];
+};
+
+export type ArchiveProgressSyncRequestPayload = {
+    baseRevision: string;
+    clientMutationId: string;
+    archiveIndexHash: string;
+    setArchiveIds: string[];
+    clearArchiveIds: string[];
+    updatedAt: number;
+};
+
+export type ProgressSyncRequestPayload = {
+    baseRevision: string;
+    clientMutationId: string;
+    markerIndexHash: string;
+    setPointIds: string[];
+    clearPointIds: string[];
+    updatedAt: number;
+};
+
 type ApiErrorPayload = {
     code?: string;
     message?: string;
@@ -61,7 +93,7 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
     const hasBody = init?.body !== undefined && init.body !== null;
     const response = await fetch(`${PROGRESS_API_BASE}${path}`, {
         ...init,
-        credentials: 'include',
+        credentials: init?.credentials ?? 'include',
         headers: {
             accept: 'application/json',
             ...(hasBody ? { 'content-type': 'application/json' } : {}),
@@ -76,8 +108,10 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
     return response.json() as Promise<T>;
 }
 
-export const fetchCloudProgress = (): Promise<{ progress: CloudProgress }> =>
-    requestJson('/state');
+export const fetchCloudProgress = (
+    markerIndexHash: string,
+): Promise<{ progress: CloudProgress }> =>
+    requestJson(`/state?markerIndexHash=${encodeURIComponent(markerIndexHash)}`);
 
 export const registerProgressManifest = (
     payload: ProgressManifestPayload,
@@ -88,16 +122,33 @@ export const registerProgressManifest = (
     });
 
 export const syncCloudProgress = (
-    payload: {
-        baseRevision: string;
-        clientMutationId: string;
-        setPointIds: string[];
-        clearPointIds: string[];
-        updatedAt: number;
-    },
+    payload: ProgressSyncRequestPayload,
     options: { keepalive?: boolean } = {},
 ): Promise<{ ok: true; progress: CloudProgressMeta; unchanged?: boolean; idempotent?: boolean }> =>
     requestJson('/sync', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        keepalive: options.keepalive,
+    });
+
+export const fetchCloudArchiveProgress = (
+    archiveIndexHash: string,
+): Promise<{ progress: CloudArchiveProgress }> =>
+    requestJson(`/archive/state?archiveIndexHash=${encodeURIComponent(archiveIndexHash)}`);
+
+export const registerArchiveProgressManifest = (
+    payload: ArchiveProgressManifestPayload,
+): Promise<{ ok: true; manifest: { archiveIndexHash: string } }> =>
+    requestJson('/archive/manifest', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+    });
+
+export const syncCloudArchiveProgress = (
+    payload: ArchiveProgressSyncRequestPayload,
+    options: { keepalive?: boolean } = {},
+): Promise<{ ok: true; progress: CloudArchiveProgressMeta; unchanged?: boolean }> =>
+    requestJson('/archive/sync', {
         method: 'POST',
         body: JSON.stringify(payload),
         keepalive: options.keepalive,
@@ -107,8 +158,11 @@ export const fetchProgressStats = (
     markerIndexHash: string,
 ): Promise<{
     markerIndexHash: string;
+    pointCount?: number;
     totalSyncedUsers: number;
     sampleSize: number;
     counts: string;
     updatedAt: number | null;
-}> => requestJson(`/stats?markerIndexHash=${encodeURIComponent(markerIndexHash)}`);
+}> => requestJson(`/stats?markerIndexHash=${encodeURIComponent(markerIndexHash)}`, {
+    credentials: 'omit',
+});

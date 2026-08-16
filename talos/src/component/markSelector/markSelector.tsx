@@ -6,14 +6,18 @@ import { useTranslateGame } from '@/locale';
 import { MarkVisibilityContext } from '../markFilter/visibilityContext';
 import {
     useFilter,
+    useMarkerStore,
     useRegionMarkerCount,
     useSearchString,
 } from '@/store/marker.ts';
-import { trackedSwitchFilter } from '@/store/trackedActions';
 import { useLayoutVersion } from '@/store/uiPrefs';
 
 interface MarkSelectorProps {
     typeInfo: { key: string; icon?: string; category?: { main?: string; sub?: string }; main?: string; sub?: string };
+    countOverride?: {
+        total: number;
+        collected: number;
+    };
 }
 
 const normalizeBinderKey = (value: string): string =>
@@ -25,7 +29,7 @@ const nextZ = () => {
     return zCounter;
 };
 
-const MarkSelector = ({ typeInfo }: MarkSelectorProps) => {
+const MarkSelector = ({ typeInfo, countOverride }: MarkSelectorProps) => {
     type StyleVars = CSSProperties & {
         '--progress-percentage'?: string;
         '--expanded-height'?: string;
@@ -65,8 +69,12 @@ const MarkSelector = ({ typeInfo }: MarkSelectorProps) => {
 
     // stores
     const filter = useFilter();
-    const handleSwitchFilter = useCallback(() => trackedSwitchFilter(typeInfo.key), [typeInfo.key]);
-    const cnt = useRegionMarkerCount(typeInfo?.key);
+    const handleSwitchFilter = useCallback(
+        () => useMarkerStore.getState().switchFilter(typeInfo.key),
+        [typeInfo.key],
+    );
+    const regionCount = useRegionMarkerCount(typeInfo?.key);
+    const cnt = countOverride ?? regionCount;
     const searchString = useSearchString();
     const normalizedSearch = useMemo(() => searchString.toLowerCase(), [searchString]);
     

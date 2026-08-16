@@ -1,4 +1,4 @@
-# oem-search (Cloudflare Worker)
+# Search Worker (Cloudflare Worker)
 
 Cloudflare Worker service for OEM map search.
 

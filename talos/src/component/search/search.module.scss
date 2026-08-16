@@ -1,6 +1,5 @@
 @use '../../styles/palette.scss' as *;
 @use '../../styles/curves.scss' as *;
-@use '../../styles/size.scss' as *;
 
 :root, :root[data-theme='light'] {
     --search-bg: #{$grey-1};
@@ -180,7 +179,7 @@
                 right: 0.75rem;
                 top: 50%;
                 transform: translateY(-50%);
-                max-width: 6.1rem;
+                max-width: 7.1rem;
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
@@ -467,81 +466,79 @@
     }
 }
 
-@media screen and (max-width: $mobile-bp) {
-    .searchContainer {
-        margin-bottom: 0;
-        --search-input-row-h: 2.6rem;
-        --search-result-item-h: 2.65rem;
-        --search-result-gap: 0.26rem;
-        --search-mask-h: 0.75rem;
+.searchContainer.mobile {
+    margin-bottom: 0;
+    --search-input-row-h: 2.6rem;
+    --search-result-item-h: 2.65rem;
+    --search-result-gap: 0.26rem;
+    --search-mask-h: 0.75rem;
 
-        .searchResultPanel {
-            max-height: var(--search-result-list-h);
-            gap: var(--search-result-gap);
-        }
+    .searchResultPanel {
+        max-height: var(--search-result-list-h);
+        gap: var(--search-result-gap);
+    }
 
-        .searchResultItem {
-            grid-template-columns: 2rem minmax(0, 1fr) auto;
-            padding: 0.28rem 0.32rem;
-        }
+    .searchResultItem {
+        grid-template-columns: 2rem minmax(0, 1fr) auto;
+        padding: 0.28rem 0.32rem;
+    }
 
-        .searchInputRow {
-            &[data-has-count='true'] {
-                .searchInput {
-                    padding-right: 5.8rem;
-                }
-            }
-
-            .searchResultCountInline {
-                right: 0.62rem;
-                max-width: 5rem;
-                font-size: 0.72rem;
+    .searchInputRow {
+        &[data-has-count='true'] {
+            .searchInput {
+                padding-right: 5.8rem;
             }
         }
 
-        .resultIcon {
-            width: 1.9rem;
-            height: 1.9rem;
-
-            img {
-                width: 1.68rem;
-                height: 1.68rem;
-            }
+        .searchResultCountInline {
+            right: 0.62rem;
+            max-width: 5rem;
+            font-size: 0.72rem;
         }
+    }
 
-        .resultTitle,
-        .resultSub {
-            font-size: 0.68rem;
+    .resultIcon {
+        width: 1.9rem;
+        height: 1.9rem;
+
+        img {
+            width: 1.68rem;
+            height: 1.68rem;
         }
+    }
 
-        .regionIconBox {
-            width: 1.02rem;
-            height: 1.02rem;
-        }
+    .resultTitle,
+    .resultSub {
+        font-size: 0.68rem;
+    }
 
-        .searchForm > .searchInputWrapper {
+    .regionIconBox {
+        width: 1.02rem;
+        height: 1.02rem;
+    }
+
+    .searchForm > .searchInputWrapper {
+        border-radius: 1.5rem;
+        transition: all 0.3s;
+
+        &[data-expanded='true'] {
             border-radius: 1.5rem;
-            transition: all 0.3s;
+        }
 
-            &[data-expanded='true'] {
-                border-radius: 1.5rem;
+        .searchResultShell {
+            border-radius: 0 0 1.5rem 1.5rem;
+        }
+
+        &:has(.searchInput:not(:placeholder-shown)) {
+            box-shadow: 0 2px 8px var(--search-shadow-out);
+
+            &::after {
+                box-shadow: inset 0 0 0 2px var(--search-outline);
             }
+        }
 
-            .searchResultShell {
-                border-radius: 0 0 1.5rem 1.5rem;
-            }
-
-            &:has(.searchInput:not(:placeholder-shown)) {
-                box-shadow: 0 2px 8px var(--search-shadow-out);
-
-                &::after {
-                    box-shadow: inset 0 0 0 2px var(--search-outline);
-                }
-            }
-
-            .searchIcon {
-                left: 0.8rem;
-            }
+        .searchIcon {
+            left: 0.8rem;
         }
     }
 }

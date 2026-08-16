@@ -1,47 +1,12 @@
 @use './palette' as *;
 @use './curves.scss' as *;
 
-:root[data-pip-window='true']:not([data-pip-mobile='true']) .app {
+:root[data-pip-window='true']:not([data-pip-mobile]) .app {
     min-width: min(var(--app-responsive-width, 800px), 100dvw);
-}
-
-:root[data-pip-window='true']:not([data-pip-mobile='true']) [class*='uiOverlay'][class*='sidebarOpen'] {
-    left: var(--sidebar-width, 300px);
-    width: calc(100% - var(--sidebar-width, 300px));
-}
-
-:root[data-pip-window='true']:not([data-pip-mobile='true']) [class*='switchArea'] {
-    top: 26%;
 }
 
 :root[data-pip-window='true'] [class*='headbarItem'][class*='disabled'] {
     opacity: 0.28;
-}
-
-:root[data-pip-window='true']:not([data-pip-mobile='true']) [class*='mainFilterList'] {
-    position: absolute;
-    bottom: 1rem;
-    left: 1rem;
-    height: 56px;
-    border-radius: 6px;
-    box-shadow: 0 0 5px rgba($black-0, 0.6);
-}
-
-:root[data-pip-window='true']:not([data-pip-mobile='true']) [class*='innerContainer'] {
-    gap: 4px;
-}
-
-:root[data-pip-window='true'][data-pip-mobile='true'] [class*='mainFilterList'] {
-    position: relative;
-    bottom: 0;
-    left: 0;
-    height: 100%;
-    border-radius: 28px;
-    box-shadow: inset 0 0 8px rgba($black-0, 0.35);
-}
-
-:root[data-pip-window='true'][data-pip-mobile='true'] [class*='innerContainer'] {
-    gap: 0;
 }
 
 .PipPlaceholder {
@@ -111,9 +76,9 @@
 }
 
 .PipPlaceholderTitle {
-    font-family: 'Novecento DemiBold', 'Novecento Cyrillic DemiBold', 'Novecento Vietnamese DemiBold', 'FedraSansPro Normal', 'UD_ShinGo DemiBold', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
+    font-family: 'Novecento DemiBold', 'Novecento Cyrillic DemiBold', 'Novecento Vietnamese DemiBold', 'Fedra Sans Pro', 'UD_ShinGo DemiBold', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
     text-transform: uppercase;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 1.5rem;
     color: var(--embed-keyword-color);
     transition: color 0.35s $adagio-curve;
@@ -122,7 +87,7 @@
 }
 
 .PipPlaceholderDesc {
-    font-family: 'HMSans_EN', HMSans, 'UD_ShinGo Medium', 'FedraSansPro Book', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
+    font-family: 'HMSans_EN', HMSans, 'UD_ShinGo Medium', 'Fedra Sans Pro', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
     font-size: 1rem;
     font-weight: 500;
     letter-spacing: -0.5px;

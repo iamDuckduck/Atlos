@@ -8,6 +8,7 @@
     --ann-content-text: #{$grey-1};
     --ann-content-heading: #{$black-1};
     --ann-border: #{$mid};
+    --ann-image-border: #{$light-2};
 
     --ann-link: #{$primary-accent-6};
 }
@@ -17,6 +18,7 @@
     --ann-content-text: #{$light-1};
     --ann-content-heading: #{$white-1};
     --ann-border: #{$mid};
+    --ann-image-border: #{$light-2};
 
     --ann-link: #{$primary-accent-4};
 }
@@ -26,10 +28,12 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    margin: 0.5rem;
     overflow: hidden;
     min-height: 0;
     transition: background-color 0.35s $adagio-curve;
+    .emptyState {
+        color: var(--ann-content-text);
+    }
 }
 
 .content {
@@ -46,6 +50,7 @@
     overflow-wrap: break-word;
     hyphens: auto;
     transition: background-color 0.35s $adagio-curve;
+    font-feature-settings: "calt" on;
 
     &::-webkit-scrollbar {
         width: 4px;
@@ -68,7 +73,7 @@
 
     h2 {
         font-family: 'Novecento DemiBold', 'HMSans_EN', HMSans, sans-serif;
-        font-size: 18px;
+        font-size: 1.125rem;
         font-weight: 900;
         color: var(--ann-content-heading);
         margin-top: 1rem;
@@ -95,8 +100,7 @@
         }
     }
 
-    ul,
-    ol {
+    ul, ol {
         padding-left: 1.4em;
         margin-bottom: 0.8em;
 
@@ -106,14 +110,17 @@
     }
 
     strong {
-        font-weight: 700;
+        font-weight: 820;
         color: var(--ann-content-heading);
+        &::before, &::after {
+            content: '\2006';
+        }
     }
 
     img {
         max-width: 60%;
         margin: 0.5rem auto;
-        border: 2px solid var(--detail-image-border);
+        border: 2px solid var(--ann-image-border);
         box-shadow:
                 0 0 4px 0.5px rgba($black-0, 0.6),
                 0 0 4px 2px rgba($light-2, 0.6) inset;
@@ -122,6 +129,9 @@
         align-items: center;
         justify-content: center;
         position: relative;
+        @media screen and (max-width: $mobile-bp) {
+            max-width: 80%;
+        }
     }
 
     a {

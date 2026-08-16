@@ -31,15 +31,15 @@ const TabView: React.FC<TabViewProps> = ({
 
     const updateIndicator = useCallback(() => {
         const activeTab = tabRefs.current.get(activeKey);
-        const wrapper = wrapperRef.current;
-        if (!activeTab || !wrapper) {
+        const tabBar = tabBarRef.current;
+        if (!activeTab || !tabBar) {
             setIndicatorLeft(null);
             return;
         }
 
         const tabRect = activeTab.getBoundingClientRect();
-        const wrapperRect = wrapper.getBoundingClientRect();
-        setIndicatorLeft(tabRect.left - wrapperRect.left + tabRect.width / 2);
+        const tabBarRect = tabBar.getBoundingClientRect();
+        setIndicatorLeft(tabRect.left - tabBarRect.left + tabBar.scrollLeft + tabRect.width / 2);
     }, [activeKey]);
 
     useEffect(() => {

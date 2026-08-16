@@ -1,11 +1,17 @@
 import type { ReactNode } from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import type { IMarkerData } from '@/data/marker';
 import { useTranslateGame } from '@/locale';
+import { getAppViewport } from '@/component/scale/pip';
 import PopoverTooltip from '@/component/popover/popover';
+import { useAppViewport } from '@/utils/device';
+import { parseTimestamp } from '@/utils/timeFormat';
+import { isRecordToolEnabled } from '@/devtools/loadDevTool';
 import {
-    listUGCImages,
+    peekUGCImages,
+    peekPublicUGCImages,
+    listPublicUGCImagesByMarkerIds,
     type UGCImage,
 } from '@/utils/ugcClient';
 import {
@@ -15,6 +21,10 @@ import {
     type PreviewLeaveDetail,
 } from './PreviewEvents';
 import styles from './Preview.module.scss';
+
+const RecordToolPreview = import.meta.env.DEV
+    ? lazy(() => import('@/devtools/recordTool/RecordToolPreview'))
+    : null;
 
 type HoveredMarkerState = {
     marker: IMarkerData;
@@ -28,6 +38,8 @@ interface UsePreviewResult {
 }
 
 const PREVIEW_HIDE_DELAY_MS = 160;
+const PREVIEW_FETCH_DELAY_MS = 80;
+const PREVIEW_BATCH_SIZE = 10;
 
 const getPreviewUpvoteCount = (image: UGCImage): number => (
     Number.isFinite(image.upvotes)
@@ -38,8 +50,7 @@ const getPreviewUpvoteCount = (image: UGCImage): number => (
 );
 
 const getPreviewCreatedAtTime = (image: UGCImage): number => {
-    const time = Date.parse(image.createdAt);
-    return Number.isNaN(time) ? Number.MAX_SAFE_INTEGER : time;
+    return parseTimestamp(image.createdAt)?.getTime() ?? Number.MAX_SAFE_INTEGER;
 };
 
 const selectPreviewImage = (images: UGCImage[]): UGCImage | null => (
@@ -52,18 +63,27 @@ const selectPreviewImage = (images: UGCImage[]): UGCImage | null => (
         })[0] ?? null
 );
 
-export const UsePreview = (
+const UseProductionPreview = (
     map: L.Map | null,
+    disabled = false,
 ): UsePreviewResult => {
     const tGame = useTranslateGame();
+    const viewport = useAppViewport();
     const hideTimeoutRef = useRef<number | undefined>(undefined);
+    const fetchTimeoutRef = useRef<number | undefined>(undefined);
     const requestTokenRef = useRef(0);
     const hoveredMarkerRef = useRef<IMarkerData | null>(null);
+    const recentHoverMarkerIdsRef = useRef<string[]>([]);
     const isPreviewVisibleRef = useRef(false);
     const [hoveredMarker, setHoveredMarker] = useState<HoveredMarkerState | null>(null);
     const [isPreviewVisible, setIsPreviewVisible] = useState(false);
+    const previewEnabled = !disabled && !viewport.isPipUiTooSmall;
 
     const clearHover = useCallback(() => {
+        if (fetchTimeoutRef.current) {
+            window.clearTimeout(fetchTimeoutRef.current);
+            fetchTimeoutRef.current = undefined;
+        }
         hoveredMarkerRef.current = null;
         isPreviewVisibleRef.current = false;
         setIsPreviewVisible(false);
@@ -73,6 +93,10 @@ export const UsePreview = (
     const scheduleHide = useCallback((markerId?: string) => {
         if (hideTimeoutRef.current) {
             window.clearTimeout(hideTimeoutRef.current);
+        }
+        if (fetchTimeoutRef.current) {
+            window.clearTimeout(fetchTimeoutRef.current);
+            fetchTimeoutRef.current = undefined;
         }
         isPreviewVisibleRef.current = false;
         setIsPreviewVisible(false);
@@ -90,6 +114,10 @@ export const UsePreview = (
         }
     }, []);
 
+    useEffect(() => {
+        if (disabled || viewport.isPipUiTooSmall) clearHover();
+    }, [clearHover, disabled, viewport.isPipUiTooSmall]);
+
     const updateMarkerPosition = useCallback((marker: IMarkerData) => {
         if (!map) return null;
         const point = map.latLngToContainerPoint(marker.pos);
@@ -100,15 +128,57 @@ export const UsePreview = (
         };
     }, [map]);
 
+    const showPreviewFromImages = useCallback((marker: IMarkerData, requestToken: number, images: UGCImage[]) => {
+        if (requestTokenRef.current !== requestToken) return;
+        if (hoveredMarkerRef.current?.id !== marker.id) return;
+        const activeImage = selectPreviewImage(images);
+        if (!activeImage) {
+            clearHover();
+            return;
+        }
+        const previewUrl = activeImage.url;
+        const preloadImage = new Image();
+        preloadImage.onload = () => {
+            if (requestTokenRef.current !== requestToken) return;
+            if (hoveredMarkerRef.current?.id !== marker.id) return;
+            if (!isPreviewVisibleRef.current) return;
+            const settledPosition = updateMarkerPosition(marker);
+            if (!settledPosition) return;
+            setHoveredMarker({
+                marker,
+                left: settledPosition.left,
+                top: settledPosition.top,
+                previewUrl,
+            });
+        };
+        preloadImage.onerror = () => {
+            if (requestTokenRef.current !== requestToken) return;
+            if (hoveredMarkerRef.current?.id === marker.id) {
+                clearHover();
+            }
+        };
+        preloadImage.src = previewUrl;
+    }, [clearHover, updateMarkerPosition]);
+
+    const rememberHoverMarker = useCallback((markerId: string) => {
+        const recentIds = recentHoverMarkerIdsRef.current.filter((id) => id !== markerId);
+        recentHoverMarkerIdsRef.current = [markerId, ...recentIds].slice(0, PREVIEW_BATCH_SIZE);
+    }, []);
+
     useEffect(() => {
-        if (!map) return;
+        if (!map || disabled) return;
 
         const onEnter = (event: Event) => {
+            if (!previewEnabled || getAppViewport().isPipUiTooSmall) {
+                clearHover();
+                return;
+            }
             const detail = (event as CustomEvent<PreviewEnterDetail>).detail;
             const marker = detail?.marker;
             if (!marker) return;
 
             cancelHide();
+            rememberHoverMarker(marker.id);
             hoveredMarkerRef.current = marker;
             isPreviewVisibleRef.current = true;
             setIsPreviewVisible(true);
@@ -125,44 +195,37 @@ export const UsePreview = (
                 previewUrl: null,
             });
 
-            void listUGCImages(marker.id)
-                .then((images) => {
-                    if (requestTokenRef.current !== requestToken) return;
-                    if (hoveredMarkerRef.current?.id !== marker.id) return;
-                    const activeImage = selectPreviewImage(images);
-                    if (!activeImage) {
-                        clearHover();
-                        return;
-                    }
-                    const previewUrl = activeImage.url;
-                    const preloadImage = new Image();
-                    preloadImage.onload = () => {
+            const cachedImages = peekPublicUGCImages(marker.id) ?? peekUGCImages(marker.id);
+            if (cachedImages) {
+                showPreviewFromImages(marker, requestToken, cachedImages);
+                return;
+            }
+
+            if (fetchTimeoutRef.current) {
+                window.clearTimeout(fetchTimeoutRef.current);
+            }
+            fetchTimeoutRef.current = window.setTimeout(() => {
+                fetchTimeoutRef.current = undefined;
+                if (requestTokenRef.current !== requestToken) return;
+                if (hoveredMarkerRef.current?.id !== marker.id) return;
+                const markerIds = [
+                    marker.id,
+                    ...recentHoverMarkerIdsRef.current.filter((id) => id !== marker.id),
+                ].slice(0, PREVIEW_BATCH_SIZE);
+
+                void listPublicUGCImagesByMarkerIds(markerIds)
+                    .then((groupedImages) => {
                         if (requestTokenRef.current !== requestToken) return;
                         if (hoveredMarkerRef.current?.id !== marker.id) return;
-                        if (!isPreviewVisibleRef.current) return;
-                        const settledPosition = updateMarkerPosition(marker);
-                        if (!settledPosition) return;
-                        setHoveredMarker({
-                            marker,
-                            left: settledPosition.left,
-                            top: settledPosition.top,
-                            previewUrl,
-                        });
-                    };
-                    preloadImage.onerror = () => {
+                        showPreviewFromImages(marker, requestToken, groupedImages[marker.id] ?? []);
+                    })
+                    .catch(() => {
                         if (requestTokenRef.current !== requestToken) return;
                         if (hoveredMarkerRef.current?.id === marker.id) {
                             clearHover();
                         }
-                    };
-                    preloadImage.src = previewUrl;
-                })
-                .catch(() => {
-                    if (requestTokenRef.current !== requestToken) return;
-                    if (hoveredMarkerRef.current?.id === marker.id) {
-                        clearHover();
-                    }
-                });
+                    });
+            }, PREVIEW_FETCH_DELAY_MS);
         };
 
         const onLeave = (event: Event) => {
@@ -187,6 +250,7 @@ export const UsePreview = (
 
         const onRegionSwitch = () => {
             cancelHide();
+            recentHoverMarkerIdsRef.current = [];
             clearHover();
         };
 
@@ -197,18 +261,24 @@ export const UsePreview = (
         map.on('talos:regionSwitched', onRegionSwitch);
 
         return () => {
+            if (fetchTimeoutRef.current) {
+                window.clearTimeout(fetchTimeoutRef.current);
+            }
             window.removeEventListener(MARKER_PREVIEW_ENTER_EVENT, onEnter as EventListener);
             window.removeEventListener(MARKER_PREVIEW_LEAVE_EVENT, onLeave as EventListener);
             map.off('move', syncPosition);
             map.off('zoom', syncPosition);
             map.off('talos:regionSwitched', onRegionSwitch);
         };
-    }, [cancelHide, clearHover, map, scheduleHide, updateMarkerPosition]);
+    }, [cancelHide, clearHover, disabled, map, previewEnabled, rememberHoverMarker, scheduleHide, showPreviewFromImages, updateMarkerPosition]);
 
     useEffect(() => {
         return () => {
             if (hideTimeoutRef.current) {
                 window.clearTimeout(hideTimeoutRef.current);
+            }
+            if (fetchTimeoutRef.current) {
+                window.clearTimeout(fetchTimeoutRef.current);
             }
         };
     }, []);
@@ -221,7 +291,7 @@ export const UsePreview = (
             : hoveredMarker.marker.type;
     }, [hoveredMarker, tGame]);
 
-    const PreviewElement = hoveredMarker ? (
+    const PreviewElement = previewEnabled && hoveredMarker ? (
         <PopoverTooltip
             key={`${hoveredMarker.marker.id}:${Math.round(hoveredMarker.left)}:${Math.round(hoveredMarker.top)}`}
             content={
@@ -252,4 +322,18 @@ export const UsePreview = (
     ) : null;
 
     return { PreviewElement };
+};
+
+export const UsePreview = (map: L.Map | null): UsePreviewResult => {
+    const recordToolEnabled = isRecordToolEnabled();
+    const productionPreview = UseProductionPreview(map, recordToolEnabled);
+    const recordToolPreview = recordToolEnabled && RecordToolPreview ? (
+        <Suspense fallback={null}>
+            <RecordToolPreview map={map} />
+        </Suspense>
+    ) : null;
+
+    return {
+        PreviewElement: recordToolEnabled ? recordToolPreview : productionPreview.PreviewElement,
+    };
 };

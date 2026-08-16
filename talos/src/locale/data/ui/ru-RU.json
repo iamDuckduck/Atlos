@@ -2,13 +2,17 @@
   "headbar": {
     "tos": "Условия и хранение",
     "hideUI": "Скрыть интерфейс пользователя",
-    "group": "Присоединиться к связанным группам",
+    "notification": "Уведомления",
     "darkmode": "Переключиться на темный режим",
     "lightmode": "Переключиться на светлый режим",
     "language": "Выбрать язык",
     "help": "Запросить помощь",
     "announcement": "Объявления",
     "settings": "Настройки"
+  },
+  "mapControls": {
+    "layerSelect": "Выбор слоя",
+    "locationTracking": "Синхронизация позиции"
   },
   "trigger": {
     "boundaryMode": "Режим границ",
@@ -17,7 +21,7 @@
   },
   "search": {
     "placeholder": "Общий поиск...",
-    "results": "{count} результат(ов)",
+    "results": "{count, plural, one {# результат} few {# результата} many {# результатов} other {# результата}}",
     "locatedAt": "Найден в",
     "distributeAt": "Распределен в"
   },
@@ -32,23 +36,58 @@
       "main": "Основной",
       "sub": "Под"
     },
+    "label": {
+      "note": "Заметка",
+      "url": "Ссылка",
+      "comments": "Комментарии",
+      "collectionRate": "Процент сбора"
+    },
+    "tabs": {
+      "collectAll": "Отметить все такие точки как собранные",
+      "general": "Детали",
+      "comments": "Комментарии"
+    },
     "noInfo": "Нет изображения. Используйте {paste} / {click} для загрузки.",
-    "communityRule1": "Перед загрузкой, пожалуйста, ознакомьтесь и соблюдайте",
-    "communityRule2": "Правила сообщества",
+    "communityRule": "Перед загрузкой, пожалуйста, ознакомьтесь и соблюдайте <a href=\"{link}\">Правила сообщества</a>",
     "uploading": "Загрузка...",
     "uploadPending": "Отправлено. Будет отображено после проверки.",
     "readFullText": "Нажмите, чтобы прочитать полностью.",
     "share": "Скопировать ссылку для этой точки.",
     "copied": "Ссылка скопирована",
+    "collectionRateSource": "Общий процент сбора: {nums} – Статистика OEM Cloud",
     "viewer": {
       "author": "Автор",
       "uploadedAt": "Дата загрузки",
       "upvote": "Поддержать",
       "flag": "Пометить как неточное",
       "unflag": "Снять отметку",
+      "uploadAno": "Загрузить другое",
       "share": "Поделиться",
       "recall": "Запросить удаление",
       "unrecall": "Отменить удаление"
+    },
+    "comments": {
+      "placeholder": "Напишите что-нибудь!",
+      "submit": "Опубликовать комментарий",
+      "actions": "Действия с комментарием",
+      "translate": "Перевести",
+      "showOriginal": "Показать оригинал",
+      "translatedFrom": "Переведено с {language}",
+      "translating": "Перевод...",
+      "translateFailed": "Не удалось перевести",
+      "upvote": "Нравится",
+      "downvote": "Не нравится",
+      "reply": "Ответить",
+      "edit": "Редактировать",
+      "submitEdit": "Сохранить изменения",
+      "undoEdit": "Отменить изменения",
+      "recall": "Скрыть сейчас",
+      "reviewing": "На проверке",
+      "emptyWithRule": "Комментариев пока нет. При публикации соблюдайте <a href=\"{link}\">правила сообщества</a>.",
+      "ruleOnly": "При публикации соблюдайте <a href=\"{link}\">правила сообщества</a>.",
+      "loadFailed": "Не удалось загрузить комментарии.",
+      "submitFailed": "Не удалось отправить комментарий.",
+      "editFailed": "Не удалось обновить комментарий."
     },
     "errors": {
       "unsupportedType": "Поддерживаются только изображения JPEG/PNG/WebP/AVIF/HEIC.",
@@ -65,12 +104,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
       "supportedBy": "поддерживается Observator 6"
-    }
+    },
+    "newlyAdded": "Новое в версии"
   },
   "language": {
     "title": "Язык",
@@ -101,12 +141,39 @@
       "th-TH": "Тайский",
       "vi-VN": "Вьетнамский",
       "el-GR": "Греческий",
-      "hi-IN": "Хинди"
+      "hi-IN": "Хинди",
+      "uk-UA": "Украинский",
+      "tr-TR": "Турецкий"
     }
   },
-  "group": {
-    "title": "Сообщество и медиа",
-    "visit": "Посетить"
+  "notification": {
+    "title": "Уведомления",
+    "tabs": {
+      "community": "Взаимодействия",
+      "system": "Модерация"
+    },
+    "markAllRead": "Отметить все как прочитанные",
+    "empty": "Сообщений нет. Здесь будут отображаться сообщения, связанные с вашими материалами.",
+    "guest": "Войдите через {account}, чтобы получать соответствующие уведомления.",
+    "account": "учётную запись OEM",
+    "loadError": "Не удалось загрузить уведомления.",
+    "loadMore": "Загрузить ещё",
+    "support": "Связь и поддержка",
+    "visit": "Посетить",
+    "noDetails": "Дополнительных сведений нет.",
+    "subject": {
+      "image": "изображение",
+      "comment": "комментарий",
+      "submission": "материал"
+    },
+    "types": {
+      "approved": "{kind, select, image {Ваше} other {Ваш}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> теперь {kind, select, image {опубликовано} other {опубликован}}.",
+      "needsReview": "{kind, select, image {Ваше} other {Ваш}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> ожидает ручной проверки.",
+      "removeResolved": "{kind, select, image {Ваше отозванное} other {Ваш отозванный}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, image {обработано} other {обработан}}.",
+      "reply": "К вашему <subjectTag>{kind, select, image {изображению} comment {комментарию} submission {материалу} other {{subject}}}</subjectTag> <pointTag>{point}</pointTag> добавлен новый ответ.",
+      "vote": "{kind, select, image {Ваше} other {Ваш}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, image {получило} other {получил}} {count, plural, one {# отметку «Нравится»} few {# отметки «Нравится»} many {# отметок «Нравится»} other {# отметки «Нравится»}}.",
+      "multiple": "Для вашего <subjectTag>{kind, select, image {изображения} comment {комментария} submission {материала} other {{subject}}}</subjectTag> <pointTag>{point}</pointTag> есть {count, plural, one {# связанное обновление} few {# связанных обновления} many {# связанных обновлений} other {# связанного обновления}}."
+    }
   },
   "tos": {
     "title": "Условия и Хранилище",
@@ -145,6 +212,8 @@
     "shortcuts": {
       "title": "Сочетания клавиш",
       "hint": "Доступные сочетания клавиш для быстрых действий.",
+      "toggleUI": "Показать/скрыть интерфейс",
+      "quickSearch": "Быстрый поиск",
       "exportData": "Экспорт данных",
       "importData": "Импорт данных",
       "undo": "Отменить",
@@ -166,13 +235,13 @@
     "triggerHandle": "Переключатели, связанные с отображением карты, расположены в нижней части боковой панели.<br>Вы можете удерживать мышь, чтобы <span class=\"keyword\">перетаскивать и управлять ими.</span>",
     "triggerSwitch": "Нажмите, чтобы переключить состояние переключателя.<br><ul><li><span class=\"keyword\">Режим кластеризации меток</span> позволяет объединять близко расположенные метки на карте;</li><li><span class=\"keyword\">Отображение границ региона</span> выделяет каждый подрегион и его границы в текущей области.</li><li><span class=\"keyword\">Название региона</span> показывает названия регионов в игре.</li></ul>",
     "scale": "Используйте <span class=\"keyword\">управление масштабом</span> для просмотра и управления масштабом карты.<br>Колесо прокрутки или трекпад можно использовать для масштабирования. Вы также можете масштабировать, нажимая кнопки <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> или в любом месте на полосе масштабирования.",
-    "filterList": "<span class=\"keyword\">Список меток</span> отображает выбранные вами метки; нажмите на иконку метки, чтобы отменить выбор.",
+    "filterList": "В <span class=\"keyword\">списке меток</span> показаны выбранные вами типы меток; нажмите на значок, чтобы отменить выбор.",
     "headbar": "Настройки карты доступны на <span class=\"keyword\">верхней панели</span>.",
     "tos": "<span class=\"keyword\">Условия обслуживания</span> и <span class=\"keyword\">Управление данными</span> веб-сайта.",
     "hideUI": "<span class=\"keyword\">Скрыть интерфейс веб-сайта</span>, чтобы сделать скриншоты или просмотреть метки по краям.",
-    "group": "Просмотр <span class=\"keyword\">дискуссионных групп</span> и <span class=\"keyword\">сообществ</span>, связанных с этим проектом.",
+    "notification": "Откройте <span class=\"keyword\">уведомления</span>, чтобы просмотреть взаимодействия и результаты проверки ваших материалов.",
     "darkMode": "Переключить текущий <span class=\"keyword\">режим окружающего освещения</span>.",
-    "language": "Переключить <span class=\"keyword\">язык интерфейса</span>.<br>В настоящее время языки с <span class=\"keyword\">полной поддержкой перевода игрового контента</span> включают английский, упрощенный китайский, традиционный китайский, японский, корейский, французский, немецкий, итальянский, русский, испанский, индонезийский, португальский, тайский и вьетнамский.<br>Языки с <span class=\"keyword\">поддержкой только перевода интерфейса</span> включают арабский, малайский, польский и шведский.",
+    "language": "Переключить <span class=\"keyword\">язык интерфейса</span>.<br>В настоящее время языки с <span class=\"keyword\">полной поддержкой перевода игрового контента</span> включают английский, упрощенный китайский, традиционный китайский, японский, корейский, французский, немецкий, итальянский, русский, испанский, индонезийский, португальский, тайский и вьетнамский.<br>Языки с <span class=\"keyword\">поддержкой только перевода интерфейса</span> включают арабский, малайский, польский, шведский, греческий, хинди, украинский и турецкий.",
     "announcement": "Просмотр <span class=\"keyword\">уведомлений сайта</span>. Обновления условий обслуживания и политики конфиденциальности также будут опубликованы здесь.",
     "help": "Пройти <span class=\"keyword\">обучение</span> заново.",
     "settings": "Откройте <span class=\"keyword\">Настройки</span>, чтобы управлять локальным хранилищем, которое карта использует для запоминания ваших действий.",
@@ -194,16 +263,11 @@
       "selectorSelect": "<span class=\"keyword\">Селектор маркеров</span>. Нажмите для переключения; выбранные маркеры появятся на карте. Вы увидите общее количество и сколько отмечено в текущей области."
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">Примечание:</span> Версия игры: <span class=\"keyword\">1.0.13</span>, версия данных карты: <span class=\"keyword\">0.8.25</span>. Нам нужно время для обновления данных, поэтому они могут появиться позже обновления игры. Спасибо за ожидание. Чтобы следить за обновлениями, присоединяйтесь к нашему <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Присоединиться к Discord'>серверу Discord</a>.<br><br>Также рекомендуем следующие ресурсы:<ul><li><span class=\"keyword\">Вики игры: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Посетить Вики'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Чертежи:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Посетить Talos Pioneers'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "Текущий набор данных актуален.<br><br>Если вам нужно сообщить о проблемах, присоединяйтесь к <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Присоединиться к Discord'>серверу Discord</a>.<br><br>Также рекомендуем следующие ресурсы:<ul><li><span class=\"keyword\">Вики игры: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Посетить Вики'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Чертежи:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Посетить Talos Pioneers'>https://talospioneers.com</a></li></ul>"
-  },
   "idcard": {
     "group": "Группа: ",
     "since": "С",
     "logintip": "Вход через аватар.",
     "registip": "Регистрация через аватар.",
-    "ago": "назад",
     "karma": "Карма",
     "loading": "Загрузка...",
     "unassigned": "Не назначен",
@@ -230,8 +294,10 @@
       "resend": "Повторить({count})",
       "dcLogin": "Войти через Discord",
       "gooLogin": "Войти через Google",
+      "ghLogin": "Войти через GitHub",
       "dcRegis": "Регистрация через Discord",
       "gooRegis": "Регистрация через Google",
+      "ghRegis": "Регистрация через GitHub",
       "connecting": "Подключение...",
       "resetLink": "Введите адрес электронной почты для сброса пароля. Мы отправим письмо со ссылкой для сброса пароля на зарегистрированный адрес.<br><br>После отправки проверьте входящие и папку «Спам».",
       "resetRequire": "Введите новый пароль и повторите его правильно.<br><br>Мы выполняем сброс пароля.",
@@ -242,14 +308,14 @@
       "switchToLoginPrefix": "Уже есть аккаунт?",
       "switchToLoginAction": "Войдите здесь",
       "ack": "Продолжая, вы подтверждаете, что ознакомились и соглашаетесь с:",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Политикой конфиденциальности</a> и <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Условиями использования</a>",
+      "ackLink": "<a href=\"{privacy}\">Политикой конфиденциальности</a> и <a href=\"{tos}\">Условиями использования</a>",
       "hints": {
         "0": "Ошибка авторизации",
         "101": "Введите E-mail",
         "102": "Неверный E-mail",
         "103": "E-mail уже занят",
         "104": "E-mail не зарегистрирован",
-        "105": "Email Not Supported",
+        "105": "Электронная почта не поддерживается",
         "111": "Введите пароль",
         "112": "Неверный пароль",
         "113": "Пароли не совпадают",
@@ -280,7 +346,7 @@
       "note": "Примечание",
       "noteNickname": "В имени пользователя можно использовать не более 15 букв, цифр, дефисов и подчеркиваний.",
       "noteUID": "UID назначается при первой настройке и не может быть изменен. Вы можете обновить свое имя пользователя в любое время. Нажмите область аватара, чтобы переключить аватар.",
-      "auditLabel": "Аудит",
+      "auditLabel": "Действие",
       "importOfficial": "Импортировать с официальной карты",
       "save": "Сохранить изменения",
       "saving": "Сохранение...",
@@ -300,10 +366,7 @@
     "binding": {
       "title": "Привязка аккаунта",
       "docsLead": "Продолжая, вы подтверждаете согласие со следующими условиями:",
-      "tos": "Условия использования",
-      "privacy": "Политика конфиденциальности",
-      "dataCollection": "Чек-лист сбора данных",
-      "disclaimer": "Отказ от ответственности",
+      "docsLinks": "<a href=\"{tos}\">Условия использования</a> · <a href=\"{privacy}\">Политика конфиденциальности</a> · <a href=\"{data}\">Чек-лист сбора данных</a> · <a href=\"{disclaimer}\">Отказ от ответственности</a>",
       "chinaTab": "Китай (Hypergryph)",
       "globalTab": "Глобал (Gryphline)",
       "CNStep0": "Перейдите на <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>официальный сайт</a> и убедитесь, что вы вошли в аккаунт.",
@@ -311,7 +374,6 @@
       "CNStep1": "Откройте <a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>ссылку API Hypergryph</a> и скопируйте полный ответ.",
       "UniStep1": "Откройте <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>ссылку API Gryphline</a> и скопируйте полный ответ.",
       "Step2": "Вставьте полный ответ, прочитайте условия и привяжите аккаунт.",
-      "serverFallback": "Сервер",
       "changeBinding": "Сменить привязку",
       "unlink": "Отвязать",
       "bindWithCountdown": "Привязать и включить синхронизацию ({sec})",
@@ -346,8 +408,7 @@
       "trackPoints": "Трекинг",
       "centerOnPosition": "Центрировать игрока",
       "heatmap": "Тепловая карта",
-      "configNote1": "Включая эту функцию, вы принимаете наши ",
-      "configNote2": " и другие условия."
+      "configNote": "Включая эту функцию, вы принимаете наши <a href=\"{data}\">Чек-лист сбора данных</a> и другие условия."
     },
     "errors": {
       "10000": "Сеанс синхронизации истек. Привяжите снова.",
@@ -365,7 +426,7 @@
     "now": "Синхронизировать с OEM Cloud",
     "already": "Синхронизировано с облаком",
     "done": "Синхронизировано - {times} назад",
-    "syncing": "Синхронизация: {count} точек",
+    "syncing": "{count, plural, one {Синхронизация: # точка} few {Синхронизация: # точки} many {Синхронизация: # точек} other {Синхронизация: # точки}}",
     "failed": "Ошибка ({reason})",
     "offline": "Офлайн",
     "dataConflict": "Конфликт данных",
@@ -373,7 +434,7 @@
     "conflict": {
       "title": "Конфликт данных",
       "local": "Локально",
-      "remote": "Облако",
+      "remote": "Удалённые данные",
       "official": "Официальная карта",
       "oemDb": "OEM DB",
       "updatedAt": "Последнее изменение",
@@ -401,6 +462,7 @@
     "all": "Все",
     "selected": "Выбрано",
     "confirm": "Подтвердить",
+    "confirmAgain": "Нажмите ещё раз для подтверждения",
     "loading": "Загрузка...",
     "enable": "Включить",
     "disable": "Отключить",

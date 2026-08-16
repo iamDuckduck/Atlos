@@ -1,6 +1,5 @@
 @use '../../styles/palette.scss' as *;
 @use '../../styles/curves.scss' as *;
-@use '../../styles/size.scss' as *;
 @use 'sass:color';
 @use 'sass:math';
 
@@ -188,7 +187,6 @@ $mobile-indicator-height: 0.48rem;
         border-radius: 3px;
         padding: 5px;
         box-shadow: 0 0 5px rgba($black-0, 0.6);
-        max-height: 480px;
         overflow-y: auto;
         backdrop-filter: blur(8px);
         opacity: 0;
@@ -258,10 +256,9 @@ $mobile-indicator-height: 0.48rem;
     }
 }
 
-@media screen and (max-width: $mobile-bp) {
-    .regswitch {
-        gap: $mobile-item-gap;
-    }
+.regswitch.mobile {
+    gap: $mobile-item-gap;
+
     .regLabel {
         width: $mobile-item-height;
         height: calc($mobile-item-height / 2.25);

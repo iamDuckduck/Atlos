@@ -2,13 +2,17 @@
   "headbar": {
     "tos": "Conditions et stockage",
     "hideUI": "Masquer l’interface utilisateur",
-    "group": "Rejoindre les groupes associés",
+    "notification": "Notifications",
     "darkmode": "Passer en mode sombre",
     "lightmode": "Passer en mode clair",
     "language": "Choisir la langue",
     "help": "Demander de l’aide",
     "announcement": "Annonces",
     "settings": "Paramètres"
+  },
+  "mapControls": {
+    "layerSelect": "Sélection de couche",
+    "locationTracking": "Synchro position"
   },
   "trigger": {
     "boundaryMode": "Mode des limites",
@@ -17,7 +21,7 @@
   },
   "search": {
     "placeholder": "Recherche générale...",
-    "results": "{count} résultat(s)",
+    "results": "{count, plural, one {# résultat} other {# résultats}}",
     "locatedAt": "Trouvé dans",
     "distributeAt": "Distribué dans"
   },
@@ -32,23 +36,58 @@
       "main": "Principal",
       "sub": "Sous"
     },
+    "label": {
+      "note": "Note",
+      "url": "Lien associé",
+      "comments": "Commentaire le mieux noté",
+      "collectionRate": "Taux de collecte"
+    },
+    "tabs": {
+      "collectAll": "Marquer tous les points du même type comme terminés",
+      "general": "Détails",
+      "comments": "Commentaires"
+    },
     "noInfo": "Aucune image. Utilisez {paste} / {click} pour importer.",
-    "communityRule1": "Avant de téléverser, assurez-vous d’avoir lu et de respecter les",
-    "communityRule2": "Règles de la communauté",
+    "communityRule": "Avant de téléverser, assurez-vous d’avoir lu et de respecter les <a href=\"{link}\">Règles de la communauté</a>",
     "uploading": "Téléversement...",
     "uploadPending": "Envoi reçu. Affichage après vérification.",
     "readFullText": "Cliquez pour lire le texte complet.",
     "share": "Copier le lien partageable de ce point.",
     "copied": "Lien copié",
+    "collectionRateSource": "Le taux de collecte global est de {nums} – Statistiques d’OEM Cloud",
     "viewer": {
       "author": "Auteur",
       "uploadedAt": "Téléversé le",
       "upvote": "Soutenir",
       "flag": "Signaler comme inexact",
       "unflag": "Retirer le signalement",
+      "uploadAno": "Téléverser autre",
       "share": "Partager",
       "recall": "Demander le retrait",
       "unrecall": "Annuler le retrait"
+    },
+    "comments": {
+      "placeholder": "Écrivez quelque chose !",
+      "submit": "Publier le commentaire",
+      "actions": "Actions du commentaire",
+      "translate": "Traduire",
+      "showOriginal": "Afficher l’original",
+      "translatedFrom": "Traduit depuis {language}",
+      "translating": "Traduction...",
+      "translateFailed": "Échec de la traduction",
+      "upvote": "J’aime",
+      "downvote": "Je n’aime pas",
+      "reply": "Répondre",
+      "edit": "Modifier",
+      "submitEdit": "Enregistrer les modifications",
+      "undoEdit": "Annuler les modifications",
+      "recall": "Masquer immédiatement",
+      "reviewing": "En examen",
+      "emptyWithRule": "Aucun commentaire pour le moment. Veuillez respecter les <a href=\"{link}\">règles de la communauté</a> lors de la publication.",
+      "ruleOnly": "Veuillez respecter les <a href=\"{link}\">règles de la communauté</a> lors de la publication.",
+      "loadFailed": "Échec du chargement des commentaires.",
+      "submitFailed": "Échec de l’envoi du commentaire.",
+      "editFailed": "Échec de la mise à jour du commentaire."
     },
     "errors": {
       "unsupportedType": "Seules les images JPEG/PNG/WebP/AVIF/HEIC sont prises en charge.",
@@ -65,12 +104,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
-      "supportedBy": "pris en charge par Observator 6"
-    }
+      "supportedBy": "Pris en charge par Observator 6"
+    },
+    "newlyAdded": "Nouveautés de la version"
   },
   "language": {
     "title": "Langue",
@@ -101,12 +141,39 @@
       "th-TH": "Thaïlandais",
       "vi-VN": "Vietnamien",
       "el-GR": "Grec",
-      "hi-IN": "Hindi"
+      "hi-IN": "Hindi",
+      "uk-UA": "Ukrainien",
+      "tr-TR": "Turc"
     }
   },
-  "group": {
-    "title": "Communauté & médias",
-    "visit": "Visiter"
+  "notification": {
+    "title": "Notifications",
+    "tabs": {
+      "community": "Interactions",
+      "system": "Modération"
+    },
+    "markAllRead": "Tout marquer comme lu",
+    "empty": "Aucun message. Les messages liés à vos contributions apparaîtront ici.",
+    "guest": "Connectez-vous avec votre {account} pour recevoir les notifications pertinentes.",
+    "account": "compte OEM",
+    "loadError": "Impossible de charger les notifications.",
+    "loadMore": "Charger plus",
+    "support": "Contact et assistance",
+    "visit": "Visiter",
+    "noDetails": "Aucun détail supplémentaire.",
+    "subject": {
+      "image": "image",
+      "comment": "commentaire",
+      "submission": "contribution"
+    },
+    "types": {
+      "approved": "Votre <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> est désormais {kind, select, comment {public} other {publique}}.",
+      "needsReview": "Votre <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> attend une vérification manuelle.",
+      "removeResolved": "Votre <subjectTag>{subject}</subjectTag> {kind, select, comment {retiré} other {retirée}} <pointTag>{point}</pointTag> a été {kind, select, comment {traité} other {traitée}}.",
+      "reply": "Une nouvelle réponse a été ajoutée à votre <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag>.",
+      "vote": "Votre <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> a reçu {count, plural, one {# mention J’aime} other {# mentions J’aime}}.",
+      "multiple": "Votre <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> a reçu {count, plural, one {# mise à jour associée} other {# mises à jour associées}}."
+    }
   },
   "tos": {
     "title": "Conditions et Stockage",
@@ -145,6 +212,8 @@
     "shortcuts": {
       "title": "Raccourcis clavier",
       "hint": "Raccourcis disponibles pour les actions rapides.",
+      "toggleUI": "Afficher/masquer l’interface",
+      "quickSearch": "Recherche rapide",
       "exportData": "Exporter les données",
       "importData": "Importer les données",
       "undo": "Annuler",
@@ -166,13 +235,13 @@
     "triggerHandle": "Les commutateurs liés à l'affichage de la carte sont situés au bas de la barre latérale.<br>Vous pouvez maintenir la souris pour <span class=\"keyword\">les faire glisser et les utiliser.</span>",
     "triggerSwitch": "Cliquez pour basculer l'état du commutateur.<br><ul><li><span class=\"keyword\">Le mode de regroupement des marqueurs</span> permet d'afficher les marqueurs denses fusionnés;</li><li><span class=\"keyword\">L'affichage des limites de région</span> met en évidence chaque sous-région et ses limites dans la zone actuelle.</li><li><span class=\"keyword\">Noms de région</span> affiche les noms des régions du jeu.</li></ul>",
     "scale": "Utilisez le <span class=\"keyword\">contrôle de zoom</span> pour afficher et manipuler le zoom de la carte.<br>La molette ou le pavé tactile peuvent être utilisés pour zoomer. Vous pouvez également zoomer en cliquant sur les boutons <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> ou n'importe où sur la barre de zoom.",
-    "filterList": "La <span class=\"keyword\">liste des marqueurs</span> répertorie les marqueurs que vous avez sélectionnés ; cliquez sur l'icône pour désélectionner.",
+    "filterList": "La <span class=\"keyword\">liste des marqueurs</span> affiche les types de marqueurs sélectionnés ; cliquez sur l’icône pour les désélectionner.",
     "headbar": "Les commutateurs liés aux paramètres de la carte sont situés dans la <span class=\"keyword\">barre supérieure</span>.",
     "tos": "Les <span class=\"keyword\">Conditions d'utilisation</span> et la <span class=\"keyword\">Gestion des données</span> du site Web.",
     "hideUI": "<span class=\"keyword\">Masquer l'interface utilisateur</span> pour prendre des captures d'écran ou voir les marqueurs en bordure.",
-    "group": "Voir les <span class=\"keyword\">groupes de discussion</span> et les <span class=\"keyword\">communautés</span> liés à ce projet.",
+    "notification": "Ouvrez les <span class=\"keyword\">notifications</span> pour consulter les interactions et les résultats de vérification liés à vos contributions.",
     "darkMode": "Basculer le <span class=\"keyword\">mode d'éclairage ambiant</span> actuel.",
-    "language": "Changer la <span class=\"keyword\">langue de l'interface</span>.<br>Actuellement, les langues avec <span class=\"keyword\">un support complet de traduction du contenu du jeu</span> incluent l'anglais, le chinois simplifié, le chinois traditionnel, le japonais, le coréen, le français, l'allemand, l'italien, le russe, l'espagnol, l'indonésien, le portugais, le thaï et le vietnamien.<br>Les langues avec <span class=\"keyword\">uniquement le support de traduction de l'interface</span> incluent l'arabe, le malais, le polonais et le suédois.",
+    "language": "Changer la <span class=\"keyword\">langue de l'interface</span>.<br>Actuellement, les langues avec <span class=\"keyword\">un support complet de traduction du contenu du jeu</span> incluent l'anglais, le chinois simplifié, le chinois traditionnel, le japonais, le coréen, le français, l'allemand, l'italien, le russe, l'espagnol, l'indonésien, le portugais, le thaï et le vietnamien.<br>Les langues avec <span class=\"keyword\">uniquement le support de traduction de l'interface</span> incluent l'arabe, le malais, le polonais, le suédois, le grec, l'hindi, l'ukrainien et le turc.",
     "announcement": "Voir les <span class=\"keyword\">annonces du site web</span>. Les mises à jour des conditions d'utilisation et de la politique de confidentialité seront également publiées ici.",
     "help": "Redémarrer ce <span class=\"keyword\">guide</span>.",
     "settings": "Ouvrez les <span class=\"keyword\">Paramètres</span> pour contrôler le stockage local que la carte utilise pour mémoriser vos actions.",
@@ -194,16 +263,11 @@
       "selectorSelect": "<span class=\"keyword\">Sélecteur de marqueurs</span>. Touchez pour basculer ; les marqueurs sélectionnés apparaissent sur la carte. Vous voyez le total et combien vous avez marqués dans la zone actuelle."
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">Note :</span> Lorsque la version du jeu est <span class=\"keyword\">1.0.13</span>, la version des données de la carte est <span class=\"keyword\">0.8.25</span>. Nous avons besoin de temps pour mettre à jour les données, cela peut donc arriver après la mise à jour du jeu. Merci de votre patience. Pour suivre nos mises à jour, veuillez rejoindre notre <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Rejoindre Discord'>serveur Discord</a>.<br><br>Nous recommandons également les outils suivants :<ul><li><span class=\"keyword\">Wiki du jeu : </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Visiter le Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Partage de plans:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Visiter Talos Pioneers'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "L'ensemble de données actuel est à jour.<br><br>Si vous devez signaler des problèmes, veuillez rejoindre notre <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Rejoindre Discord'>serveur Discord</a>.<br><br>Nous recommandons également les outils suivants :<ul><li><span class=\"keyword\">Wiki du jeu : </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Visiter le Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Partage de plans:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Visiter Talos Pioneers'>https://talospioneers.com</a></li></ul>"
-  },
   "idcard": {
     "group": "Groupe :",
     "since": "Depuis",
     "logintip": "Connexion via avatar",
     "registip": "Inscription via avatar",
-    "ago": "il y a",
     "karma": "Karma",
     "loading": "Chargement...",
     "unassigned": "Non attribué",
@@ -219,7 +283,7 @@
       "passwordReset": "Réinitialisation du mot de passe",
       "email": "E-mail:",
       "password": "Mot de passe:",
-      "newPassword": "Nouveau mot de passe :",
+      "newPassword": "Nouveau mot de passe :",
       "repeatPassword": "Répéter le mot de passe:",
       "verification": "Vérification:",
       "forgotPW": "Mot de passe oublié ?",
@@ -230,8 +294,10 @@
       "resend": "Renvoyer ({count})",
       "dcLogin": "Connectez-vous avec Discord",
       "gooLogin": "Connectez-vous avec Google",
+      "ghLogin": "Connectez-vous avec GitHub",
       "dcRegis": "Continuer avec Discord",
       "gooRegis": "Continuer avec Google",
+      "ghRegis": "Continuer avec GitHub",
       "connecting": "Connexion...",
       "resetLink": "Veuillez saisir l'adresse e-mail associée à votre compte et nous vous enverrons un lien de réinitialisation de mot de passe s'il existe.<br><br>Vérifiez votre boîte de réception et votre dossier spam après la soumission.",
       "resetRequire": "Veuillez saisir votre nouveau mot de passe et le confirmer. <br><br>Nous réinitialiserons votre mot de passe immédiatement.",
@@ -242,14 +308,14 @@
       "switchToLoginPrefix": "Vous avez déjà un compte ?",
       "switchToLoginAction": "Connectez-vous !",
       "ack": "En poursuivant, vous avez lu et accepté notre",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Politique de confidentialité</a> et <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Conditions d’utilisation</a>.",
+      "ackLink": "<a href=\"{privacy}\">Politique de confidentialité</a> et <a href=\"{tos}\">Conditions d’utilisation</a>.",
       "hints": {
         "0": "Identifiants incorrects",
         "101": "Email requis",
         "102": "Email invalide",
         "103": "Email occupé",
         "104": "Email non enregistré",
-        "105": "Email Not Supported",
+        "105": "E-mail non pris en charge",
         "111": "Mot de passe requis",
         "112": "Mot de passe invalide",
         "113": "Mots de passe différents",
@@ -259,17 +325,17 @@
         "200": "Accès accordé",
         "201": "Compte créé",
         "202": "Mot de passe modifié",
-        "429": "Tarif Limité",
+        "429": "Trop de requêtes",
         "430": "Contrôle de sécurité",
         "601": "Jeton expiré",
-        "602": "Séance requise",
+        "602": "Session requise",
         "603": "Accès refusé",
         "604": "Conflit de fournisseur",
         "701": "Surchargé",
         "702": "Temps mort",
         "703": "Entretien",
-        "801": "Suspendu : vandalisme",
-        "802": "Suspendu : ACC refusé"
+        "801": "Suspendu : vandalisme",
+        "802": "Suspendu : ACC refusé"
       }
     },
     "profile": {
@@ -280,10 +346,10 @@
       "note": "Note",
       "noteNickname": "Vous ne pouvez pas utiliser plus de 15 lettres, chiffres, traits d’union et traits de soulignement dans votre nom d’utilisateur.",
       "noteUID": "L'UID est attribué lors de la première configuration et ne peut pas être modifié. Vous pouvez mettre à jour votre nom d'utilisateur à tout moment. Cliquez sur la zone de l'avatar pour changer d'avatar.",
-      "auditLabel": "Audit",
+      "auditLabel": "Action",
       "importOfficial": "Importer depuis la carte officielle",
       "save": "Enregistrer",
-      "saving": "Économie...",
+      "saving": "Enregistrement...",
       "logout": "Se déconnecter"
     }
   },
@@ -300,10 +366,7 @@
     "binding": {
       "title": "Lier le compte",
       "docsLead": "En continuant, vous confirmez accepter les termes ci-dessous :",
-      "tos": "Conditions d'utilisation",
-      "privacy": "Politique de confidentialité",
-      "dataCollection": "Liste de collecte de données",
-      "disclaimer": "Clause de non-responsabilité",
+      "docsLinks": "<a href=\"{tos}\">Conditions d'utilisation</a> · <a href=\"{privacy}\">Politique de confidentialité</a> · <a href=\"{data}\">Liste de collecte de données</a> · <a href=\"{disclaimer}\">Clause de non-responsabilité</a>",
       "chinaTab": "Chine (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Rendez-vous sur le <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>site officiel</a> et assurez-vous d'être connecté.",
@@ -311,7 +374,6 @@
       "CNStep1": "Ouvrez le <a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>lien API Hypergryph</a> et copiez la réponse complète.",
       "UniStep1": "Ouvrez le <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>lien API Gryphline</a> et copiez la réponse complète.",
       "Step2": "Collez la réponse complète, lisez les termes, puis liez votre compte.",
-      "serverFallback": "Serveur",
       "changeBinding": "Changer la liaison",
       "unlink": "Délier",
       "bindWithCountdown": "Lier et activer la synchro ({sec})",
@@ -346,8 +408,7 @@
       "trackPoints": "Suivi",
       "centerOnPosition": "Maintenir centré",
       "heatmap": "Carte thermique",
-      "configNote1": "Activer cette fonctionnalité signifie que vous acceptez nos ",
-      "configNote2": " et autres conditions."
+      "configNote": "Activer cette fonctionnalité signifie que vous acceptez nos <a href=\"{data}\">Liste de collecte de données</a> et autres conditions."
     },
     "errors": {
       "10000": "La session de synchro de position a expiré. Veuillez lier à nouveau.",
@@ -365,7 +426,7 @@
     "now": "Synchroniser avec OEM Cloud",
     "already": "Synchronisé avec le cloud",
     "done": "Synchronisé - il y a {times}",
-    "syncing": "Synchronisation de {count} points",
+    "syncing": "{count, plural, one {Synchronisation de # point} other {Synchronisation de # points}}",
     "failed": "Échec de la synchronisation ({reason})",
     "offline": "Hors ligne",
     "dataConflict": "Conflit de données",
@@ -401,6 +462,7 @@
     "all": "Tout",
     "selected": "Sélectionné",
     "confirm": "Confirmer",
+    "confirmAgain": "Cliquez à nouveau pour confirmer",
     "loading": "Chargement...",
     "enable": "Activer",
     "disable": "Désactiver",

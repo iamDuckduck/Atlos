@@ -13,9 +13,10 @@ import {
     useSetForceHeadbarExpanded,
 } from '@/store/uiPrefs';
 import { useMarkerStore, useSwitchFilter } from '@/store/marker';
-import { useAddPoint, useDeletePoint } from '@/store/userRecord';
+import { applyPointProgressSilently } from '@/store/history';
 import useRegion from '@/store/region';
 import { loadAllMarkers, MARKER_TYPE_TREE, type IMarkerData, type IMarkerType } from '@/data/marker';
+import { DEFAULT_REGION } from '@/data/map';
 
 export type GuideStep = Step & {
     id: string;
@@ -29,8 +30,6 @@ export const useMobileGuideSteps = (map?: L.Map) => {
     const t = useTranslateUI();
     const toggleMarkFilterExpanded = useToggleMarkFilterExpanded();
     const switchFilter = useSwitchFilter();
-    const addPoint = useAddPoint();
-    const deletePoint = useDeletePoint();
     const setCurrentActivePoint = useMarkerStore((s) => s.setCurrentActivePoint);
     const setDrawerSnapIndex = useSetMobileDrawerSnapIndex();
     const setForceDetailOpen = useSetForceDetailOpen();
@@ -40,8 +39,8 @@ export const useMobileGuideSteps = (map?: L.Map) => {
     const setCurrentRegion = useRegion((s) => s.setCurrentRegion);
 
     const targetSubCategory = 'boss';
-    const firstSubCategory = MARKER_TYPE_TREE[targetSubCategory]?.length 
-        ? targetSubCategory 
+    const firstSubCategory = MARKER_TYPE_TREE[targetSubCategory]?.length
+        ? targetSubCategory
         : Object.keys(MARKER_TYPE_TREE)[0];
     const firstType = (MARKER_TYPE_TREE[firstSubCategory]?.[0] as IMarkerType | undefined)?.key ?? '';
 
@@ -86,14 +85,14 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-0_welcome',
             target: 'body',
-            content: parse(t('guide.welcome') || ''),
+            content: parse(t('guide.welcome')),
             placement: 'center',
             disableBeacon: true,
         },
         {
             id: 'MSTEP-1_headbar',
             target: '[class*="headbar"]',
-            content: parse(t('guide.mobile.headbar') || ''),
+            content: parse(t('guide.mobile.headbar')),
             placement: 'bottom',
             disableBeacon: true,
             onNext: () => {
@@ -104,57 +103,57 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         },
         {
             id: 'MSTEP-2_tos',
-            target: '[data-guide="headbar-tos"]',
-            content: parse(t('guide.tos') || ''),
+            target: '[data-guide="tos"]',
+            content: parse(t('guide.tos')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'MSTEP-3_hide-ui',
-            target: '[data-guide="headbar-hide-ui"]',
-            content: parse(t('guide.hideUI') || ''),
+            target: '[data-guide="hide-ui"]',
+            content: parse(t('guide.hideUI')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
-            id: 'MSTEP-4_group',
-            target: '[data-guide="headbar-group"]',
-            content: parse(t('guide.group') || ''),
+            id: 'MSTEP-4_notification',
+            target: '[data-guide="notify"]',
+            content: parse(t('guide.notification')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'MSTEP-5_dark-mode',
-            target: '[data-guide="headbar-dark-mode"]',
-            content: parse(t('guide.darkMode') || ''),
+            target: '[data-guide="dark-mode"]',
+            content: parse(t('guide.darkMode')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'MSTEP-6_language',
-            target: '[data-guide="headbar-language"]',
-            content: parse(t('guide.language') || ''),
+            target: '[data-guide="language"]',
+            content: parse(t('guide.language')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'MSTEP-7_help',
-            target: '[data-guide="headbar-help"]',
-            content: parse(t('guide.help') || ''),
+            target: '[data-guide="help"]',
+            content: parse(t('guide.help')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'MSTEP-7_announcement',
-            target: '[data-guide="headbar-announcement"]',
-            content: parse(t('guide.announcement') || ''),
+            target: '[data-guide="announcement"]',
+            content: parse(t('guide.announcement')),
             placement: 'bottom',
             disableBeacon: true,
         },
         {
             id: 'MSTEP-8_settings',
-            target: '[data-guide="headbar-settings"]',
-            content: parse(t('guide.settings') || ''),
+            target: '[data-guide="settings"]',
+            content: parse(t('guide.settings')),
             placement: 'bottom',
             disableBeacon: true,
             onNext: () => {
@@ -166,7 +165,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-9_locator-button',
             target: '[data-guide="mobile-locator-shell"]',
-            content: parse(t('guide.mobile.locator') || ''),
+            content: parse(t('guide.mobile.locator')),
             placement: 'right',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -174,7 +173,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-10_region-switch',
             target: '[class*="regswitch"]',
-            content: parse(t('guide.regionSwitch') || ''),
+            content: parse(t('guide.regionSwitch')),
             placement: 'right',
             disableBeacon: true,
             onNext: () => {
@@ -186,13 +185,13 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-11_subregion-switch',
             target: '[class*="subregionSwitch"]',
-            content: parse(t('guide.subregionSwitch') || ''),
+            content: parse(t('guide.subregionSwitch')),
             placement: 'right',
             disableBeacon: true,
             onNext: () => {
                 setForceRegionSubOpen(false);
                 // Ensure next layer steps always have a layer switch rendered.
-                setCurrentRegion('Valley_4');
+                setCurrentRegion(DEFAULT_REGION);
                 map?.setZoom(map.getMinZoom(), { animate: true });
             },
             delay: 420,
@@ -200,7 +199,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-12_layer-main',
             target: '[data-guide="layer-main-toggle"]',
-            content: parse(t('guide.layerMain') || ''),
+            content: parse(t('guide.layerMain')),
             placement: 'right',
             disableBeacon: true,
             onNext: () => {
@@ -212,7 +211,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-13_layer-switch',
             target: '[data-guide="layer-switch-item"]',
-            content: parse(t('guide.layerSwitch') || ''),
+            content: parse(t('guide.layerSwitch')),
             placement: 'right',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -223,7 +222,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-14_search',
             target: '[class*="searchContainer"]',
-            content: parse(t('guide.search') || ''),
+            content: parse(t('guide.search')),
             placement: 'bottom',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -231,7 +230,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-17_drawer',
             target: '[class*="mobileDrawer"]',
-            content: parse(t('guide.mobile.drawer') || ''),
+            content: parse(t('guide.mobile.drawer')),
             placement: 'top',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -244,7 +243,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-18_filter-container',
             target: `[data-category="${firstSubCategory}"]`,
-            content: parse(t('guide.filterContainer') || ''),
+            content: parse(t('guide.filterContainer')),
             placement: 'right',
             disableBeacon: true,
             onNext: () => {
@@ -279,14 +278,14 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-19_filter-icon',
             target: `[data-category="${firstSubCategory}"] [class*="filterIcon"]`,
-            content: parse(t('guide.filterSort') || ''),
+            content: parse(t('guide.filterSort')),
             placement: 'right',
             disableBeacon: true,
         },
         {
             id: 'MSTEP-20_selector-select',
             target: `[data-key="${firstType}"]`,
-            content: parse(t('guide.mobile.selectorSelect') || ''),
+            content: parse(t('guide.mobile.selectorSelect')),
             placement: 'right',
             disableBeacon: true,
             onBefore: async () => {
@@ -308,7 +307,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-21_selector-complete',
             target: `[data-key="${firstType}"]`,
-            content: parse(t('guide.selectorComplete') || ''),
+            content: parse(t('guide.selectorComplete')),
             placement: 'right',
             disableBeacon: true,
             onBefore: async () => {
@@ -324,14 +323,14 @@ export const useMobileGuideSteps = (map?: L.Map) => {
                 void loadAllMarkers().then((markers) => {
                     markers
                         .filter((m) => m.type === firstType)
-                        .forEach((p) => addPoint(p.id));
+                        .forEach((p) => applyPointProgressSilently({ collect: [p.id] }));
                 });
             },
         },
         {
             id: 'MSTEP-15_divider',
             target: '[class*="divider"]',
-            content: parse(t('guide.mobile.divider') || ''),
+            content: parse(t('guide.mobile.divider')),
             placement: 'left',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -339,7 +338,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-16_filter-list',
             target: '[class*="topRowPane"]:nth-child(3)',
-            content: parse(t('guide.filterList') || ''),
+            content: parse(t('guide.filterList')),
             placement: 'bottom',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -351,7 +350,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
             },
             id: 'MSTEP-22_trigger-switch',
             target: '[class*="mobileTriggerBar"]',
-            content: parse(t('guide.triggerSwitch') || ''),
+            content: parse(t('guide.triggerSwitch')),
             placement: 'top',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -361,7 +360,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
                 void loadAllMarkers().then((markers) => {
                     markers
                         .filter((m) => m.type === firstType)
-                        .forEach((p) => deletePoint(p.id));
+                        .forEach((p) => applyPointProgressSilently({ uncollect: [p.id] }));
                 });
             },
             delay: 300,
@@ -369,7 +368,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-23_point-select',
             target: '.leaflet-marker-icon',
-            content: parse(t('guide.pointSelect') || ''),
+            content: parse(t('guide.pointSelect')),
             placement: 'top',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -384,7 +383,7 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         {
             id: 'MSTEP-24_point-check',
             target: '.leaflet-marker-icon',
-            content: parse(t('guide.pointMark') || ''),
+            content: parse(t('guide.pointMark')),
             placement: 'top',
             disableBeacon: true,
             disableAutoScroll: true,
@@ -397,8 +396,6 @@ export const useMobileGuideSteps = (map?: L.Map) => {
         map,
         toggleMarkFilterExpanded,
         switchFilter,
-        addPoint,
-        deletePoint,
         setDrawerSnapIndex,
         setCurrentActivePoint,
         setForceDetailOpen,

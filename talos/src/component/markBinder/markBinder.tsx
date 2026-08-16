@@ -7,7 +7,6 @@ import { getItemIconUrl } from '@/utils/resource';
 import { useTranslateGame } from '@/locale';
 import { useMultiRegionMarkerCount, useFilter, useSearchString, useMarkerStore } from '@/store/marker';
 import MarkSelector from '../markSelector/markSelector';
-import { trackedSetFilterKeys } from '@/store/trackedActions';
 import { MarkVisibilityContext } from '../markFilter/visibilityContext';
 
 interface MarkBinderProps {
@@ -26,7 +25,7 @@ const MarkBinder = ({ group }: MarkBinderProps) => {
 
     const iconUrl = useMemo(
         () => group.sharedKey === 'rsch'
-            ? '/assets/images/item/investigate.webp'
+            ? getItemIconUrl('investigate', 'webp')
             : getItemIconUrl(group.dropKey, 'webp'),
         [group.dropKey, group.sharedKey],
     );
@@ -117,7 +116,7 @@ const MarkBinder = ({ group }: MarkBinderProps) => {
         const currentFilter = useMarkerStore.getState().filter;
         const currentlyAllActive =
             typeKeys.length > 0 && typeKeys.every((k) => currentFilter.includes(k));
-        trackedSetFilterKeys(typeKeys, !currentlyAllActive);
+        useMarkerStore.getState().setFilterKeys(typeKeys, !currentlyAllActive);
     }, [typeKeys]);
 
     if (!showFilter) return null;
@@ -130,6 +129,8 @@ const MarkBinder = ({ group }: MarkBinderProps) => {
             className={`${styles.binderWrap} ${allActive ? styles.active : ''} ${isComplete ? styles.completed : ''}`}
             style={{ '--progress-percentage': `${progressPct}%` } as StyleVars}
             onClick={handleToggleAll}
+            data-binder-wrap="true"
+            data-active={allActive ? 'true' : 'false'}
         >
             {/* Header: layout only, click bubbles up to wrap */}
             <div

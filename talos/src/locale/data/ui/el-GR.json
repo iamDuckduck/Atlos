@@ -2,13 +2,17 @@
   "headbar": {
     "tos": "Όροι & Αποθήκευση",
     "hideUI": "Απόκρυψη UI",
-    "group": "Συμμετοχή σε ομάδα",
+    "notification": "Ειδοποιήσεις",
     "darkmode": "Σκοτεινή λειτουργία",
     "lightmode": "Φωτεινή λειτουργία",
     "language": "Επιλογή γλώσσας",
     "help": "Βοήθεια",
     "announcement": "Ανακοινώσεις",
     "settings": "Προτιμήσεις"
+  },
+  "mapControls": {
+    "layerSelect": "Επιλογή επιπέδου",
+    "locationTracking": "Συγχρονισμός θέσης"
   },
   "trigger": {
     "boundaryMode": "Όρια Περιοχών",
@@ -17,7 +21,7 @@
   },
   "search": {
     "placeholder": "Αναζήτηση...",
-    "results": "{count} αποτέλεσμα(-τα)",
+    "results": "{count, plural, one {# αποτέλεσμα} other {# αποτελέσματα}}",
     "locatedAt": "Βρίσκεται σε",
     "distributeAt": "Κατανέμεται σε"
   },
@@ -32,26 +36,61 @@
       "main": "Κύρια",
       "sub": "Υποπεριοχή"
     },
+    "label": {
+      "note": "Σημείωση",
+      "url": "Σύνδεσμος",
+      "comments": "Σχόλιο με τις περισσότερες ψήφους",
+      "collectionRate": "Ποσοστό συλλογής"
+    },
+    "tabs": {
+      "collectAll": "Σήμανση όλων του ίδιου τύπου ως ολοκληρωμένων",
+      "general": "Λεπτομέρειες",
+      "comments": "Σχόλια"
+    },
     "noInfo": "Δεν υπάρχει εικόνα. Χρησιμοποιήστε {paste} / {click} για μεταφόρτωση.",
-    "communityRule1": "Πριν από τη μεταφόρτωση, βεβαιωθείτε ότι έχετε διαβάσει και ακολουθείτε τις",
-    "communityRule2": "Οδηγίες κοινότητας",
+    "communityRule": "Πριν από τη μεταφόρτωση, βεβαιωθείτε ότι έχετε διαβάσει και ακολουθείτε τις <a href=\"{link}\">Οδηγίες κοινότητας</a>",
     "uploading": "Μεταφόρτωση...",
     "uploadPending": "Η υποβολή ελήφθη. Θα εμφανιστεί μετά τον έλεγχο.",
     "readFullText": "Κλικ για ανάγνωση ολόκληρου του κειμένου.",
     "share": "Αντιγραφή συνδέσμου κοινοποίησης για αυτό το σημείο.",
     "copied": "Ο σύνδεσμος αντιγράφηκε",
+    "collectionRateSource": "Το συνολικό ποσοστό συλλογής είναι {nums} – Στατιστικά από το OEM Cloud",
     "viewer": {
       "author": "Αποστολέας",
       "uploadedAt": "Μεταφορτώθηκε στις",
       "upvote": "Υποστήριξη",
       "flag": "Σήμανση ως ανακριβές",
       "unflag": "Κατάργηση σήμανσης",
+      "uploadAno": "Μεταφόρτωση άλλου",
       "share": "Κοινοποίηση",
       "recall": "Αίτημα αφαίρεσης",
       "unrecall": "Ακύρωση αφαίρεσης"
     },
+    "comments": {
+      "placeholder": "Γράψτε κάτι!",
+      "submit": "Δημοσίευση σχολίου",
+      "actions": "Ενέργειες σχολίου",
+      "translate": "Μετάφραση",
+      "showOriginal": "Εμφάνιση πρωτοτύπου",
+      "translatedFrom": "Μεταφράστηκε από {language}",
+      "translating": "Γίνεται μετάφραση...",
+      "translateFailed": "Η μετάφραση απέτυχε",
+      "upvote": "Μου αρέσει",
+      "downvote": "Δεν μου αρέσει",
+      "reply": "Απάντηση",
+      "edit": "Επεξεργασία",
+      "submitEdit": "Αποθήκευση αλλαγών",
+      "undoEdit": "Αναίρεση αλλαγών",
+      "recall": "Άμεση απόκρυψη",
+      "reviewing": "Υπό έλεγχο",
+      "emptyWithRule": "Δεν υπάρχουν ακόμη σχόλια. Κατά τη δημοσίευση, ακολουθήστε τις <a href=\"{link}\">οδηγίες κοινότητας</a>.",
+      "ruleOnly": "Κατά τη δημοσίευση, ακολουθήστε τις <a href=\"{link}\">οδηγίες κοινότητας</a>.",
+      "loadFailed": "Η φόρτωση των σχολίων απέτυχε.",
+      "submitFailed": "Η υποβολή του σχολίου απέτυχε.",
+      "editFailed": "Δεν ήταν δυνατή η ενημέρωση του σχολίου."
+    },
     "errors": {
-      "unsupportedType": "Υποστηρίζονται μόνο εικόνες JPEG/PNG/WebP/AVIF.",
+      "unsupportedType": "Υποστηρίζονται μόνο εικόνες JPEG/PNG/WebP/AVIF/HEIC.",
       "fileTooLarge": "Το αρχείο εικόνας είναι πολύ μεγάλο.",
       "imageDecodeFailed": "Το πρόγραμμα περιήγησης δεν μπόρεσε να ανοίξει αυτήν την εικόνα.",
       "imageProcessingUnavailable": "Η τοπική επεξεργασία εικόνας δεν είναι διαθέσιμη.",
@@ -65,12 +104,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
       "supportedBy": "υποστηρίζεται από το Observator 6"
-    }
+    },
+    "newlyAdded": "Νέα στην έκδοση"
   },
   "language": {
     "title": "Γλώσσα",
@@ -101,12 +141,39 @@
       "th-TH": "Ταϊλανδικά",
       "vi-VN": "Βιετναμέζικα",
       "el-GR": "Ελληνικά",
-      "hi-IN": "Χίντι"
+      "hi-IN": "Χίντι",
+      "uk-UA": "Ουκρανικά",
+      "tr-TR": "Τουρκικά"
     }
   },
-  "group": {
-    "title": "Κοινότητα & Πολυμέσα",
-    "visit": "Επίσκεψη"
+  "notification": {
+    "title": "Ειδοποιήσεις",
+    "tabs": {
+      "community": "Δράσεις",
+      "system": "Έλεγχος"
+    },
+    "markAllRead": "Επισήμανση όλων ως αναγνωσμένων",
+    "empty": "Δεν υπάρχουν μηνύματα. Τα μηνύματα σχετικά με τις συνεισφορές σας θα εμφανίζονται εδώ.",
+    "guest": "Συνδεθείτε με τον {account} σας για να λαμβάνετε σχετικές ειδοποιήσεις.",
+    "account": "λογαριασμό OEM",
+    "loadError": "Δεν ήταν δυνατή η φόρτωση των ειδοποιήσεων.",
+    "loadMore": "Φόρτωση περισσότερων",
+    "support": "Επικοινωνία & Υποστήριξη",
+    "visit": "Επίσκεψη",
+    "noDetails": "Δεν υπάρχουν πρόσθετες λεπτομέρειες.",
+    "subject": {
+      "image": "εικόνα",
+      "comment": "σχόλιο",
+      "submission": "υποβολή"
+    },
+    "types": {
+      "approved": "{kind, select, comment {Το} other {Η}} <subjectTag>{subject}</subjectTag> σας <pointTag>{point}</pointTag> είναι πλέον {kind, select, comment {δημόσιο} other {δημόσια}}.",
+      "needsReview": "{kind, select, comment {Το} other {Η}} <subjectTag>{subject}</subjectTag> σας <pointTag>{point}</pointTag> αναμένει μη αυτόματο έλεγχο.",
+      "removeResolved": "{kind, select, comment {Το} other {Η}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> που αποσύρατε διεκπεραιώθηκε.",
+      "reply": "Προστέθηκε νέα απάντηση {kind, select, comment {στο} other {στην}} <subjectTag>{subject}</subjectTag> σας <pointTag>{point}</pointTag>.",
+      "vote": "{kind, select, comment {Το} other {Η}} <subjectTag>{subject}</subjectTag> σας <pointTag>{point}</pointTag> έλαβε {count, plural, one {# επισήμανση «Μου αρέσει»} other {# επισημάνσεις «Μου αρέσει»}}.",
+      "multiple": "{kind, select, comment {Το} other {Η}} <subjectTag>{subject}</subjectTag> σας <pointTag>{point}</pointTag> έχει {count, plural, one {# σχετική ενημέρωση} other {# σχετικές ενημερώσεις}}."
+    }
   },
   "tos": {
     "title": "Όροι & Αποθήκευση",
@@ -145,6 +212,8 @@
     "shortcuts": {
       "title": "Συντομεύσεις Πληκτρολογίου",
       "hint": "Διαθέσιμες συντομεύσεις για γρήγορες ενέργειες.",
+      "toggleUI": "Εναλλαγή περιβάλλοντος",
+      "quickSearch": "Γρήγορη αναζήτηση",
       "exportData": "Εξαγωγή Δεδομένων",
       "importData": "Εισαγωγή Δεδομένων",
       "undo": "Αναίρεση",
@@ -166,13 +235,13 @@
     "triggerHandle": "Οι διακόπτες που σχετίζονται με την εμφάνιση του χάρτη βρίσκονται στο κάτω μέρος της πλευρικής μπάρας.<br>Μπορείτε να κρατήσετε πατημένο το ποντίκι για να τους <span class=\"keyword\">σύρετε και να τους χειριστείτε.</span>",
     "triggerSwitch": "Κάντε κλικ για εναλλαγή της κατάστασης του διακόπτη.<br><ul><li>Η <span class=\"keyword\">Λειτουργία Συμπλεγμάτων</span> επιτρέπει τη συγχώνευση των πυκνών δεικτών.</li><li>Η <span class=\"keyword\">Εμφάνιση Ορίων Περιοχής</span> επισημαίνει κάθε υποπεριοχή και τα όριά της.</li><li>Το <span class=\"keyword\">Όνομα Περιοχής</span> δείχνει τα ονόματα των περιοχών εντός του παιχνιδιού.</li></ul>",
     "scale": "Χρησιμοποιήστε το <span class=\"keyword\">Στοιχείο Ελέγχου Ζουμ</span> για να διαχειριστείτε το ζουμ του χάρτη.<br>Μπορείτε επίσης να κάνετε ζουμ κάνοντας κλικ στα κουμπιά <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> ή οπουδήποτε στη γραμμή ζουμ.",
-    "filterList": "Η <span class=\"keyword\">Λίστα Δεικτών</span> αναφέρει τους δείκτες που έχετε επιλέξει. Κάντε κλικ στο εικονίδιο για ακύρωση επιλογής.",
+    "filterList": "Η <span class=\"keyword\">Λίστα δεικτών</span> εμφανίζει τους τύπους δεικτών που έχετε επιλέξει· κάντε κλικ στο εικονίδιο για να αναιρέσετε την επιλογή.",
     "headbar": "Οι διακόπτες που σχετίζονται με τις ρυθμίσεις του χάρτη βρίσκονται στην <span class=\"keyword\">επάνω γραμμή (headbar)</span>.",
     "tos": "Οι <span class=\"keyword\">Όροι Παροχής Υπηρεσιών</span> και η <span class=\"keyword\">Διαχείριση Δεδομένων</span> του ιστότοπου.",
     "hideUI": "<span class=\"keyword\">Απόκρυψη UI Ιστότοπου</span> για λήψη στιγμιότυπων οθόνης ή προβολή ακριανών δεικτών.",
-    "group": "Δείτε τις <span class=\"keyword\">ομάδες συζήτησης</span> και τις <span class=\"keyword\">κοινότητες</span> που σχετίζονται με αυτό το έργο.",
+    "notification": "Ανοίξτε τις <span class=\"keyword\">ειδοποιήσεις</span> για να δείτε αλληλεπιδράσεις και αποτελέσματα ελέγχου σχετικά με τις συνεισφορές σας.",
     "darkMode": "Εναλλαγή της τρέχουσας <span class=\"keyword\">λειτουργίας φωτισμού περιβάλλοντος</span>.",
-    "language": "Αλλαγή <span class=\"keyword\">γλώσσας διεπαφής</span>.<br>Οι γλώσσες με <span class=\"keyword\">πλήρη υποστήριξη μετάφρασης</span> περιλαμβάνουν Αγγλικά, Απλοποιημένα Κινεζικά, Παραδοσιακά Κινεζικά, Ιαπωνικά, Κορεατικά, Γαλλικά, Γερμανικά, Ιταλικά, Ρωσικά, Ισπανικά, Ινδονησιακά, Πορτογαλικά, Ταϊλανδικά και Βιετναμέζικα.<br>Οι γλώσσες <span class=\"keyword\">Μόνο για UI</span> περιλαμβάνουν Αραβικά, Μαλαισιανά, Πολωνικά και Σουηδικά.",
+    "language": "Αλλαγή <span class=\"keyword\">γλώσσας διεπαφής</span>.<br>Οι γλώσσες με <span class=\"keyword\">πλήρη υποστήριξη μετάφρασης</span> περιλαμβάνουν Αγγλικά, Απλοποιημένα Κινεζικά, Παραδοσιακά Κινεζικά, Ιαπωνικά, Κορεατικά, Γαλλικά, Γερμανικά, Ιταλικά, Ρωσικά, Ισπανικά, Ινδονησιακά, Πορτογαλικά, Ταϊλανδικά και Βιετναμέζικα.<br>Οι γλώσσες <span class=\"keyword\">Μόνο για UI</span> περιλαμβάνουν Αραβικά, Μαλαϊκά, Πολωνικά, Σουηδικά, Ελληνικά, Χίντι, Ουκρανικά και Τουρκικά.",
     "announcement": "Δείτε τις πρόσφατες <span class=\"keyword\">ανακοινώσεις του ιστότοπου</span>. Ενημερώσεις στους όρους και την πολιτική απορρήτου θα δημοσιεύονται επίσης εδώ.",
     "help": "Επανεκκίνηση αυτού του <span class=\"keyword\">οδηγού</span>.",
     "settings": "Ανοίξτε τις <span class=\"keyword\">Προτιμήσεις</span> για να ελέγξετε ποιον τοπικό χώρο αποθήκευσης χρησιμοποιεί ο χάρτης για να θυμάται τις ενέργειές σας.",
@@ -194,16 +263,11 @@
       "selectorSelect": "Ειδικός <span class=\"keyword\">επιλογέας δείκτη</span>. Πατήστε για εναλλαγή της κατάστασης επιλογής. Μπορείτε να δείτε τον συνολικό αριθμό δεικτών και πόσους έχετε σημειώσει."
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">Σημείωση:</span> Όταν η έκδοση του παιχνιδιού είναι <span class=\"keyword\">1.0.13</span>, η έκδοση δεδομένων του χάρτη είναι <span class=\"keyword\">0.8.25</span>. Χρειαζόμαστε χρόνο για να ενημερώσουμε τα δεδομένα, οπότε οι ενημερώσεις ενδέχεται να φτάσουν αργότερα από το patch του παιχνιδιού. Σας ευχαριστούμε για την υπομονή σας. Για να παρακολουθείτε τις ενημερώσεις μας, εγγραφείτε στον <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Join Discord'>Διακομιστή Discord</a> μας.<br><br>Συνιστούμε επίσης τα ακόλουθα εργαλεία:<ul><li><span class=\"keyword\">Game Wiki: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Visit Game Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Blueprints:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Visit Talos Pioneers'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "Το τρέχον σύνολο δεδομένων είναι ενημερωμένο.<br><br>Εάν χρειαστεί να αναφέρετε προβλήματα, εγγραφείτε στον <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Join Discord'>Διακομιστή Discord</a>.<br><br>Συνιστούμε επίσης τα ακόλουθα εργαλεία:<ul><li><span class=\"keyword\">Game Wiki: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Visit Game Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Blueprints:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Visit Talos Pioneers'>https://talospioneers.com</a></li></ul>"
-  },
   "idcard": {
     "group": "Ομάδα: ",
     "since": "Από",
     "logintip": "Κλικ στο avatar για σύνδεση.",
     "registip": "Κλικ στο avatar για εγγραφή.",
-    "ago": "πριν",
     "karma": "Karma",
     "loading": "Φόρτωση...",
     "unassigned": "Μη εκχωρημένο",
@@ -230,8 +294,10 @@
       "resend": "Επαναποστολή ({count})",
       "dcLogin": "Σύνδεση με Discord",
       "gooLogin": "Σύνδεση με Google",
+      "ghLogin": "Σύνδεση με GitHub",
       "dcRegis": "Συνέχεια με Discord",
       "gooRegis": "Συνέχεια με Google",
+      "ghRegis": "Συνέχεια με GitHub",
       "connecting": "Σύνδεση...",
       "resetLink": "Εισαγάγετε το email του λογαριασμού σας και θα σας στείλουμε έναν σύνδεσμο επαναφοράς εάν υπάρχει.<br><br>Ελέγξτε τα εισερχόμενα και τα ανεπιθύμητα μηνύματά σας.",
       "resetRequire": "Εισαγάγετε και επιβεβαιώστε τον νέο σας κωδικό πρόσβασης.<br><br>Ο κωδικός σας θα ενημερωθεί άμεσα.",
@@ -242,14 +308,14 @@
       "switchToLoginPrefix": "Έχετε ήδη λογαριασμό;",
       "switchToLoginAction": "Συνδεθείτε εδώ.",
       "ack": "Συνεχίζοντας, αποδέχεστε",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Πολιτική Απορρήτου</a> και <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Όρους Χρήσης</a>.",
+      "ackLink": "<a href=\"{privacy}\">Πολιτική Απορρήτου</a> και <a href=\"{tos}\">Όρους Χρήσης</a>.",
       "hints": {
         "0": "Λάθος email ή κωδικός",
         "101": "Απαιτείται email",
         "102": "Μη έγκυρο email",
         "103": "Το email χρησιμοποιείται ήδη",
         "104": "Το email δεν βρέθηκε",
-        "105": "Email Not Supported",
+        "105": "Το email δεν υποστηρίζεται",
         "111": "Απαιτείται κωδικός",
         "112": "Μη έγκυρος κωδικός",
         "113": "Οι κωδικοί δεν ταιριάζουν",
@@ -300,10 +366,7 @@
     "binding": {
       "title": "Σύνδεση λογαριασμού",
       "docsLead": "Συνεχίζοντας, επιβεβαιώνετε ότι αποδέχεστε τους παρακάτω όρους:",
-      "tos": "Όροι χρήσης",
-      "privacy": "Πολιτική απορρήτου",
-      "dataCollection": "Λίστα συλλογής δεδομένων",
-      "disclaimer": "Αποποίηση ευθύνης",
+      "docsLinks": "<a href=\"{tos}\">Όροι χρήσης</a> · <a href=\"{privacy}\">Πολιτική απορρήτου</a> · <a href=\"{data}\">Λίστα συλλογής δεδομένων</a> · <a href=\"{disclaimer}\">Αποποίηση ευθύνης</a>",
       "chinaTab": "Κίνα (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Μεταβείτε στον <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>επίσημο ιστότοπο</a> και βεβαιωθείτε ότι έχετε συνδεθεί.",
@@ -311,7 +374,6 @@
       "CNStep1": "Ανοίξτε τον <a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>σύνδεσμο Hypergryph API</a> και αντιγράψτε την πλήρη απάντηση.",
       "UniStep1": "Ανοίξτε τον <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>σύνδεσμο Gryphline API</a> και αντιγράψτε την πλήρη απάντηση.",
       "Step2": "Επικολλήστε την πλήρη απάντηση, διαβάστε τους όρους και συνδέστε τον λογαριασμό σας.",
-      "serverFallback": "Διακομιστής",
       "changeBinding": "Αλλαγή σύνδεσης",
       "unlink": "Αποσύνδεση",
       "bindWithCountdown": "Σύνδεση & ενεργοποίηση συγχρονισμού ({sec})",
@@ -346,8 +408,7 @@
       "trackPoints": "Παρακολούθηση",
       "centerOnPosition": "Στο κέντρο",
       "heatmap": "Θερμικός χάρτης",
-      "configNote1": "Η ενεργοποίηση της λειτουργίας σημαίνει ότι αποδέχεστε τους ",
-      "configNote2": " και άλλους όρους."
+      "configNote": "Η ενεργοποίηση της λειτουργίας σημαίνει ότι αποδέχεστε τους <a href=\"{data}\">Λίστα συλλογής δεδομένων</a> και άλλους όρους."
     },
     "errors": {
       "10000": "Η συνεδρία συγχρονισμού τοποθεσίας έληξε. Συνδεθείτε ξανά.",
@@ -365,7 +426,7 @@
     "now": "Συγχρονισμός στο OEM Cloud",
     "already": "Συγχρονισμένο με το Cloud",
     "done": "Συγχρονίστηκε - πριν από {times}",
-    "syncing": "Συγχρονισμός: {count} σημεία",
+    "syncing": "{count, plural, one {Συγχρονισμός: # σημείο} other {Συγχρονισμός: # σημεία}}",
     "failed": "Αποτυχία ({reason})",
     "offline": "Εκτός σύνδεσης",
     "dataConflict": "Σύγκρουση προόδου",
@@ -401,6 +462,7 @@
     "all": "Όλα",
     "selected": "Επιλ.",
     "confirm": "ΟΚ",
+    "confirmAgain": "Κάντε ξανά κλικ για επιβεβαίωση",
     "loading": "Φόρτωση...",
     "enable": "Ενεργό",
     "disable": "Ανενεργό",

@@ -1,30 +1,34 @@
 {
   "headbar": {
-    "tos": "利用規約とストレージ",
-    "hideUI": "UIを隠す",
-    "group": "関連グループに参加",
+    "tos": "利用規約・ストレージ",
+    "hideUI": "UIを非表示",
+    "notification": "通知",
     "darkmode": "ダークモードに切り替え",
     "lightmode": "ライトモードに切り替え",
     "language": "言語を選択",
     "help": "ヘルプ",
     "announcement": "お知らせ",
-    "settings": "設定"
+    "settings": "環境設定"
+  },
+  "mapControls": {
+    "layerSelect": "レイヤー選択",
+    "locationTracking": "位置同期"
   },
   "trigger": {
-    "boundaryMode": "バウンダリー モード",
-    "clusterMode": "クラスター モード",
-    "labelName": "地区名"
+    "boundaryMode": "エリア境界",
+    "clusterMode": "マーカーのグループ化",
+    "labelName": "エリア名"
   },
   "search": {
-    "placeholder": "全体検索…",
+    "placeholder": "マップ全体を検索…",
     "results": "{count} 件の結果",
-    "locatedAt": "所在地",
-    "distributeAt": "分布地"
+    "locatedAt": "場所",
+    "distributeAt": "分布エリア"
   },
   "markFilter": {
-    "title": "フィルター項目",
-    "emptyTitle": "条件に一致するフィルターはありません。",
-    "emptyDesc": "位置情報に欠落や誤りがあることを確認した場合は、プロジェクトのコミュニティで管理者に連絡するか、本プロジェクトの GitHub リポジトリに <a href='https://github.com/Terra-Online/Atlos/issues' class='embed' target='_blank' rel='noopener' aria-label='位置情報の誤りを報告'>Issue</a> を投稿してください。"
+    "title": "絞り込み",
+    "emptyTitle": "条件に一致する項目はありません。",
+    "emptyDesc": "地点情報の不足や誤りを見つけた場合は、コミュニティで管理者にご連絡いただくか、GitHub リポジトリで <a href='https://github.com/Terra-Online/Atlos/issues' class='embed' target='_blank' rel='noopener' aria-label='地点情報の誤りを報告'>Issue</a> を作成してください。"
   },
   "detail": {
     "stat": {
@@ -32,55 +36,91 @@
       "main": "メインエリア",
       "sub": "サブエリア"
     },
+    "label": {
+      "note": "メモ",
+      "url": "関連リンク",
+      "comments": "注目のコメント",
+      "collectionRate": "収集率"
+    },
+    "tabs": {
+      "collectAll": "同種をすべて完了",
+      "general": "地点情報",
+      "comments": "コメント"
+    },
     "noInfo": "画像なし。{paste} / {click} でアップロードしてください。",
-    "communityRule1": "アップロード前に、以下をよく読み遵守してください",
-    "communityRule2": "OEM コミュニティガイドライン",
+    "communityRule": "アップロードする前に、<a href=\"{link}\">OEM コミュニティガイドライン</a>をお読みください。",
     "uploading": "アップロード中…",
-    "uploadPending": "送信済みです。審査後に表示されます。",
-    "readFullText": "クリックして全文を表示。",
-    "share": "この地点の共有リンクをコピーします。",
+    "uploadPending": "送信しました。審査後に公開されます。",
+    "readFullText": "全文を読む。",
+    "share": "この地点の共有リンクをコピー。",
     "copied": "リンクをコピーしました",
+    "collectionRateSource": "全体の収集率：{nums}（OEM Cloud の統計）",
     "viewer": {
       "author": "投稿者",
       "uploadedAt": "アップロード日時",
-      "upvote": "いいね",
+      "upvote": "役に立った",
       "flag": "不正確として報告",
       "unflag": "報告を取り消す",
+      "uploadAno": "別の画像を投稿",
       "share": "共有",
-      "recall": "削除申請",
-      "unrecall": "削除申請を取り消す"
+      "recall": "取り下げを申請",
+      "unrecall": "取り下げ申請を取り消す"
+    },
+    "comments": {
+      "placeholder": "何か書いてみましょう！",
+      "submit": "コメントを投稿",
+      "actions": "コメントの操作",
+      "translate": "翻訳",
+      "showOriginal": "原文を表示",
+      "translatedFrom": "{language}からの翻訳",
+      "translating": "翻訳中…",
+      "translateFailed": "翻訳に失敗しました",
+      "upvote": "賛成票",
+      "downvote": "反対票",
+      "reply": "返信",
+      "edit": "編集",
+      "submitEdit": "変更を保存",
+      "undoEdit": "変更を破棄",
+      "recall": "削除を申請",
+      "reviewing": "審査中",
+      "emptyWithRule": "まだコメントはありません。投稿の際は<a href=\"{link}\">コミュニティガイドライン</a>をお守りください。",
+      "ruleOnly": "投稿の際は<a href=\"{link}\">コミュニティガイドライン</a>をお守りください。",
+      "loadFailed": "コメントの読み込みに失敗しました。",
+      "submitFailed": "コメントの投稿に失敗しました。",
+      "editFailed": "コメントの更新に失敗しました。"
     },
     "errors": {
       "unsupportedType": "JPEG/PNG/WebP/AVIF/HEIC 画像のみ対応しています。",
       "fileTooLarge": "画像ファイルが大きすぎます。",
       "imageDecodeFailed": "ブラウザでこの画像を読み込めませんでした。",
-      "imageProcessingUnavailable": "ローカルでの画像処理を利用できません。",
+      "imageProcessingUnavailable": "この端末では画像を処理できません。",
       "processedTooLarge": "処理後の画像サイズが大きすぎます。",
-      "uploadInvalidResponse": "アップロードサービスから異常な応答が返されました。",
+      "uploadInvalidResponse": "アップロード処理で予期しない応答が返されました。",
       "uploadNetwork": "アップロード中にネットワークエラーが発生しました。",
       "uploadAborted": "アップロードはキャンセルされました。",
-      "rateLimited": "アップロードの上限に達しました。後でもう一度お試しください。",
+      "rateLimited": "短時間にアップロードできる上限に達しました。しばらくしてからお試しください。",
       "uploadFailed": "アップロードに失敗しました。しばらくしてからもう一度お試しください。",
       "backendUnknown": "アップロードサービスでエラーが発生しました。"
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
       "supportedBy": "Observator 6 によって提供"
-    }
+    },
+    "newlyAdded": "今バージョンで追加"
   },
   "language": {
     "title": "言語",
     "cancel": "中止",
     "current": "現在",
-    "fullSupport": "完全対応の言語",
+    "fullSupport": "完全対応",
     "fullSupportHint": "UIとゲーム内コンテンツの両方に完全な翻訳を提供。",
-    "uiOnly": "UI対応のみの言語",
-    "uiOnlyHint": "UI翻訳のみ、ゲーム内コンテンツは英語で表示されます。",
-    "fyi": "このウェブサイトでお使いの言語がまだ利用できない場合は、<a class='embed' href=\"mailto:translate@opendfieldmap.org?subject=%5BOEM%20Translation%5D\">translate@opendfieldmap.org</a> までメールでサイト管理者にお問い合わせいただくか、GitHub にアクセスしてオープンソース翻訳プロジェクトにご参加ください。お使いの言語の翻訳項目をリクエストし、ガイドラインに従って WIKI セクションの翻訳とローカライズをサポートしていただけます。皆様のご貢献を心よりお待ちしております。\n翻訳貢献者リストもご覧いただけます。",
+    "uiOnly": "UIのみ対応",
+    "uiOnlyHint": "UIのみ翻訳されています。ゲーム内コンテンツは英語で表示されます。",
+    "fyi": "お使いの言語がまだ用意されていない場合は、<a class='embed' href=\"mailto:translate@opendfieldmap.org?subject=%5BOEM%20Translation%5D\">translate@opendfieldmap.org</a> までご連絡いただくか、GitHub のオープンソース翻訳プロジェクトにご参加ください。新しい言語の追加を提案したり、ガイドラインに沿って WIKI の翻訳・ローカライズに協力したりできます。皆さまのご参加をお待ちしています。\n翻訳コントリビューターの一覧もこちらから確認できます。",
     "names": {
       "en-US": "英語",
       "zh-CN": "簡体字中国語",
@@ -101,39 +141,66 @@
       "th-TH": "タイ語",
       "vi-VN": "ベトナム語",
       "el-GR": "ギリシャ語",
-      "hi-IN": "ヒンディー語"
+      "hi-IN": "ヒンディー語",
+      "uk-UA": "ウクライナ語",
+      "tr-TR": "トルコ語"
     }
   },
-  "group": {
-    "title": "コミュニティとメディア",
-    "visit": "訪問"
+  "notification": {
+    "title": "お知らせ",
+    "tabs": {
+      "community": "リアクション",
+      "system": "審査結果"
+    },
+    "markAllRead": "すべて既読にする",
+    "empty": "通知はありません。投稿への反応や審査結果がここに表示されます。",
+    "guest": "通知を受け取るには、{account}にログインしてください。",
+    "account": "OEM アカウント",
+    "loadError": "通知を読み込めませんでした。",
+    "loadMore": "さらに読み込む",
+    "support": "お問い合わせ",
+    "visit": "開く",
+    "noDetails": "詳しい情報はありません。",
+    "subject": {
+      "image": "画像",
+      "comment": "コメント",
+      "submission": "投稿"
+    },
+    "types": {
+      "approved": "<subjectTag>{subject}</subjectTag>{hasPoint, select, yes {<pointTag>{point}</pointTag>} other {}}が公開されました。",
+      "needsReview": "<subjectTag>{subject}</subjectTag>{hasPoint, select, yes {<pointTag>{point}</pointTag>} other {}}は手動審査待ちです。",
+      "removeResolved": "取り下げを申請した<subjectTag>{subject}</subjectTag>{hasPoint, select, yes {<pointTag>{point}</pointTag>} other {}}は処理が完了しました。",
+      "reply": "<subjectTag>{subject}</subjectTag>{hasPoint, select, yes {<pointTag>{point}</pointTag>} other {}}に新しい返信があります。",
+      "vote": "<subjectTag>{subject}</subjectTag>{hasPoint, select, yes {<pointTag>{point}</pointTag>} other {}}に{count}件の「いいね」が付きました。",
+      "multiple": "<subjectTag>{subject}</subjectTag>{hasPoint, select, yes {<pointTag>{point}</pointTag>} other {}}に{count}件の更新があります。"
+    }
   },
   "tos": {
-    "title": "規約とストレージ",
+    "title": "利用規約・ストレージ",
     "calculating": "ストレージ使用量を計算中…",
-    "policy": "<p>自動ログイン情報の保存には Cookie、UI 設定やマーカー進捗の保存には LocalStorage、言語ごとのフォントデータや画像リソースの保存には CacheStorage を使用しています。これらのファイルにより、次回以降のウェブサイトへのアクセスが高速になり、オフラインモードでも利用可能になります。</p><p>ウェブサイトのローカルストレージを削除すると、端末の空き容量を増やすことができます。ただし、再訪時には<span class=\"keyword\">これらのファイルの読み込みに時間がかかる場合があります</span>。ウェブサイトのストレージを無効化した場合、ウェブサイトは<span class=\"keyword\">次回の利用に向けてデータを自動記録できません</span>。</p><p>当サイトはあなたのデータをサーバーへ送信しないため、プライバシーの心配は不要です。</p><p>ローカルストレージの有効化はご自身で選択できます。</p>",
+    "policy": "<p>自動ログイン情報は Cookie、UI の設定とマーカーの進捗は LocalStorage、言語ごとのフォントや画像は CacheStorage に保存されます。これにより、次回以降の表示が速くなり、オフラインでもサイトを利用できます。</p><p>サイトのローカルデータを削除すると、端末の空き容量を増やせます。ただし、次回アクセス時は<span class=\"keyword\">データの読み込みに時間がかかる場合があります</span>。サイトのストレージを無効にすると、次回のために<span class=\"keyword\">設定や進捗を自動保存できなくなります</span>。</p><p>これらのデータがサーバーへ送信されることはありません。</p><p>ローカルストレージを使用するかどうかは、ご自身で選択できます。</p>",
     "filtersAndMarkers": "フィルターとマーカーデータ",
-    "warning": "<p><strong>注意:</strong> 保存されたデータを削除すると、自動ログイン情報、UI 設定、マーカー進捗が失われます。次回のアクセス時、ウェブサイトの読み込みに通常より時間がかかる場合があります。</p><p>確認済みの場合は、もう一度削除ボタンをクリックしてください。</p>",
+    "warning": "<p><strong>注意：</strong>保存データを削除すると、自動ログイン情報、UI 設定、マーカーの進捗が失われます。また、次回アクセス時は通常より読み込みに時間がかかる場合があります。</p><p>削除する場合は、もう一度削除ボタンを押してください。</p>",
     "export": "データをエクスポート",
     "import": "データをインポート"
   },
   "settings": {
-    "title": "設定",
+    "title": "環境設定",
     "uiPrefs": {
-      "title": "UIの設定",
-      "hint": "有効にしたいUIの保存設定を選択してください。<br>より一貫した操作体験のため、<span class=\"keyword\">すべてのオプションを有効にすることをおすすめします</span>。",
+      "title": "UI",
+      "hint": "保存しておく UI の状態を選択してください。安定した操作のため、<span class=\"keyword\">すべて有効にすることをおすすめします</span>。",
       "sidebar": "サイドバー状態を保存",
       "filterOrder": "フィルター順を保存",
-      "triggers": "下部バー状態を保存",
+      "triggers": "表示スイッチの状態を保存",
       "performanceMode": "パフォーマンスモード"
     },
     "mapPrefs": {
-      "title": "マップの設定",
-      "hint": "有効にしたいマップ情報の保存および自動最適化設定を選択してください。<br>より一貫した操作体験のため、<span class=\"keyword\">すべてのオプションを有効にすることをおすすめします</span>。",
+      "title": "マップ",
+      "hint": "保存するマップ情報と、自動で行う最適化を選択してください。安定した操作のため、<span class=\"keyword\">すべて有効にすることをおすすめします</span>。",
       "viewState": "現在の表示を保存",
-      "markerProgress": "ポイントとフィルターを保存",
-      "autoCluster": "ポイントを自動クラスタリング",
-      "hideCompleted": "完了済みポイントを非表示"
+      "markerProgress": "マーカーの進捗を保存",
+      "autoCluster": "マーカーを自動でグループ化",
+      "hideCompleted": "完了済みマーカーを非表示"
     },
     "theme": {
       "title": "テーマ",
@@ -144,73 +211,70 @@
     },
     "shortcuts": {
       "title": "キーボードショートカット",
-      "hint": "クイックアクション用の利用可能なショートカット。",
+      "hint": "すばやく操作するためのショートカットです。",
+      "toggleUI": "UIの表示/非表示",
+      "quickSearch": "クイック検索",
       "exportData": "データをエクスポート",
       "importData": "データをインポート",
       "undo": "元に戻す",
       "redo": "やり直し",
       "zoomIn": "拡大",
       "zoomOut": "縮小",
-      "multiSelect": "複数選択",
-      "multiDeselect": "複数選択解除"
+      "multiSelect": "範囲内を選択",
+      "multiDeselect": "範囲内を選択解除"
     }
   },
   "guide": {
-    "welcome": "<span class=\"keyword\">OPEN ENDFIELD MAP</span>へようこそ。<br>初めてのご利用ありがとうございます。マップの各機能を素早く理解していただけるよう、簡単なガイドツアーをご用意しました。</p><p>ガイドはいつでも「<span class=\"keyword\">スキップ</span>」ボタンで終了できます。また、トップバーのヘルプボタンから再度起動することもできます。",
-    "sidebarToggle": "クリックして<span class=\"keyword\">サイドバー</span>を展開します。<br>サイドバーには、よく使うピンフィルターや、ピン表示に関連するスイッチが含まれています。",
-    "search": "<span class=\"keyword\">ゲーム内でサポートされている言語</span>で表示したいピンを検索し、検索結果から選択できます。",
-    "filterContainer": "同じタイプのピンは1つの<span class=\"keyword\">フィルター</span>にまとめられています。<br>クリックして、そのタイプのピンリストを展開します。",
-    "filterSort": "フィルターの左側にあるアイコンを長押しすると、<span class=\"keyword\">ドラッグ状態</span>になります。<br>必要に応じて、重要なフィルターを並べ替えることができます。",
-    "selectorSelect": "具体的な<span class=\"keyword\">ピンセレクター</span>です。クリックして選択状態を切り替えると、選択されたピンがマップ上に表示されます。<br>現在のエリアにあるこのタイプのピンの総数と、すでにマークした数を確認できます。<br><br>サイドバーの<span class=\"keyword\">空白エリアを押しながらドラッグ</span>することで、複数のピンセレクタに対して<span class=\"keyword\">ボックス選択</span>を行い、選択状態を一括で素早く切り替えることができます。",
-    "selectorComplete": "このタイプのすべてのピンが完了としてマークされると、セレクターは<span class=\"keyword\">完了状態</span>になり、マーク状況をすばやく判断できます。",
-    "triggerHandle": "マップ表示に関連するスイッチはサイドバーの下部にあります。<br>マウスを長押しして<span class=\"keyword\">ドラッグして操作</span>できます。",
-    "triggerSwitch": "クリックしてスイッチの状態を切り替えます。<br><ul><li><span class=\"keyword\">ピン凝集モード</span>は、密集したピンをまとめて表示することを許可します。</li><li><span class=\"keyword\">地域境界表示</span>は、現在のエリア内の各サブエリアとその境界をハイライトします。</li><li><span class=\"keyword\">地域名表示</span>は、ゲーム内の地域名を表示します。</li></ul>",
-    "scale": "<span class=\"keyword\">ズームコントロール</span>を使用して、マップのズームを確認および操作します。<br>ホイールまたはトラックパッドを使用してズームできます。<span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span>ボタンまたはズームバーの任意の場所をクリックしてズームすることもできます。",
-    "filterList": "<span class=\"keyword\">ピンリスト</span>には、選択したピンがリストされています。アイコンをクリックすると選択を解除できます。",
-    "headbar": "マップ設定に関連するスイッチは<span class=\"keyword\">トップバー</span>にあります。",
-    "tos": "ウェブサイトの<span class=\"keyword\">利用規約</span>と<span class=\"keyword\">データ管理</span>。",
-    "hideUI": "スクリーンショットを撮ったり、端のピンを確認したりするために<span class=\"keyword\">ウェブサイトのUIを非表示</span>にします。",
-    "group": "このプロジェクトに関連する<span class=\"keyword\">ディスカッショングループ</span>と<span class=\"keyword\">コミュニティ</span>を表示します。",
-    "darkMode": "現在の<span class=\"keyword\">環境光モード</span>を切り替えます。",
-    "language": "<span class=\"keyword\">インターフェース言語</span>を切り替えます。<br><span class=\"keyword\">ゲームコンテンツの翻訳を完全にサポート</span>している言語は、英語、簡体字中国語、繁体字中国語、日本語、韓国語、フランス語、ドイツ語、イタリア語、ロシア語、スペイン語、インドネシア語、ポルトガル語、タイ語、ベトナム語です。<br><span class=\"keyword\">インターフェース翻訳のみサポート</span>している言語には、アラビア語、マレー語、ポーランド語、スウェーデン語が含まれます。",
-    "announcement": "最近の<span class=\"keyword\">ウェブサイトのお知らせ</span>を表示します。利用規約とプライバシーポリシーの更新もここに掲載されます。",
-    "help": "この<span class=\"keyword\">ガイド</span>を再起動します。",
-    "settings": "<span class=\"keyword\">設定</span>を開いて、マップがあなたの操作を記憶するために使用するローカルストレージを制御します。",
-    "locator": "<span class=\"keyword\">位置同期</span>をクリックすると、ゲーム内の現在位置をマップ上に表示できます。<br>ゲームアカウントを連携すると、追跡設定を開いてポイント追跡の範囲も調整できます。",
-    "regionSwitch": "クリックして、ゲーム内の<span class=\"keyword\">異なるサンドボックスマップ</span>（メインエリア）を切り替えます。",
-    "subregionSwitch": "マウスを<span class=\"keyword\">メインエリアアイコンにホバー</span>すると、利用可能なサブエリアが表示されます。サブエリアアイコンをクリックすると、そのサブエリアビューにジャンプします。<br>同様に、特定のエリアのレイヤーを選択することもできます。",
-    "layerMain": "<span class=\"keyword\">レイヤーアイコン</span>をクリックすると、いつでも<span class=\"keyword\">メインレイヤー(M)</span>に戻ることができます。",
-    "layerSwitch": "マウスを<span class=\"keyword\">レイヤーアイコンにホバー</span>すると、現在のエリアに利用可能なレイヤーが表示されます。レイヤーをクリックすると、そのビューに切り替わります。<br>異なるレイヤーは、マップの<span class=\"keyword\">異なる階層または高さ</span>を表示する場合があり、複数階層のエリアを探索するのに役立ちます。",
-    "pointSelect": "ピンをクリックすると、ピンは<span class=\"keyword\">選択状態</span>になります。ピンの情報を確認できます。",
-    "pointMark": "ピンをもう一度クリックすると、完了としてマークされます。",
-    "detail": "選択したピンの具体的な情報を確認できます。これには、<span class=\"keyword\">すべてのエリア</span>、現在の<span class=\"keyword\">メインエリア</span>、および現在の<span class=\"keyword\">サブエリア</span>におけるそのタイプのピンの数が含まれます。",
-    "pointIcon": "ピンアイコンをクリックしても、完了状態としてマークできます。",
+    "welcome": "<span class=\"keyword\">OPEN ENDFIELD MAP</span>へようこそ。<br>初めてお使いになる方に向けて、マップの主な機能を簡単にご案内します。</p><p>途中で終了するには「<span class=\"keyword\">スキップ</span>」を押してください。トップバーのヘルプから、いつでももう一度確認できます。",
+    "sidebarToggle": "クリックすると<span class=\"keyword\">サイドバー</span>が開きます。<br>よく使うマーカーの絞り込みや、マーカー表示に関する設定がまとまっています。",
+    "search": "<span class=\"keyword\">ゲームが対応している言語</span>でマーカーを検索し、検索結果から選択できます。",
+    "filterContainer": "同じ種類のマーカーは、1つの<span class=\"keyword\">フィルター</span>にまとめられています。<br>クリックすると、その種類のマーカー一覧が開きます。",
+    "filterSort": "フィルター左側のアイコンを長押しすると、<span class=\"keyword\">ドラッグ</span>できるようになります。<br>よく使う順に並べ替えてください。",
+    "selectorSelect": "<span class=\"keyword\">マーカーセレクター</span>をクリックすると、マーカーの表示・非表示を切り替えられます。現在のエリアにある総数と、完了済みの数も確認できます。<br><br>サイドバーの<span class=\"keyword\">空白部分をドラッグ</span>すると、複数のセレクターを<span class=\"keyword\">範囲選択</span>してまとめて切り替えられます。",
+    "selectorComplete": "同じ種類のマーカーをすべて完了にすると、セレクターも<span class=\"keyword\">完了済み</span>になり、進捗がひと目で分かります。",
+    "triggerHandle": "マップの表示設定はサイドバーの下部にあります。<br>長押しして<span class=\"keyword\">ドラッグ</span>すると位置を変えられます。",
+    "triggerSwitch": "クリックして設定を切り替えます。<br><ul><li><span class=\"keyword\">マーカーのグループ化</span>：密集したマーカーをまとめて表示します。</li><li><span class=\"keyword\">エリア境界</span>：現在のエリアにある各サブエリアとその境界を強調します。</li><li><span class=\"keyword\">エリア名</span>：ゲーム内のエリア名を表示します。</li></ul>",
+    "scale": "<span class=\"keyword\">ズームコントロール</span>では、現在の倍率を確認したり変更したりできます。<br>マウスホイールやトラックパッドのほか、<span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span>ボタン、ズームバーの任意の位置をクリックして拡大・縮小できます。",
+    "filterList": "<span class=\"keyword\">マーカー一覧</span>には、現在選択しているマーカーが表示されます。アイコンをクリックすると選択を解除できます。",
+    "headbar": "マップ全体に関する設定は<span class=\"keyword\">トップバー</span>にあります。",
+    "tos": "サイトの<span class=\"keyword\">利用規約</span>と<span class=\"keyword\">データ管理</span>を確認できます。",
+    "hideUI": "スクリーンショットを撮るときや画面端のマーカーを確認するときは、<span class=\"keyword\">UIを非表示</span>にできます。",
+    "notification": "<span class=\"keyword\">お知らせ</span>では、投稿への反応や審査結果を確認できます。",
+    "darkMode": "<span class=\"keyword\">表示テーマ</span>をライトとダークで切り替えます。",
+    "language": "<span class=\"keyword\">表示言語</span>を切り替えます。<br>英語、簡体字中国語、繁体字中国語、日本語、韓国語、フランス語、ドイツ語、イタリア語、ロシア語、スペイン語、インドネシア語、ポルトガル語、タイ語、ベトナム語は、<span class=\"keyword\">UIとゲーム内コンテンツの両方</span>に対応しています。<br>アラビア語、マレー語、ポーランド語、スウェーデン語は<span class=\"keyword\">UIのみ</span>対応しています。",
+    "announcement": "<span class=\"keyword\">サイトからのお知らせ</span>を確認できます。利用規約やプライバシーポリシーの変更もここでお知らせします。",
+    "help": "この<span class=\"keyword\">ガイド</span>をもう一度表示します。",
+    "settings": "<span class=\"keyword\">環境設定</span>では、マップが端末に保存する設定や進捗を管理できます。",
+    "locator": "<span class=\"keyword\">位置同期</span>を有効にすると、ゲーム内の現在位置がマップに表示されます。<br>ゲームアカウントを連携すると、設定画面で周辺マーカーの追跡範囲も調整できます。",
+    "regionSwitch": "クリックすると、ゲーム内の<span class=\"keyword\">別のサンドボックスマップ</span>（メインエリア）に切り替わります。",
+    "subregionSwitch": "<span class=\"keyword\">メインエリアのアイコンにカーソルを合わせる</span>と、サブエリアの一覧が表示されます。アイコンをクリックすると、そのサブエリアへ移動します。<br>同じ操作でエリアのレイヤーも選べます。",
+    "layerMain": "<span class=\"keyword\">レイヤーアイコン</span>をクリックすると、いつでも<span class=\"keyword\">メインレイヤー（M）</span>に戻れます。",
+    "layerSwitch": "<span class=\"keyword\">レイヤーアイコンにカーソルを合わせる</span>と、現在のエリアで利用できるレイヤーが表示されます。クリックすると、そのレイヤーへ切り替わります。<br>レイヤーごとに<span class=\"keyword\">異なる階層や高さ</span>が表示されるため、立体的なエリアの探索に便利です。",
+    "pointSelect": "マーカーをクリックすると<span class=\"keyword\">選択状態</span>になり、詳しい情報が表示されます。",
+    "pointMark": "もう一度クリックすると、マーカーを完了済みにできます。",
+    "detail": "選択したマーカーの情報と、同じ種類のマーカーが<span class=\"keyword\">全エリア</span>、現在の<span class=\"keyword\">メインエリア</span>、現在の<span class=\"keyword\">サブエリア</span>にそれぞれ何件あるかを確認できます。",
+    "pointIcon": "マーカーのアイコンをクリックして、完了済みにすることもできます。",
     "mobile": {
-      "headbar": "マップ設定は<span class=\"keyword\">右上のヘッダー</span>にあります。右上のアイコンをタップして展開し、さらにオプションを表示します。",
-      "locator": "<span class=\"keyword\">位置同期</span>は左上にあります。<br>アカウント連携後は、タップするとまず設定アイコン付きのカプセルが開きます。開いた状態でもう一度メインボタンをタップすると同期を切り替えます。",
-      "regionLayerSwitch": "地域アイコンをタップして<span class=\"keyword\">異なるサンドボックスマップ</span>に切り替えます。地域アイコンを長押しすると<span class=\"keyword\">サブ地域とレイヤー</span>が表示され、選んでそのビューへ移動できます。",
-      "divider": "これはドラッグ可能な<span class=\"keyword\">仕切り</span>です。検索とマーカーリストの幅の比率を左右にドラッグして調整します。",
-      "drawer": "画面下から<span class=\"keyword\">上方向にスワイプ</span>してドロワーを開き、マーカーフィルターを表示します。",
-      "selectorSelect": "<span class=\"keyword\">マーカーセレクター</span>です。タップで選択を切り替え、選択したマーカーがマップに表示されます。現在のエリアでの総数と、完了済みの数を確認できます。"
+      "headbar": "マップの設定は<span class=\"keyword\">右上のトップバー</span>にあります。右上のアイコンをタップすると、ほかの項目も表示されます。",
+      "locator": "<span class=\"keyword\">位置同期</span>は左上にあります。<br>アカウント連携後にタップすると、まず同期設定への入口が表示されます。展開した状態でもう一度メインボタンをタップすると、同期のオン・オフが切り替わります。",
+      "regionLayerSwitch": "エリアのアイコンをタップすると、別の<span class=\"keyword\">サンドボックスマップ</span>に切り替わります。<br>長押しすると<span class=\"keyword\">サブエリアとレイヤー</span>が表示され、移動先を選べます。",
+      "divider": "<span class=\"keyword\">区切り線</span>を左右にドラッグすると、検索欄とマーカー一覧の幅を調整できます。",
+      "drawer": "画面下から<span class=\"keyword\">上にスワイプ</span>するとドロワーが開き、マーカーの絞り込みが表示されます。<br>ここで、マップに表示するマーカーの種類を選べます。",
+      "selectorSelect": "<span class=\"keyword\">マーカーセレクター</span>をタップすると、表示するマーカーを切り替えられます。現在のエリアにある総数と、完了済みの数も確認できます。"
     }
-  },
-  "notice": {
-    "legacy": "<span class=\"keyword\">注意：</span>ゲームバージョンが<span class=\"keyword\">1.0.13</span>の場合、マップデータバージョンは<span class=\"keyword\">0.8.25</span>です。データの更新には時間がかかるため、反映がゲームの更新より遅れる場合があります。恐れ入りますが、少々お待ちください。更新情報を追跡するには、<a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Discordに参加'>Discordサーバー</a>にご参加ください。<br><br>以下の関連ツールも推奨します：<ul><li><span class=\"keyword\">ゲームWiki：</span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='ゲームWikiにアクセス'>https://warfarin.wiki</a></li><li><span class=\"keyword\">ブループリント共有：</span><a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Talos Pioneersにアクセス'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "現在のデータセットは最新バージョンです。<br><br>問題を報告する場合は、<a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Discordに参加'>Discordサーバー</a>にご参加ください。<br><br>以下の関連ツールも推奨します：<ul><li><span class=\"keyword\">ゲームWiki：</span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='ゲームWikiにアクセス'>https://warfarin.wiki</a></li><li><span class=\"keyword\">ブループリント共有：</span><a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Talos Pioneersにアクセス'>https://talospioneers.com</a></li></ul>"
   },
   "idcard": {
     "group": "グループ：",
     "since": "登録日",
     "logintip": "アバターでログイン！",
     "registip": "アバターで登録！",
-    "ago": "前",
     "karma": "カルマ",
     "loading": "読み込み中",
-    "unassigned": "未割り当て",
+    "unassigned": "未設定",
     "normal": "通常",
     "guest": "ゲスト",
     "pioneer": "パイオニア",
-    "admin": "管理人",
+    "admin": "管理者",
     "suspend": "停止",
     "robot": "ボット",
     "auth": {
@@ -223,15 +287,17 @@
       "repeatPassword": "パスワード再入力：",
       "verification": "認証コード：",
       "forgotPW": "PWDをお忘れですか？",
-      "pwdRegex": "8～20文字で、大文字を1文字以上含めてください",
-      "emailRegex": "使い捨てメールアドレスはご利用いただけません",
+      "pwdRegex": "8～20文字で、英大文字を1文字以上含めてください",
+      "emailRegex": "使い捨てメールアドレスは使用できません",
       "send": "送信",
       "sendResetLink": "再設定リンクを送信",
       "resend": "再送({count})",
       "dcLogin": "Discord でログイン",
       "gooLogin": "Google でログイン",
-      "dcRegis": "Discord アカウントで登録",
-      "gooRegis": "Google アカウントで登録",
+      "ghLogin": "GitHub でログイン",
+      "dcRegis": "Discord で続行",
+      "gooRegis": "Google で続行",
+      "ghRegis": "GitHub で続行",
       "connecting": "接続中…",
       "resetLink": "パスワード再設定用のメールアドレスを入力してください。登録済みのメールアドレスにパスワード再設定リンクを送信します。<br><br>送信後、受信トレイおよび迷惑メールフォルダをご確認ください。",
       "resetRequire": "新しいパスワードを入力し、正しく再入力してください。<br><br>パスワードを再設定します。",
@@ -242,14 +308,14 @@
       "switchToLoginPrefix": "すでにアカウントをお持ちの方は、",
       "switchToLoginAction": "ログインはこちら。",
       "ack": "続行することで、以下の内容を確認し同意したものとみなされます：",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">プライバシーポリシー</a> および <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">利用規約</a>。",
+      "ackLink": "<a href=\"{privacy}\">プライバシーポリシー</a> および <a href=\"{tos}\">利用規約</a>。",
       "hints": {
         "0": "認証エラー",
         "101": "メールを入力してください",
         "102": "メール形式が不正です",
         "103": "登録済みのメールです",
         "104": "メールアドレスが未登録です",
-        "105": "Email Not Supported",
+        "105": "メールアドレスはサポートされていません",
         "111": "パスワードを入力",
         "112": "パスワードが正しくない",
         "113": "パスワードが一致しない",
@@ -276,12 +342,12 @@
       "title": "プロフィール",
       "avatarHint": "プロフィール操作を開く",
       "nameEditHint": "ユーザー名を編集",
-      "nickName": "ニックネーム",
+      "nickName": "ユーザー名",
       "note": "説明",
-      "noteNickname": "ユーザー名には、最大15文字の英字、数字、ハイフン、またはアンダースコアを使用できます。",
-      "noteUID": "UIDはユーザー名を初めて設定した際にのみ割り当てられ、変更することはできませんが、ユーザー名はいつでも更新できます。アバターエリアをクリックすると、他のアバターに切り替えることができます。",
+      "noteNickname": "ユーザー名には、半角英数字・ハイフン・アンダースコアを15文字まで使用できます。",
+      "noteUID": "UID はユーザー名を初めて設定したときに発行され、変更できません。ユーザー名はいつでも変更できます。アバターをクリックすると、別のアバターに切り替えられます。",
       "auditLabel": "操作",
-      "importOfficial": "公式マップからインポート",
+      "importOfficial": "公式マップから進捗を取り込む",
       "save": "変更を保存",
       "saving": "保存中…",
       "logout": "ログアウト"
@@ -289,21 +355,18 @@
   },
   "scale": {
     "pip": {
-      "activeTitle": "ピクチャーインピクチャーが有効です",
-      "returnHint": "ロゴをクリックして現在のタブに戻ります",
+      "activeTitle": "ピクチャーインピクチャーを使用中",
+      "returnHint": "ロゴをクリックすると、このタブに戻ります",
       "enterMode": "PiPモードに入る",
       "exitMode": "PiPモードを終了",
-      "unsupported": "PiP はサポートされていません"
+      "unsupported": "このブラウザはドキュメント PiP に対応していません"
     }
   },
   "locator": {
     "binding": {
       "title": "アカウント連携",
-      "docsLead": "続行すると、以下のすべての規約に同意したものとみなされます：",
-      "tos": "利用規約",
-      "privacy": "プライバシーポリシー",
-      "dataCollection": "個人情報収集および利用チェックリスト",
-      "disclaimer": "免責事項",
+      "docsLead": "続行すると、次の規約と方針にすべて同意したものとみなされます。",
+      "docsLinks": "<a href=\"{tos}\">利用規約</a> · <a href=\"{privacy}\">プライバシーポリシー</a> · <a href=\"{data}\">データ収集項目</a> · <a href=\"{disclaimer}\">免責事項</a>",
       "chinaTab": "中国 (Hypergryph)",
       "globalTab": "グローバル (Gryphline)",
       "CNStep0": "<a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>公式サイト</a>にアクセスし、ログイン済みであることを確認してください。",
@@ -311,27 +374,26 @@
       "CNStep1": "<a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>Hypergryph APIリンク</a>を開き、レスポンス全文をコピーしてください。",
       "UniStep1": "<a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>Gryphline APIリンク</a>を開き、レスポンス全文をコピーしてください。",
       "Step2": "レスポンス全文を貼り付け、規約を確認したうえでアカウントを連携してください。",
-      "serverFallback": "サーバー",
       "changeBinding": "連携を変更",
       "unlink": "連携解除",
-      "bindWithCountdown": "連携して位置同期を有効化（{sec}）",
-      "bind": "連携して位置同期を有効化",
+      "bindWithCountdown": "連携して位置同期をオン（{sec}）",
+      "bind": "連携して位置同期をオン",
       "bindOnlyWithCountdown": "アカウントを連携（{sec}）",
       "bindOnly": "アカウントを連携",
       "locateAuth": "許可",
       "locateAuthBody": "位置同期を有効にすると、ゲーム内の位置情報へのアクセスが許可されます。有効にしますか？",
-      "authAndSync": "許可して同期開始"
+      "authAndSync": "許可して同期を開始"
     },
     "config": {
       "title": "追跡設定",
       "server": "サーバー",
-      "uid": "プレイヤーUID",
+      "uid": "プレイヤー UID",
       "scopeTitle": "範囲",
       "scopeHint": "位置同期中に通知する周辺ポイントの種類を選択してください。",
-      "scope": {
+       "scope": {
         "balanced": {
           "title": "バランス",
-          "desc": "推奨されるポイントを追跡します。"
+          "desc": "推奨マーカーを追跡。"
         },
         "collection": {
           "title": "収集物",
@@ -346,8 +408,7 @@
       "trackPoints": "マーカー追跡",
       "centerOnPosition": "中央に固定",
       "heatmap": "ヒートマップ",
-      "configNote1": "この機能を有効にすると、",
-      "configNote2": "およびその他の規約に同意したものとみなされます。"
+      "configNote": "この機能をオンにすると、<a href=\"{data}\">データ収集項目</a>およびその他の規約に同意したものとみなされます。"
     },
     "errors": {
       "10000": "位置同期セッションの有効期限が切れました。再連携してください。",
@@ -362,10 +423,10 @@
     }
   },
   "sync": {
-    "now": "OEM Cloudへデータを同期",
-    "already": "クラウドと同期済み",
+    "now": "進捗を OEM Cloud に同期",
+    "already": "進捗は最新です",
     "done": "クラウド同期済み · {times}前",
-    "syncing": "{count}件のポイントを同期中",
+    "syncing": "{count}件のマーカーを同期中",
     "failed": "同期に失敗しました（{reason}）",
     "offline": "オフライン",
     "dataConflict": "データ競合",
@@ -379,9 +440,9 @@
       "updatedAt": "最終更新",
       "total": "記録済みポイント",
       "region": "エリア",
-      "keepA": "{label}のデータを残す",
+      "keepA": "{label}のデータを保持",
       "keepB": "{label}のデータを使用",
-      "merge": "両方のデータを結合 ({count})"
+      "merge": "両方のデータを統合（{count}件）"
     }
   },
   "links": {
@@ -399,8 +460,9 @@
     "skip": "スキップ",
     "clear": "クリア",
     "all": "すべて",
-    "selected": "選択中",
+    "selected": "選択済み",
     "confirm": "確認",
+    "confirmAgain": "もう一度クリックして確定",
     "loading": "読み込み中…",
     "enable": "有効",
     "disable": "無効",
@@ -408,20 +470,20 @@
     "collapse": "折りたたむ"
   },
   "announcement": {
-    "title": "サイトのお知らせ",
-    "empty": "お知らせはありません"
+    "title": "サイトからのお知らせ",
+    "empty": "現在、お知らせはありません"
   },
   "meta": {
     "title": "終末地マップ集",
     "description": "Open Endfield Map は、『アークナイツ：エンドフィールド』向けのオープンソースのオンラインマップで、インタラクティブマップ、アイテム収集、戦略計画ツールを提供します。"
   },
   "domain": {
-    "cn": "<span class=\"keyword\">中国本土のユーザー</span>は大陸ミラー<a href='https://opendfieldmap.cn/' class='embed' target='_blank' rel='noopener'>(https://opendfieldmap.cn)</a>の利用をおすすめします。より高速で安定したアクセスが可能です。",
-    "org": "<span class=\"keyword\">海外ユーザー</span>はグローバルミラー(<a href='https://opendfieldmap.org/' class='embed' target='_blank' rel='noopener'>https://opendfieldmap.org</a>)の利用をおすすめします。より高速で安定したアクセスが可能です。"
+    "cn": "<span class=\"keyword\">中国本土からアクセスしている方</span>には、より高速で安定した中国本土向けミラー <a href='https://opendfieldmap.cn/' class='embed' target='_blank' rel='noopener'>https://opendfieldmap.cn</a> をおすすめします。",
+    "org": "<span class=\"keyword\">中国本土以外からアクセスしている方</span>には、より高速で安定したグローバル版 <a href='https://opendfieldmap.org/' class='embed' target='_blank' rel='noopener'>https://opendfieldmap.org</a> をおすすめします。"
   },
   "support": {
-    "title": "ご支援のお願い",
-    "content": "過去約1ヶ月間、Open Endfield Map（OEM）は累計<span class=\"hl\">2億回</span>を超えるHTTPSリクエストを処理しました（<span class=\"hl\">1日平均約834万回</span>）。これに伴い、累積帯域幅の使用量は<span class=\"hl\">2.8TB</span>を突破しています。現在、サイトのアクティブユーザー数は<span class=\"hl\">7万人</span>を超え、今もなお増え続けています。シンガポールと杭州にあるサーバーはフル稼働状態にありますが、皆様の温かいご関心に心より感謝申し上げます。<br><br>OEMは2025年2月に開発がスタートしました。一貫してオープンソースかつ無料で公開されており、その期間のほとんど（そして現在も）<span class=\"hl\">私（Jacy Chan/Cirisus）一人の手によって維持・運営されています</span>。しかしながら、この1ヶ月間だけで、<a href='https://imgur.com/a/cloudflare-invoice-eqBC0zZ' class='embed' target='_blank'>CDN帯域幅とArgoルーティングによる請求額</a>は<span class=\"hl\">266.07ドル（約40,000円）</span>に達しました。もし本サイトが皆様のお役に立っているようでしたら、今後の安定したサービス提供のため、以下の方法でご支援をいただけますと幸いです。いただいたご支援は、サーバー代や帯域幅費用の補填、および今後の新機能（ユーザーシステムや地点の三人称視点アップロード機能など）の開発に充てさせていただきます。<br><br>データ、UI、翻訳等で至らない点がございましたら、いつでもフィードバックをお寄せください。迅速に対応できるよう努めてまいります。皆様のご理解とご協力に感謝いたします。",
+    "title": "OEMを支援する",
+    "content": "この1か月ほどで、Open Endfield Map（OEM）が処理した HTTPS リクエストは累計<span class=\"hl\">2億件</span>を超え、1日平均では<span class=\"hl\">約834万件</span>に達しました。使用した帯域幅も累計<span class=\"hl\">2.8 TB</span>を超えています。現在のアクティブユーザーは<span class=\"hl\">7万人以上</span>で、今も増え続けています。多くの方にご利用いただいていることに、心より感謝いたします。<br><br>OEM は2025年2月の開発開始以来、オープンソースかつ無料で公開してきました。その運営と保守は、ほぼすべて<span class=\"hl\">私（Jacy Chan / Cirisus）一人で行っています</span>。しかし、直近1か月だけでも、<a href='https://imgur.com/a/cloudflare-invoice-eqBC0zZ' class='embed' target='_blank'>CDN の帯域幅と Argo ルーティング</a>に<span class=\"hl\">266.07米ドル（約4万円）</span>かかりました。OEM が探索の役に立っていると感じていただけたら、今後も安定して提供を続けられるよう、ご支援をご検討ください。いただいた支援は、サーバーと帯域幅の費用、新機能の開発に充てられます。<br><br>データ、UI、翻訳などに誤りや気になる点がありましたら、いつでもお知らせください。できる限り早く対応します。ご理解とご支援をありがとうございます。",
     "patreon": "Patreonで支援",
     "kofi": "Ko-fiで支援",
     "afdian": "Afdianで支援",

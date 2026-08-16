@@ -120,8 +120,11 @@ const DEFAULT_LOCATOR_INTERVAL_MS = 1000;
 const LOCATOR_TARGET_ZOOM = 3;
 const LOCATOR_FOLLOW_CENTER_RATIO = 0.25;
 const LOCATOR_MOVE_ANIMATION_MS = 900;
+const LOCATOR_POSITION_EPSILON = 0.0001;
 const POSITION_UNAVAILABLE_RETRY_MS = 5000;
 const EXPIRED_CREDENTIAL_RETRY_MS = 1000;
+const LOCATOR_SOCKET_RETRY_DELAYS_MS = [1000, 2000, 4000] as const;
+const LOCATOR_SOCKET_STEADY_RETRY_MS = 30_000;
 
 type UpKind = 'expired' | 'notInGame' | 'policy';
 
@@ -168,6 +171,11 @@ const errKind = (error: EFBackendError): UpKind | null => {
     return code === null ? null : UP_KIND[code] ?? null;
 };
 
+const hasLocatorPositionChanged = (from: L.LatLng, to: L.LatLng): boolean => (
+    Math.abs(from.lat - to.lat) > LOCATOR_POSITION_EPSILON
+    || Math.abs(from.lng - to.lng) > LOCATOR_POSITION_EPSILON
+);
+
 const showErr = (error: EFBackendError): void => {
     const code = errCode(error);
     if (code === null) return;
@@ -182,6 +190,8 @@ export function useLocator(map: L.Map | undefined): void {
     const trackerRunningRef = useRef(false);
     const pollTimerRef = useRef<number | null>(null);
     const socketRef = useRef<WebSocket | null>(null);
+    const socketTicketRef = useRef<string | null>(null);
+    const socketReconnectAttemptRef = useRef(0);
     const trackerLayerRef = useRef<L.LayerGroup | null>(null);
     const markerRef = useRef<L.Marker | null>(null);
     const lastSyncedRegionRef = useRef<string | null>(null);
@@ -236,6 +246,8 @@ export function useLocator(map: L.Map | undefined): void {
                 socketRef.current.close(1000, 'locator stopped');
                 socketRef.current = null;
             }
+            socketTicketRef.current = null;
+            socketReconnectAttemptRef.current = 0;
         };
 
         const pauseForErr = (error: EFBackendError) => {
@@ -409,6 +421,12 @@ export function useLocator(map: L.Map | undefined): void {
             const keepCentered = Boolean(options?.keepCentered);
             const state = animationRef.current;
             const current = marker.getLatLng();
+            const positionChanged = hasLocatorPositionChanged(current, target);
+            if (!positionChanged) {
+                marker.setLatLng(target);
+                return;
+            }
+
             const bearing = calculateTrackerBearing(map, current, target);
             if (bearing !== null) {
                 setTrackerBearing(marker, bearing);
@@ -427,6 +445,13 @@ export function useLocator(map: L.Map | undefined): void {
                     releaseProgrammaticViewChange,
                     LOCATOR_MOVE_ANIMATION_MS + 300,
                 );
+                if (isLocatorRegionVisible()) {
+                    map.once('moveend', releaseProgrammaticViewChange);
+                    map.panTo(target, {
+                        animate: true,
+                        duration: LOCATOR_MOVE_ANIMATION_MS / 1000,
+                    });
+                }
             }
 
             if (state.running) return;
@@ -450,12 +475,9 @@ export function useLocator(map: L.Map | undefined): void {
                     lerp(anim.from.lng, anim.to.lng, eased),
                 );
                 marker.setLatLng(next);
-                if (anim.keepCentered && isLocatorRegionVisible()) {
-                    map.setView(next, map.getZoom(), { animate: false });
-                }
 
                 if (t >= 1) {
-                    if (anim.keepCentered) {
+                    if (anim.keepCentered && !isLocatorRegionVisible()) {
                         releaseProgrammaticViewChange();
                     }
                     anim.running = false;
@@ -600,7 +622,8 @@ export function useLocator(map: L.Map | undefined): void {
                 if (!trackerRunningRef.current || disposed) return;
 
                 try {
-                    const response = await getEFPosition();
+                    const response = await getEFPosition({ includeSocketTicket: true });
+                    socketTicketRef.current = response.socketTicket ?? null;
                     applyPositionUpdate(response.data);
                     if (response.data.isOnline === false) {
                         scheduleNextPoll((config.intervalMs ?? DEFAULT_LOCATOR_INTERVAL_MS) * 3);
@@ -635,7 +658,9 @@ export function useLocator(map: L.Map | undefined): void {
                 }
 
                 let sawPosition = false;
-                const socket = openEFPositionSocket();
+                const socket = openEFPositionSocket({
+                    socketTicket: socketTicketRef.current,
+                });
                 socketRef.current = socket;
 
                 socket.addEventListener('message', (event) => {
@@ -644,6 +669,7 @@ export function useLocator(map: L.Map | undefined): void {
                         const message = JSON.parse(String(event.data)) as EFPositionSocketMessage;
                         if (message.type === 'position') {
                             sawPosition = true;
+                            socketReconnectAttemptRef.current = 0;
                             applyPositionUpdate(message.data);
                             return;
                         }
@@ -668,7 +694,18 @@ export function useLocator(map: L.Map | undefined): void {
                         socketRef.current = null;
                     }
                     if (disposed || !trackerRunningRef.current) return;
-                    scheduleNextPoll(sawPosition ? (config.intervalMs ?? DEFAULT_LOCATOR_INTERVAL_MS) : 250);
+                    if (sawPosition) {
+                        socketReconnectAttemptRef.current = 0;
+                        scheduleNextPoll(config.intervalMs ?? DEFAULT_LOCATOR_INTERVAL_MS);
+                        return;
+                    }
+
+                    const attempt = socketReconnectAttemptRef.current;
+                    socketReconnectAttemptRef.current += 1;
+                    const delay = attempt < LOCATOR_SOCKET_RETRY_DELAYS_MS.length
+                        ? LOCATOR_SOCKET_RETRY_DELAYS_MS[attempt]
+                        : LOCATOR_SOCKET_STEADY_RETRY_MS;
+                    scheduleNextPoll(delay);
                 });
 
                 socket.addEventListener('error', () => {
@@ -683,9 +720,10 @@ export function useLocator(map: L.Map | undefined): void {
             window.addEventListener(LOCATOR_RETURN_CURRENT_EVENT, returnToCurrentPosition);
 
             trackerRunningRef.current = true;
-            void getEFPosition({ includeBinding: true })
+            void getEFPosition({ includeBinding: true, includeSocketTicket: true })
                 .then((response) => {
                     if (disposed) return;
+                    socketTicketRef.current = response.socketTicket ?? null;
                     applyPositionUpdate(response.data);
                     useLocatorStore.getState().setViewMode('tracking');
                     startPositionSocket();
@@ -714,6 +752,10 @@ export function useLocator(map: L.Map | undefined): void {
             disposed = true;
             cleanupAnimation();
             cleanupPolling();
+            if (socketRef.current) {
+                socketRef.current.close(1000, 'locator disposed');
+                socketRef.current = null;
+            }
 
             map.off('talos:regionSwitched', onRegionSwitched);
             map.off('talos:subregionSwitched', onSubregionSwitched);

@@ -2,13 +2,17 @@
   "headbar": {
     "tos": "Terma & Storan",
     "hideUI": "Sembunyikan UI",
-    "group": "Sertai kumpulan berkaitan",
+    "notification": "Pemberitahuan",
     "darkmode": "Tukar ke mod gelap",
     "lightmode": "Tukar ke mod cerah",
     "language": "Pilih bahasa",
     "help": "Dapatkan bantuan",
     "announcement": "Pengumuman",
     "settings": "Keutamaan"
+  },
+  "mapControls": {
+    "layerSelect": "Pemilihan lapisan",
+    "locationTracking": "Segerak Lokasi"
   },
   "trigger": {
     "boundaryMode": "Mod Sempadan",
@@ -17,7 +21,7 @@
   },
   "search": {
     "placeholder": "Carian global...",
-    "results": "{count} hasil(s)",
+    "results": "{count} hasil",
     "locatedAt": "Ditemukan di",
     "distributeAt": "Didistribusikan di"
   },
@@ -32,23 +36,58 @@
       "main": "Utama",
       "sub": "Sub"
     },
+    "label": {
+      "note": "Nota",
+      "url": "Pautan",
+      "comments": "Komen teratas",
+      "collectionRate": "Kadar pengumpulan"
+    },
+    "tabs": {
+      "collectAll": "Kumpulkan semua item dari jenis yang sama sebagai selesai",
+      "general": "Butiran",
+      "comments": "Komen"
+    },
     "noInfo": "Tiada gambar. Guna {paste} / {click} untuk muat naik.",
-    "communityRule1": "Sebelum memuat naik, pastikan anda telah membaca dan mematuhi",
-    "communityRule2": "Garis Panduan Komuniti",
+    "communityRule": "Sebelum memuat naik, pastikan anda telah membaca dan mematuhi <a href=\"{link}\">Garis Panduan Komuniti</a>",
     "uploading": "Memuat naik...",
     "uploadPending": "Hantaran diterima. Akan dipaparkan selepas semakan.",
     "readFullText": "Klik untuk membaca teks penuh.",
     "share": "Salin pautan perkongsian untuk penanda ini.",
     "copied": "Pautan disalin",
+    "collectionRateSource": "Kadar pengumpulan seluruh pelayan ialah {nums} – Statistik daripada OEM Cloud",
     "viewer": {
       "author": "Pemuat naik",
       "uploadedAt": "Dimuat naik pada",
       "upvote": "Sokong",
       "flag": "Tandakan sebagai tidak tepat",
       "unflag": "Buang tanda",
+      "uploadAno": "Muat naik lain",
       "share": "Kongsi",
       "recall": "Minta pemadaman",
       "unrecall": "Batalkan pemadaman"
+    },
+    "comments": {
+      "placeholder": "Tulis sesuatu!",
+      "submit": "Hantar komen",
+      "actions": "Tindakan komen",
+      "translate": "Terjemah",
+      "showOriginal": "Tunjuk asal",
+      "translatedFrom": "Diterjemahkan daripada {language}",
+      "translating": "Sedang menterjemah...",
+      "translateFailed": "Terjemahan gagal",
+      "upvote": "Suka",
+      "downvote": "Tidak suka",
+      "reply": "Balas",
+      "edit": "Edit",
+      "submitEdit": "Simpan perubahan",
+      "undoEdit": "Batalkan perubahan",
+      "recall": "Sembunyikan sekarang",
+      "reviewing": "Disemak",
+      "emptyWithRule": "Belum ada komen. Sila ikut <a href=\"{link}\">garis panduan komuniti</a> semasa menyiarkan.",
+      "ruleOnly": "Sila ikut <a href=\"{link}\">garis panduan komuniti</a> semasa menyiarkan.",
+      "loadFailed": "Komen gagal dimuatkan.",
+      "submitFailed": "Komen gagal dihantar.",
+      "editFailed": "Komen gagal dikemas kini."
     },
     "errors": {
       "unsupportedType": "Hanya imej JPEG/PNG/WebP/AVIF/HEIC disokong.",
@@ -65,12 +104,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
-      "supportedBy": "disokong oleh Observator 6"
-    }
+      "supportedBy": "Disokong oleh Observator 6"
+    },
+    "newlyAdded": "Baharu dalam Versi Ini"
   },
   "language": {
     "title": "Bahasa",
@@ -101,12 +141,39 @@
       "th-TH": "Thai",
       "vi-VN": "Vietnamese",
       "el-GR": "Greek",
-      "hi-IN": "Hindi"
+      "hi-IN": "Hindi",
+      "uk-UA": "Ukrainian",
+      "tr-TR": "Turkish"
     }
   },
-  "group": {
-    "title": "Komuniti & Media",
-    "visit": "Lawati"
+  "notification": {
+    "title": "Pemberitahuan",
+    "tabs": {
+      "community": "Interaksi",
+      "system": "Moderasi"
+    },
+    "markAllRead": "Tandai semua sebagai dibaca",
+    "empty": "Tiada mesej. Mesej berkaitan sumbangan anda akan dipaparkan di sini.",
+    "guest": "Log masuk dengan {account} anda untuk menerima pemberitahuan berkaitan.",
+    "account": "akaun OEM",
+    "loadError": "Pemberitahuan tidak dapat dimuatkan.",
+    "loadMore": "Muatkan lagi",
+    "support": "Hubungi & Sokongan",
+    "visit": "Lawati",
+    "noDetails": "Tiada butiran tambahan.",
+    "subject": {
+      "image": "imej",
+      "comment": "komen",
+      "submission": "sumbangan"
+    },
+    "types": {
+      "approved": "<subjectTag>{subject}</subjectTag> anda <pointTag>{point}</pointTag> kini dipaparkan kepada umum.",
+      "needsReview": "<subjectTag>{subject}</subjectTag> anda <pointTag>{point}</pointTag> sedang menunggu semakan manual.",
+      "removeResolved": "<subjectTag>{subject}</subjectTag> yang anda tarik balik <pointTag>{point}</pointTag> telah diproses.",
+      "reply": "Balasan baharu telah ditambahkan pada <subjectTag>{subject}</subjectTag> anda <pointTag>{point}</pointTag>.",
+      "vote": "<subjectTag>{subject}</subjectTag> anda <pointTag>{point}</pointTag> menerima {count} tanda suka.",
+      "multiple": "Terdapat {count} kemas kini berkaitan untuk <subjectTag>{subject}</subjectTag> anda <pointTag>{point}</pointTag>."
+    }
   },
   "tos": {
     "title": "Terma & Storan",
@@ -145,6 +212,8 @@
     "shortcuts": {
       "title": "Pintasan Papan Kekunci",
       "hint": "Pintasan tersedia untuk tindakan pantas.",
+      "toggleUI": "Tunjuk/Sembunyikan Antara Muka",
+      "quickSearch": "Carian Pantas",
       "exportData": "Eksport Data",
       "importData": "Import Data",
       "undo": "Buat Asal",
@@ -166,13 +235,13 @@
     "triggerHandle": "Suis berkaitan paparan peta berada di bahagian bawah bar sisi.<br>Anda boleh menahan tetikus untuk <span class=\"keyword\">menyeret dan mengendalikannya.</span>",
     "triggerSwitch": "Klik untuk menukar status suis.<br><ul><li><span class=\"keyword\">Mod Pengelompokan Penanda</span> membolehkan penanda yang padat dipaparkan secara digabungkan;</li><li><span class=\"keyword\">Paparan Sempadan Wilayah</span> menyerlahkan setiap sub-wilayah dan sempadannya dalam kawasan semasa.</li><li><span class=\"keyword\">Nama Wilayah</span> memaparkan nama wilayah dalam permainan.</li></ul>",
     "scale": "Gunakan <span class=\"keyword\">Kawalan Zum</span> untuk melihat dan mengawal zum peta.<br>Roda tatal atau trackpad boleh digunakan untuk zum. Anda juga boleh zum dengan mengklik butang <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> atau mana-mana tempat pada palang zum.",
-    "filterList": "<span class=\"keyword\">Senarai Penanda</span> menyenaraikan penanda yang anda pilih; klik ikon untuk nyahpilih.",
+    "filterList": "<span class=\"keyword\">Senarai Penanda</span> memaparkan jenis penanda yang anda pilih; klik ikon untuk nyahpilih.",
     "headbar": "Suis berkaitan tetapan peta berada di <span class=\"keyword\">bar kepala</span>.",
     "tos": "<span class=\"keyword\">Terma Perkhidmatan</span> dan <span class=\"keyword\">Pengurusan Data</span> laman web.",
     "hideUI": "<span class=\"keyword\">Sembunyikan UI Laman Web</span> untuk mengambil tangkapan skrin atau melihat penanda di tepi.",
-    "group": "Lihat <span class=\"keyword\">kumpulan perbincangan</span> dan <span class=\"keyword\">komuniti</span> yang berkaitan dengan projek ini.",
+    "notification": "Buka <span class=\"keyword\">pemberitahuan</span> untuk melihat interaksi dan hasil semakan berkaitan sumbangan anda.",
     "darkMode": "Togol <span class=\"keyword\">mod cahaya persekitaran</span> semasa.",
-    "language": "Tukar <span class=\"keyword\">bahasa antara muka</span>.<br>Pada masa ini, bahasa dengan <span class=\"keyword\">sokongan terjemahan kandungan permainan sepenuhnya</span> termasuk Inggeris, Cina Ringkas, Cina Tradisional, Jepun, Korea, Perancis, Jerman, Itali, Rusia, Sepanyol, Indonesia, Portugis, Thai dan Vietnam.<br>Bahasa dengan <span class=\"keyword\">hanya sokongan terjemahan antara muka</span> termasuk Arab, Melayu, Poland dan Sweden.",
+    "language": "Tukar <span class=\"keyword\">bahasa antara muka</span>.<br>Pada masa ini, bahasa dengan <span class=\"keyword\">sokongan terjemahan kandungan permainan sepenuhnya</span> termasuk Inggeris, Cina Ringkas, Cina Tradisional, Jepun, Korea, Perancis, Jerman, Itali, Rusia, Sepanyol, Indonesia, Portugis, Thai dan Vietnam.<br>Bahasa dengan <span class=\"keyword\">hanya sokongan terjemahan antara muka</span> termasuk Arab, Melayu, Poland, Sweden, Yunani, Hindi, Ukraine dan Turki.",
     "announcement": "Lihat <span class=\"keyword\">pengumuman situs web</span> terkini. Pembaruan kebijakan layanan dan privasi juga akan diposting di sini.",
     "help": "Mulakan semula <span class=\"keyword\">panduan</span> ini.",
     "settings": "Buka <span class=\"keyword\">Keutamaan</span> untuk mengawal storan setempat yang digunakan peta bagi mengingati tindakan anda.",
@@ -194,16 +263,11 @@
       "selectorSelect": "<span class=\"keyword\">Pemilih penanda</span>. Ketik untuk tukar; penanda terpilih muncul di peta. Anda boleh lihat jumlah dan berapa yang telah ditanda di kawasan ini."
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">Nota:</span> Apabila versi permainan ialah <span class=\"keyword\">1.0.13</span>, versi data peta ialah <span class=\"keyword\">0.8.25</span>. Kami memerlukan masa untuk mengemas kini data, jadi ia mungkin lewat daripada kemas kini permainan. Terima kasih atas kesabaran anda. Untuk menjejaki kemas kini kami, sila sertai <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Sertai Discord'>Pelayan Discord</a> kami.<br><br>Kami juga mengesyorkan alat berikut:<ul><li><span class=\"keyword\">Wiki Permainan: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Lawati Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Blueprint:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Lawati Talos Pioneers'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "Set data semasa adalah terkini.<br><br>Jika anda perlu melaporkan masalah, sila sertai <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Sertai Discord'>Pelayan Discord</a> kami.<br><br>Kami juga mengesyorkan alat berikut:<ul><li><span class=\"keyword\">Wiki Permainan: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Lawati Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Blueprint:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Lawati Talos Pioneers'>https://talospioneers.com</a></li></ul>"
-  },
   "idcard": {
     "group": "Grup: ",
     "since": "Sejak",
     "logintip": "Klik avatar untuk log masuk.",
     "registip": "Klik avatar untuk mendaftar.",
-    "ago": "yang lalu",
     "karma": "Karma",
     "loading": "Memuatkan...",
     "unassigned": "N/A",
@@ -230,8 +294,10 @@
       "resend": "Hantar Semula ({count})",
       "dcLogin": "Log masuk dengan Discord",
       "gooLogin": "Log masuk dengan Google",
+      "ghLogin": "Log masuk dengan GitHub",
       "dcRegis": "Teruskan dengan Discord",
       "gooRegis": "Teruskan dengan Google",
+      "ghRegis": "Teruskan dengan GitHub",
       "connecting": "Menyambung...",
       "resetLink": "Sila masukkan alamat e-mel yang dikaitkan dengan akaun anda untuk menerima pautan tetapan semula kata laluan.<br><br>Sila semak peti masuk dan folder spam anda selepas dihantar.",
       "resetRequire": "Sila masukkan dan sahkan kata laluan baharu anda.<br><br>Kami akan menetapkan semula kata laluan anda serta-merta.",
@@ -242,14 +308,14 @@
       "switchToLoginPrefix": "Sudah mempunyai akaun?",
       "switchToLoginAction": "Log masuk di sini.",
       "ack": "Dengan meneruskan, anda bersetuju bahawa anda telah membaca dan menerima",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Dasar Privasi</a> dan <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Syarat Perkhidmatan</a> kami.",
+      "ackLink": "<a href=\"{privacy}\">Dasar Privasi</a> dan <a href=\"{tos}\">Syarat Perkhidmatan</a> kami.",
       "hints": {
         "0": "Emel/kata laluan tidak sah",
         "101": "Sila masukkan e-mel",
         "102": "Format e-mel tidak sah",
         "103": "Emel ini telah digunakan",
         "104": "Emel tidak ditemui",
-        "105": "Email Not Supported",
+        "105": "E-mel tidak disokong",
         "111": "Sila masukkan kata laluan",
         "112": "Kata laluan tidak sah",
         "113": "Kata laluan tidak sepadan",
@@ -300,10 +366,7 @@
     "binding": {
       "title": "Paut Akaun",
       "docsLead": "Dengan meneruskan, anda mengesahkan persetujuan terhadap syarat di bawah:",
-      "tos": "Terma Perkhidmatan",
-      "privacy": "Dasar Privasi",
-      "dataCollection": "Senarai semak pengumpulan data",
-      "disclaimer": "Penafian Liabiliti",
+      "docsLinks": "<a href=\"{tos}\">Terma Perkhidmatan</a> · <a href=\"{privacy}\">Dasar Privasi</a> · <a href=\"{data}\">Senarai semak pengumpulan data</a> · <a href=\"{disclaimer}\">Penafian Liabiliti</a>",
       "chinaTab": "China (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Pergi ke <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>laman rasmi</a> dan pastikan anda sudah log masuk.",
@@ -311,7 +374,6 @@
       "CNStep1": "Buka <a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>pautan API Hypergryph</a> dan salin respons penuh.",
       "UniStep1": "Buka <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>pautan API Gryphline</a> dan salin respons penuh.",
       "Step2": "Tampal respons penuh, baca terma, kemudian pautkan akaun.",
-      "serverFallback": "Server",
       "changeBinding": "Tukar pautan",
       "unlink": "Nyahpaut",
       "bindWithCountdown": "Paut & aktifkan segerak lokasi ({sec})",
@@ -346,8 +408,7 @@
       "trackPoints": "Jejak",
       "centerOnPosition": "Di tengah",
       "heatmap": "Peta haba",
-      "configNote1": "Mengaktifkan ciri ini bermaksud anda menerima ",
-      "configNote2": " dan terma lain."
+      "configNote": "Mengaktifkan ciri ini bermaksud anda menerima <a href=\"{data}\">Senarai semak pengumpulan data</a> dan terma lain."
     },
     "errors": {
       "10000": "Sesi segerak lokasi tamat. Sila paut semula.",
@@ -365,7 +426,7 @@
     "now": "Segerak ke OEM Cloud",
     "already": "Selari dengan Awan",
     "done": "Disegerakkan - {times} yang lalu",
-    "syncing": "Menyegerak {count} Titik",
+    "syncing": "Menyegerak {count} titik",
     "failed": "Gagal disegerakkan ({reason})",
     "offline": "Luar talian",
     "dataConflict": "Konflik Data",
@@ -401,6 +462,7 @@
     "all": "Semua",
     "selected": "Dipilih",
     "confirm": "Sahkan",
+    "confirmAgain": "Klik sekali lagi untuk mengesahkan",
     "loading": "Memuat...",
     "enable": "Dayakan",
     "disable": "Nyahdayakan",

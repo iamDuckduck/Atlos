@@ -7,7 +7,7 @@
 
 import { useMarkerStore } from '@/store/marker';
 import useRegion from '@/store/region';
-import { setLocale, SUPPORTED_LANGS } from '@/locale';
+import { setLocale } from '@/locale';
 import {
     findMarkerById,
     findUniqueArchiveMarkerByType,
@@ -15,9 +15,9 @@ import {
     type IMarkerData,
 } from '@/data/marker';
 import { REGION_DICT } from '@/data/map';
+import { getLangFromUrlCode, getLangUrlCode } from '@/utils/lang';
 import { navigateToSharedPoint } from '@/utils/navigation';
-
-type Lang = (typeof SUPPORTED_LANGS)[number];
+import { completeCurrentUserGuide } from '@/store/userGuide';
 
 // URL 參數名稱
 const PARAM_LANG = 'l';
@@ -27,8 +27,23 @@ const PARAM_REGION = 'r';
 const PARAM_SUBREGION = 's';
 const PARAM_POINT = 'p';
 const PARAM_POINT_TOKEN = 'x';
+const MAP_URL_PARAMS = [
+    PARAM_LANG,
+    PARAM_FILTER,
+    PARAM_TYPE,
+    PARAM_REGION,
+    PARAM_SUBREGION,
+    PARAM_POINT,
+    PARAM_POINT_TOKEN,
+] as const;
 const AUTH_URL_PARAM_WHITELIST = new Set(['token', 'email', 'error', 'domain']);
 const POINT_SHARE_SHORT_ORIGIN = 'https://oem.re';
+const POINT_SHARE_CN_ORIGIN = 'https://opendfieldmap.cn';
+const POINT_SHARE_CN_HOSTNAME = 'opendfieldmap.cn';
+
+let suppressInitialAutoOverlays = false;
+
+export const shouldSuppressInitialAutoOverlays = (): boolean => suppressInitialAutoOverlays;
 
 const BASE62_ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const BASE62_CHAR_TO_VALUE = new Map<string, bigint>(
@@ -36,43 +51,30 @@ const BASE62_CHAR_TO_VALUE = new Map<string, bigint>(
 );
 const BASE62_BASE = BigInt(BASE62_ALPHABET.length);
 
+const isPointShareCnHostname = (hostname: string): boolean => (
+    hostname === POINT_SHARE_CN_HOSTNAME || hostname.endsWith(`.${POINT_SHARE_CN_HOSTNAME}`)
+);
+
+const getPointShareOrigin = (): string => {
+    if (typeof window !== 'undefined' && isPointShareCnHostname(window.location.hostname)) {
+        return POINT_SHARE_CN_ORIGIN;
+    }
+
+    return POINT_SHARE_SHORT_ORIGIN;
+};
+
 // 可逆置換：以 36-bit 空間做乘法置換，兼顧可逆與短碼長度。
 const POINT_ID_PERMUTATION_MOD = 1n << 36n;
 const POINT_ID_PERMUTATION_MULTIPLIER = 25214903917n;
 const POINT_ID_PERMUTATION_OFFSET = 11n;
 const POINT_ID_TOKEN_LENGTH = 7;
+const POINT_TOKEN_PATTERN = /^[0-9a-zA-Z]{7}$/;
 
 // f 參數壓縮格式：
 // - 單個 type: ~<base36Index>
 // - 多個 type: ~~<base64url(varint(count, firstIndex, deltaMinusOne...))>
 const FILTER_SINGLE_PREFIX = '~';
 const FILTER_MULTI_PREFIX = '~~';
-
-// 語言代碼映射（雙向）
-const LANG_CODE_MAP: Record<string, string> = {
-    'en-US': 'en',
-    'zh-CN': 'cn',
-    'zh-HK': 'hk',
-    'ja-JP': 'jp',
-    'ko-KR': 'kr',
-    'ru-RU': 'ru',
-    'es-ES': 'es',
-    'fr-FR': 'fr',
-    'de-DE': 'de',
-    'it-IT': 'it',
-    'id-ID': 'id',
-    'pt-BR': 'br',
-    'ar-SA': 'ar',
-    'ms-MY': 'my',
-    'pl-PL': 'pl',
-    'sv-SE': 'se',
-    'th-TH': 'th',
-    'vi-VN': 'vn',
-};
-
-const LANG_CODE_REVERSE: Record<string, string> = Object.fromEntries(
-    Object.entries(LANG_CODE_MAP).map(([k, v]) => [v, k])
-);
 
 // 區域代碼映射
 const REGION_CODE_MAP: Record<string, string> = {
@@ -173,6 +175,21 @@ const decodePointIdToken = (token: string): string | null => {
     const decoded = ((obfuscated - POINT_ID_PERMUTATION_OFFSET + POINT_ID_PERMUTATION_MOD) % POINT_ID_PERMUTATION_MOD);
     const id = (decoded * POINT_ID_PERMUTATION_INVERSE) % POINT_ID_PERMUTATION_MOD;
     return id.toString();
+};
+
+const getPathPointToken = (pathname: string): string | null => {
+    const segments = pathname.split('/').filter(Boolean);
+    const lastSegment = segments[segments.length - 1];
+    return lastSegment && POINT_TOKEN_PATTERN.test(lastSegment) ? lastSegment : null;
+};
+
+const stripPathPointToken = (pathname: string): string => {
+    const segments = pathname.split('/').filter(Boolean);
+    if (!segments.length || !POINT_TOKEN_PATTERN.test(segments[segments.length - 1])) {
+        return pathname;
+    }
+    const keptSegments = segments.slice(0, -1);
+    return keptSegments.length ? `/${keptSegments.join('/')}/` : '/';
 };
 
 const mergeFilterKeys = (keys: string[]) => {
@@ -467,7 +484,7 @@ export const generateShareUrl = (): string => {
     // 語言（簡化為2字符代碼）
     const locale = getCurrentLocale();
     if (locale) {
-        const shortCode = LANG_CODE_MAP[locale] || locale;
+        const shortCode = getLangUrlCode(locale);
         params.set(PARAM_LANG, shortCode);
     }
 
@@ -494,7 +511,7 @@ export const generateShareUrl = (): string => {
 
 /**
  * 生成指定點位的分享鏈接。
- * 預設生成單一 query token（?x=...）。
+ * 預設生成單一 token。
  * 若 id 超出編碼範圍，降級為 legacy query 參數。
  */
 export const buildPointShareToken = (point: Pick<IMarkerData, 'id' | 'type' | 'subregId'>): string => {
@@ -528,12 +545,11 @@ export const generatePointShareShortUrl = (point: Pick<IMarkerData, 'id' | 'type
 
 export const generatePointShareUrl = (point: Pick<IMarkerData, 'id' | 'type' | 'subregId'>): string => {
     const tokenOrFallback = buildPointShareToken(point);
+    const pointShareOrigin = getPointShareOrigin();
     if (tokenOrFallback.startsWith('?')) {
-        return `${POINT_SHARE_SHORT_ORIGIN}/${tokenOrFallback}`;
+        return `${pointShareOrigin}/${tokenOrFallback}`;
     }
-    const tokenParams = new URLSearchParams();
-    tokenParams.set(PARAM_POINT_TOKEN, tokenOrFallback);
-    return `${POINT_SHARE_SHORT_ORIGIN}/?${tokenParams.toString()}`;
+    return `${pointShareOrigin}/${encodeURIComponent(tokenOrFallback)}`;
 };
 
 /**
@@ -563,6 +579,21 @@ export const applyUrlParams = async (): Promise<void> => {
     if (typeof window === 'undefined') return;
 
     const params = new URLSearchParams(window.location.search);
+    const pathPointToken = getPathPointToken(window.location.pathname);
+    const hasMapUrlState = Boolean(
+        pathPointToken || MAP_URL_PARAMS.some((param) => params.has(param)),
+    );
+
+    // The URL is cleaned before React mounts, so retain this startup-only flag
+    // for flows that must not interrupt an explicit shared-link destination.
+    suppressInitialAutoOverlays = hasMapUrlState;
+
+    // Shared/deep links have an explicit destination. Completing the current
+    // guide before React mounts prevents its auto-open from replacing that
+    // destination with the guide's default region.
+    if (hasMapUrlState) {
+        completeCurrentUserGuide();
+    }
 
     // 應用語言參數（以用户本地优先）
     const langParam = params.get(PARAM_LANG);
@@ -570,9 +601,9 @@ export const applyUrlParams = async (): Promise<void> => {
         const currentLocale = getCurrentLocale();
         // 只有当本地没有设置语言时，才应用 URL 参数
         if (!currentLocale) {
-            const fullLocale = LANG_CODE_REVERSE[langParam] || langParam;
-            if ((SUPPORTED_LANGS as readonly string[]).includes(fullLocale)) {
-                await setLocale(fullLocale as Lang);
+            const fullLocale = getLangFromUrlCode(langParam);
+            if (fullLocale) {
+                await setLocale(fullLocale);
             }
         }
     }
@@ -631,7 +662,7 @@ export const applyUrlParams = async (): Promise<void> => {
 
     const pointParam = params.get(PARAM_POINT);
     const typeParam = params.get(PARAM_TYPE)?.trim() || null;
-    const pointTokenParam = params.get(PARAM_POINT_TOKEN)?.trim() || null;
+    const pointTokenParam = params.get(PARAM_POINT_TOKEN)?.trim() || pathPointToken;
     const pointIdFromToken = pointTokenParam ? decodePointIdToken(pointTokenParam) : null;
     const resolvedFromToken = pointIdFromToken ? await resolvePointShareTarget(pointIdFromToken) : null;
     const resolvedFromType = typeParam ? await resolveArchiveTypeShareTarget(typeParam) : null;
@@ -674,7 +705,7 @@ export const applyUrlParams = async (): Promise<void> => {
     }
 
     // 清除地圖分享參數；僅保留認證流程必要參數，避免影響 reset password 流程。
-    if (params.toString()) {
+    if (params.toString() || pathPointToken) {
         const newParams = new URLSearchParams(window.location.search);
         newParams.delete(PARAM_LANG);
         newParams.delete(PARAM_FILTER);
@@ -692,9 +723,12 @@ export const applyUrlParams = async (): Promise<void> => {
         });
 
         const queryString = preservedParams.toString();
-        const newUrl = queryString
-            ? `${window.location.pathname}?${queryString}`
+        const nextPathname = pathPointToken
+            ? stripPathPointToken(window.location.pathname)
             : window.location.pathname;
+        const newUrl = queryString
+            ? `${nextPathname}?${queryString}`
+            : nextPathname;
         window.history.replaceState({}, '', newUrl);
     }
 };

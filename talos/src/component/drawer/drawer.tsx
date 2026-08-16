@@ -6,8 +6,9 @@ import styles from './drawer.module.scss';
 
 type Side = 'top' | 'bottom' | 'left' | 'right';
 
-const INTERACTIVE_SELECTOR = 'button, a, select, label, [role="button"], [role="link"], [contenteditable="true"]';
+const INTERACTIVE_SELECTOR = 'button, a, input, textarea, select, label, [role="button"], [role="link"], [contenteditable="true"]';
 const FILTER_ICON_SELECTOR = '[class*="filterIcon"]';
+const DRAG_IGNORE_SELECTOR = '[data-drawer-drag-ignore="true"]';
 
 export interface DrawerProps {
 	side?: Side;
@@ -18,6 +19,7 @@ export interface DrawerProps {
 	dragDisabled?: boolean;
 	debug?: boolean;
 	onProgressChange?: (progress: number) => void;
+	onSnapChange?: (index: number) => void;
 	className?: string;
 	handleClassName?: string;
 	contentClassName?: string;
@@ -76,20 +78,33 @@ const findSnapTarget = (
 	return null;
 };
 
-// Find scrollable ancestor
-const findScrollable = (el: Element | null, container: HTMLElement | null): HTMLElement | null => {
+const isVerticallyScrollable = (element: HTMLElement): boolean => {
+	const { overflowY } = getComputedStyle(element);
+	return (
+		(overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay')
+		&& element.scrollHeight > element.clientHeight + 1
+	);
+};
+
+const canScrollInDirection = (element: HTMLElement, movementY: number): boolean => {
+	if (movementY > 0) return element.scrollTop > 1;
+	if (movementY < 0) return element.scrollTop + element.clientHeight < element.scrollHeight - 1;
+	return false;
+};
+
+// Find scrollable ancestors from the gesture target outward to the drawer container.
+const findScrollables = (el: Element | null, container: HTMLElement | null): HTMLElement[] => {
+	const scrollables: HTMLElement[] = [];
 	let cur = el;
 	while (cur && container && cur !== container) {
 		if (cur instanceof HTMLElement) {
-			const { overflowY } = getComputedStyle(cur);
-			if ((overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay') && 
-			    cur.scrollHeight > cur.clientHeight + 1) {
-				return cur;
+			if (isVerticallyScrollable(cur)) {
+				scrollables.push(cur);
 			}
 		}
 		cur = cur.parentElement;
 	}
-	return null;
+	return scrollables;
 };
 
 export const Drawer: React.FC<DrawerProps> = ({
@@ -101,6 +116,7 @@ export const Drawer: React.FC<DrawerProps> = ({
 	dragDisabled = false,
 	debug = false,
 	onProgressChange,
+	onSnapChange,
 	className,
 	handleClassName,
 	contentClassName,
@@ -135,7 +151,9 @@ export const Drawer: React.FC<DrawerProps> = ({
 	const dragStartSizeRef = useRef(initSize);
 	const lastSizeRef = useRef(initSize);
 	const isDraggingRef = useRef(false);
-	const scrollElRef = useRef<HTMLElement | null>(null);
+	const isGestureRejectedRef = useRef(false);
+	const scrollElsRef = useRef<HTMLElement[]>([]);
+	const lastSnapCommandRef = useRef<number | null | undefined>(undefined);
 	
 	// Debug: track renders
 	logger.logRender(++renderCount.current, { side, initialSize, snapToIndex, handleSize, fullWidth });
@@ -162,6 +180,7 @@ export const Drawer: React.FC<DrawerProps> = ({
 				const newSnap = String(idx);
 				if (prevSnap !== newSnap) {
 					container.setAttribute('data-snap', newSnap);
+					onSnapChange?.(idx);
 					logger.logDataSnapChange(prevSnap, idx, v);
 				}
 			} else if (prevSnap !== null) {
@@ -172,7 +191,7 @@ export const Drawer: React.FC<DrawerProps> = ({
 			logger.logSizeChange(v, p);
 		});
 		return () => unsub();
-	}, [onProgressChange, size, progress, safeRange, minSnap, snapsNormalized, logger]);
+	}, [onProgressChange, onSnapChange, size, progress, safeRange, minSnap, snapsNormalized, logger]);
 	
 	// Initialize on mount only
 	useEffect(() => {
@@ -192,6 +211,11 @@ export const Drawer: React.FC<DrawerProps> = ({
 	
 	// Imperative snap via prop
 	useEffect(() => {
+		// snapToIndex is an imperative command, not continuously controlled state.
+		// Recalculating snap sizes (for example after a mobile viewport resize) must
+		// not replay an old command and unexpectedly collapse the drawer.
+		if (Object.is(lastSnapCommandRef.current, snapToIndex)) return;
+		lastSnapCommandRef.current = snapToIndex;
 		if (snapToIndex == null) return;
 		if (isDraggingRef.current) return;
 		const idx = Math.trunc(snapToIndex);
@@ -230,17 +254,27 @@ export const Drawer: React.FC<DrawerProps> = ({
 	}) => {
 		const { first, last, movement, cancel, event, intentional } = state;
 		const [mx, my] = movement;
+		if (first) isGestureRejectedRef.current = false;
 
 		if (dragDisabled) {
-			if (first) cancel();
+			if (first) {
+				isGestureRejectedRef.current = true;
+				cancel();
+			}
 			return;
 		}
+
+		// cancel() synchronously emits a final callback. Keep the whole rejected
+		// sequence inert so that callback cannot reuse a stale dragStartSize.
+		if (isGestureRejectedRef.current) return;
 		
-		logger.logGesture(first ? 'START' : last ? 'END' : 'MOVE', {
-			intentional,
-			movement: { mx, my },
-			size: size.get(),
-		});
+		if (first || last) {
+			logger.logGesture(first ? 'START' : 'END', {
+				intentional,
+				movement: { mx, my },
+				size: size.get(),
+			});
+		}
 		
 		// First touch: initialize and check cancellation conditions
 		if (first) {
@@ -248,21 +282,30 @@ export const Drawer: React.FC<DrawerProps> = ({
 			
 			if (target?.closest(INTERACTIVE_SELECTOR)) {
 				logger.logGestureCancel('interactive element');
+				isGestureRejectedRef.current = true;
 				cancel();
 				return;
 			}
-			
+
+			if (target?.closest(DRAG_IGNORE_SELECTOR)) {
+				logger.logGestureCancel('drag ignore region');
+				isGestureRejectedRef.current = true;
+				cancel();
+				return;
+			}
+
 			if (target?.closest(FILTER_ICON_SELECTOR)) {
 				logger.logGestureCancel('filterIcon drag');
+				isGestureRejectedRef.current = true;
 				cancel();
 				return;
 			}
 			
 			dragStartSizeRef.current = size.get();
 			isDraggingRef.current = false;
-			scrollElRef.current = findScrollable(target, containerRef.current);
+			scrollElsRef.current = findScrollables(target, containerRef.current);
 			
-			if (scrollElRef.current) logger.logScrollableDetected(scrollElRef.current);
+			if (scrollElsRef.current.length > 0) logger.logScrollableDetected(scrollElsRef.current[0]);
 		}
 		
 		// Not intentional yet: wait for threshold
@@ -274,13 +317,12 @@ export const Drawer: React.FC<DrawerProps> = ({
 		}
 		
 		// Check scroll conflict
-		const scrollEl = scrollElRef.current;
-		if (scrollEl && axis === 'y') {
-			const atTop = scrollEl.scrollTop <= 1;
-			const atBottom = scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 1;
-			
-			if ((my > 0 && !atTop) || (my < 0 && !atBottom)) {
+		const scrollEls = scrollElsRef.current;
+		if (scrollEls.length > 0 && axis === 'y') {
+			const scrollOwner = scrollEls.find((scrollEl) => canScrollInDirection(scrollEl, my));
+			if (scrollOwner) {
 				logger.logGestureCancel('content scroll priority');
+				isGestureRejectedRef.current = true;
 				cancel();
 				return;
 			}
@@ -318,9 +360,6 @@ export const Drawer: React.FC<DrawerProps> = ({
 			
 			if (snapResult && Math.abs(snapResult.target - cur) > 0.5) {
 				animate(size, snapResult.target, { duration: 0.25 });
-				if (containerRef.current) {
-					containerRef.current.setAttribute('data-snap', String(snapResult.index));
-				}
 				logger.logSnapTarget(cur, snapResult.target, snapResult.index);
 			}
 			

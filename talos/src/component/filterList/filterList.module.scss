@@ -1,6 +1,5 @@
 @use '../../styles/palette.scss' as *;
 @use '../../styles/curves.scss' as *;
-@use '../../styles/size.scss' as *;
 
 :root, :root[data-theme='light'] {
     --filterlist-bg: #{rgba($white-2, 0.25)};
@@ -47,17 +46,14 @@
         opacity: 0;
     }
 }
-@media screen and (max-width: $mobile-bp) {
-    .mainFilterList {
-        position: relative;
-        bottom: 0;
-        left: 0;
-        height: 100%;
-        border-radius: 28px;
-        /* Use inner shadow on mobile to adapt rounded corners */
-        box-shadow: inset 0 0 8px rgba($black-0, 0.35);
-    }
-    
+.mainFilterList.mobile {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 28px;
+    /* Use inner shadow on mobile to adapt rounded corners */
+    box-shadow: inset 0 0 8px rgba($black-0, 0.35);
 }
 
 .mainFilterContentContainer {
@@ -125,8 +121,6 @@
         transform: scale(0.95);
     }
 }
-@media screen and (max-width: $mobile-bp) {
-    .innerContainer {
-        gap: 0;
-    }
+.mainFilterList.mobile .innerContainer {
+    gap: 0;
 }

@@ -6,6 +6,7 @@ import { useUiPrefsStore, useHideCompletedMarkers } from '@/store/uiPrefs';
 import { useLocatorStore } from '@/component/locator/state';
 import { LOCATOR_CONFIG_UPDATED_EVENT, readEFTrackerConf, type EFTrackerScope } from '@/utils/endfield/config';
 import { getLocatorReminderTypeKeys } from '@/component/locator/proximityReminder';
+import { isRecordToolEnabled } from '@/devtools/loadDevTool';
 
 const AUTO_CLUSTER_THRESHOLD = 300;
 const AUTO_CLUSTER_FILTER_COUNT = 6;
@@ -71,19 +72,17 @@ export function useMarker(
         useMarkerStore.setState({ points: currentPoints });
     }, [filter, currentRegion, mapCore, prefsHideCompletedMarkers, collectedPoints, markerDataVersion]);
 
-    // Auto-cluster logic: enable clustering if preference is on and visible markers > threshold
+    // Keep production auto-clustering unless the recording tool explicitly opts out.
     useEffect(() => {
+        if (isRecordToolEnabled()) return;
         const prefsAutoCluster = useUiPrefsStore.getState().prefsAutoClusterEnabled;
         if (!prefsAutoCluster) return;
 
         const markerLayer = mapCore?.markerLayer;
         if (!markerLayer) return;
 
-        // Count visible markers after filtering
         const visibleMarkerCount = markerLayer.getVisibleMarkerCount();
         const triggerCluster = useUiPrefsStore.getState().triggerCluster;
-
-        // Auto-enable clustering only when visible markers exceed threshold or multiple filters active
         const shouldAutoCluster =
             visibleMarkerCount > AUTO_CLUSTER_THRESHOLD || filter.length > AUTO_CLUSTER_FILTER_COUNT;
 

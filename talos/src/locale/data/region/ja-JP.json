@@ -132,11 +132,12 @@
           "tianshi_pillar_array": "天師杭陣",
           "maintenance_zone": "修繕工事区",
           "institute_of_materials_science": "材料研究所",
-          "bureau_of_applied_technologies": "技術開発局",
           "tianshi_bureau_academy": "天師府学院",
+          "bureau_of_applied_technologies": "技術開発局",
           "citizen_square": "市民広場",
           "qijian_dais": "放剣台",
           "long_pavilion": "長亭",
+          "wuling_north": "武陵北",
           "main_pillar_office": "総杭執務室",
           "restricted_area": "警戒区",
           "tianjing_courtyard": "観天院",
@@ -169,7 +170,7 @@
         }
       },
       "QB": {
-        "name": "清波砦",
+        "name": "清波寨",
         "short": "清",
         "site": {
           "skyhold_ridge": "頂天梁",
@@ -181,7 +182,7 @@
       },
       "TA": {
         "name": "実験区域",
-        "short": "験",
+        "short": "TA",
         "site": {
           "test_area_entrance": "実験区域・入口",
           "type_c_auxiliary_pillar_area_1": "丙型補杭エリア1",
@@ -195,7 +196,7 @@
       },
       "MS": {
         "name": "首礎",
-        "short": "礎",
+        "short": "首",
         "site": {
           "watchtower_reservoir_station": "貯水施設",
           "restricted_area": "制御区",
@@ -207,7 +208,7 @@
       },
       "SV": {
         "name": "蔵剣谷",
-        "short": "剣",
+        "short": "SV",
         "site": {
           "leeward_trail": "山の小道",
           "west_gorge_path": "谷西の通路",
@@ -219,13 +220,58 @@
           "old_blade_precipice": "古剣崖",
           "gorge_overhang": "懸谷台"
         }
+      },
+      "YL": {
+        "name": "応龍関",
+        "short": "龍",
+        "site": {
+          "pass_side_canal": "臨関水路",
+          "odd_pine_ridge": "怪松山脈",
+          "stonepond_cliff": "石谷崖",
+          "cloudscraper_flats": "探雲台",
+          "balepyre_dais": "烽火台",
+          "exclusion_gate": "封門",
+          "ystf_main_camp": "応龍本陣",
+          "detention_facility": "幽閉牢獄",
+          "xiranflow_cloudseeder_station": "満天台建設基地",
+          "abandoned_side_building": "廃別棟",
+          "ystf_filing_room": "応龍資料室",
+          "xunlung_ford": "尋龍桟橋",
+          "yinglung_pass_raft_station": "応龍関の渡し場",
+          "xiranflow_cloudseeder": "満天台",
+          "device_pavilion": "納器館"
+        }
+      },
+      "EZ": {
+        "name": "北部封鎖区域",
+        "short": "鎖",
+        "site": {
+          "sentry_base": "前進拠点",
+          "tanjian_hall": "談剣堂",
+          "xiranite_research_labs": "息壌研究所",
+          "celestial_column": "天柱",
+          "designated_urban_area": "都市建設エリア",
+          "quelltide_levee": "平波堤",
+          "prep_zone": "整備場",
+          "observation_deck_1": "1号観測台",
+          "tianshi_pillar_rd_center": "天師杭研究本部",
+          "pillars_brace": "封杭台",
+          "cliffside_courtyard": "断崖野草園",
+          "waterworks_hub": "水管理施設",
+          "ghost_mesa_test_site": "幽台実験場",
+          "building_supplies_factory": "建設支援工場",
+          "miasmas_end": "絶霧通路",
+          "wuling_vlr_upper_area": "巨大な裂け目上層",
+          "bureau_arsenal": "選剣局器具庫",
+          "rust_mound": "廃材集積場"
+        }
       }
     }
   },
   "DJ": {
     "main": "O.M.V.帝江号",
     "sub": {
-      "name": "O.M.V.帝江号",
+      "name": "OMV Dijiang",
       "site": {
         "bridge": "ブリッジ",
         "reception_room": "応接室",

@@ -2,13 +2,17 @@
   "headbar": {
     "tos": "Termos e Armazenamento",
     "hideUI": "Ocultar Interface",
-    "group": "Junte-se ao grupo relacionado",
+    "notification": "Notificações",
     "darkmode": "Mudar para modo escuro",
     "lightmode": "Mudar para modo claro",
     "language": "Escolher idioma",
     "help": "Entre em contato para obter ajuda",
     "announcement": "Anúncios",
     "settings": "Preferências"
+  },
+  "mapControls": {
+    "layerSelect": "Seleção de camada",
+    "locationTracking": "Sinc. de Localização"
   },
   "trigger": {
     "boundaryMode": "Modo de Limite",
@@ -17,7 +21,7 @@
   },
   "search": {
     "placeholder": "Busca geral...",
-    "results": "{count} resultado(s)",
+    "results": "{count, plural, one {# resultado} other {# resultados}}",
     "locatedAt": "Localizado em",
     "distributeAt": "Distribuído em"
   },
@@ -32,23 +36,58 @@
       "main": "Principal",
       "sub": "Sub"
     },
+    "label": {
+      "note": "Nota",
+      "url": "Link",
+      "comments": "Comentários",
+      "collectionRate": "Taxa de coleta"
+    },
+    "tabs": {
+      "collectAll": "Marcar todos do mesmo tipo como concluídos",
+      "general": "Detalhes",
+      "comments": "Comentários"
+    },
     "noInfo": "Sem imagem. Use {paste} / {click} para fazer upload.",
-    "communityRule1": "Antes de enviar, confirme que você leu e segue as",
-    "communityRule2": "Diretrizes da Comunidade",
+    "communityRule": "Antes de enviar, confirme que você leu e segue as <a href=\"{link}\">Diretrizes da Comunidade</a>",
     "uploading": "Enviando...",
     "uploadPending": "Enviado. Será exibido após revisão.",
     "readFullText": "Clique para ler o texto completo.",
     "share": "Copiar link compartilhável deste ponto.",
     "copied": "Link copiado",
+    "collectionRateSource": "A taxa global de coleta é {nums} – Estatísticas do OEM Cloud",
     "viewer": {
       "author": "Autor",
       "uploadedAt": "Enviado em",
       "upvote": "Apoiar",
       "flag": "Marcar como impreciso",
       "unflag": "Remover marcação",
+      "uploadAno": "Enviar outro",
       "share": "Compartilhar",
       "recall": "Solicitar remoção",
       "unrecall": "Cancelar remoção"
+    },
+    "comments": {
+      "placeholder": "Escreva algo!",
+      "submit": "Publicar comentário",
+      "actions": "Ações do comentário",
+      "translate": "Traduzir",
+      "showOriginal": "Mostrar original",
+      "translatedFrom": "Traduzido de {language}",
+      "translating": "Traduzindo...",
+      "translateFailed": "Falha na tradução",
+      "upvote": "Curtir",
+      "downvote": "Não curtir",
+      "reply": "Responder",
+      "edit": "Editar",
+      "submitEdit": "Salvar alterações",
+      "undoEdit": "Desfazer alterações",
+      "recall": "Ocultar agora",
+      "reviewing": "Em análise",
+      "emptyWithRule": "Ainda não há comentários. Ao publicar, siga as <a href=\"{link}\">diretrizes da comunidade</a>.",
+      "ruleOnly": "Ao publicar, siga as <a href=\"{link}\">diretrizes da comunidade</a>.",
+      "loadFailed": "Falha ao carregar comentários.",
+      "submitFailed": "Falha ao enviar comentário.",
+      "editFailed": "Não foi possível atualizar o comentário."
     },
     "errors": {
       "unsupportedType": "Apenas imagens JPEG/PNG/WebP/AVIF/HEIC são suportadas.",
@@ -65,12 +104,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
-      "supportedBy": "suportado pelo Observator 6"
-    }
+      "supportedBy": "Suportado pelo Observator 6"
+    },
+    "newlyAdded": "Novidades da Versão"
   },
   "language": {
     "title": "idioma",
@@ -84,7 +124,7 @@
     "names": {
       "en-US": "Inglês",
       "zh-CN": "Chinês Simplificado",
-      "zh-HK": "Chinês Tradicional (Hong Kong)",
+      "zh-HK": "Chinês Tradicional",
       "ja-JP": "Japonês",
       "ko-KR": "Coreano",
       "es-ES": "Espanhol",
@@ -101,12 +141,39 @@
       "th-TH": "Tailandês",
       "vi-VN": "Vietnamita",
       "el-GR": "Grego",
-      "hi-IN": "Hindi"
+      "hi-IN": "Hindi",
+      "uk-UA": "Ucraniano",
+      "tr-TR": "Turco"
     }
   },
-  "group": {
-    "title": "Comunidade e Mídia",
-    "visit": "Visitar"
+  "notification": {
+    "title": "Notificações",
+    "tabs": {
+      "community": "Interações",
+      "system": "Moderação"
+    },
+    "markAllRead": "Marcar tudo como lido",
+    "empty": "Nenhuma mensagem. As mensagens relacionadas às suas contribuições aparecerão aqui.",
+    "guest": "Entre com sua {account} para receber notificações relevantes.",
+    "account": "conta OEM",
+    "loadError": "Não foi possível carregar as notificações.",
+    "loadMore": "Carregar mais",
+    "support": "Contato e suporte",
+    "visit": "Visitar",
+    "noDetails": "Nenhum detalhe adicional.",
+    "subject": {
+      "image": "imagem",
+      "comment": "comentário",
+      "submission": "contribuição"
+    },
+    "types": {
+      "approved": "{kind, select, comment {Seu} other {Sua}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> agora está {kind, select, comment {público} other {pública}}.",
+      "needsReview": "{kind, select, comment {Seu} other {Sua}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> aguarda análise manual.",
+      "removeResolved": "{kind, select, comment {Seu} other {Sua}} <subjectTag>{subject}</subjectTag> {kind, select, comment {retirado} other {retirada}} <pointTag>{point}</pointTag> foi {kind, select, comment {processado} other {processada}}.",
+      "reply": "Uma nova resposta foi adicionada {kind, select, comment {ao seu} other {à sua}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag>.",
+      "vote": "{kind, select, comment {Seu} other {Sua}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> recebeu {count, plural, one {# curtida} other {# curtidas}}.",
+      "multiple": "{kind, select, comment {Seu} other {Sua}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> tem {count, plural, one {# atualização relacionada} other {# atualizações relacionadas}}."
+    }
   },
   "tos": {
     "title": "Termos e Armazenamento",
@@ -145,6 +212,8 @@
     "shortcuts": {
       "title": "Atalhos de Teclado",
       "hint": "Atalhos disponíveis para ações rápidas.",
+      "toggleUI": "Mostrar/ocultar interface",
+      "quickSearch": "Busca rápida",
       "exportData": "Exportar Dados",
       "importData": "Importar Dados",
       "undo": "Desfazer",
@@ -166,13 +235,13 @@
     "triggerHandle": "Os interruptores relacionados à exibição do mapa estão localizados na parte inferior da barra lateral.<br>Você pode segurar o mouse para <span class=\"keyword\">arrastá-los e operá-los.</span>",
     "triggerSwitch": "Clique para alternar o estado do interruptor.<br><ul><li><span class=\"keyword\">O modo de agrupamento de marcadores</span> permite que marcadores densos sejam exibidos mesclados;</li><li><span class=\"keyword\">A exibição de limites de região</span> destaca cada sub-região e seus limites dentro da área atual.</li><li><span class=\"keyword\">Nomes de região</span> mostra os nomes das regiões no jogo.</li></ul>",
     "scale": "Use o <span class=\"keyword\">controle de zoom</span> para visualizar e manipular o zoom do mapa.<br>A roda de rolagem ou o trackpad podem ser usados para ampliar. Você também pode ampliar clicando nos botões <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> ou em qualquer lugar na barra de zoom.",
-    "filterList": "A <span class=\"keyword\">lista de marcadores</span> lista os marcadores que você selecionou; clique no ícone para desmarcar.",
+    "filterList": "A <span class=\"keyword\">lista de marcadores</span> mostra os tipos de marcadores selecionados; clique no ícone para desmarcá-los.",
     "headbar": "Os interruptores relacionados às configurações do mapa estão localizados na <span class=\"keyword\">barra superior</span>.",
     "tos": "Os <span class=\"keyword\">Termos de Serviço</span> e o <span class=\"keyword\">Gerenciamento de Dados</span> do site.",
     "hideUI": "<span class=\"keyword\">Ocultar a interface do usuário do site</span> para tirar capturas de tela ou visualizar marcadores de borda.",
-    "group": "Veja <span class=\"keyword\">grupos de discussão</span> e <span class=\"keyword\">comunidades</span> relacionados a este projeto.",
+    "notification": "Abra as <span class=\"keyword\">notificações</span> para ver interações e resultados da análise relacionados às suas contribuições.",
     "darkMode": "Alternar o <span class=\"keyword\">modo de luz ambiente</span> atual.",
-    "language": "Alternar <span class=\"keyword\">idioma da interface</span>.<br>Atualmente, os idiomas com <span class=\"keyword\">suporte completo à tradução de conteúdo do jogo</span> incluem inglês, chinês simplificado, chinês tradicional, japonês, coreano, francês, alemão, italiano, russo, espanhol, indonésio, português, tailandês e vietnamita.<br>Os idiomas com <span class=\"keyword\">apenas suporte à tradução de interface</span> incluem árabe, malaio, polonês e sueco.",
+    "language": "Alternar <span class=\"keyword\">idioma da interface</span>.<br>Atualmente, os idiomas com <span class=\"keyword\">suporte completo à tradução de conteúdo do jogo</span> incluem inglês, chinês simplificado, chinês tradicional, japonês, coreano, francês, alemão, italiano, russo, espanhol, indonésio, português, tailandês e vietnamita.<br>Os idiomas com <span class=\"keyword\">apenas suporte à tradução de interface</span> incluem árabe, malaio, polonês, sueco, grego, hindi, ucraniano e turco.",
     "announcement": "Veja as <span class=\"keyword\">notificações do site</span> mais recentes. As atualizações das condições de serviço e da política de privacidade também serão postadas aqui.",
     "help": "Reiniciar este <span class=\"keyword\">guia</span>.",
     "settings": "Abra as <span class=\"keyword\">Preferências</span> para controlar qual armazenamento local o mapa usa para lembrar suas ações.",
@@ -194,16 +263,11 @@
       "selectorSelect": "<span class=\"keyword\">Seletor de marcador</span>. Toque para alternar; os marcadores selecionados aparecem no mapa. Você vê o total e quantos marcou na área atual."
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">Nota:</span> Quando a versão do jogo é <span class=\"keyword\">1.0.13</span>, a versão dos dados do mapa é <span class=\"keyword\">0.8.25</span>. Precisamos de tempo para atualizar os dados, o que pode ocorrer após a atualização do jogo. Agradecemos sua paciência. Para acompanhar nossas atualizações, entre em nosso <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Entrar no Discord'>servidor do Discord</a>.<br><br>Também recomendamos as seguintes ferramentas:<ul><li><span class=\"keyword\">Wiki do Jogo: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Visitar Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Blueprints:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Visitar Talos Pioneers'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "O conjunto de dados atual está atualizado.<br><br>Se você precisar relatar problemas, entre em nosso <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Entrar no Discord'>servidor do Discord</a>.<br><br>Também recomendamos as seguintes ferramentas:<ul><li><span class=\"keyword\">Wiki do Jogo: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Visitar Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Blueprints:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Visitar Talos Pioneers'>https://talospioneers.com</a></li></ul>"
-  },
   "idcard": {
     "group": "Grupo: ",
     "since": "Desde",
     "logintip": "Clique no avatar para entrar",
     "registip": "Clique no avatar para se cadastrar",
-    "ago": "atrás",
     "karma": "Karma",
     "loading": "Carregando...",
     "unassigned": "Não atribuído",
@@ -230,8 +294,10 @@
       "resend": "Reenviar ({count})",
       "dcLogin": "Entrar com Discord",
       "gooLogin": "Entrar com Google",
+      "ghLogin": "Entrar com GitHub",
       "dcRegis": "Continuar com Discord",
       "gooRegis": "Continuar com Google",
+      "ghRegis": "Continuar com GitHub",
       "connecting": "Conectando...",
       "resetLink": "Digite o e-mail associado à sua conta. Enviaremos um link de redefinição se existir.<br><br>Verifique sua caixa de entrada e spam.",
       "resetRequire": "Digite e confirme sua nova senha.<br><br>A senha será redefinida imediatamente.",
@@ -242,14 +308,14 @@
       "switchToLoginPrefix": "Já tem uma conta?",
       "switchToLoginAction": "Entrar!",
       "ack": "Ao continuar, você concorda com nossa",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Política de Privacidade</a> e <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Termos de Serviço</a>",
+      "ackLink": "<a href=\"{privacy}\">Política de Privacidade</a> e <a href=\"{tos}\">Termos de Serviço</a>",
       "hints": {
         "0": "Credenciais inválidas",
         "101": "Email obrigatório",
         "102": "Email inválido",
         "103": "Email já em uso",
         "104": "Email não registrado",
-        "105": "Email Not Supported",
+        "105": "E-mail não compatível",
         "111": "Senha obrigatória",
         "112": "Senha inválida",
         "113": "Senhas não conferem",
@@ -280,7 +346,7 @@
       "note": "Observação",
       "noteNickname": "Você pode usar no máximo 15 caracteres (letras, números, hífens e sublinhado).",
       "noteUID": "O UID é definido no primeiro cadastro e não pode ser alterado. O nome de usuário pode ser atualizado a qualquer momento. Clique no avatar para trocar a imagem.",
-      "auditLabel": "Auditoria",
+      "auditLabel": "Ação",
       "importOfficial": "Importar do Mapa Oficial",
       "save": "Salvar alterações",
       "saving": "Salvando...",
@@ -300,10 +366,7 @@
     "binding": {
       "title": "Vincular conta",
       "docsLead": "Ao continuar, você confirma que concorda com os termos abaixo:",
-      "tos": "Termos de Serviço",
-      "privacy": "Política de Privacidade",
-      "dataCollection": "Checklist de coleta de dados",
-      "disclaimer": "Isenção de responsabilidade",
+      "docsLinks": "<a href=\"{tos}\">Termos de Serviço</a> · <a href=\"{privacy}\">Política de Privacidade</a> · <a href=\"{data}\">Checklist de coleta de dados</a> · <a href=\"{disclaimer}\">Isenção de responsabilidade</a>",
       "chinaTab": "China (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Acesse o <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>site oficial</a> e confirme que está logado.",
@@ -311,7 +374,6 @@
       "CNStep1": "Abra o <a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>link da API da Hypergryph</a> e copie a resposta completa.",
       "UniStep1": "Abra o <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>link da API da Gryphline</a> e copie a resposta completa.",
       "Step2": "Cole a resposta completa, leia os termos e vincule sua conta.",
-      "serverFallback": "Servidor",
       "changeBinding": "Trocar vínculo",
       "unlink": "Desvincular",
       "bindWithCountdown": "Vincular e ativar sincronização ({sec})",
@@ -346,8 +408,7 @@
       "trackPoints": "Rastreio",
       "centerOnPosition": "Seguir jogador",
       "heatmap": "Mapa de calor",
-      "configNote1": "Ao ativar este recurso, você aceita nossos ",
-      "configNote2": " e outros termos."
+      "configNote": "Ao ativar este recurso, você aceita nossos <a href=\"{data}\">Checklist de coleta de dados</a> e outros termos."
     },
     "errors": {
       "10000": "Sessão de sincronização expirada. Vincule novamente.",
@@ -365,7 +426,7 @@
     "now": "Sincronizar com OEM Cloud",
     "already": "Sincronizado com a nuvem",
     "done": "Sincronizado - há {times}",
-    "syncing": "Sincronizando {count} pontos",
+    "syncing": "{count, plural, one {Sincronizando # ponto} other {Sincronizando # pontos}}",
     "failed": "Falha ao sincronizar ({reason})",
     "offline": "Offline",
     "dataConflict": "Conflito de dados",
@@ -401,6 +462,7 @@
     "all": "Tudo",
     "selected": "Selecionado",
     "confirm": "Confirmar",
+    "confirmAgain": "Clique novamente para confirmar",
     "loading": "Carregando...",
     "enable": "Ativar",
     "disable": "Desativar",

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { useTranslateUI } from '@/locale';
-import { formatRelativeTime, parseDateLike } from '@/utils/timeFormat';
+import { useLocale, useTranslateUI } from '@/locale';
+import { formatAbsoluteTime, formatRelativeTime, parseTimestamp } from '@/utils/timeFormat';
 import type { SessionUser, UserGroupCode } from './authTypes';
 
 type KarmaLevel = 0 | 1 | 2 | 3 | 4 | 5;
@@ -28,14 +28,6 @@ interface IdCardProfileViewModel {
 
 const DEFAULT_NAME = 'Anominstrator';
 const DEFAULT_UID = 'ANONHK39SG';
-const GROUP_NAME_FALLBACK: Record<UserGroupCode, string> = {
-  normal: 'Normal',
-  pioneer: 'Pioneer',
-  admin: 'Admin',
-  suspend: 'Suspended',
-  robot: 'Robot',
-  guest: 'Guest',
-};
 
 const normalizeKarmaLevel = (value: number): KarmaLevel => {
   const level = Math.floor(value);
@@ -89,11 +81,12 @@ export const useIdCardProfileViewModel = ({
   authReady = true,
 }: UseIdCardProfileViewModelOptions): IdCardProfileViewModel => {
   const t = useTranslateUI();
+  const locale = useLocale();
 
   return useMemo(() => {
     if (!authReady && hasLoggedInBefore) {
-      const loadingText = t('common.loading') || 'Loading';
-      const group = t('idcard.group') || 'Group';
+      const loadingText = t('common.loading');
+      const group = t('idcard.group');
       return {
         displayName: loadingText,
         uidLabel: 'UID',
@@ -109,19 +102,19 @@ export const useIdCardProfileViewModel = ({
     }
 
     const getGroupName = (groupCode: UserGroupCode): string => {
-      if (groupCode === 'normal') return t('idcard.normal') || GROUP_NAME_FALLBACK.normal;
-      if (groupCode === 'pioneer') return t('idcard.pioneer') || GROUP_NAME_FALLBACK.pioneer;
-      if (groupCode === 'admin') return t('idcard.admin') || GROUP_NAME_FALLBACK.admin;
-      if (groupCode === 'suspend') return t('idcard.suspend') || GROUP_NAME_FALLBACK.suspend;
-      if (groupCode === 'robot') return t('idcard.robot') || GROUP_NAME_FALLBACK.robot;
-      return t('idcard.guest') || GROUP_NAME_FALLBACK.guest;
+      if (groupCode === 'normal') return t('idcard.normal');
+      if (groupCode === 'pioneer') return t('idcard.pioneer');
+      if (groupCode === 'admin') return t('idcard.admin');
+      if (groupCode === 'suspend') return t('idcard.suspend');
+      if (groupCode === 'robot') return t('idcard.robot');
+      return t('idcard.guest');
     };
 
     const isGuest = !sessionUser;
     const displayName = sessionUser?.nickname || fallbackUsername || DEFAULT_NAME;
     const uidLabel: 'UID' | 'GID' = isGuest ? 'GID' : 'UID';
 
-    const unassignedText = t('idcard.unassigned') || 'Unassigned';
+    const unassignedText = t('idcard.unassigned');
     const displayUid = isGuest
       ? buildGuestId()
       : sessionUser?.needsProfileSetup
@@ -132,22 +125,20 @@ export const useIdCardProfileViewModel = ({
       ? 'guest'
       : normalizeGroupCode(sessionUser?.groupCode) || 'normal';
     const groupName = getGroupName(groupCode);
-    const group = t('idcard.group') || 'Group';
+    const group = t('idcard.group');
     const groupText = `${group}${groupName}`;
 
-    const since = t('idcard.since') || 'Since';
-    const ago = t('idcard.ago') || 'Ago';
-    const registipText = t('idcard.registip') || 'Click the avatar';
-    const logintipText = t('idcard.logintip') || 'Click the avatar';
-    const registeredDate = parseDateLike(sessionUser?.registeredAt);
+    const since = t('idcard.since');
+    const registipText = t('idcard.registip');
+    const logintipText = t('idcard.logintip');
+    const registeredDate = parseTimestamp(sessionUser?.registeredAt);
     const ageText = isGuest
       ? hasLoggedInBefore ? logintipText : registipText
       : registeredDate
-      ? `${since} ${formatRelativeTime(registeredDate, {
+      ? `${since} ${formatAbsoluteTime(registeredDate, {
+          locale,
           precision: 'date',
-          agoDisplay: 'inline',
-          agoLabel: ago,
-        }).label}`
+        })} (${formatRelativeTime(registeredDate, { locale })})`
       : `${since} --`;
 
     const titleSource = isGuest ? 'g' : sessionUser?.titleCode || groupCode;
@@ -157,7 +148,7 @@ export const useIdCardProfileViewModel = ({
       ? Math.max(0, sessionUser?.karma as number)
       : 0;
     const karmaLevel = normalizeKarmaLevel(karmaValue);
-    const karma = t('idcard.karma') || 'Karma';
+    const karma = t('idcard.karma');
     const karmaTooltip = `${karma}: ${karmaValue}`;
 
     return {
@@ -172,5 +163,5 @@ export const useIdCardProfileViewModel = ({
       karmaLevel,
       karmaTooltip,
     };
-  }, [authReady, fallbackUid, fallbackUsername, hasLoggedInBefore, sessionUser, t]);
+  }, [authReady, fallbackUid, fallbackUsername, hasLoggedInBefore, locale, sessionUser, t]);
 };

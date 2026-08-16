@@ -1,109 +1,63 @@
 import { create } from 'zustand';
 import type { UseBoundStore, StoreApi } from 'zustand';
 import LOGGER from '@/utils/log';
-import ALP from 'accept-language-parser';
-import { preloadFonts, getFontUrlsForRegion } from '@/locale/fontCache';
-
-// Build CDN URL for fonts (same logic as fontLoader)
-const toCdnUrl = (p: string): string => {
-    const str = String(p);
-    if (str.indexOf('://') !== -1 || str.startsWith('//')) return str;
-
-    // eslint-disable-next-line no-undef
-    const base = (typeof __ASSETS_HOST !== 'undefined' && __ASSETS_HOST) ? String(__ASSETS_HOST) : '';
-    
-    if (base && str.startsWith(base)) return str;
-
-    // Dev: keep /src/ prefix; Prod: normalize to /assets/ and prepend CDN
-    if (!base) return p; // Dev mode: return original path as-is
-    const normalized = p.replace(/^\/src\/assets/i, '/assets');
-    const baseEnds = base.endsWith('/');
-    const pathStarts = normalized.startsWith('/');
-    if (baseEnds && pathStarts) return base + normalized.slice(1);
-    if (!baseEnds && !pathStarts) return `${base}/${normalized}`;
-    return base + normalized;
-};
+import { switchFontRegion } from '@/locale/fontLoader';
+import {
+    SUPPORTED_LANGS,
+    getFontRegionForLocale,
+    getLocaleContentCandidates,
+    hasFullSupport,
+    normalizeLang,
+    toBCP47,
+    type Lang,
+} from '@/utils/lang';
+export {
+    FULL_LANGS,
+    UI_ONLY_LANGS,
+    SUPPORTED_LANGS,
+    canonicalizeLocaleAlias,
+    getFontRegionForLocale,
+    getLangDisplayCode,
+    getLangFromUrlCode,
+    getLangUrlCode,
+    getLocaleContentCandidates,
+    getProjectLangNameKey,
+    getTargetLang,
+    hasFullSupport,
+    isUIOnly,
+    LANG_NATIVE_LABELS,
+    normalizeLang,
+    normalizeProjectLangKey,
+    pickSupportedLang,
+    resolveFileContentLocale,
+    toBCP47,
+    type FontRegion,
+    type Lang,
+} from '@/utils/lang';
 
 export interface II18nBundle {
     game: Record<string, unknown>; // Game stuff(point, category, etc)
     ui: Record<string, unknown>; // UI components text
 }
 
-export const SUPPORTED_LANGS = [
-    'en-US',
-    'zh-CN',
-    'zh-HK',
-    'ja-JP',
-    'ko-KR',
-    'ru-RU',
-    'es-ES',
-    'fr-FR',
-    'de-DE',
-    'it-IT',
-    'id-ID',
-    'pt-BR',
-    'ar-SA',
-    'ms-MY',
-    'pl-PL',
-    'sv-SE',
-    'th-TH',
-    'vi-VN',
-    'el-GR',
-    'hi-IN'
-] as const;
-type Lang = (typeof SUPPORTED_LANGS)[number];
-
-// Languages that have both game and UI translations (full support)
-export const FULL_LANGS: readonly Lang[] = ['en-US', 'zh-CN', 'zh-HK', 'ja-JP', 'ko-KR', 'ru-RU', 'es-ES', 'fr-FR', 'de-DE', 'it-IT', 'id-ID', 'pt-BR', 'th-TH', 'vi-VN'] as const;
-// Languages that only have UI translations
-export const UI_ONLY_LANGS: readonly Lang[] = [ 'ar-SA', 'ms-MY', 'pl-PL', 'sv-SE', 'el-GR', 'hi-IN' ] as const;
-
-// Check if a language has full support (game + UI)
-export const hasFullSupport = (lang: Lang): boolean => {
-    return (FULL_LANGS as readonly string[]).includes(lang);
-};
-
-// Check if a language has UI-only support
-export const isUIOnly = (lang: Lang): boolean => {
-    return (UI_ONLY_LANGS as readonly string[]).includes(lang);
-};
-
 const STORAGE_KEY = 'talos:locale';
 
-// Map locale to font region
-const localeToFontRegion = (locale: Lang): 'CN' | 'HK' | 'JP' => {
-    if (locale === 'zh-CN') return 'CN';
-    if (locale === 'zh-HK') return 'HK';
-    if (locale === 'ja-JP') return 'JP';
-    return 'HK'; // Default to HK for other locales
-};
-
-// Convert our internal locale to a proper BCP-47 tag for <html lang>
-const toBCP47 = (locale: Lang): string => {
-    const [lang, region] = locale.split('-');
-    return region ? `${lang}-${region.toUpperCase()}` : lang;
-};
-
-const normalizeLang = (lang?: string): Lang => {
-    let language = lang || navigator.language || 'en-US';
-    // Backward compatibility: map legacy zh-TW to zh-HK
-    if (language.toLowerCase().startsWith('zh-tw')) language = 'zh-HK';
-    // try to pick a supported lang
-    const picked = ALP.pick([...SUPPORTED_LANGS], language);
-    return (picked as Lang) || 'en-US';
+const getNavigatorLanguage = (): string | undefined => {
+    if (typeof navigator === 'undefined') return undefined;
+    return navigator.language;
 };
 
 const getStoredLocale = (): Lang | null => {
     try {
         if (typeof window === 'undefined' || !('localStorage' in window)) return null;
         const saved = window.localStorage.getItem(STORAGE_KEY);
-        return saved ? normalizeLang(saved) : null;
+        return saved ? normalizeLang(saved || getNavigatorLanguage()) : null;
     } catch {
         return null;
     }
 };
 
-const getLanguage = () => getStoredLocale() || normalizeLang();
+const getLanguage = () => getStoredLocale() || normalizeLang(getNavigatorLanguage());
 
 const deepGet = (obj: unknown, path: string): unknown =>
     path.split('.').reduce<unknown>((acc, k) => {
@@ -136,7 +90,7 @@ const allLocales: Record<string, () => Promise<JsonModule>> = import.meta.glob<J
 
 function resolveLoader(pathPattern: RegExp, locale: string): (() => Promise<JsonModule>) | undefined {
     const localeLower = locale.toLowerCase();
-    const canonLower = toBCP47(locale as Lang).toLowerCase();
+    const canonLower = toBCP47(locale).toLowerCase();
     
     for (const [path, loader] of Object.entries(allLocales)) {
         // Match path pattern (e.g. /ui/, /game/)
@@ -186,25 +140,18 @@ async function loadLocaleOnMain(locale: Lang): Promise<II18nBundle> {
 
     // For UI-only languages, fallback to English for game content
     const gameLocale = hasFullSupport(locale) ? locale : 'en-US';
-    let gameLoader = resolveLoader(gamePattern, gameLocale);
+    const resolveLoaderWithFallbacks = (pathPattern: RegExp, locale: string) => {
+        for (const candidate of getLocaleContentCandidates(locale)) {
+            const loader = resolveLoader(pathPattern, candidate);
+            if (loader) return loader;
+        }
+        return undefined;
+    };
+
+    const gameLoader = resolveLoaderWithFallbacks(gamePattern, gameLocale);
 
     // Region bundle follows the same fallback rule as game content
-    let regionLoader = resolveLoader(regionPattern, gameLocale);
-
-    // Special alias: use zh-TW game content for zh-HK locale if direct match not found
-    if (!gameLoader) {
-        const lower = gameLocale.toLowerCase();
-        if (lower === 'zh-hk') {
-            gameLoader = resolveLoader(gamePattern, 'zh-TW');
-        }
-    }
-
-    if (!regionLoader) {
-        const lower = gameLocale.toLowerCase();
-        if (lower === 'zh-hk') {
-            regionLoader = resolveLoader(regionPattern, 'zh-TW');
-        }
-    }
+    const regionLoader = resolveLoaderWithFallbacks(regionPattern, gameLocale);
 
     const [uiMod, fallbackUiMod, gameMod, regionMod] = await Promise.all([
         uiLoader ? uiLoader() : Promise.resolve({ default: {} as Record<string, unknown> }),
@@ -222,51 +169,48 @@ async function loadLocaleOnMain(locale: Lang): Promise<II18nBundle> {
     };
 }
 
-// Preload all supported languages in background
-let preloadingStarted = false;
+const localeLoadPromises = new Map<Lang, Promise<II18nBundle>>();
 
-async function preloadLanguages(current: Lang) {
-    if (preloadingStarted) return;
-    preloadingStarted = true;
+function loadLocaleCached(locale: Lang): Promise<II18nBundle> {
+    const existing = localeLoadPromises.get(locale);
+    if (existing) return existing;
 
-    // Delay to let main thread settle
-    await new Promise(r => setTimeout(r, 2000));
+    const promise = loadLocaleOnMain(locale).catch((err: unknown) => {
+        localeLoadPromises.delete(locale);
+        throw err;
+    });
+    localeLoadPromises.set(locale, promise);
+    return promise;
+}
 
-    // Exclude current language
-    const toPreload = SUPPORTED_LANGS.filter(l => l !== current);
-    
-    // Load in small batches to avoid network congestion
-    const BATCH_SIZE = 3;
-    for (let i = 0; i < toPreload.length; i += BATCH_SIZE) {
-        const batch = toPreload.slice(i, i + BATCH_SIZE);
-        await Promise.allSettled(batch.map(lang => loadLocaleOnMain(lang)));
-        // Small breathing room between batches
-        await new Promise(r => setTimeout(r, 200));
+const wait = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
+
+const PRELOAD_BATCH_SIZE = 3;
+
+async function preloadLocales(locales: readonly Lang[]) {
+    for (let i = 0; i < locales.length; i += PRELOAD_BATCH_SIZE) {
+        const batch = locales.slice(i, i + PRELOAD_BATCH_SIZE);
+        await Promise.allSettled(batch.map(lang => loadLocaleCached(lang)));
+        await wait(200);
     }
 }
 
+let allPreloadingStarted = false;
+
+export async function preloadAllLanguages(current: Lang = getCurrentLocale()) {
+    if (allPreloadingStarted) return;
+    allPreloadingStarted = true;
+    await preloadLocales(SUPPORTED_LANGS.filter(lang => lang !== current));
+}
+
 async function loadAndSet(locale: Lang) {
-    let ui: Record<string, unknown> = {};
-    let game: Record<string, unknown> = {};
-
-    // Start font preloading in parallel (non-blocking)
-    const fontRegion = localeToFontRegion(locale);
-    const fontUrls = getFontUrlsForRegion(fontRegion).map(toCdnUrl);
-    const safePreloadFonts = (urls: string[]): Promise<void> => {
-        return (preloadFonts as unknown as (u: string[]) => Promise<void>)(urls);
-    };
-    // Fire and forget - don't block language switch
-    safePreloadFonts(fontUrls).catch((err: unknown) => {
-        LOGGER.warn('Font preload failed:', err);
+    const fontRegion = getFontRegionForLocale(locale);
+    void switchFontRegion(fontRegion).catch((err: unknown) => {
+        LOGGER.warn('Font switch failed:', err);
     });
+    const data = await loadLocaleCached(locale);
 
-    // Load on main thread using build-safe module graph
-    const data = await loadLocaleOnMain(locale);
-    ui = data.ui;
-    game = data.game;
-
-    // Update state immediately without waiting for fonts
-    useI18nStore.setState({ locale, data: { game, ui } });
+    useI18nStore.setState({ locale, data });
     
     // Sync document language tag for :lang() or [lang] based styles/fonts switching
     try {
@@ -277,9 +221,6 @@ async function loadAndSet(locale: Lang) {
     } catch {
         // ignore envs without document
     }
-
-    // Trigger preload of other languages
-    void preloadLanguages(locale);
 }
 
 async function init() {

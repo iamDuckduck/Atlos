@@ -4,7 +4,7 @@
     "sub": {
       "PL": {
         "name": "Platô de Energia",
-        "short": "PE",
+        "short": "PL",
         "site": {
           "old_dorms": "Alojamentos Antigos",
           "originium_power_plant": "Usina de Energia de Originium",
@@ -21,7 +21,7 @@
       },
       "OL": {
         "name": "Veio de Origin",
-        "short": "VO",
+        "short": "OL",
         "site": {
           "originium_passage": "Passagem de Originium",
           "cradle_of_the_ages": "Berço das Eras",
@@ -41,7 +41,7 @@
       },
       "OP": {
         "name": "Parque Científico de Originium",
-        "short": "PO",
+        "short": "OP",
         "site": {
           "control_center": "Centro de Controle",
           "route_5": "Rota 5",
@@ -58,7 +58,7 @@
       },
       "AQ": {
         "name": "Pedreira de Aburrey",
-        "short": "PA",
+        "short": "AQ",
         "site": {
           "quarry_entrance": "Entrada da Pedreira",
           "refuse_stockpile": "Pilha de Resíduos",
@@ -74,7 +74,7 @@
       },
       "VP": {
         "name": "Garganta do Vale",
-        "short": "GA",
+        "short": "VP",
         "site": {
           "valley_fort": "Forte do Vale",
           "arsenal": "Arsenal",
@@ -86,7 +86,7 @@
       },
       "HB": {
         "name": "A Base",
-        "short": "AB",
+        "short": "HB",
         "site": {
           "logistics_platform": "Plataforma de Logística",
           "rockhill_passage": "Passagem da Montanha Rochosa",
@@ -137,6 +137,7 @@
           "citizen_square": "Praça Cívica",
           "qijian_dais": "Qijian Dais",
           "long_pavilion": "Pavilhão Longo",
+          "wuling_north": "Norte de Wuling",
           "main_pillar_office": "Escritório do Pilar Principal",
           "restricted_area": "Área Restrita",
           "tianjing_courtyard": "Jardim de Tianjing",
@@ -150,7 +151,7 @@
         }
       },
       "JY": {
-        "name": "Vale de Jingyu",
+        "name": "Jingyu Valley",
         "short": "JY",
         "site": {
           "treadway": "Passagem",
@@ -181,7 +182,7 @@
       },
       "TA": {
         "name": "Área de Testes",
-        "short": "ÁT",
+        "short": "TA",
         "site": {
           "test_area_entrance": "Entrada da Área de Testes",
           "type_c_auxiliary_pillar_area_1": "Área do Pilar Auxiliar Tipo-C 1",
@@ -207,7 +208,7 @@
       },
       "SV": {
         "name": "Vale do Cofre de Espadas",
-        "short": "CE",
+        "short": "SV",
         "site": {
           "leeward_trail": "Trilha de Sotavento",
           "west_gorge_path": "Trilha do Desfiladeiro Oeste",
@@ -218,6 +219,51 @@
           "deep_gorge_vault": "Cofre do Desfiladeiro Profundo",
           "old_blade_precipice": "Precipício da Velha Espada",
           "gorge_overhang": "Beirada do Desfiladeiro"
+        }
+      },
+      "YL": {
+        "name": "Passagem de Yinglung",
+        "short": "YL",
+        "site": {
+          "pass_side_canal": "Canal da Passagem",
+          "odd_pine_ridge": "Serra do Pinheiro",
+          "stonepond_cliff": "Penhasco Lago de Pedra",
+          "cloudscraper_flats": "Planícies das Nuvens",
+          "balepyre_dais": "Altar de Balepyre",
+          "exclusion_gate": "Portão de Exclusão",
+          "ystf_main_camp": "Acampamento Base FTEY",
+          "detention_facility": "Instalação de Detenção",
+          "xiranflow_cloudseeder_station": "Estação Semeadora de Nuvens de Fluxo de Xiranita",
+          "abandoned_side_building": "Anexo Abandonado",
+          "ystf_filing_room": "Arquivos da FTEY",
+          "xunlung_ford": "Vau de Xunlung",
+          "yinglung_pass_raft_station": "Estação de Jangadas da Passagem de Yinglung",
+          "xiranflow_cloudseeder": "Semeador de Nuvens de Fluxo de Xiranita",
+          "device_pavilion": "Pavilhão do Dispositivo"
+        }
+      },
+      "EZ": {
+        "name": "Zona de Exclusão do Norte de Wuling",
+        "short": "ZE",
+        "site": {
+          "sentry_base": "Base de Sentinela",
+          "tanjian_hall": "Tanjian Hall",
+          "xiranite_research_labs": "Laboratórios de Pesquisa de Xiranita",
+          "celestial_column": "Coluna Celestial",
+          "designated_urban_area": "Área Urbana Designada",
+          "quelltide_levee": "Dique de Contenção de Marés",
+          "prep_zone": "Zona de Preparação",
+          "observation_deck_1": "Deque de Observação 1",
+          "tianshi_pillar_rd_center": "Centro de P&D de Pilares de Tianshi",
+          "pillars_brace": "Esteio do Pilar",
+          "cliffside_courtyard": "Pátio do Penhasco",
+          "waterworks_hub": "Centro Hídrico",
+          "ghost_mesa_test_site": "Mesa Fantasma",
+          "building_supplies_factory": "Fábrica de Materiais",
+          "miasmas_end": "Fim do Miasma",
+          "wuling_vlr_upper_area": "FG Wuling, Área Sup.",
+          "bureau_arsenal": "Arsenal do Bureau",
+          "rust_mound": "Rust Mound"
         }
       }
     }

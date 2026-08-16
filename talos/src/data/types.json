@@ -20,6 +20,9 @@
             "Delta Bot": {
                 "noFrame": true
             },
+            "Talosite": {
+                "noFrame": true
+            },
             "Protocol DL": {
                 "noFrame": true
             },
@@ -33,6 +36,9 @@
                 "noFrame": true
             },
             "Gather": {
+                "noFrame": true
+            },
+            "Aero-Salvage": {
                 "noFrame": true
             },
             "Athletic Race": {
@@ -84,9 +90,15 @@
                 "noFrame": true
             },
             "Pressure Plate": {},
-            "Wooden Box": {}
+            "Wooden Box": {},
+            "Blight Core": {
+                "noFrame": true
+            }
         },
         "combat": {
+            "Rift: Pillar's Brace": {
+                "noFrame": true
+            },
             "Temporary Energy Alluvium": {
                 "noFrame": true
             },
@@ -105,14 +117,6 @@
             "EW Terminal": {
                 "noFrame": true
             }
-        },
-        "npc": { 
-            "dorm_trade": {},
-            "seed_trade": {},
-            "clinic_trade": {},
-            "lounge_trade": {},
-            "taikoo_trade": {},
-            "bubbletea_trade": {}
         }
     },
 
@@ -144,6 +148,12 @@
             },
             "Cuprium Spot": {
                 "subIcon": "ore_spot"
+            },
+            "Inergen Spot": {
+                "subIcon": "gas_spot"
+            },
+            "Xiragen Spot": {
+                "subIcon": "gas_spot"
             },
             "Clean Water": {
                 "tier": "1"
@@ -221,6 +231,10 @@
                 "subIcon": "plant_spot",
                 "tier": "5"
             },
+            "Talos Cap Spot": {
+                "subIcon": "plant_spot",
+                "tier": "5"
+            },
 
             "Kalkodendra Spot": {
                 "subIcon": "plant_spot",
@@ -242,6 +256,10 @@
                 "subIcon": "plant_spot",
                 "tier": "5"
             },
+            "Crimson Spearleaf Spot": {
+                "subIcon": "plant_spot",
+                "tier": "5"
+            },
 
             "Kalkonyx Spot": {
                 "subIcon": "mine_spot",
@@ -260,6 +278,10 @@
                 "tier": "5"
             },
             "Wulingstone Spot": {
+                "subIcon": "mine_spot",
+                "tier": "5"
+            },
+            "Protocolith Spot": {
                 "subIcon": "mine_spot",
                 "tier": "5"
             }
@@ -482,7 +504,7 @@
                 "faction": "Aggeloi",
                 "drop": "Natural Sparkling Water"
             },
-             "Tidewalker δ": {
+            "Tidewalker δ": {
                 "tier": "Elite",
                 "faction": "Aggeloi",
                 "drop": "Black Treacle"
@@ -577,9 +599,51 @@
                 "faction": "Landbreakers",
                 "drop": "Fillet"
             },
-            "Ereignis": {
-                "tier": "unknown",
-                "faction": "Landbreakers"
+
+            "Tuskbeast Blightshade": {
+                "tier": "Common",
+                "faction": "Blightshade",
+                "drop": "Blightshade Bezoar"
+            },
+            "YSTF Vanguard Blightshade": {
+                "tier": "Common",
+                "faction": "Blightshade",
+                "drop": "Shadow Dew"
+            },
+            "YSTF Elite Blightshade": {
+                "tier": "Elite",
+                "faction": "Blightshade",
+                "drop": "Shadow Dew"
+            },
+            "Quillbeast Blightshade": {
+                "tier": "Common",
+                "faction": "Blightshade",
+                "drop": "Blightshade Bezoar"
+            },
+            "Rakerbeast Blightshade": {
+                "tier": "Common",
+                "faction": "Blightshade",
+                "drop": "Blightshade Bezoar"
+            },
+            "YSTF Glaiver Blightshade": {
+                "tier": "Common",
+                "faction": "Blightshade",
+                "drop": "Glaive Fragment"
+            },
+            "YSTF Captain Blightshade": {
+                "tier": "Elite",
+                "faction": "Blightshade",
+                "drop": "Glaive Fragment"
+            },
+            "Blitzcrash Blightshade": {
+                "tier": "Elite",
+                "faction": "Blightshade",
+                "drop": ""
+            },
+            "Alleikhreos, Chiliarch": {
+                "tier": "Common",
+                "faction": "Blightshade",
+                "drop": ""
             },
 
             "Tunneling Nidwyrm": {

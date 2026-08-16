@@ -2,13 +2,17 @@
   "headbar": {
     "tos": "Điều khoản & Lưu trữ",
     "hideUI": "Ẩn giao diện",
-    "group": "Tham gia nhóm liên quan",
+    "notification": "Thông báo",
     "darkmode": "Chuyển sang chế độ tối",
     "lightmode": "Chuyển sang chế độ sáng",
     "language": "Chọn ngôn ngữ",
     "help": "Nhận trợ giúp",
     "announcement": "Thông báo",
     "settings": "Cài đặt"
+  },
+  "mapControls": {
+    "layerSelect": "Chọn lớp",
+    "locationTracking": "Đồng bộ vị trí"
   },
   "trigger": {
     "boundaryMode": "Hiển thị ranh giới khu vực",
@@ -32,23 +36,58 @@
       "main": "Khu vực",
       "sub": "Phụ"
     },
+    "label": {
+      "note": "Ghi chú",
+      "url": "Liên kết",
+      "comments": "Bình luận hàng đầu",
+      "collectionRate": "Tỷ lệ thu thập"
+    },
+    "tabs": {
+      "collectAll": "Đánh dấu tất cả cùng loại là đã hoàn thành",
+      "general": "Chi tiết",
+      "comments": "Bình luận"
+    },
     "noInfo": "Không có hình ảnh. Sử dụng {paste} / {click} để tải lên.",
-    "communityRule1": "Trước khi tải lên, hãy đảm bảo bạn đã đọc và tuân thủ",
-    "communityRule2": "Nguyên tắc cộng đồng",
+    "communityRule": "Trước khi tải lên, hãy đảm bảo bạn đã đọc và tuân thủ <a href=\"{link}\">Nguyên tắc cộng đồng</a>",
     "uploading": "Đang tải lên...",
     "uploadPending": "Đã gửi. Sẽ hiển thị sau khi được duyệt.",
     "readFullText": "Nhấn để đọc toàn bộ nội dung.",
     "share": "Sao chép liên kết chia sẻ cho điểm này.",
     "copied": "Đã sao chép liên kết",
+    "collectionRateSource": "Tỷ lệ thu thập toàn máy chủ là {nums} – Thống kê từ OEM Cloud",
     "viewer": {
       "author": "Người đăng",
       "uploadedAt": "Đã tải lên lúc",
-      "upvote": "Sửa chữa",
+      "upvote": "Ủng hộ",
       "flag": "Đánh dấu không chính xác",
       "unflag": "Bỏ đánh dấu",
+      "uploadAno": "Tải lên khác",
       "share": "Chia sẻ",
       "recall": "Yêu cầu gỡ",
       "unrecall": "Hủy yêu cầu gỡ"
+    },
+    "comments": {
+      "placeholder": "Viết gì đó đi!",
+      "submit": "Đăng bình luận",
+      "actions": "Thao tác bình luận",
+      "translate": "Dịch",
+      "showOriginal": "Hiển thị bản gốc",
+      "translatedFrom": "Được dịch từ {language}",
+      "translating": "Đang dịch...",
+      "translateFailed": "Dịch thất bại",
+      "upvote": "Thích",
+      "downvote": "Không thích",
+      "reply": "Trả lời",
+      "edit": "Chỉnh sửa",
+      "submitEdit": "Lưu chỉnh sửa",
+      "undoEdit": "Hoàn tác chỉnh sửa",
+      "recall": "Ẩn ngay",
+      "reviewing": "Đang duyệt",
+      "emptyWithRule": "Chưa có bình luận nào. Vui lòng tuân thủ <a href=\"{link}\">nguyên tắc cộng đồng</a> khi đăng.",
+      "ruleOnly": "Vui lòng tuân thủ <a href=\"{link}\">nguyên tắc cộng đồng</a> khi đăng.",
+      "loadFailed": "Không tải được bình luận.",
+      "submitFailed": "Không gửi được bình luận.",
+      "editFailed": "Không thể cập nhật bình luận."
     },
     "errors": {
       "unsupportedType": "Chỉ hỗ trợ ảnh JPEG/PNG/WebP/AVIF/HEIC.",
@@ -65,12 +104,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
       "supportedBy": "được hỗ trợ bởi Observator 6"
-    }
+    },
+    "newlyAdded": "Mới trong phiên bản"
   },
   "language": {
     "title": "Ngôn ngữ",
@@ -101,12 +141,39 @@
       "th-TH": "Thái",
       "vi-VN": "Việt",
       "el-GR": "Hy Lạp",
-      "hi-IN": "Hindi"
+      "hi-IN": "Hindi",
+      "uk-UA": "Ukraina",
+      "tr-TR": "Thổ Nhĩ Kỳ"
     }
   },
-  "group": {
-    "title": "Cộng đồng & Truyền thông",
-    "visit": "Truy cập"
+  "notification": {
+    "title": "Thông báo",
+    "tabs": {
+      "community": "Tương tác",
+      "system": "Kiểm duyệt"
+    },
+    "markAllRead": "Đánh dấu tất cả là đã đọc",
+    "empty": "Không có tin nhắn. Tin nhắn liên quan đến đóng góp của bạn sẽ xuất hiện tại đây.",
+    "guest": "Đăng nhập bằng {account} để nhận các thông báo liên quan.",
+    "account": "tài khoản OEM",
+    "loadError": "Không thể tải thông báo.",
+    "loadMore": "Tải thêm",
+    "support": "Liên hệ & Hỗ trợ",
+    "visit": "Truy cập",
+    "noDetails": "Không có thông tin chi tiết bổ sung.",
+    "subject": {
+      "image": "hình ảnh",
+      "comment": "bình luận",
+      "submission": "nội dung đóng góp"
+    },
+    "types": {
+      "approved": "<subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> của bạn hiện đã được công khai.",
+      "needsReview": "<subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> của bạn đang chờ kiểm duyệt thủ công.",
+      "removeResolved": "<subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> mà bạn đã thu hồi đã được xử lý.",
+      "reply": "Có câu trả lời mới cho <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> của bạn.",
+      "vote": "<subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> của bạn đã nhận được {count} lượt thích.",
+      "multiple": "<subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> của bạn có {count} cập nhật liên quan."
+    }
   },
   "tos": {
     "title": "Điều khoản & Lưu trữ",
@@ -145,6 +212,8 @@
     "shortcuts": {
       "title": "Phím tắt bàn phím",
       "hint": "Các phím tắt có sẵn cho thao tác nhanh.",
+      "toggleUI": "Hiện/ẩn giao diện",
+      "quickSearch": "Tìm kiếm nhanh",
       "exportData": "Xuất dữ liệu",
       "importData": "Nhập dữ liệu",
       "undo": "Hoàn tác",
@@ -166,13 +235,13 @@
     "triggerHandle": "Các công tắc liên quan đến hiển thị bản đồ nằm ở dưới cùng của thanh bên.<br>Bạn có thể giữ chuột để <span class=\"keyword\">kéo và thao tác chúng.</span>",
     "triggerSwitch": "Nhấp để chuyển đổi trạng thái công tắc.<br><ul><li><span class=\"keyword\">Chế độ Gộp Điểm</span> cho phép hiển thị các điểm dày đặc được gộp lại;</li><li><span class=\"keyword\">Hiển thị Ranh giới Khu vực</span> làm nổi bật từng khu vực con và ranh giới của nó trong khu vực hiện tại.</li><li><span class=\"keyword\">Hiển thị Tên Khu Vực</span> sẽ hiển thị tên khu vực trong trò chơi.</li></ul>",
     "scale": "Sử dụng <span class=\"keyword\">Điều khiển Thu phóng</span> để xem và thao tác thu phóng bản đồ.<br>Có thể sử dụng con lăn chuột hoặc bàn di chuột để thu phóng. Bạn cũng có thể thu phóng bằng cách nhấp vào nút <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> hoặc bất kỳ đâu trên thanh thu phóng.",
-    "filterList": "<span class=\"keyword\">Danh sách Điểm</span> liệt kê các điểm bạn đã chọn; nhấp vào biểu tượng để bỏ chọn.",
+    "filterList": "<span class=\"keyword\">Danh sách điểm</span> hiển thị các loại điểm bạn đã chọn; nhấp vào biểu tượng để bỏ chọn.",
     "headbar": "Các công tắc liên quan đến cài đặt bản đồ nằm ở <span class=\"keyword\">thanh trên cùng</span>.",
     "tos": "<span class=\"keyword\">Điều khoản Dịch vụ</span> và <span class=\"keyword\">Quản lý Dữ liệu</span> của trang web.",
     "hideUI": "<span class=\"keyword\">Ẩn Giao diện Trang web</span> để chụp ảnh màn hình hoặc xem các điểm ở rìa.",
-    "group": "Xem <span class=\"keyword\">nhóm thảo luận</span> và <span class=\"keyword\">cộng đồng</span> liên quan đến dự án này.",
+    "notification": "Mở <span class=\"keyword\">thông báo</span> để xem các tương tác và kết quả kiểm duyệt liên quan đến đóng góp của bạn.",
     "darkMode": "Chuyển đổi <span class=\"keyword\">chế độ ánh sáng môi trường</span> hiện tại.",
-    "language": "Chuyển đổi <span class=\"keyword\">ngôn ngữ giao diện</span>.<br>Hiện tại, các ngôn ngữ có <span class=\"keyword\">hỗ trợ dịch thuật nội dung trò chơi đầy đủ</span> bao gồm tiếng Anh, tiếng Trung Giản thể, tiếng Trung Phồn thể, tiếng Nhật, tiếng Hàn, tiếng Pháp, tiếng Đức, tiếng Ý, tiếng Nga, tiếng Tây Ban Nha, tiếng Indonesia, tiếng Bồ Đào Nha, tiếng Thái và tiếng Việt.<br>Các ngôn ngữ có <span class=\"keyword\">chỉ hỗ trợ dịch thuật giao diện</span> bao gồm tiếng Ả Rập, tiếng Mã Lai, tiếng Ba Lan và tiếng Thụy Điển.",
+    "language": "Chuyển đổi <span class=\"keyword\">ngôn ngữ giao diện</span>.<br>Hiện tại, các ngôn ngữ có <span class=\"keyword\">hỗ trợ dịch thuật nội dung trò chơi đầy đủ</span> bao gồm tiếng Anh, tiếng Trung Giản thể, tiếng Trung Phồn thể, tiếng Nhật, tiếng Hàn, tiếng Pháp, tiếng Đức, tiếng Ý, tiếng Nga, tiếng Tây Ban Nha, tiếng Indonesia, tiếng Bồ Đào Nha, tiếng Thái và tiếng Việt.<br>Các ngôn ngữ có <span class=\"keyword\">chỉ hỗ trợ dịch thuật giao diện</span> bao gồm tiếng Ả Rập, tiếng Mã Lai, tiếng Ba Lan, tiếng Thụy Điển, tiếng Hy Lạp, tiếng Hindi, tiếng Ukraina và tiếng Thổ Nhĩ Kỳ.",
     "announcement": "Xem <span class=\"keyword\">thông báo trang web</span> gần nhất. Các cập nhật về điều khoản dịch vụ và chính sách bảo mật cũng sẽ được đăng tại đây.",
     "help": "Khởi động lại <span class=\"keyword\">hướng dẫn</span> này.",
     "settings": "Mở <span class=\"keyword\">Cài đặt</span> để kiểm soát việc lưu trữ cục bộ mà bản đồ sử dụng để ghi nhớ các hành động của bạn.",
@@ -194,16 +263,11 @@
       "selectorSelect": "<span class=\"keyword\">Trình chọn điểm đánh dấu</span>. Chạm để bật/tắt; các điểm đã chọn sẽ hiển thị trên bản đồ. Bạn có thể xem tổng số và số lượng đã đánh dấu trong khu vực hiện tại."
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">Lưu ý:</span> Khi phiên bản trò chơi là <span class=\"keyword\">1.0.13</span>, phiên bản dữ liệu bản đồ là <span class=\"keyword\">0.8.25</span>. Chúng tôi cần thời gian để cập nhật dữ liệu, nên có thể chậm hơn cập nhật game. Cảm ơn bạn đã kiên nhẫn. Để theo dõi cập nhật, vui lòng tham gia <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Tham gia Discord'>Máy chủ Discord</a> của chúng tôi.<br><br>Chúng tôi cũng đề xuất các công cụ sau:<ul><li><span class=\"keyword\">Wiki Trò chơi: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Truy cập Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Chia sẻ Bản thiết kế:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Truy cập Talos Pioneers'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "Tập dữ liệu hiện tại đã được cập nhật.<br><br>Nếu bạn cần báo cáo vấn đề, vui lòng tham gia <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Tham gia Discord'>Máy chủ Discord</a> của chúng tôi.<br><br>Chúng tôi cũng đề xuất các công cụ sau:<ul><li><span class=\"keyword\">Wiki Trò chơi: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Truy cập Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Chia sẻ Bản thiết kế:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Truy cập Talos Pioneers'>https://talospioneers.com</a></li></ul>"
-  },
   "idcard": {
     "group": "Nhóm: ",
-    "since": "Tham gia từ",
+    "since": "Từ",
     "logintip": "Nhấn avatar để đăng nhập.",
     "registip": "Nhấn avatar để đăng ký.",
-    "ago": "trước",
     "karma": "Karma",
     "loading": "Đang tải...",
     "unassigned": "Không gán",
@@ -230,8 +294,10 @@
       "resend": "Gửi lại ({count})",
       "dcLogin": "Đăng nhập bằng Discord",
       "gooLogin": "Đăng nhập bằng Google",
+      "ghLogin": "Đăng nhập bằng GitHub",
       "dcRegis": "Đăng ký bằng Discord",
       "gooRegis": "Đăng ký bằng Google",
+      "ghRegis": "Tiếp tục với GitHub",
       "connecting": "Đang kết nối...",
       "resetLink": "Vui lòng nhập địa chỉ email liên kết với tài khoản của bạn, chúng tôi sẽ gửi liên kết đặt lại mật khẩu nếu email này tồn tại.<br><br>Hãy kiểm tra hộp thư đến và thư mục spam sau khi gửi.",
       "resetRequire": "Vui lòng nhập và xác nhận mật khẩu mới của bạn.<br><br>Chúng tôi sẽ cập nhật mật khẩu ngay lập tức.",
@@ -242,14 +308,14 @@
       "switchToLoginPrefix": "Đã có tài khoản?",
       "switchToLoginAction": "Đăng nhập tại đây.",
       "ack": "Bằng việc tiếp tục, bạn xác nhận đã đọc và đồng ý với",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Chính sách bảo mật</a> và <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Điều khoản dịch vụ</a> của chúng tôi.",
+      "ackLink": "<a href=\"{privacy}\">Chính sách bảo mật</a> và <a href=\"{tos}\">Điều khoản dịch vụ</a> của chúng tôi.",
       "hints": {
         "0": "Email hoặc mật khẩu không đúng",
         "101": "Vui lòng nhập email",
         "102": "Email không hợp lệ",
         "103": "Email đã được sử dụng",
         "104": "Không tìm thấy email",
-        "105": "Email Not Supported",
+        "105": "Email không được hỗ trợ",
         "111": "Vui lòng nhập mật khẩu",
         "112": "Mật khẩu không hợp lệ",
         "113": "Mật khẩu không khớp",
@@ -300,10 +366,7 @@
     "binding": {
       "title": "Liên kết tài khoản",
       "docsLead": "Khi tiếp tục, bạn xác nhận đồng ý với các điều khoản dưới đây:",
-      "tos": "Điều khoản dịch vụ",
-      "privacy": "Chính sách quyền riêng tư",
-      "dataCollection": "Danh sách thu thập dữ liệu",
-      "disclaimer": "Tuyên bố miễn trừ",
+      "docsLinks": "<a href=\"{tos}\">Điều khoản dịch vụ</a> · <a href=\"{privacy}\">Chính sách quyền riêng tư</a> · <a href=\"{data}\">Danh sách thu thập dữ liệu</a> · <a href=\"{disclaimer}\">Tuyên bố miễn trừ</a>",
       "chinaTab": "Trung Quốc (Hypergryph)",
       "globalTab": "Toàn cầu (Gryphline)",
       "CNStep0": "Vào <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>trang chính thức</a> và đảm bảo bạn đã đăng nhập.",
@@ -311,7 +374,6 @@
       "CNStep1": "Mở <a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>liên kết API Hypergryph</a> và sao chép phản hồi đầy đủ.",
       "UniStep1": "Mở <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>liên kết API Gryphline</a> và sao chép phản hồi đầy đủ.",
       "Step2": "Dán phản hồi đầy đủ, đọc điều khoản rồi liên kết tài khoản.",
-      "serverFallback": "Máy chủ",
       "changeBinding": "Đổi liên kết",
       "unlink": "Hủy liên kết",
       "bindWithCountdown": "Liên kết và bật đồng bộ ({sec})",
@@ -346,8 +408,7 @@
       "trackPoints": "Theo dõi",
       "centerOnPosition": "Giữ ở giữa",
       "heatmap": "Bản đồ nhiệt",
-      "configNote1": "Bật tính năng này đồng nghĩa bạn chấp nhận ",
-      "configNote2": " và các điều khoản khác."
+      "configNote": "Bật tính năng này đồng nghĩa bạn chấp nhận <a href=\"{data}\">Danh sách thu thập dữ liệu</a> và các điều khoản khác."
     },
     "errors": {
       "10000": "Phiên đồng bộ vị trí đã hết hạn. Vui lòng liên kết lại.",
@@ -373,7 +434,7 @@
     "conflict": {
       "title": "Xung đột dữ liệu",
       "local": "Cục bộ",
-      "remote": "Đám mây",
+      "remote": "Từ xa",
       "official": "Bản đồ chính thức",
       "oemDb": "OEM DB",
       "updatedAt": "Sửa đổi lần cuối",
@@ -401,6 +462,7 @@
     "all": "Tất cả",
     "selected": "Đã chọn",
     "confirm": "Xác nhận",
+    "confirmAgain": "Nhấp lại để xác nhận",
     "loading": "Đang tải...",
     "enable": "Bật",
     "disable": "Tắt",

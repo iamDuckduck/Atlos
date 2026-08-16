@@ -132,6 +132,17 @@ const ScaleDesktop = ({ map }: { map: L.Map }) => {
                 updateScalerUI(scale);
             }
         };
+        const handleZoom = () => {
+            const currentZoom = map.getZoom();
+            setZoomLevel(currentZoom);
+            updateScalerUI(
+                calculateScale(
+                    currentZoom,
+                    map.getMinZoom(),
+                    map.getMaxZoom(),
+                ),
+            );
+        };
         const handleZoomEnd = () => {
             const finalZoom = map.getZoom();
             setZoomLevel(finalZoom);
@@ -151,7 +162,7 @@ const ScaleDesktop = ({ map }: { map: L.Map }) => {
         map.on('zoomstart', handleZoomStart);
         map.on('zoomanim', handleZoomAnim);
         map.on('zoomend', handleZoomEnd);
-        map.on('zoom', handleZoomEnd);
+        map.on('zoom', handleZoom);
         map.on('talos:regionSwitched', handleRegionSwitched);
 
         return () => {
@@ -161,7 +172,7 @@ const ScaleDesktop = ({ map }: { map: L.Map }) => {
             map.off('zoomstart', handleZoomStart);
             map.off('zoomanim', handleZoomAnim);
             map.off('zoomend', handleZoomEnd);
-            map.off('zoom', handleZoomEnd);
+            map.off('zoom', handleZoom);
             map.off('talos:regionSwitched', handleRegionSwitched);
         };
     }, [map, updateScalerUI]);
@@ -212,7 +223,7 @@ const ScaleDesktop = ({ map }: { map: L.Map }) => {
                         className={`${styles.zoomButton} ${styles.pipButton} ${pictureInPicture.active ? styles.active : ''} ${!pictureInPicture.supported ? styles.disabled : ''}`}
                         onClick={handlePictureInPictureToggle}
                         disabled={!pictureInPicture.supported}
-                        aria-label={String(tUI(pictureInPicture.active ? 'scale.pip.exitMode' : 'scale.pip.enterMode'))}
+                        aria-label={tUI(pictureInPicture.active ? 'scale.pip.exitMode' : 'scale.pip.enterMode')}
                     >
                         PiP
                     </button>

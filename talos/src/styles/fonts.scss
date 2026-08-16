@@ -1,3 +1,5 @@
+@use 'sass:list';
+
 @font-face {
     font-family: 'Lang Origin';
     src:
@@ -110,30 +112,6 @@
     font-display: swap;
 }
 @font-face {
-    font-family: 'FedraSansPro Book';
-    src: url('../assets/fonts/Fedra/FedraSansPro-Book.woff2') format('woff2'),
-        url('../assets/fonts/Fedra/FedraSansPro-Book.woff') format('woff'),
-        url('../assets/fonts/Fedra/FedraSansPro-Book.ttf') format('truetype');
-    font-display: swap;
-}
-@font-face {
-    font-family: 'FedraSansPro Normal';
-    src: url('../assets/fonts/Fedra/FedraSansPro-Normal.woff2') format('woff2'),
-        url('../assets/fonts/Fedra/FedraSansPro-Normal.woff') format('woff'),
-        url('../assets/fonts/Fedra/FedraSansPro-Normal.ttf') format('truetype');
-    font-display: swap;
-}
-@font-face {
-    font-family: 'FedraSansPro Bold';
-    src:
-        url('../assets/fonts/Fedra/FedraSansPro-Bold.woff2')
-            format('woff2'),
-        url('../assets/fonts/Fedra/FedraSansPro-Bold.woff') format('woff'),
-        url('../assets/fonts/Fedra/FedraSansPro-Bold.ttf')
-            format('truetype');
-    font-display: swap;
-}
-@font-face {
     font-family: 'HMSans_EN';
     src:
         url('../assets/fonts/Harmony/HMSans.woff2') format('woff2'),
@@ -142,4 +120,30 @@
     font-weight: 100 900;
     font-style: normal;
     font-display: swap;
+}
+
+$fedra-sans-pro-faces: (
+    'Light': (300, normal),
+    'LightItalic': (300, italic),
+    'Book': (400, normal),
+    'BookItalic': (400, italic),
+    'Normal': (500, normal),
+    'NormalItalic': (500, italic),
+    'Medium': (600, normal),
+    'MediumItalic': (600, italic),
+    'Bold': (700, normal),
+    'BoldItalic': (700, italic),
+);
+
+@each $file, $meta in $fedra-sans-pro-faces {
+    @font-face {
+        font-family: 'Fedra Sans Pro';
+        src:
+            url('../assets/fonts/Fedra/FedraSansPro-#{$file}.woff2') format('woff2'),
+            url('../assets/fonts/Fedra/FedraSansPro-#{$file}.woff') format('woff'),
+            url('../assets/fonts/Fedra/FedraSansPro-#{$file}.ttf') format('truetype');
+        font-weight: list.nth($meta, 1);
+        font-style: list.nth($meta, 2);
+        font-display: swap;
+    }
 }

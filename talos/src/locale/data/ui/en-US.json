@@ -2,13 +2,17 @@
   "headbar": {
     "tos": "Terms & Storage",
     "hideUI": "Hide UI",
-    "group": "Join related group",
+    "notification": "Notifications",
     "darkmode": "Switch to dark mode",
     "lightmode": "Switch to light mode",
     "language": "Choose language",
     "help": "Reach out for help",
     "announcement": "Announcements",
     "settings": "Preferences"
+  },
+  "mapControls": {
+    "layerSelect": "Layer selection",
+    "locationTracking": "Location Sync"
   },
   "trigger": {
     "boundaryMode": "Boundary Mode",
@@ -17,7 +21,7 @@
   },
   "search": {
     "placeholder": "Overall search...",
-    "results": "{count} result(s)",
+    "results": "{count, plural, one {# result} other {# results}}",
     "locatedAt": "Located at",
     "distributeAt": "Distributed at"
   },
@@ -32,23 +36,58 @@
       "main": "Main",
       "sub": "Sub"
     },
+    "label": {
+      "note": "Note",
+      "url": "URL",
+      "comments": "Top Comment",
+      "collectionRate": "Collected"
+    },
+    "tabs": {
+      "collectAll": "Mark all as completed",
+      "general": "General",
+      "comments": "Comments"
+    },
     "noInfo": "No image. Use {paste} / {click} to upload.",
-    "communityRule1": "By uploading, make sure you have read and follow the",
-    "communityRule2": "Community Guidelines",
+    "communityRule": "By uploading, make sure you have read and follow the <a href=\"{link}\">Community Guidelines</a>",
     "uploading": "Uploading...",
     "uploadPending": "Uploaded. Waiting for review.",
     "readFullText": "Click to read full text.",
     "share": "Copy shareable link for this marker.",
     "copied": "Link copied",
+    "collectionRateSource": "Global collection rate is {nums} – Statistics from OEM Cloud",
     "viewer": {
       "author": "AUTHOR",
-      "uploadedAt": "Uploaded at",
+      "uploadedAt": "Uploaded At",
       "upvote": "Upvote",
-      "flag": "Flag as inaccurate",
+      "flag": "Flag as Inaccurate",
       "unflag": "Unflag",
+      "uploadAno": "Upload Another",
       "share": "Share",
       "recall": "Recall",
-      "unrecall": "Cancel recall"
+      "unrecall": "Cancel Recall"
+    },
+    "comments": {
+      "placeholder": "Type something?",
+      "submit": "Submit",
+      "actions": "Comment actions",
+      "translate": "Translate",
+      "showOriginal": "Show Original",
+      "translatedFrom": "Translated from {language}",
+      "translating": "Translating...",
+      "translateFailed": "Translation failed",
+      "upvote": "Upvote",
+      "downvote": "Downvote",
+      "reply": "Reply",
+      "edit": "Edit",
+      "submitEdit": "Submit Edit",
+      "undoEdit": "Undo Edit",
+      "recall": "Recall",
+      "reviewing": "Reviewing",
+      "emptyWithRule": "No comments yet. Please follow <a href=\"{link}\">community guidelines</a> when posting.",
+      "ruleOnly": "Please follow <a href=\"{link}\">community guidelines</a> when posting.",
+      "loadFailed": "Comments failed to load.",
+      "submitFailed": "Comment failed to submit.",
+      "editFailed": "Comment failed to update."
     },
     "errors": {
       "unsupportedType": "Only JPEG/PNG/WebP/AVIF/HEIC images are supported.",
@@ -65,12 +104,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
       "supportedBy": "supported by Observator 6"
-    }
+    },
+    "newlyAdded": "New in Version"
   },
   "language": {
     "title": "language",
@@ -101,12 +141,39 @@
       "th-TH": "Thai",
       "vi-VN": "Vietnamese",
       "el-GR": "Greek",
-      "hi-IN": "Hindi"
+      "hi-IN": "Hindi",
+      "uk-UA": "Ukrainian",
+      "tr-TR": "Turkish"
     }
   },
-  "group": {
-    "title": "Community & Media",
-    "visit": "Visit"
+  "notification": {
+    "title": "Notification",
+    "tabs": {
+      "community": "Interactions",
+      "system": "Moderations"
+    },
+    "markAllRead": "Mark all as read",
+    "empty": "No message. Messages related to your contributions will appear here.",
+    "guest": "Sign in with your {account} to receive relevant notification messages.",
+    "account": "OEM account",
+    "loadError": "Notifications could not be loaded.",
+    "loadMore": "Load more",
+    "support": "Contact & Support",
+    "visit": "Visit",
+    "noDetails": "No additional details.",
+    "subject": {
+      "image": "image",
+      "comment": "comment",
+      "submission": "submission"
+    },
+    "types": {
+      "approved": "Your <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> is now public.",
+      "needsReview": "Your <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> is awaiting manual review.",
+      "removeResolved": "Your withdrawn <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> has been processed.",
+      "reply": "There is a new reply to your <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag>.",
+      "vote": "Your <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> received {count, plural, one {# like} other {# likes}}.",
+      "multiple": "{count, plural, one {There is # status update} other {There are # status updates}} for your <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag>."
+    }
   },
   "tos": {
     "title": "Terms & Storage",
@@ -145,6 +212,8 @@
     "shortcuts": {
       "title": "Keyboard Shortcuts",
       "hint": "Available shortcuts for quick actions.",
+      "toggleUI": "Show/Hide UI",
+      "quickSearch": "Quick Search",
       "exportData": "Export Data",
       "importData": "Import Data",
       "undo": "Undo",
@@ -170,7 +239,7 @@
     "headbar": "Switches related to map settings are located in the <span class=\"keyword\">header bar</span>.",
     "tos": "The website's <span class=\"keyword\">Terms of Service</span> and <span class=\"keyword\">Data Management</span>.",
     "hideUI": "<span class=\"keyword\">Hide Website UI</span> to take screenshots or view edge markers.",
-    "group": "View <span class=\"keyword\">discussion groups</span> and <span class=\"keyword\">communities</span> related to this project.",
+    "notification": "Open <span class=\"keyword\">notifications</span> to view interactions and review results related to your contributions.",
     "darkMode": "Toggle the current <span class=\"keyword\">ambient light mode</span>.",
     "language": "Switch <span class=\"keyword\">interface language</span>.<br>Languages with <span class=\"keyword\">full game content translation support</span> include English, Simplified Chinese, Traditional Chinese, Japanese, Korean, French, German, Italian, Russian, Spanish, Indonesian, Portuguese, Thai, and Vietnamese.<br><span class=\"keyword\">UI-only languages</span> (interface translations only) include Arabic, Malay, Polish and Swedish.",
     "announcement": "View recent <span class=\"keyword\">website announcements</span>. Updates to terms of service and privacy policy will also be posted here.",
@@ -194,16 +263,11 @@
       "selectorSelect": "Specific <span class=\"keyword\">marker selector</span>. Tap to toggle selection status; selected markers will appear on the map.<br>You can see the total number of such markers in the current area, as well as the number you have marked."
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">Note:</span> When the game version is <span class=\"keyword\">1.0.13</span>, the map dataset version is <span class=\"keyword\">0.8.25</span>. We need time to update the data, so updates may arrive later than the game patch. Thank you for your patience. To track our updates, please join our <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Join Discord'>Discord Server</a>.<br><br>We also recommend the following tools:<ul><li><span class=\"keyword\">Game Wiki: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Visit Game Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Blueprints:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Visit Talos Pioneers'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "The current dataset is up to date.<br><br>If you need to report issues, please join <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Join Discord'>Discord server</a>.<br><br>We also recommend the following tools:<ul><li><span class=\"keyword\">Game Wiki: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Visit Game Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Blueprints:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Visit Talos Pioneers'>https://talospioneers.com</a></li></ul>"
-  },
   "idcard": {
     "group": "Group: ",
     "since": "Since",
     "logintip": "Click the avatar to sign in.",
     "registip": "Click the avatar to register.",
-    "ago": "Ago",
     "karma": "Karma",
     "loading": "Loading",
     "unassigned": "Unassigned",
@@ -230,8 +294,10 @@
       "resend": "Resend({count})",
       "dcLogin": "Sign in with Discord",
       "gooLogin": "Sign in with Google",
+      "ghLogin": "Sign in with GitHub",
       "dcRegis": "Continue with Discord",
       "gooRegis": "Continue with Google",
+      "ghRegis": "Continue with GitHub",
       "connecting": "Connecting...",
       "resetLink": "Please enter the email address associated with your account, and we will send you a password reset link if it exists.<br><br>Check your inbox and spam folder after submission.",
       "resetRequire": "Please enter your new password and confirm it. <br><br>We will reset your password immediately.",
@@ -242,7 +308,7 @@
       "switchToLoginPrefix": "Already have an account?",
       "switchToLoginAction": "Sign in here.",
       "ack": "By proceeding, you have read and agree to our ",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Privacy Policy</a> and <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">Terms of Service</a>.",
+      "ackLink": "<a href=\"{privacy}\">Privacy Policy</a> and <a href=\"{tos}\">Terms of Service</a>.",
       "hints": {
         "0": "Credential Mismatch",
         "101": "Email Required",
@@ -300,10 +366,7 @@
     "binding": {
       "title": "Binding Account",
       "docsLead": "By proceeding, you confirm your agreement to all the terms below:",
-      "tos": "Terms of Service",
-      "privacy": "Privacy Policy",
-      "dataCollection": "Data Collection Checklist",
-      "disclaimer": "Disclaimer of Liability",
+      "docsLinks": "<a href=\"{tos}\">Terms of Service</a> · <a href=\"{privacy}\">Privacy Policy</a> · <a href=\"{data}\">Data Collection Checklist</a> · <a href=\"{disclaimer}\">Disclaimer of Liability</a>",
       "chinaTab": "China (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Go to <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>the official website</a>, make sure you have signed in.",
@@ -311,7 +374,6 @@
       "CNStep1": "Open the <a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>Hypergryph API link</a>, then copy the full response.",
       "UniStep1": "Open the <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>Gryphline API link</a>, then copy the full response.",
       "Step2": "Paste the full response, read the terms, then bind your account.",
-      "serverFallback": "Server",
       "changeBinding": "Change Binding",
       "unlink": "Unlink",
       "bindWithCountdown": "Bind and enable location sync ({sec})",
@@ -346,8 +408,7 @@
       "trackPoints": "Tracking",
       "centerOnPosition": "Keep centered",
       "heatmap": "Heatmap",
-      "configNote1": "Enabling this feature means you accept our ",
-      "configNote2": " and other terms."
+      "configNote": "Enabling this feature means you accept our <a href=\"{data}\">Data Collection Checklist</a> and other terms."
     },
     "errors": {
       "10000": "Location sync session expired. Please bind again.",
@@ -365,7 +426,7 @@
     "now": "Sync Data to OEM Cloud",
     "already": "Everything is up to date",
     "done": "Synced to Cloud: {times} ago",
-    "syncing": "Syncing: {count} Points",
+    "syncing": "{count, plural, one {Syncing: # Point} other {Syncing: # Points}}",
     "failed": "Sync Failed ({reason})",
     "offline": "Offline",
     "dataConflict": "Data Conflict",
@@ -401,6 +462,7 @@
     "all": "All",
     "selected": "Selected",
     "confirm": "Confirm",
+    "confirmAgain": "Click again to confirm",
     "loading": "Loading...",
     "enable": "Enable",
     "disable": "Disable",

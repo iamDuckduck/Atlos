@@ -2,13 +2,17 @@
   "headbar": {
     "tos": "الشروط والتخزين",
     "hideUI": "إخفاء الواجهة",
-    "group": "الانضمام للمجتمع",
+    "notification": "الإشعارات",
     "darkmode": "الوضع الداكن",
     "lightmode": "الوضع الفاتح",
     "language": "اختيار اللغة",
     "help": "المساعدة",
     "announcement": "الإعلانات",
     "settings": "الإعدادات"
+  },
+  "mapControls": {
+    "layerSelect": "اختيار الطبقة",
+    "locationTracking": "مزامنة الموقع"
   },
   "trigger": {
     "boundaryMode": "عرض الحدود",
@@ -17,7 +21,7 @@
   },
   "search": {
     "placeholder": "بحث شامل...",
-    "results": "{count} نتيجة",
+    "results": "{count, plural, zero {لا نتائج} one {نتيجة واحدة} two {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}",
     "locatedAt": "ضمن",
     "distributeAt": "يتواجد في"
   },
@@ -32,26 +36,61 @@
       "main": "الرئيسية",
       "sub": "الفرعية"
     },
+    "label": {
+      "note": "ملاحظة",
+      "url": "رابط",
+      "comments": "التعليقات",
+      "collectionRate": "معدل الجمع"
+    },
+    "tabs": {
+      "collectAll": "تحديد كل العناصر من نفس النوع كمكتملة",
+      "general": "تفاصيل",
+      "comments": "التعليقات"
+    },
     "noInfo": "لا توجد صورة. استخدم {paste} / {click} للرفع.",
-    "communityRule1": "برفعك للصورة، أنت تؤكد قراءتك والتزامك بـ",
-    "communityRule2": "إرشادات المجتمع",
+    "communityRule": "برفعك للصورة، أنت تؤكد قراءتك والتزامك بـ <a href=\"{link}\">إرشادات المجتمع</a>",
     "uploading": "جاري الرفع...",
     "uploadPending": "تم الرفع. بانتظار المراجعة.",
     "readFullText": "انقر لقراءة النص الكامل.",
     "share": "انسخ رابط المشاركة لهذه العلامة.",
     "copied": "تم النسخ",
+    "collectionRateSource": "معدل الجمع على مستوى الخادم هو {nums} – إحصاءات من OEM Cloud",
     "viewer": {
       "author": "الناشر",
       "uploadedAt": "تاريخ الرفع",
-      "upvote": "تأكيد",
+      "upvote": "تصويت مؤيد",
       "flag": "إبلاغ عن خطأ",
       "unflag": "إلغاء الإبلاغ",
+      "uploadAno": "رفع صورة أخرى",
       "share": "مشاركة",
       "recall": "تراجع",
       "unrecall": "إلغاء التراجع"
     },
+    "comments": {
+      "placeholder": "اكتب شيئًا!",
+      "submit": "نشر التعليق",
+      "actions": "إجراءات التعليق",
+      "translate": "ترجمة",
+      "showOriginal": "عرض النص الأصلي",
+      "translatedFrom": "مترجم من {language}",
+      "translating": "جارٍ الترجمة...",
+      "translateFailed": "فشلت الترجمة",
+      "upvote": "إعجاب",
+      "downvote": "عدم إعجاب",
+      "reply": "رد",
+      "edit": "تعديل",
+      "submitEdit": "حفظ التعديل",
+      "undoEdit": "التراجع عن التعديل",
+      "recall": "إخفاء فورًا",
+      "reviewing": "قيد المراجعة",
+      "emptyWithRule": "لا توجد تعليقات بعد. يرجى الالتزام بـ<a href=\"{link}\">إرشادات المجتمع</a> عند النشر.",
+      "ruleOnly": "يرجى الالتزام بـ<a href=\"{link}\">إرشادات المجتمع</a> عند النشر.",
+      "loadFailed": "فشل تحميل التعليقات.",
+      "submitFailed": "فشل إرسال التعليق.",
+      "editFailed": "تعذر تحديث التعليق."
+    },
     "errors": {
-      "unsupportedType": "يُدعم فقط صيغ JPEG/PNG/WebP/AVIF.",
+      "unsupportedType": "تُدعم فقط صور JPEG/PNG/WebP/AVIF/HEIC.",
       "fileTooLarge": "حجم الصورة كبير جداً.",
       "imageDecodeFailed": "لم يتمكن المتصفح من قراءة الصورة.",
       "imageProcessingUnavailable": "معالجة الصور المحلية غير متاحة.",
@@ -65,12 +104,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
       "supportedBy": "مدعوم بواسطة Observator 6"
-    }
+    },
+    "newlyAdded": "جديد في الإصدار"
   },
   "language": {
     "title": "اللغة",
@@ -101,12 +141,39 @@
       "th-TH": "التايلاندية",
       "vi-VN": "الفيتنامية",
       "el-GR": "اليونانية",
-      "hi-IN": "الهندية"
+      "hi-IN": "الهندية",
+      "uk-UA": "الأوكرانية",
+      "tr-TR": "التركية"
     }
   },
-  "group": {
-    "title": "المجتمع والمنصات",
-    "visit": "زيارة"
+  "notification": {
+    "title": "الإشعارات",
+    "tabs": {
+      "community": "التفاعلات",
+      "system": "الإشراف"
+    },
+    "markAllRead": "تحديد الكل كمقروء",
+    "empty": "لا توجد رسائل. ستظهر هنا الرسائل المتعلقة بمساهماتك.",
+    "guest": "سجّل الدخول باستخدام {account} لتلقي الإشعارات ذات الصلة.",
+    "account": "حساب OEM",
+    "loadError": "تعذر تحميل الإشعارات.",
+    "loadMore": "تحميل المزيد",
+    "support": "التواصل والدعم",
+    "visit": "زيارة",
+    "noDetails": "لا توجد تفاصيل إضافية.",
+    "subject": {
+      "image": "الصورة",
+      "comment": "التعليق",
+      "submission": "المساهمة"
+    },
+    "types": {
+      "approved": "{kind, select, comment {أصبح} other {أصبحت}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, comment {الخاص بك متاحًا} other {الخاصة بك متاحة}} للعامة.",
+      "needsReview": "{kind, select, comment {ينتظر} other {تنتظر}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, comment {الخاص بك} other {الخاصة بك}} المراجعة اليدوية.",
+      "removeResolved": "تمت معالجة <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, comment {الذي} other {التي}} سحبته.",
+      "reply": "تمت إضافة رد جديد إلى <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, comment {الخاص بك} other {الخاصة بك}}.",
+      "vote": "{kind, select, comment {تلقى} other {تلقت}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, comment {الخاص بك} other {الخاصة بك}} {count, plural, zero {لا إعجابات} one {إعجابًا واحدًا} two {إعجابين} few {# إعجابات} many {# إعجابًا} other {# إعجاب}}.",
+      "multiple": "{count, plural, zero {لا توجد تحديثات مرتبطة} one {يوجد تحديث واحد مرتبط} two {يوجد تحديثان مرتبطان} few {توجد # تحديثات مرتبطة} many {يوجد # تحديثًا مرتبطًا} other {يوجد # تحديث مرتبط}} بشأن <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> {kind, select, comment {الخاص بك} other {الخاصة بك}}."
+    }
   },
   "tos": {
     "title": "الشروط والتخزين",
@@ -145,6 +212,8 @@
     "shortcuts": {
       "title": "اختصارات لوحة المفاتيح",
       "hint": "اختصارات لتسريع التصفح.",
+      "toggleUI": "إظهار/إخفاء الواجهة",
+      "quickSearch": "بحث سريع",
       "exportData": "تصدير البيانات",
       "importData": "استيراد البيانات",
       "undo": "تراجع",
@@ -166,13 +235,13 @@
     "triggerHandle": "مفاتيح التحكم بالخريطة موجودة بأسفل الشريط الجانبي.<br>يمكنك <span class=\"keyword\">سحبها للتحكم بها</span>.",
     "triggerSwitch": "انقر لتغيير حالة المفتاح.<br><ul><li><span class=\"keyword\">وضع تجميع النقاط</span> لدمج العلامات المتقاربة؛</li><li><span class=\"keyword\">عرض الحدود</span> لإبراز كل منطقة فرعية وحدودها.</li><li><span class=\"keyword\">عرض أسماء المناطق</span> لإظهار أسماء المناطق كما في اللعبة.</li></ul>",
     "scale": "استخدم <span class=\"keyword\">أداة التكبير/التصغير</span> للتحكم بمستوى عرض الخريطة.<br>يمكنك استخدام عجلة الفأرة، أو أزرار <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> للتكبير والتصغير.",
-    "filterList": "تُظهر <span class=\"keyword\">قائمة العلامات</span> العناصر التي حددتها؛ انقر على الأيقونة لإلغاء التحديد.",
+    "filterList": "تعرض <span class=\"keyword\">قائمة العلامات</span> أنواع العلامات التي حددتها؛ انقر على الأيقونة لإلغاء التحديد.",
     "headbar": "إعدادات الخريطة موجودة في <span class=\"keyword\">الشريط العلوي</span>.",
     "tos": "<span class=\"keyword\">شروط الخدمة</span> و<span class=\"keyword\">إدارة البيانات</span> الخاصة بالموقع.",
     "hideUI": "<span class=\"keyword\">إخفاء الواجهة</span> لالتقاط شاشة نظيفة أو رؤية العلامات على الأطراف.",
-    "group": "استعرض <span class=\"keyword\">المجتمعات ومجموعات النقاش</span> المتعلقة بالمشروع.",
+    "notification": "افتح <span class=\"keyword\">الإشعارات</span> لعرض التفاعلات ونتائج المراجعة المتعلقة بمساهماتك.",
     "darkMode": "تبديل <span class=\"keyword\">المظهر الفاتح/الداكن</span>.",
-    "language": "تغيير <span class=\"keyword\">لغة الواجهة</span>.<br>اللغات <span class=\"keyword\">المدعومة بالكامل (لواجهة الموقع ومحتوى اللعبة)</span> تشمل: الإنجليزية، الصينية، اليابانية، الكورية، الفرنسية، الألمانية، الإيطالية، الروسية، الإسبانية، الإندونيسية، البرتغالية، التايلاندية، والفيتنامية.<br>اللغات <span class=\"keyword\">المدعومة للواجهة فقط</span> تشمل: العربية، الماليزية، البولندية، والسويدية.",
+    "language": "تغيير <span class=\"keyword\">لغة الواجهة</span>.<br>اللغات <span class=\"keyword\">المدعومة بالكامل (لواجهة الموقع ومحتوى اللعبة)</span> تشمل: الإنجليزية، الصينية المبسطة، الصينية التقليدية، اليابانية، الكورية، الفرنسية، الألمانية، الإيطالية، الروسية، الإسبانية، الإندونيسية، البرتغالية، التايلاندية، والفيتنامية.<br>اللغات <span class=\"keyword\">المدعومة للواجهة فقط</span> تشمل: العربية، الماليزية، البولندية، السويدية، اليونانية، الهندية، الأوكرانية، والتركية.",
     "announcement": "استعرض <span class=\"keyword\">إعلانات الموقع</span> والتحديثات الخاصة بسياسة الخصوصية.",
     "help": "إعادة تشغيل <span class=\"keyword\">الدليل التعريفي</span>.",
     "settings": "افتح <span class=\"keyword\">الإعدادات</span> للتحكم بخيارات التخزين المحلي وأداء الخريطة.",
@@ -194,16 +263,11 @@
       "selectorSelect": "<span class=\"keyword\">مُحدِّد العلامات</span>. اضغط لتفعيله؛ ستظهر العلامات المحددة على الخريطة، مع عرض إجمالي العلامات المكتملة."
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">ملاحظة:</span> إصدار اللعبة الحالي هو <span class=\"keyword\">1.0.13</span>، وإصدار بيانات الخريطة هو <span class=\"keyword\">0.8.25</span>. نحتاج لبعض الوقت لتحديث البيانات، لذا قد يتأخر التحديث مقارنة باللعبة. شكراً لتفهمكم. لمتابعة أحدث تطوراتنا، انضم لـ <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Discord'>سيرفر Discord</a>.<br><br>كما نرشح لك الأدوات التالية:<ul><li><span class=\"keyword\">ويكي اللعبة: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener'>https://warfarin.wiki</a></li><li><span class=\"keyword\">مجتمع التصاميم:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "بيانات الخريطة محدثة لآخر إصدار.<br><br>للإبلاغ عن أي خطأ، يسعدنا انضمامك لـ <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Discord'>سيرفر Discord</a>.<br><br>كما نرشح لك الأدوات التالية:<ul><li><span class=\"keyword\">ويكي اللعبة: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener'>https://warfarin.wiki</a></li><li><span class=\"keyword\">مجتمع التصاميم:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener'>https://talospioneers.com</a></li></ul>"
-  },
   "idcard": {
     "group": "المجموعة:",
     "since": "عضو منذ",
     "logintip": "انقر لتسجيل الدخول",
     "registip": "انقر لإنشاء حساب",
-    "ago": "مضت",
     "karma": "نقاط السمعة",
     "loading": "جارٍ التحميل",
     "unassigned": "غير معين",
@@ -230,8 +294,10 @@
       "resend": "إعادة إرسال ({count})",
       "dcLogin": "الدخول عبر Discord",
       "gooLogin": "الدخول عبر Google",
+      "ghLogin": "الدخول عبر GitHub",
       "dcRegis": "المتابعة عبر Discord",
       "gooRegis": "المتابعة عبر Google",
+      "ghRegis": "المتابعة عبر GitHub",
       "connecting": "يتصل...",
       "resetLink": "أدخل بريدك الإلكتروني المسجل لدينا، وسنرسل لك رابطاً لإعادة تعيين كلمة المرور.<br><br>يرجى تفقد صندوق الوارد والبريد المزعج (Spam).",
       "resetRequire": "أدخل كلمة المرور الجديدة وقم بتأكيدها.<br><br>سيتم التحديث فوراً.",
@@ -242,14 +308,14 @@
       "switchToLoginPrefix": "لديك حساب؟",
       "switchToLoginAction": "سجل دخولك.",
       "ack": "بمتابعتك، أنت توافق على",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">سياسة الخصوصية</a> و<a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">شروط الخدمة</a>.",
+      "ackLink": "<a href=\"{privacy}\">سياسة الخصوصية</a> و<a href=\"{tos}\">شروط الخدمة</a>.",
       "hints": {
         "0": "بيانات غير صحيحة",
         "101": "البريد مطلوب",
         "102": "بريد غير صالح",
         "103": "البريد مستخدم",
         "104": "البريد غير مسجل",
-        "105": "Email Not Supported",
+        "105": "البريد غير مسموح",
         "111": "كلمة المرور مطلوبة",
         "112": "كلمة مرور غير صالحة",
         "113": "كلمتا المرور غير متطابقتين",
@@ -300,10 +366,7 @@
     "binding": {
       "title": "ربط الحساب",
       "docsLead": "بمتابعتك، أنت توافق على الشروط التالية:",
-      "tos": "شروط الخدمة",
-      "privacy": "سياسة الخصوصية",
-      "dataCollection": "قائمة جمع البيانات",
-      "disclaimer": "إخلاء المسؤولية",
+      "docsLinks": "<a href=\"{tos}\">شروط الخدمة</a> · <a href=\"{privacy}\">سياسة الخصوصية</a> · <a href=\"{data}\">قائمة جمع البيانات</a> · <a href=\"{disclaimer}\">إخلاء المسؤولية</a>",
       "chinaTab": "الصين (Hypergryph)",
       "globalTab": "عالمي (Gryphline)",
       "CNStep0": "اذهب لـ <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>الموقع الرسمي</a> وسجل دخولك.",
@@ -311,7 +374,6 @@
       "CNStep1": "افتح <a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>رابط Hypergryph API</a> وانسخ النص بالكامل.",
       "UniStep1": "افتح <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>رابط Gryphline API</a> وانسخ النص بالكامل.",
       "Step2": "ألصق النص المنسوخ هنا لربط حسابك.",
-      "serverFallback": "الخادم",
       "changeBinding": "تغيير الربط",
       "unlink": "إلغاء الربط",
       "bindWithCountdown": "اربط وفعّل المزامنة ({sec})",
@@ -346,8 +408,7 @@
       "trackPoints": "التتبع",
       "centerOnPosition": "إبقاء التوسيط",
       "heatmap": "خريطة حرارية",
-      "configNote1": "تفعيلك لهذه الميزة يعني موافقتك على ",
-      "configNote2": " والشروط الأخرى."
+      "configNote": "تفعيلك لهذه الميزة يعني موافقتك على <a href=\"{data}\">قائمة جمع البيانات</a> والشروط الأخرى."
     },
     "errors": {
       "10000": "انتهت جلسة المزامنة. يرجى الربط مجدداً.",
@@ -364,8 +425,8 @@
   "sync": {
     "now": "مزامنة البيانات مع سحابة OEM",
     "already": "متطابق مع السحابة",
-    "done": "تمت المزامنة-· قبل {times}",
-    "syncing": "جاري مزامنة {count} نقطة",
+    "done": "تمت المزامنة قبل {times}",
+    "syncing": "{count, plural, zero {لا نقاط للمزامنة} one {جارٍ مزامنة نقطة واحدة} two {جارٍ مزامنة نقطتين} few {جارٍ مزامنة # نقاط} many {جارٍ مزامنة # نقطة} other {جارٍ مزامنة # نقطة}}",
     "failed": "فشلت المزامنة ({reason})",
     "offline": "غير متصل",
     "dataConflict": "تعارض في البيانات",
@@ -401,6 +462,7 @@
     "all": "الكل",
     "selected": "المُحدَّد",
     "confirm": "تأكيد",
+    "confirmAgain": "انقر مجددًا للتأكيد",
     "loading": "جاري التحميل...",
     "enable": "تفعيل",
     "disable": "تعطيل",

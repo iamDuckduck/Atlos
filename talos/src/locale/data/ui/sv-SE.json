@@ -2,13 +2,17 @@
   "headbar": {
     "tos": "Villkor & Lagring",
     "hideUI": "Dölj UI",
-    "group": "Gå med i relaterad grupp",
+    "notification": "Aviseringar",
     "darkmode": "Växla till mörkt läge",
     "lightmode": "Växla till ljust läge",
     "language": "Välj språk",
     "help": "Hjälp",
     "announcement": "Meddelanden",
     "settings": "Inställningar"
+  },
+  "mapControls": {
+    "layerSelect": "Lagerval",
+    "locationTracking": "Platssynk"
   },
   "trigger": {
     "boundaryMode": "Gränsläge",
@@ -32,23 +36,58 @@
       "main": "Område",
       "sub": "Zon"
     },
+    "label": {
+      "note": "Anteckning",
+      "url": "Länk",
+      "comments": "Kommentarer",
+      "collectionRate": "Insamlingsgrad"
+    },
+    "tabs": {
+      "collectAll": "Markera alla av samma typ som slutförda",
+      "general": "Detaljer",
+      "comments": "Kommentarer"
+    },
     "noInfo": "Ingen bild. Använd {paste} / {click} för att ladda upp.",
-    "communityRule1": "Innan du laddar upp, se till att du har läst och följer",
-    "communityRule2": "Community-riktlinjer",
+    "communityRule": "Innan du laddar upp, se till att du har läst och följer <a href=\"{link}\">Community-riktlinjer</a>",
     "uploading": "Laddar upp...",
     "uploadPending": "Uppladdningen mottagen. Visas efter granskning.",
     "readFullText": "Klicka för att läsa hela texten.",
     "share": "Kopiera delningslänken för denna markör.",
     "copied": "Länk kopierad",
+    "collectionRateSource": "Den globala insamlingsgraden är {nums} – Statistik från OEM Cloud",
     "viewer": {
       "author": "Uppladdare",
       "uploadedAt": "Uppladdad",
       "upvote": "Stöd",
       "flag": "Markera som felaktig",
       "unflag": "Ta bort markering",
+      "uploadAno": "Ladda upp",
       "share": "Dela",
       "recall": "Begär borttagning",
       "unrecall": "Avbryt borttagning"
+    },
+    "comments": {
+      "placeholder": "Skriv något!",
+      "submit": "Publicera kommentar",
+      "actions": "Kommentarsåtgärder",
+      "translate": "Översätt",
+      "showOriginal": "Visa original",
+      "translatedFrom": "Översatt från {language}",
+      "translating": "Översätter...",
+      "translateFailed": "Översättning misslyckades",
+      "upvote": "Gilla",
+      "downvote": "Ogilla",
+      "reply": "Svara",
+      "edit": "Redigera",
+      "submitEdit": "Spara ändringar",
+      "undoEdit": "Ångra ändringar",
+      "recall": "Dölj direkt",
+      "reviewing": "Granskas",
+      "emptyWithRule": "Inga kommentarer ännu. Följ <a href=\"{link}\">communityriktlinjerna</a> när du publicerar.",
+      "ruleOnly": "Följ <a href=\"{link}\">communityriktlinjerna</a> när du publicerar.",
+      "loadFailed": "Kommentarer kunde inte läsas in.",
+      "submitFailed": "Kommentaren kunde inte skickas.",
+      "editFailed": "Kommentaren kunde inte uppdateras."
     },
     "errors": {
       "unsupportedType": "Endast JPEG/PNG/WebP/AVIF/HEIC-bilder stöds.",
@@ -65,12 +104,13 @@
     }
   },
   "footer": {
-    "icp": "Designed by cirisus, HK"
+    "icp": "沪ICP备2026013897号-2"
   },
   "sidebar": {
     "alt": {
-      "supportedBy": "stöds av Observator 6"
-    }
+      "supportedBy": "Stöds av Observator 6"
+    },
+    "newlyAdded": "Nytt i Versionen"
   },
   "language": {
     "title": "Språk",
@@ -101,12 +141,39 @@
       "th-TH": "Thailändska",
       "vi-VN": "Vietnamesiska",
       "el-GR": "Grekiska",
-      "hi-IN": "Hindi"
+      "hi-IN": "Hindi",
+      "uk-UA": "Ukrainska",
+      "tr-TR": "Turkiska"
     }
   },
-  "group": {
-    "title": "Community & Media",
-    "visit": "Besök"
+  "notification": {
+    "title": "Aviseringar",
+    "tabs": {
+      "community": "Interaktioner",
+      "system": "Moderering"
+    },
+    "markAllRead": "Markera alla som lästa",
+    "empty": "Inga meddelanden. Meddelanden om dina bidrag visas här.",
+    "guest": "Logga in med ditt {account} för att få relevanta aviseringar.",
+    "account": "OEM-konto",
+    "loadError": "Aviseringarna kunde inte läsas in.",
+    "loadMore": "Läs in fler",
+    "support": "Kontakt och support",
+    "visit": "Besök",
+    "noDetails": "Det finns inga ytterligare uppgifter.",
+    "subject": {
+      "image": "bild",
+      "comment": "kommentar",
+      "submission": "bidrag"
+    },
+    "types": {
+      "approved": "{kind, select, submission {Ditt} other {Din}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> är nu {kind, select, submission {offentligt} other {offentlig}}.",
+      "needsReview": "{kind, select, submission {Ditt} other {Din}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> väntar på manuell granskning.",
+      "removeResolved": "{kind, select, submission {Ditt} other {Din}} återkallade <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> har behandlats.",
+      "reply": "Ett nytt svar har lagts till i {kind, select, submission {ditt} other {din}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag>.",
+      "vote": "{kind, select, submission {Ditt} other {Din}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> fick {count, plural, one {# gilla-markering} other {# gilla-markeringar}}.",
+      "multiple": "{kind, select, submission {Ditt} other {Din}} <subjectTag>{subject}</subjectTag> <pointTag>{point}</pointTag> har {count, plural, one {# relaterad uppdatering} other {# relaterade uppdateringar}}."
+    }
   },
   "tos": {
     "title": "Villkor & Lagring",
@@ -145,6 +212,8 @@
     "shortcuts": {
       "title": "Tangentbordsgenvägar",
       "hint": "Tillgängliga genvägar för snabba åtgärder.",
+      "toggleUI": "Visa/dölj gränssnittet",
+      "quickSearch": "Snabbsökning",
       "exportData": "Exportera data",
       "importData": "Importera data",
       "undo": "Ångra",
@@ -166,13 +235,13 @@
     "triggerHandle": "Reglage relaterade till kartvisning finns längst ner i sidofältet.<br>Du kan hålla ner musen för att <span class=\"keyword\">dra och hantera dem.</span>",
     "triggerSwitch": "Klicka för att växla status.<br><ul><li><span class=\"keyword\">Markörklusterläge</span> tillåter att täta markörer visas sammanslagna;</li><li><span class=\"keyword\">Regiongränsvisning</span> markerar varje underregion och dess gränser inom det aktuella området.</li><li><span class=\"keyword\">Regionnamn</span> visar regionnamn från spelet.</li></ul>",
     "scale": "Använd <span class=\"keyword\">Zoomkontrollen</span> för att se och hantera kartzoom.<br>Scrollhjul eller pekplatta kan användas för att zooma. Du kan också zooma genom att klicka på <span class=\"keyboard sym\">+</span>/<span class=\"keyboard sym\">-</span> knapparna eller var som helst på zoomfältet.",
-    "filterList": "<span class=\"keyword\">Markörlistan</span> listar de markörer du har valt; klicka på ikonen för att avmarkera.",
+    "filterList": "<span class=\"keyword\">Markörlistan</span> visar de markörtyper du har valt; klicka på ikonen för att avmarkera.",
     "headbar": "Inställningar relaterade till kartan finns i <span class=\"keyword\">toppmenyn</span>.",
     "tos": "Webbplatsens <span class=\"keyword\">Användarvillkor</span> och <span class=\"keyword\">Datahantering</span>.",
     "hideUI": "<span class=\"keyword\">Dölj Webbplatsens UI</span> för att ta skärmdumpar eller se kantmarkörer.",
-    "group": "Visa <span class=\"keyword\">diskussionsgrupper</span> och <span class=\"keyword\">communities</span> relaterade till detta projekt.",
+    "notification": "Öppna <span class=\"keyword\">aviseringar</span> för att se interaktioner och granskningsresultat för dina bidrag.",
     "darkMode": "Växla det nuvarande <span class=\"keyword\">omgivande ljusläget</span>.",
-    "language": "Byt <span class=\"keyword\">gränssnittsspråk</span>.<br>Språk med <span class=\"keyword\">fullt stöd för översättning av spelinnehåll</span> inkluderar engelska, förenklad kinesiska, traditionell kinesiska, japanska, koreanska, franska, tyska, italienska, ryska, spanska, indonesiska, portugisiska, thailändska och vietnamesiska.<br><span class=\"keyword\">Endast UI-språk</span> (endast gränssnittsöversättningar) inkluderar arabiska, malaysiska, polska och svenska.",
+    "language": "Byt <span class=\"keyword\">gränssnittsspråk</span>.<br>Språk med <span class=\"keyword\">fullt stöd för översättning av spelinnehåll</span> inkluderar engelska, förenklad kinesiska, traditionell kinesiska, japanska, koreanska, franska, tyska, italienska, ryska, spanska, indonesiska, portugisiska, thailändska och vietnamesiska.<br><span class=\"keyword\">Endast UI-språk</span> (endast gränssnittsöversättningar) inkluderar arabiska, malaysiska, polska, svenska, grekiska, hindi, ukrainska och turkiska.",
     "announcement": "Visa <span class=\"keyword\">webbplatsmeddelanden</span>. Uppdateringar av användarvillkor och sekretesspolicy kommer också att publiceras här.",
     "help": "Starta om denna <span class=\"keyword\">guide</span>.",
     "settings": "Öppna <span class=\"keyword\">Inställningar</span> för att kontrollera vilken lokal lagring kartan använder för att komma ihåg dina handlingar.",
@@ -194,16 +263,11 @@
       "selectorSelect": "Specifik <span class=\"keyword\">markörväljare</span>. Tryck för att växla valstatus; valda markörer kommer att visas på kartan.<br>Du kan se det totala antalet sådana markörer i det aktuella området, samt antalet du har markerat."
     }
   },
-  "notice": {
-    "legacy": "<span class=\"keyword\">Obs:</span> När spelversionen är <span class=\"keyword\">1.0.13</span>, är kartdataversionen <span class=\"keyword\">0.8.25</span>. Vi behöver tid för att uppdatera datan, så uppdateringar kan komma senare än spelets patch. Tack för ditt tålamod. För att spåra våra uppdateringar, vänligen gå med i vår <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Gå med i Discord'>Discord-server</a>.<br><br>Vi rekommenderar också följande verktyg:<ul><li><span class=\"keyword\">Game Wiki: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Besök Game Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Ritningar:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Besök Talos Pioneers'>https://talospioneers.com</a></li></ul>",
-    "uptodate": "Den aktuella datasetet är uppdaterad.<br><br>Om du behöver rapportera problem, vänligen gå med i vår <a href='https://discord.gg/BFMAKZSUG7' class='embed' target='_blank' rel='noopener' aria-label='Gå med i Discord'>Discord-server</a>.<br><br>Vi rekommenderar också följande verktyg:<ul><li><span class=\"keyword\">Game Wiki: </span><a href='https://warfarin.wiki' class='embed' target='_blank' rel='noopener' aria-label='Besök Game Wiki'>https://warfarin.wiki</a></li><li><span class=\"keyword\">Ritningar:</span> <a href='https://talospioneers.com' class='embed' target='_blank' rel='noopener' aria-label='Besök Talos Pioneers'>https://talospioneers.com</a></li></ul>"
-  },
   "idcard": {
     "group": "Grupp: ",
     "since": "Sedan",
     "logintip": "Klicka avatar – logga in.",
     "registip": "Klicka avatar – registrera.",
-    "ago": "sedan",
     "karma": "Karma",
     "loading": "Laddar...",
     "unassigned": "Ej tilldelat",
@@ -230,8 +294,10 @@
       "resend": "Skicka({count})",
       "dcLogin": "Logga in med Discord",
       "gooLogin": "Logga in med Google",
+      "ghLogin": "Logga in med GitHub",
       "dcRegis": "Fortsätt med Discord",
       "gooRegis": "Fortsätt med Google",
+      "ghRegis": "Fortsätt med GitHub",
       "connecting": "Ansluter...",
       "resetLink": "Ange e-postadressen som är kopplad till ditt konto, så skickar vi en länk för återställning av lösenord om den finns.<br><br>Kontrollera din inkorg och skräppostmapp efter inlämning.",
       "resetRequire": "Ange och bekräfta ditt nya lösenord.<br><br>Vi återställer ditt lösenord omedelbart.",
@@ -242,14 +308,14 @@
       "switchToLoginPrefix": "Har du redan ett konto?",
       "switchToLoginAction": "Logga in här.",
       "ack": "Genom att fortsätta godkänner du",
-      "ackLink": "<a href=\"https://blog.opendfieldmap.org/docs/privacy\" target=\"_blank\" rel=\"noopener\">Sekretesspolicyn</a> och <a href=\"https://blog.opendfieldmap.org/docs/tos\" target=\"_blank\" rel=\"noopener\">användarvillkoren</a>.",
+      "ackLink": "<a href=\"{privacy}\">Sekretesspolicyn</a> och <a href=\"{tos}\">användarvillkoren</a>.",
       "hints": {
         "0": "Fel e-post eller lösenord",
-        "101": "-post krävs",
+        "101": "E-post krävs",
         "102": "Ogiltig e-postadress",
         "103": "E-posten används redan",
         "104": "E-posten hittades inte",
-        "105": "Email Not Supported",
+        "105": "E-post stöds inte",
         "111": "Lösenord krävs",
         "112": "Ogiltigt lösenord",
         "113": "Lösenorden matchar inte",
@@ -300,10 +366,7 @@
     "binding": {
       "title": "Koppla konto",
       "docsLead": "Genom att fortsätta bekräftar du att du godkänner villkoren nedan:",
-      "tos": "Användarvillkor",
-      "privacy": "Integritetspolicy",
-      "dataCollection": "Checklista för datainsamling",
-      "disclaimer": "Ansvarsfriskrivning",
+      "docsLinks": "<a href=\"{tos}\">Användarvillkor</a> · <a href=\"{privacy}\">Integritetspolicy</a> · <a href=\"{data}\">Checklista för datainsamling</a> · <a href=\"{disclaimer}\">Ansvarsfriskrivning</a>",
       "chinaTab": "Kina (Hypergryph)",
       "globalTab": "Global (Gryphline)",
       "CNStep0": "Gå till <a href='https://endfield.hypergryph.com' target='_blank' rel='noopener noreferrer'>den officiella webbplatsen</a> och se till att du är inloggad.",
@@ -311,7 +374,6 @@
       "CNStep1": "Öppna <a href='https://web-api.hypergryph.com/account/info/hg' target='_blank' rel='noopener noreferrer'>Hypergryph API-länken</a> och kopiera hela svaret.",
       "UniStep1": "Öppna <a href='https://web-api.gryphline.com/cookie_store/account_token' target='_blank' rel='noopener noreferrer'>Gryphline API-länken</a> och kopiera hela svaret.",
       "Step2": "Klistra in hela svaret, läs villkoren och koppla kontot.",
-      "serverFallback": "Server",
       "changeBinding": "Byt koppling",
       "unlink": "Koppla bort",
       "bindWithCountdown": "Koppla och aktivera sync ({sec})",
@@ -346,8 +408,7 @@
       "trackPoints": "Spårning",
       "centerOnPosition": "Håll centrerad",
       "heatmap": "Värmekarta",
-      "configNote1": "Att aktivera funktionen innebär att du accepterar våra ",
-      "configNote2": " och andra villkor."
+      "configNote": "Att aktivera funktionen innebär att du accepterar våra <a href=\"{data}\">Checklista för datainsamling</a> och andra villkor."
     },
     "errors": {
       "10000": "Plats-synkningen har löpt ut. Koppla igen.",
@@ -365,7 +426,7 @@
     "now": "Synkronisera med OEM Cloud",
     "already": "Synkroniserad med molnet",
     "done": "Synkroniserad - för {times} sedan",
-    "syncing": "Synkroniserar {count} punkter",
+    "syncing": "{count, plural, one {Synkroniserar # punkt} other {Synkroniserar # punkter}}",
     "failed": "Synkronisering misslyckades ({reason})",
     "offline": "Offline",
     "dataConflict": "Datakonflikt",
@@ -401,6 +462,7 @@
     "all": "Alla",
     "selected": "Valda",
     "confirm": "Bekräfta",
+    "confirmAgain": "Klicka igen för att bekräfta",
     "loading": "Laddar...",
     "enable": "Aktivera",
     "disable": "Inaktivera",

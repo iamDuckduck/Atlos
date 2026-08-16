@@ -1,8 +1,7 @@
 // dynamic font loader - Automatically switch between Simplified and Traditional Chinese font files based on document language
 
-import { cleanupFontCache, getCachedFontBuffer } from './fontCache';
-
 import { getFontAssetUrl } from './fontAssets';
+import { getFontRegionForLocale, type FontRegion } from '@/utils/lang';
 
 
 // Build CDN URL with base and normalize dev paths to production paths
@@ -27,7 +26,6 @@ const toCdnUrl = (p: string): string => {
 };
 
 type FontWeight = 'Bold' | 'DemiBold' | 'Medium' | 'Regular';
-type Region = 'CN' | 'HK' | 'JP';
 
 interface FontDefinition {
     family: string;
@@ -143,110 +141,72 @@ const fontDefinitions: FontDefinition[] = [
     },
 ];
 
-// detect document language
-function detectDocumentLanguage(): Region {
-    const htmlLang = (document.documentElement.lang || document.documentElement.getAttribute('lang') || '').toLowerCase();
-    const navigatorLang = String(navigator.language || '').toLowerCase();
-    
-    // check HTML lang attribute first
-    if (htmlLang) {
-        if (htmlLang.includes('zh-cn') || htmlLang.includes('zh-hans')) {
-            return 'CN';
-        }
-        if (htmlLang.includes('zh-tw') || htmlLang.includes('zh-hk') || htmlLang.includes('zh-hant')) {
-            return 'HK';
-        }
-        if (htmlLang.includes('ja') || htmlLang.includes('jp')) {
-            return 'JP';
-        }
-    }
-    
-    // then check browser language
-    if (navigatorLang) {
-        if (navigatorLang.includes('zh-cn') || navigatorLang.includes('zh-hans')) {
-            return 'CN';
-        }
-        if (navigatorLang.includes('zh-tw') || navigatorLang.includes('zh-hk') || navigatorLang.includes('zh-hant')) {
-            return 'HK';
-        }
-        if (navigatorLang.includes('ja') || navigatorLang.includes('jp')) {
-            return 'JP';
-        }
-    }
-    
-    // default to HK
-    return 'HK';
-}
+const detectDocumentLanguage = (): FontRegion => {
+    const htmlLang = document.documentElement.lang || document.documentElement.getAttribute('lang') || '';
+    if (htmlLang) return getFontRegionForLocale(htmlLang);
+    return getFontRegionForLocale(navigator.language || '');
+};
 
-// Keep track of loaded fonts to remove them when switching
 const loadedFonts = new Set<FontFace>();
+const regionFontPromises = new Map<Exclude<FontRegion, null>, Promise<FontFace[]>>();
+let activeRegion: FontRegion | undefined;
+let loadGeneration = 0;
+let languageObserver: MutationObserver | null = null;
 
-async function loadFonts(region: Region): Promise<void> {
-    // Clean up previously loaded fonts
-    loadedFonts.forEach(font => {
-        document.fonts.delete(font);
-    });
-    loadedFonts.clear();
+async function loadFonts(region: FontRegion): Promise<void> {
+    if (activeRegion === region) return;
+    const generation = ++loadGeneration;
 
-    const fontUrls = fontDefinitions
-        .map((definition) => {
-            const files = region === 'CN' ? definition.cnFiles :
-                          region === 'HK' ? definition.hkFiles :
-                          definition.jpFiles;
+    if (region === null) {
+        loadedFonts.forEach((font) => document.fonts.delete(font));
+        loadedFonts.clear();
+        activeRegion = null;
+        return;
+    }
+
+    let regionPromise = regionFontPromises.get(region);
+    if (!regionPromise) {
+        regionPromise = Promise.all(fontDefinitions.map(async (definition) => {
+            const files = region === 'CN'
+                ? definition.cnFiles
+                : region === 'HK'
+                    ? definition.hkFiles
+                    : definition.jpFiles;
             const fileRaw = files?.woff2 || files?.woff || files?.ttf || files?.otf;
-            return fileRaw ? toCdnUrl(fileRaw) : undefined;
-        })
-        .filter((url): url is string => Boolean(url));
+            if (!fileRaw) return null;
 
-    await cleanupFontCache(fontUrls);
-
-    const loadPromises = fontDefinitions.map(async (definition) => {
-        const files = region === 'CN' ? definition.cnFiles : 
-                      region === 'HK' ? definition.hkFiles : 
-                      definition.jpFiles;
-        
-        if (!files) return;
-
-        // Priority: woff2 > woff > ttf > otf
-        const fileRaw = files.woff2 || files.woff || files.ttf || files.otf;
-        if (!fileRaw) return;
-
-        const url = toCdnUrl(fileRaw);
-        
-        // Try to get buffer from Cache Storage first
-        const buffer = await getCachedFontBuffer(url);
-        
-        // Use buffer if available (Cache Storage), otherwise fallback to URL (HTTP Cache)
-        const source = buffer ?? `url('${url}')`;
-        
-        // Special handling for HMSans
-        const isHMSans = definition.family.startsWith('HMSans');
-        const descriptors: FontFaceDescriptors = {
-            weight: isHMSans ? '100 900' : undefined, // Variable font
-            style: 'normal',
-            display: 'swap'
-        };
-
-        try {
-            const font = new FontFace(definition.family, source, descriptors);
-            // Add to document first allowing browser to match
-            document.fonts.add(font);
-            loadedFonts.add(font);
-            
-            // Trigger load to ensure it's valid
+            const isHMSans = definition.family === 'HMSans';
+            const font = new FontFace(
+                definition.family,
+                `url('${toCdnUrl(fileRaw)}')`,
+                {
+                    weight: isHMSans ? '100 900' : undefined,
+                    style: 'normal',
+                    display: 'swap',
+                },
+            );
             await font.load();
-        } catch (err) {
-            console.warn(`Failed to load font ${definition.family}:`, err);
-        }
-    });
+            return font;
+        })).then((fonts) => fonts.filter((font): font is FontFace => font !== null));
+        regionFontPromises.set(region, regionPromise);
+        regionPromise.catch(() => regionFontPromises.delete(region));
+    }
 
-    await Promise.all(loadPromises);
+    const nextFonts = await regionPromise;
+    if (generation !== loadGeneration) return;
+
+    loadedFonts.forEach((font) => document.fonts.delete(font));
+    loadedFonts.clear();
+    nextFonts.forEach((font) => {
+        document.fonts.add(font);
+        loadedFonts.add(font);
+    });
+    activeRegion = region;
 }
 
-// language change observer
 function setupLanguageObserver(): void {
-    // listen for changes to the HTML lang attribute
-    const observer = new MutationObserver((mutations) => {
+    if (languageObserver) return;
+    languageObserver = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.type === 'attributes' && mutation.attributeName === 'lang') {
                 const newRegion = detectDocumentLanguage();
@@ -254,34 +214,19 @@ function setupLanguageObserver(): void {
             }
         });
     });
-    
-    observer.observe(document.documentElement, {
+    languageObserver.observe(document.documentElement, {
         attributes: true,
-        attributeFilter: ['lang']
+        attributeFilter: ['lang'],
     });
 }
 
-// main initialization function
-export function fontLoader(): void {
-    // detect current language and inject corresponding fonts
-    const region = detectDocumentLanguage();
-    void loadFonts(region);
-    
-    // set up observer for future changes
+export async function fontLoader(): Promise<void> {
     setupLanguageObserver();
-    
-    //console.log(`Font loader initialized for region: ${region}`);
+    await loadFonts(detectDocumentLanguage());
 }
 
-/* EXTERNAL API */
+export const switchFontRegion = (region: FontRegion): Promise<void> => loadFonts(region);
 
-// for manual region switch (external call)
-export function switchFontRegion(region: Region): void {
-    void loadFonts(region);
-    console.log(`Font switched to region: ${region}`);
-}
-
-// get current region (external call)
-export function getCurrentRegion(): Region {
+export function getCurrentRegion(): FontRegion {
     return detectDocumentLanguage();
 }

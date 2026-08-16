@@ -7,7 +7,7 @@
     --banner-text: #{$black-1};
     --banner-bar: #{$grey-1};
     --banner-bar-active: #{$primary-accent-6};
-    --invert-bg: 1;
+    --banner-image-invert: 1;
 }
 
 :root[data-theme='dark'] {
@@ -15,7 +15,7 @@
     --banner-text: #{$light-1};
     --banner-bar: #{$light-2};
     --banner-bar-active: #{$primary-accent-4};
-    --invert-bg: 0;
+    --banner-image-invert: 0;
 }
 
 $banner-desktop-width: 42vw;
@@ -29,7 +29,11 @@ $banner-mobile-width: 80vw;
     z-index: 9999;
     color: var(--banner-text);
     transition: all .35s $adagio-curve;
-    animation: slideDown 0.3s ease-out;
+    animation: slideDown 0.2s ease-out;
+    &[data-closing='true'] {
+        pointer-events: none;
+        animation: slideUp 0.2s ease-in forwards;
+    }
     &::before {
         content: "";
         position: absolute;
@@ -54,7 +58,7 @@ $banner-mobile-width: 80vw;
         inset: 0.1rem;
         z-index: -1;
         opacity: .4;
-        filter: invert(var(--invert-bg));
+        filter: invert(var(--banner-image-invert));
         transition: filter .3s $adagio-curve;
     }
 }
@@ -96,7 +100,7 @@ $banner-mobile-width: 80vw;
 
 .bannerText {
     font-family: 'HMSans_EN','HMSans','UD_ShinGo Regular', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 560;
     letter-spacing: -0.2px;
     line-height: 1.02;
@@ -134,5 +138,16 @@ $banner-mobile-width: 80vw;
     to {
         transform: translateY(0);
         opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-100%);
+        opacity: 0;
     }
 }

@@ -5,19 +5,25 @@ import {
   ListObjectsV2Command,
   DeleteObjectsCommand,
 } from "@aws-sdk/client-s3";
+import { NodeHttpHandler } from "@smithy/node-http-handler";
+import { execFileSync } from "node:child_process";
 import { Upload } from "@aws-sdk/lib-storage";
 import fs from "fs-extra";
+import https from "node:https";
 import path from "path";
 import crypto from "crypto";
 import { getDeployChannel, resolveDeployPrefix } from "./release-channel.js";
 import { buildClipIndex, normalizeObjectKey, toPrefixedObjectKey } from "./tile-index.js";
+
+const distDir = path.resolve(process.cwd(), process.env.DIST_DIR || "dist/r2");
+const publishStartedAt = Date.now();
 
 // Read R2 specific config: config/config.r2.json
 // sample expected config file:
 // {
 //   "web": {
 //     "build": {
-//       "cdn": "https://xxx.org-cdn.com",
+//       "cdn": "https://cdn.example.org",
 //       "r2": {
 //         "endpoint": "https://<accountid>.r2.cloudflarestorage.com",
 //         "bucket": "your-bucket",
@@ -39,10 +45,19 @@ const { prefix, source: prefixSource } = resolveDeployPrefix({
   target: "r2",
   deployChannels: config?.web?.build?.deployChannels,
 });
+const requestedConcurrency = Number.parseInt(process.env.R2_UPLOAD_CONCURRENCY || "96", 10);
+const concurrency = Number.isFinite(requestedConcurrency) && requestedConcurrency > 0
+  ? requestedConcurrency
+  : 96;
+const requestedMaxSockets = Number.parseInt(process.env.R2_MAX_SOCKETS || "", 10);
+const maxSockets = Number.isFinite(requestedMaxSockets) && requestedMaxSockets > 0
+  ? requestedMaxSockets
+  : concurrency;
 
 console.log(
   `[publish-R2] channel=${deployChannel} prefix=${prefix || "/"} source=${prefixSource}`
 );
+console.log(`[publish-R2] distDir=${path.relative(process.cwd(), distDir) || "."}`);
 
 const client = new S3Client({
   region: region || "auto",
@@ -52,6 +67,9 @@ const client = new S3Client({
     accessKeyId,
     secretAccessKey: accessKeySecret,
   },
+  requestHandler: new NodeHttpHandler({
+    httpsAgent: new https.Agent({ keepAlive: true, maxSockets }),
+  }),
 });
 
 function getAllFiles(dirPath, arrayOfFiles) {
@@ -60,10 +78,11 @@ function getAllFiles(dirPath, arrayOfFiles) {
   arrayOfFiles = arrayOfFiles || [];
 
   files.forEach(function (file) {
+    if (file === ".DS_Store") return;
     if (fs.statSync(path.join(dirPath, file)).isDirectory()) {
       arrayOfFiles = getAllFiles(path.join(dirPath, file), arrayOfFiles);
     } else {
-      const relativePath = path.relative("./dist", path.join(dirPath, file));
+      const relativePath = path.relative(distDir, path.join(dirPath, file));
       arrayOfFiles.push(relativePath);
     }
   });
@@ -71,8 +90,10 @@ function getAllFiles(dirPath, arrayOfFiles) {
   return arrayOfFiles;
 }
 
-const listRemoteObjectKeys = async (prefixToList) => {
-  const keys = [];
+const remoteObjectListPromiseMap = new Map();
+
+const fetchRemoteObjects = async (prefixToList) => {
+  const objects = [];
   let continuationToken;
 
   do {
@@ -87,15 +108,30 @@ const listRemoteObjectKeys = async (prefixToList) => {
 
     for (const item of response.Contents ?? []) {
       if (item.Key) {
-        keys.push(item.Key);
+        objects.push({
+          key: item.Key,
+          lastModified: item.LastModified,
+          etag: String(item.ETag ?? "").replace(/^"|"$/g, "").toLowerCase(),
+          size: item.Size ?? 0,
+        });
       }
     }
 
     continuationToken = response.IsTruncated ? response.NextContinuationToken : undefined;
   } while (continuationToken);
 
-  return keys;
+  return objects;
 };
+
+const listRemoteObjects = (prefixToList) => {
+  if (!remoteObjectListPromiseMap.has(prefixToList)) {
+    remoteObjectListPromiseMap.set(prefixToList, fetchRemoteObjects(prefixToList));
+  }
+  return remoteObjectListPromiseMap.get(prefixToList);
+};
+
+const listRemoteObjectKeys = async (prefixToList) =>
+  (await listRemoteObjects(prefixToList)).map((object) => object.key);
 
 const deleteRemoteObjectKeys = async (keys) => {
   if (!keys.length) return;
@@ -164,6 +200,31 @@ const getMimeType = (filePath) => {
 // Keep search docs on single PUT so the remote ETag stays comparable to local MD5.
 const MULTIPART_THRESHOLD = 64 * 1024 * 1024;
 const MAX_RETRIES = 3;
+const verboseSkips = process.env.PUBLISH_VERBOSE_SKIPS !== "0";
+const shouldUploadSeoPointAliases = process.env.SEO_UPLOAD_POINT_ALIASES === "1";
+const seoPointAliasConcurrency = Number.parseInt(process.env.SEO_POINT_ALIAS_CONCURRENCY || "150", 10);
+const uploadProfile = process.env.R2_UPLOAD_PROFILE === "resources" ? "resources" : "full";
+const resourceUploadPrefixes = ["assets/", "files/", "search/", "clips/"];
+const seoPointTarget = "r2";
+const targetSeoPointPrefix = `seo/points/${seoPointTarget}/`;
+const targetSeoPointHtmlPattern = new RegExp(`^${targetSeoPointPrefix}[0-9a-zA-Z]{7}\\.html$`);
+const assetPruneRetentionDaysRaw = Number.parseInt(process.env.ASSET_PRUNE_RETENTION_DAYS || "14", 10);
+const assetPruneRetentionDays = Number.isFinite(assetPruneRetentionDaysRaw)
+  ? Math.max(0, assetPruneRetentionDaysRaw)
+  : 14;
+const assetPruneRetentionMs = assetPruneRetentionDays * 24 * 60 * 60 * 1000;
+
+console.log(`[publish-R2] uploadProfile=${uploadProfile}`);
+console.log(`[publish-R2] assetPruneRetentionDays=${assetPruneRetentionDays}`);
+
+const shouldUploadLocalFile = (relativePath) => {
+  const normalizedPath = relativePath.replace(/\\/g, "/");
+  if (normalizedPath.startsWith("seo/points/") && !normalizedPath.startsWith(targetSeoPointPrefix)) {
+    return false;
+  }
+  if (uploadProfile === "full") return true;
+  return resourceUploadPrefixes.some((prefix) => normalizedPath.startsWith(prefix));
+};
 
 const normalizeEtag = (etag) =>
   String(etag ?? "").replace(/^"|"$/g, "").toLowerCase();
@@ -198,16 +259,30 @@ const getRemoteObjectInfo = async (objectKey) => {
   }
 };
 
-const shouldSkipUpload = async (relativePath, objectKey, localPath, fileSize) => {
-  const [localEtag, remote] = await Promise.all([
-    calculateFileMd5(localPath),
-    getRemoteObjectInfo(objectKey),
-  ]);
+const shouldSkipUpload = async (
+  relativePath,
+  objectKey,
+  localPath,
+  fileSize,
+  remoteObjectInfoIndex,
+) => {
+  const remote = remoteObjectInfoIndex
+    ? remoteObjectInfoIndex.get(normalizeObjectKey(objectKey)) ?? null
+    : await getRemoteObjectInfo(objectKey);
 
   if (!remote) return false;
 
-  if (remote.size === fileSize && remote.etag === localEtag) {
-    console.log(`${relativePath} skipped (same ETag ${localEtag})`);
+  if (remote.size !== fileSize) {
+    console.log(
+      `${relativePath} changed, uploading (remote size=${remote.size}; local size=${fileSize})`
+    );
+    return false;
+  }
+
+  const localEtag = await calculateFileMd5(localPath);
+
+  if (remote.etag === localEtag) {
+    if (verboseSkips) console.log(`${relativePath} skipped (same ETag ${localEtag})`);
     return true;
   }
 
@@ -217,20 +292,26 @@ const shouldSkipUpload = async (relativePath, objectKey, localPath, fileSize) =>
   return false;
 };
 
-const upload = async (relativePath, retryCount = 0) => {
+const upload = async (relativePath, retryCount = 0, remoteObjectInfoIndex) => {
   // Normalize path separators to forward slashes
   const normalizedPath = relativePath.replace(/\\/g, '/');
   // Remove leading slash from prefix to avoid double slashes
   const cleanPrefix = prefix.replace(/^\/+/, '').replace(/\/+$/, '');
   const objectKey = cleanPrefix ? `${cleanPrefix}/${normalizedPath}` : normalizedPath;
-  const localPath = `./dist/${relativePath}`;
+  const localPath = path.resolve(distDir, relativePath);
 
   try {
     const stats = fs.statSync(localPath);
     const fileSize = stats.size;
     const contentType = getMimeType(localPath); // get MIME type
 
-    if (await shouldSkipUpload(relativePath, objectKey, localPath, fileSize)) {
+    if (await shouldSkipUpload(
+      relativePath,
+      objectKey,
+      localPath,
+      fileSize,
+      remoteObjectInfoIndex,
+    )) {
       return;
     }
 
@@ -284,18 +365,110 @@ const upload = async (relativePath, retryCount = 0) => {
         }`
       );
       await new Promise((r) => setTimeout(r, waitTime));
-      return upload(relativePath, retryCount + 1);
+      return upload(relativePath, retryCount + 1, remoteObjectInfoIndex);
     }
     console.error(
       `Upload failed after ${MAX_RETRIES} retries: ${relativePath}`,
       e?.name || e?.code || e?.message || e
     );
+    throw e;
   }
 };
 
-const concurrency = 20; // limit concurrency
-let index = 0;
-let allFiles = [];
+const uploadAlias = async (sourceRelativePath, aliasRelativePath, retryCount = 0) => {
+  const cleanPrefix = prefix.replace(/^\/+/, '').replace(/\/+$/, '');
+  const normalizedAliasPath = aliasRelativePath.replace(/\\/g, "/");
+  const objectKey = cleanPrefix ? `${cleanPrefix}/${normalizedAliasPath}` : normalizedAliasPath;
+  const localPath = path.resolve(distDir, sourceRelativePath);
+
+  try {
+    const stats = fs.statSync(localPath);
+    const fileSize = stats.size;
+    const contentType = getMimeType(aliasRelativePath);
+
+    if (await shouldSkipUpload(aliasRelativePath, objectKey, localPath, fileSize)) {
+      return;
+    }
+
+    const command = new PutObjectCommand({
+      Bucket: bucket,
+      Key: objectKey,
+      Body: fs.createReadStream(localPath),
+      ContentType: contentType,
+      CacheControl: getCacheControl(aliasRelativePath),
+    });
+    await client.send(command);
+    console.log(
+      `${sourceRelativePath} aliased as ${aliasRelativePath} (${(fileSize / 1024).toFixed(
+        2
+      )}KB, ${contentType})`
+    );
+  } catch (e) {
+    if (retryCount < MAX_RETRIES) {
+      const waitTime = 2000 * Math.pow(2, retryCount);
+      console.warn(
+        `Retry alias ${retryCount + 1}/${MAX_RETRIES} after ${waitTime}ms: ${aliasRelativePath}`
+      );
+      await new Promise((r) => setTimeout(r, waitTime));
+      return uploadAlias(sourceRelativePath, aliasRelativePath, retryCount + 1);
+    }
+    console.error(
+      `Alias upload failed after ${MAX_RETRIES} retries: ${aliasRelativePath}`,
+      e?.name || e?.code || e?.message || e
+    );
+    throw e;
+  }
+};
+
+const uploadSeoPointAliases = async (localFiles) => {
+  const seoPointFiles = localFiles
+    .map((relativePath) => relativePath.replace(/\\/g, "/"))
+    .filter((relativePath) => targetSeoPointHtmlPattern.test(relativePath));
+
+  if (!seoPointFiles.length) return;
+
+  const workerCount = Math.max(
+    1,
+    Math.min(Number.isFinite(seoPointAliasConcurrency) ? seoPointAliasConcurrency : 40, seoPointFiles.length)
+  );
+  let cursor = 0;
+  const workers = Array.from({ length: workerCount }, async () => {
+    while (cursor < seoPointFiles.length) {
+      const relativePath = seoPointFiles[cursor++];
+      const token = path.basename(relativePath, ".html");
+      await uploadAlias(relativePath, `${token}/index.html`);
+    }
+  });
+
+  await Promise.all(workers);
+};
+
+const getRemoteListRelativePrefix = (relativePath) => {
+  const segments = relativePath.replace(/\\/g, "/").split("/");
+  if (segments.length < 2) return null;
+  const depth = segments[0] === "seo" && segments[1] === "points" ? 3 : 1;
+  return `${segments.slice(0, depth).join("/")}/`;
+};
+
+const buildRemoteObjectInfoIndex = async (localFiles) => {
+  const startedAt = Date.now();
+  const relativePrefixes = new Set(
+    localFiles.map(getRemoteListRelativePrefix).filter(Boolean),
+  );
+  const objectGroups = await Promise.all(
+    [...relativePrefixes].map((relativePrefix) =>
+      listRemoteObjects(toPrefixedObjectKey(prefix, relativePrefix))
+    ),
+  );
+  const index = new Map();
+  objectGroups.flat().forEach((object) => {
+    index.set(normalizeObjectKey(object.key), object);
+  });
+  console.log(
+    `[publish-R2] loaded ${index.size} remote object records from ${relativePrefixes.size} prefixes in ${((Date.now() - startedAt) / 1000).toFixed(1)}s.`
+  );
+  return index;
+};
 
 const reconcileClipObjects = async (expectedClipFiles) => {
   const clipPrefix = toPrefixedObjectKey(prefix, "clips/");
@@ -317,13 +490,18 @@ const reconcileClipObjects = async (expectedClipFiles) => {
 };
 
 const reconcileAssetObjects = async (localFiles) => {
-  if (!(await fs.pathExists("./dist/assets"))) {
-    console.log("[publish-R2] assets directory skipped: dist/assets does not exist.");
+  if (uploadProfile !== "full") {
+    console.log("[publish-R2] assets reconciliation skipped for resources upload profile.");
+    return;
+  }
+
+  if (!(await fs.pathExists(path.resolve(distDir, "assets")))) {
+    console.log("[publish-R2] assets directory skipped: assets does not exist in dist.");
     return;
   }
 
   const assetPrefix = toPrefixedObjectKey(prefix, "assets/");
-  const remoteAssetKeys = await listRemoteObjectKeys(assetPrefix);
+  const remoteAssetObjects = await listRemoteObjects(assetPrefix);
 
   const expectedSet = new Set(
     localFiles
@@ -331,26 +509,68 @@ const reconcileAssetObjects = async (localFiles) => {
       .map((relativePath) => toPrefixedObjectKey(prefix, relativePath))
   );
 
-  const staleKeys = remoteAssetKeys.filter((key) => !expectedSet.has(normalizeObjectKey(key)));
+  const staleObjects = remoteAssetObjects.filter((object) => !expectedSet.has(normalizeObjectKey(object.key)));
 
-  if (!staleKeys.length) {
+  if (!staleObjects.length) {
     console.log("[publish-R2] assets directory already consistent with local dist.");
     return;
   }
 
-  await deleteRemoteObjectKeys(staleKeys);
-  console.log(`[publish-R2] deleted ${staleKeys.length} stale assets objects.`);
+  const cutoffMs = Date.now() - assetPruneRetentionMs;
+  const staleKeysToDelete = staleObjects
+    .filter((object) => {
+      if (assetPruneRetentionMs === 0) return true;
+      const lastModifiedMs = new Date(object.lastModified).getTime();
+      return Number.isFinite(lastModifiedMs) && lastModifiedMs <= cutoffMs;
+    })
+    .map((object) => object.key);
+
+  if (!staleKeysToDelete.length) {
+    console.log(
+      `[publish-R2] retained ${staleObjects.length} stale assets younger than ${assetPruneRetentionDays} days.`
+    );
+    return;
+  }
+
+  await deleteRemoteObjectKeys(staleKeysToDelete);
+  console.log(
+    `[publish-R2] deleted ${staleKeysToDelete.length} stale assets objects, retained ${staleObjects.length - staleKeysToDelete.length}.`
+  );
 };
 
-const worker = async () => {
-  while (index < allFiles.length) {
-    const file = allFiles[index++];
-    await upload(file);
+const uploadExternalSeoOgImages = async () => {
+  if (process.env.SEO_SKIP_OG_UPLOAD === "1") {
+    console.log("[publish-R2] SEO OG image upload skipped by SEO_SKIP_OG_UPLOAD=1.");
+    return;
   }
+
+  const seoOgDir = path.resolve(process.cwd(), process.env.SEO_OG_OUTPUT_DIR || "../seo-og/r2");
+  if (!(await fs.pathExists(seoOgDir))) {
+    console.log("[publish-R2] SEO OG image upload skipped: external image directory does not exist.");
+    return;
+  }
+
+  execFileSync("node", ["./scripts/publish-seo-og-R2.js"], {
+    stdio: "inherit",
+    env: { ...process.env, SEO_OG_OUTPUT_DIR: seoOgDir },
+  });
+};
+
+const uploadFiles = async (files, remoteObjectInfoIndex) => {
+  let cursor = 0;
+  const worker = async () => {
+    while (cursor < files.length) {
+      const file = files[cursor++];
+      await upload(file, 0, remoteObjectInfoIndex);
+    }
+  };
+  const workers = [];
+  for (let i = 0; i < Math.min(concurrency, files.length); i++) workers.push(worker());
+  await Promise.all(workers);
 };
 
 const run = async () => {
-  const clipIndex = await buildClipIndex({ distDir: "./dist" });
+  const clipIndex = await buildClipIndex({ distDir });
   if (clipIndex.generated) {
     console.log(
       `[publish-R2] clip index generated: tiles=${clipIndex.tileFileCount}, coverageFiles=${clipIndex.coverageFileCount}`
@@ -359,26 +579,41 @@ const run = async () => {
     console.log(`[publish-R2] clip index skipped: ${clipIndex.reason}`);
   }
 
-  allFiles = getAllFiles("./dist");
-  const promises = [];
-
-  for (let i = 0; i < concurrency; i++) {
-    promises.push(worker());
+  const localFiles = getAllFiles(distDir).filter(shouldUploadLocalFile);
+  if (uploadProfile === "resources") {
+    console.log(`[publish-R2] resources profile selected; uploading ${localFiles.length} resource files from dist.`);
   }
+  const htmlFiles = localFiles.filter((file) => file.replace(/\\/g, "/").endsWith(".html"));
+  const shellFiles = htmlFiles.filter((file) => file.replace(/\\/g, "/") === "index.html");
+  const documentFiles = htmlFiles.filter((file) => !shellFiles.includes(file));
+  const resourceFiles = localFiles.filter((file) => !htmlFiles.includes(file));
+  const remoteObjectInfoIndex = await buildRemoteObjectInfoIndex(localFiles);
 
-  await Promise.all(promises);
+  await uploadFiles(resourceFiles, remoteObjectInfoIndex);
 
   if (clipIndex.generated) {
     await reconcileClipObjects(clipIndex.expectedClipFiles);
   }
 
-  await reconcileAssetObjects(allFiles);
+  await reconcileAssetObjects(localFiles);
+
+  await uploadExternalSeoOgImages();
+
+  await uploadFiles(documentFiles, remoteObjectInfoIndex);
+  if (shouldUploadSeoPointAliases) {
+    await uploadSeoPointAliases(localFiles);
+  } else {
+    console.log("[publish-R2] SEO point alias upload skipped by default for R2. Set SEO_UPLOAD_POINT_ALIASES=1 only for manual alias backfills.");
+  }
+
+  for (const shellFile of shellFiles) await upload(shellFile, 0, remoteObjectInfoIndex);
 };
 
 run()
   .then(() => {
-    console.log("All files have been uploaded to R2.");
+    console.log(`All files have been uploaded to R2 in ${((Date.now() - publishStartedAt) / 1000).toFixed(1)}s.`);
   })
   .catch((err) => {
     console.error("Error uploading files to R2:", err);
+    process.exitCode = 1;
 });

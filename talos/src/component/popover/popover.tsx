@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback, useId } from 'react';
 import styles from './popover.module.scss';
 
 interface PopoverTooltipProps {
@@ -16,6 +16,121 @@ const hasRenderableContent = (content: React.ReactNode): boolean => {
     return content !== null && content !== undefined;
 };
 
+const VIEWPORT_MARGIN = 4;
+const CLOSE_TRANSITION_MS = 120;
+
+type PopoverElement = HTMLDivElement & {
+    showPopover?: () => void;
+    hidePopover?: () => void;
+};
+
+type ElementWithRef = React.ReactElement & {
+    ref?: React.Ref<HTMLElement>;
+};
+
+type Placement = NonNullable<PopoverTooltipProps['placement']>;
+
+type PositionedRect = {
+    bottom?: number;
+    left?: number;
+    right?: number;
+    top?: number;
+};
+
+const clamp = (value: number, min: number, max: number): number => (
+    Math.min(Math.max(value, min), max)
+);
+
+const setMergedRef = <T,>(ref: React.Ref<T> | undefined, value: T | null): void => {
+    if (!ref) return;
+    if (typeof ref === 'function') {
+        ref(value);
+        return;
+    }
+    (ref as React.MutableRefObject<T | null>).current = value;
+};
+
+const computeCoordinates = (
+    placement: Placement,
+    triggerRect: DOMRect,
+    popoverRect: DOMRect,
+    gap: number,
+    viewportWidth: number,
+    viewportHeight: number,
+): PositionedRect => {
+    switch (placement) {
+        case 'right':
+            return {
+                left: triggerRect.right + gap,
+                top: triggerRect.top + triggerRect.height / 2 - popoverRect.height / 2,
+            };
+        case 'left':
+            return {
+                right: viewportWidth - triggerRect.left + gap,
+                top: triggerRect.top + triggerRect.height / 2 - popoverRect.height / 2,
+            };
+        case 'bottom':
+            return {
+                left: triggerRect.left + triggerRect.width / 2 - popoverRect.width / 2,
+                top: triggerRect.bottom + gap,
+            };
+        case 'top':
+            return {
+                left: triggerRect.left + triggerRect.width / 2 - popoverRect.width / 2,
+                bottom: viewportHeight - triggerRect.top + gap,
+            };
+    }
+};
+
+const computePopoverPosition = (
+    placement: Placement,
+    triggerRect: DOMRect,
+    popoverRect: DOMRect,
+    gap: number,
+    viewportWidth: number,
+    viewportHeight: number,
+): PositionedRect => {
+    const coordinates = computeCoordinates(
+        placement,
+        triggerRect,
+        popoverRect,
+        gap,
+        viewportWidth,
+        viewportHeight,
+    );
+    const maxLeft = Math.max(VIEWPORT_MARGIN, viewportWidth - popoverRect.width - VIEWPORT_MARGIN);
+    const maxTop = Math.max(VIEWPORT_MARGIN, viewportHeight - popoverRect.height - VIEWPORT_MARGIN);
+    const maxRight = Math.max(VIEWPORT_MARGIN, viewportWidth - popoverRect.width - VIEWPORT_MARGIN);
+    const maxBottom = Math.max(VIEWPORT_MARGIN, viewportHeight - popoverRect.height - VIEWPORT_MARGIN);
+
+    if (placement === 'left') {
+        return {
+            right: clamp(coordinates.right ?? VIEWPORT_MARGIN, VIEWPORT_MARGIN, maxRight),
+            top: clamp(coordinates.top ?? VIEWPORT_MARGIN, VIEWPORT_MARGIN, maxTop),
+        };
+    }
+
+    if (placement === 'top') {
+        return {
+            bottom: clamp(coordinates.bottom ?? VIEWPORT_MARGIN, VIEWPORT_MARGIN, maxBottom),
+            left: clamp(coordinates.left ?? VIEWPORT_MARGIN, VIEWPORT_MARGIN, maxLeft),
+        };
+    }
+
+    return {
+        left: clamp(coordinates.left ?? VIEWPORT_MARGIN, VIEWPORT_MARGIN, maxLeft),
+        top: clamp(coordinates.top ?? VIEWPORT_MARGIN, VIEWPORT_MARGIN, maxTop),
+    };
+};
+
+const isPopoverOpen = (popover: HTMLElement): boolean => {
+    try {
+        return popover.matches(':popover-open');
+    } catch {
+        return false;
+    }
+};
+
 /**
  * Using native Popover API to avoid overflow issues
  */
@@ -28,182 +143,184 @@ const PopoverTooltip: React.FC<PopoverTooltipProps> = ({
     gap = 12,
     variant = 'text',
 }) => {
-    const hoverTimeoutRef = useRef<number | undefined>(undefined);
-    const controlledCloseTimeoutRef = useRef<number | undefined>(undefined);
-    const wasControlledRef = useRef(visible !== undefined);
+    const closeTimeoutRef = useRef<number | undefined>(undefined);
+    const positionFrameRef = useRef<number | undefined>(undefined);
+    const isOpenRef = useRef(false);
     const triggerRef = useRef<HTMLElement | null>(null);
-    const popoverIdRef = useRef<string>(`tooltip-${Math.random().toString(36).substr(2, 9)}`);
+    const popoverRef = useRef<PopoverElement | null>(null);
+    const popoverId = useId();
+    const hasContent = hasRenderableContent(content);
+    const childProps = children.props as Record<string, unknown> & {
+        ref?: React.Ref<HTMLElement>;
+        'aria-describedby'?: string;
+    };
+    const childRef = childProps.ref ?? (children as ElementWithRef).ref;
 
-    // Cleanup function: ensure popover is closed
-    useEffect(() => {
-        const popoverId = popoverIdRef.current;
-        return () => {
-            // Clear timeout and popover on component unmount
-            if (hoverTimeoutRef.current) {
-                clearTimeout(hoverTimeoutRef.current);
-            }
-            if (controlledCloseTimeoutRef.current) {
-                clearTimeout(controlledCloseTimeoutRef.current);
-            }
-            const popover = document.getElementById(popoverId) as HTMLElement & { hidePopover?: () => void };
-            if (popover?.hidePopover) {
-                try {
-                    popover.hidePopover();
-                } catch (_e) {
-                    // Ignore if already hidden
-                }
-                popover.classList.remove(styles.popoverClose);
-            }
-        };
+    const clearCloseTimeout = useCallback(() => {
+        if (closeTimeoutRef.current) {
+            window.clearTimeout(closeTimeoutRef.current);
+            closeTimeoutRef.current = undefined;
+        }
     }, []);
 
-    const positionPopover = useCallback((button: HTMLElement, popover: HTMLElement) => {
-        const buttonRect = button.getBoundingClientRect();
-        popover.style.position = 'fixed';
-
-        switch (placement) {
-            case 'right':
-                popover.style.left = `${buttonRect.right + gap}px`;
-                popover.style.top = `${buttonRect.top + buttonRect.height / 2}px`;
-                popover.style.transform = 'translateY(-50%)';
-                popover.style.right = 'auto';
-                popover.style.bottom = 'auto';
-                break;
-            case 'left':
-                popover.style.right = `${window.innerWidth - buttonRect.left + gap}px`;
-                popover.style.top = `${buttonRect.top + buttonRect.height / 2}px`;
-                popover.style.transform = 'translateY(-50%)';
-                popover.style.left = 'auto';
-                popover.style.bottom = 'auto';
-                break;
-            case 'bottom':
-                popover.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
-                popover.style.top = `${buttonRect.bottom + gap}px`;
-                popover.style.transform = 'translateX(-50%)';
-                popover.style.right = 'auto';
-                popover.style.bottom = 'auto';
-                break;
-            case 'top':
-                popover.style.left = `${buttonRect.left + buttonRect.width / 2}px`;
-                popover.style.bottom = `${window.innerHeight - buttonRect.top + gap}px`;
-                popover.style.transform = 'translateX(-50%)';
-                popover.style.top = 'auto';
-                popover.style.right = 'auto';
-                break;
-        }
-    }, [placement, gap]);
-
-    const handleMouseEnter = (event: React.MouseEvent<HTMLElement>) => {
-        if (visible !== undefined) return;
-        if (disabled || !hasRenderableContent(content)) return;
-
-        if (hoverTimeoutRef.current) {
-            clearTimeout(hoverTimeoutRef.current);
-        }
-
-        const target = event.currentTarget;
-        const popover = document.getElementById(popoverIdRef.current) as HTMLElement & { showPopover?: () => void };
-        
-        if (popover?.showPopover) {
-            try {
-                popover.showPopover();
-                positionPopover(target, popover);
-            } catch (_e) {
-                // Ignore if already shown
-            }
-        }
-    };
-
-    const handleMouseLeave = () => {
-        if (visible !== undefined) return;
-        if (disabled || !hasRenderableContent(content)) return;
-
-        const popover = document.getElementById(popoverIdRef.current) as HTMLElement & { hidePopover?: () => void };
-        if (popover) {
-            // Add fade-out class to trigger transition
-            popover.classList.add(styles.popoverClose);
-            
-            hoverTimeoutRef.current = window.setTimeout(() => {
-                if (popover?.hidePopover) {
-                    try {
-                        popover.hidePopover();
-                        // Remove fade-out class for next show
-                        popover.classList.remove(styles.popoverClose);
-                    } catch (_e) {
-                        // Ignore if already hidden
-                    }
-                }
-            }, 220); // 100ms delay + 120ms transition
-        }
-    };
-
-    useEffect(() => {
-        const popover = document.getElementById(popoverIdRef.current) as HTMLElement & {
-            showPopover?: () => void;
-            hidePopover?: () => void;
-        };
+    const positionPopover = useCallback(() => {
         const trigger = triggerRef.current;
+        const popover = popoverRef.current;
+        if (!trigger || !popover || !isOpenRef.current) return;
+
+        const ownerWindow = trigger.ownerDocument.defaultView ?? window;
+        const popoverRect = popover.getBoundingClientRect();
+        const position = computePopoverPosition(
+            placement,
+            trigger.getBoundingClientRect(),
+            popoverRect,
+            gap,
+            ownerWindow.innerWidth,
+            ownerWindow.innerHeight,
+        );
+
+        popover.style.position = 'fixed';
+        popover.style.left = position.left === undefined ? 'auto' : `${position.left}px`;
+        popover.style.top = position.top === undefined ? 'auto' : `${position.top}px`;
+        popover.style.right = position.right === undefined ? 'auto' : `${position.right}px`;
+        popover.style.bottom = position.bottom === undefined ? 'auto' : `${position.bottom}px`;
+        popover.style.transform = 'none';
+        popover.dataset.placement = placement;
+    }, [gap, placement]);
+
+    const schedulePosition = useCallback(() => {
+        if (positionFrameRef.current) {
+            window.cancelAnimationFrame(positionFrameRef.current);
+        }
+        positionFrameRef.current = window.requestAnimationFrame(() => {
+            positionFrameRef.current = undefined;
+            positionPopover();
+        });
+    }, [positionPopover]);
+
+    const hidePopover = useCallback((immediate = false) => {
+        clearCloseTimeout();
+        if (positionFrameRef.current) {
+            window.cancelAnimationFrame(positionFrameRef.current);
+            positionFrameRef.current = undefined;
+        }
+
+        const popover = popoverRef.current;
         if (!popover) return;
 
-        if (controlledCloseTimeoutRef.current) {
-            clearTimeout(controlledCloseTimeoutRef.current);
-            controlledCloseTimeoutRef.current = undefined;
-        }
-
-        if (visible === undefined) {
-            if (wasControlledRef.current) {
-                popover.classList.add(styles.popoverClose);
-                controlledCloseTimeoutRef.current = window.setTimeout(() => {
-                    try {
-                        popover.hidePopover?.();
-                        popover.classList.remove(styles.popoverClose);
-                    } catch (_e) {
-                        // Ignore if already hidden
-                    }
-                }, 120);
-            }
-            wasControlledRef.current = false;
-            return;
-        }
-
-        wasControlledRef.current = true;
-        if (!trigger || !hasRenderableContent(content)) return;
-
-        if (visible) {
-            popover.classList.remove(styles.popoverClose);
+        const finishClose = () => {
             try {
-                popover.showPopover?.();
-                positionPopover(trigger, popover);
-            } catch (_e) {
-                // Ignore if already shown
+                popover.hidePopover?.();
+            } catch {
+                // Ignore if already hidden
             }
+            popover.classList.remove(styles.popoverClose);
+            isOpenRef.current = false;
+        };
+
+        if (immediate || !isPopoverOpen(popover)) {
+            finishClose();
             return;
         }
 
         popover.classList.add(styles.popoverClose);
-        controlledCloseTimeoutRef.current = window.setTimeout(() => {
-            try {
-                popover.hidePopover?.();
-                popover.classList.remove(styles.popoverClose);
-            } catch (_e) {
-                // Ignore if already hidden
-            }
-        }, 120);
-    }, [visible, content, positionPopover]);
+        closeTimeoutRef.current = window.setTimeout(finishClose, CLOSE_TRANSITION_MS);
+    }, [clearCloseTimeout]);
 
-    if (!hasRenderableContent(content)) {
+    const showPopover = useCallback(() => {
+        if (disabled || !hasContent) return;
+        clearCloseTimeout();
+
+        const popover = popoverRef.current;
+        if (!popover) return;
+
+        popover.classList.remove(styles.popoverClose);
+        try {
+            if (!isPopoverOpen(popover)) {
+                popover.showPopover?.();
+            }
+        } catch {
+            // Ignore if already shown
+        }
+
+        isOpenRef.current = true;
+        positionPopover();
+        schedulePosition();
+    }, [clearCloseTimeout, disabled, hasContent, positionPopover, schedulePosition]);
+
+    // Cleanup function: ensure popover is closed
+    useEffect(() => {
+        return () => {
+            clearCloseTimeout();
+            if (positionFrameRef.current) {
+                window.cancelAnimationFrame(positionFrameRef.current);
+            }
+            hidePopover(true);
+        };
+    }, [clearCloseTimeout, hidePopover]);
+
+    useEffect(() => {
+        if (disabled || !hasContent) {
+            hidePopover(true);
+        }
+    }, [disabled, hasContent, hidePopover]);
+
+    useEffect(() => {
+        if (visible === undefined) return;
+        if (visible) {
+            showPopover();
+            return;
+        }
+        hidePopover();
+    }, [hidePopover, showPopover, visible]);
+
+    useEffect(() => {
+        if (isOpenRef.current) schedulePosition();
+    }, [content, schedulePosition]);
+
+    useEffect(() => {
+        const handleViewportChange = () => schedulePosition();
+        const ownerWindow = triggerRef.current?.ownerDocument.defaultView ?? window;
+        ownerWindow.addEventListener('resize', handleViewportChange);
+        ownerWindow.addEventListener('scroll', handleViewportChange, true);
+
+        return () => {
+            ownerWindow.removeEventListener('resize', handleViewportChange);
+            ownerWindow.removeEventListener('scroll', handleViewportChange, true);
+        };
+    }, [schedulePosition]);
+
+    const handleMouseEnter = () => {
+        if (visible !== undefined) return;
+        showPopover();
+    };
+
+    const handleMouseLeave = () => {
+        if (visible !== undefined) return;
+        hidePopover();
+    };
+
+    const setTriggerRef = useCallback((node: HTMLElement | null) => {
+        triggerRef.current = node;
+        setMergedRef(childRef, node);
+    }, [childRef]);
+
+    if (!hasContent) {
         return children;
     }
 
     // Clone children and add event handlers
-    const childProps = children.props as Record<string, unknown>;
     const originalOnMouseEnter = childProps.onMouseEnter as ((e: React.MouseEvent<HTMLElement>) => void) | undefined;
     const originalOnMouseLeave = childProps.onMouseLeave as ((e: React.MouseEvent<HTMLElement>) => void) | undefined;
+    const describedBy = disabled
+        ? childProps['aria-describedby']
+        : [childProps['aria-describedby'], popoverId].filter(Boolean).join(' ') || undefined;
 
     const childWithHandlers = React.cloneElement(children, {
-        ref: triggerRef,
+        ref: setTriggerRef,
+        'aria-describedby': describedBy,
         onMouseEnter: (e: React.MouseEvent<HTMLElement>) => {
-            handleMouseEnter(e);
+            handleMouseEnter();
             if (originalOnMouseEnter) {
                 originalOnMouseEnter(e);
             }
@@ -220,7 +337,9 @@ const PopoverTooltip: React.FC<PopoverTooltipProps> = ({
         <>
             {childWithHandlers}
             <div
-                id={popoverIdRef.current}
+                ref={popoverRef}
+                id={popoverId}
+                role="tooltip"
                 popover="manual"
                 className={`${styles.popoverTooltip} ${variant === 'image' ? styles.imgInner : styles.txtInner}`}
             >

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import styles from './spotlight.module.scss';
+import { useAppViewport } from '@/utils/device';
 
 interface SpotlightProps {
   getCurrentTarget: () => Element | null;
@@ -20,8 +21,7 @@ const buildPath = (rect: DOMRect, padding: number, vw: number, vh: number) => {
 export const GuideSpotlight: React.FC<SpotlightProps> = ({ getCurrentTarget, active, padding = 10, onAdvance }) => {
   const [path, setPath] = useState<string>('');
   const [rect, setRect] = useState<DOMRect | null>(null);
-  const [vw, setVw] = useState<number>(window.innerWidth);
-  const [vh, setVh] = useState<number>(window.innerHeight);
+  const { width: vw, height: vh } = useAppViewport();
 
   const update = useCallback(() => {
     if (!active) return;
@@ -49,16 +49,6 @@ export const GuideSpotlight: React.FC<SpotlightProps> = ({ getCurrentTarget, act
     raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
   }, [active, update]);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setVw(window.innerWidth);
-      setVh(window.innerHeight);
-      update();
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [update]);
 
   return (
     <div className={styles.overlayRoot + ' ' + (!active ? styles.hidden : '')} onClick={() => active && onAdvance()}>

@@ -196,3 +196,7 @@
         0 calc(-1.5px * max(1, min(10, 1 / max(0.1, var(--scale))))) 4px
             0.5px rgba($black-0, 0.2);
 }
+
+.scaleContainerMobile.dragging .scalerMobile {
+    transition: box-shadow 0.1s ease;
+}

@@ -1,4 +1,5 @@
 @use './fonts' as *;
+@use './size' as *;
 @use './curves' as *;
 @use './palette' as *;
 @use './highlight';
@@ -6,29 +7,38 @@
 @use './cluster';
 @use './pip.scss';
 @use './embed' as *;
+@use './themeTransition';
 
 /* Import Leaflet MarkerCluster styles */
 @import 'leaflet.markercluster/dist/MarkerCluster.css';
 @import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
-/* Global theme transition variables (scoped) */
-:root {
-    --theme-transition-duration: 350ms;  // use ONLY ms for control continuity
-    --theme-transition-ease: #{$moderato-curve};
+@media only screen and (min-width: $desktoper-bp) {
+    html {
+        font-size: 18px;
+    }
 }
 
-/*
-    Enable default color/background/ transitions only during a theme switch window.
-    These transition can be overrided for UX need.
-    NOTE: Use transition-delay: 0s to ensure no delay interference with local animations.
-*/
-:root[data-theme-switching] .theme-transition-scope,
-:root[data-theme-switching] .theme-transition-scope * {
-    transition-property: color, background-color, border-color, fill, stroke, box-shadow, text-shadow, filter;
-    transition-duration: var(--theme-transition-duration);
-    transition-timing-function: var(--theme-transition-ease);
-    transition-delay: 0s; /* Explicit 0 delay to prevent inheritance issues */
+@media only screen and (min-width: $desktopest-bp) {
+    html {
+        font-size: 20px;
+    }
 }
+
+@media only screen and (min-width: $desktopissimo-bp) {
+    html {
+        font-size: 22px;
+    }
+}
+
+html,
+body,
+#root {
+    width: 100%;
+    height: 100%;
+    background-color: var(--map-bg, #{$light-1});
+}
+
 .app {
     position: relative;
     width: 100vw;
@@ -67,6 +77,7 @@
     background-repeat: no-repeat;
     background-position: center;
     box-sizing: border-box;
+    text-autospace: normal;
 
     -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
@@ -88,7 +99,9 @@ button {
 }
 body {
     margin: 0;
-    font-family: 'Novecento Medium', 'Novecento Cyrillic DemiBold', 'Novecento Vietnamese Medium', 'HMSans_EN', 'FedraSansPro Normal', 'UD_ShinGo DemiBold', 'Noto Sans SC', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
+    font-family: 'Novecento Medium', 'Novecento Cyrillic DemiBold', 'Novecento Vietnamese Medium', 'HMSans_EN', 'Fedra Sans Pro', 'UD_ShinGo DemiBold', 'Noto Sans SC', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
+    font-variant-numeric: lining-nums;
+    font-feature-settings: "lnum" 1, "onum" 0, "case" 1;
 }
 p {
     margin: 0;

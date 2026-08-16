@@ -70,7 +70,7 @@
                 align-items: center;
                 justify-content: center;
                 gap: 2px;
-                margin-right: .7rem;
+                margin-right: .625rem;
                 transition: all .35s ease;
                 max-width: 4.2rem;
                 overflow: hidden;
@@ -137,6 +137,23 @@
                         }
                     }
                 }
+                &[data-platform="X/Twitter"] {
+                    > svg {
+                        width: 0.92rem;
+                        height: 0.92rem;
+                    }
+                    &::after {
+                        content: "Twitter";
+                    }
+                    &:hover {
+                        svg {
+                            fill: var(--twitter);
+                        }
+                        &::after {
+                            color: var(--twitter)
+                        }
+                    }
+                }
                 &[data-platform="qq"] {
                     transform: translateX(-2px);
                     > svg {
@@ -174,6 +191,15 @@
                     transition: all .25s ease;
                 }
             }
+            .divide {
+                display: flex;
+                width: 2px;
+                height: 1rem;
+                border-radius: 1px;
+                background-color: var(--sidebar-footer-txt);
+                margin-right: .5rem;
+                transform: translateX(-3px);
+            }
         }
         
         .idCardContainer {
@@ -182,7 +208,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding-top: 1.5rem;
+            padding-top: var(--sidebar-id-card-padding-top, 1.5rem);
             margin-bottom: 0.5rem;
         }
 }
@@ -214,11 +240,12 @@ html:not(:lang(zh-CN), :lang(zh-HK)) {
     max-width: calc(100vw - calc(1 - var(--drawer-progress)) * 2rem);
     transform: translate(calc(calc(1 - var(--drawer-progress)) * 1rem), calc(calc(1 - var(--drawer-progress)) * -1rem));
     border-radius: 40px 40px calc(clamp(0px, (1 - var(--drawer-progress)) * 100px, 40px)) calc(clamp(0px, (1 - var(--drawer-progress)) * 100px, 40px));
-
+    
     box-shadow: 0 0 6px rgba($black-1, 0.25);
     background: transparent;
     position: relative;
     overflow: hidden;
+    
 
   .mobileDrawerContent {
         display: flex;
@@ -232,19 +259,20 @@ html:not(:lang(zh-CN), :lang(zh-HK)) {
   .contentWrapper {
         display: flex;
         flex-direction: column;
-        padding: 0 1rem;
+        padding: 0 1rem 2rem;
         padding-top: 0;
         gap: 0.5rem;
         overflow-x: hidden;
         overflow-y: auto;
         touch-action: pan-y;
+        overscroll-behavior-y: auto;
         height: 100%;
         position: relative;
 
         &.searchMode {
             overflow-x: visible;
             overflow-y: auto;
-            overscroll-behavior-y: contain;
+            overscroll-behavior-y: auto;
         }
     }
 
@@ -357,8 +385,14 @@ html:not(:lang(zh-CN), :lang(zh-HK)) {
     padding: 0.25rem 0;
 }
 
+.mobileDetail {
+    --detail-max-height: 50dvh;
+
+    width: 100%;
+}
+
 .mobileDrawer[data-snap="0"] .sidebarContent > .filters,
-.mobileDrawer[data-snap="0"] .detailSlot,
+.mobileDrawer[data-snap="0"] .mobileDetail,
 .mobileDrawer[data-snap="0"] .mobileTriggerBar,
 .mobileDrawer[data-snap="0"] .copyright {
     display: none;

@@ -220,6 +220,51 @@
           "old_blade_precipice": "Old Blade Precipice",
           "gorge_overhang": "Gorge Overhang"
         }
+      },
+      "YL": {
+        "name": "Yinglung Pass",
+        "short": "YL",
+        "site": {
+          "pass_side_canal": "Pass-Side Canal",
+          "odd_pine_ridge": "Odd Pine Ridge",
+          "stonepond_cliff": "Stonepond Cliff",
+          "cloudscraper_flats": "Cloudscraper Flats",
+          "balepyre_dais": "Balepyre Dais",
+          "exclusion_gate": "Exclusion Gate",
+          "ystf_main_camp": "YSTF Main Camp",
+          "detention_facility": "Detention Facility",
+          "xiranflow_cloudseeder_station": "Xiranflow Cloudseeder Station",
+          "abandoned_side_building": "Abandoned Side Building",
+          "ystf_filing_room": "YSTF Filing Room",
+          "xunlung_ford": "Xunlung Ford",
+          "yinglung_pass_raft_station": "Yinglung Pass Raft Station",
+          "xiranflow_cloudseeder": "Xiranflow Cloudseeder",
+          "device_pavilion": "Device Pavilion"
+        }
+      },
+      "EZ": {
+        "name": "North Wuling Exclusion Zone",
+        "short": "EZ",
+        "site": {
+          "sentry_base": "Sentry Base",
+          "tanjian_hall": "Tanjian Hall",
+          "xiranite_research_labs": "Xiranite Research Labs",
+          "celestial_column": "Celestial Column",
+          "designated_urban_area": "Designated Urban Area",
+          "quelltide_levee": "Quelltide Levee",
+          "prep_zone": "Prep Zone",
+          "observation_deck_1": "Observation Deck 1",
+          "tianshi_pillar_rd_center": "Tianshi Pillar R&D Center",
+          "pillars_brace": "Pillar's Brace",
+          "cliffside_courtyard": "Cliffside Courtyard",
+          "waterworks_hub": "Waterworks Hub",
+          "ghost_mesa_test_site": "Ghost Mesa Test Site",
+          "building_supplies_factory": "Building Supplies Factory",
+          "miasmas_end": "Miasma's End",
+          "wuling_vlr_upper_area": "Wuling VLR, Upper Area",
+          "bureau_arsenal": "Bureau Arsenal",
+          "rust_mound": "Rust Mound"
+        }
       }
     }
   },

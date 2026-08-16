@@ -2,7 +2,17 @@ import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 
 import Modal from '@/component/modal/modal';
 import I18nIcon from '@/assets/logos/i18n.svg?react';
 import styles from './language.module.scss';
-import { FULL_LANGS, UI_ONLY_LANGS, setLocale, useLocale } from '@/locale';
+import {
+  FULL_LANGS,
+  LANG_NATIVE_LABELS,
+  UI_ONLY_LANGS,
+  getLangDisplayCode,
+  preloadAllLanguages,
+  setLocale,
+  toBCP47,
+  useLocale,
+  type Lang,
+} from '@/locale';
 import { useTranslateUI } from '@/locale';
 import parse from 'html-react-parser';
 
@@ -13,61 +23,28 @@ export interface LanguageProps {
   onSelected?: (lang: string) => void;
 }
 
-const LANG_LABEL_KEYS: Record<string, string> = {
-  'en-US': 'English',
-  'zh-CN': '简体中文',
-  'zh-HK': '繁體中文',
-  'ja-JP': '日本語',
-  'ko-KR': '한국어',
-  'ru-RU': 'Русский',
-  'es-ES': 'Español',
-  'fr-FR': 'Français',
-  'de-DE': 'Deutsch',
-  'it-IT': 'Italiano',
-  'pt-BR': 'Português',
-  'id-ID': 'Bahasa Indonesia',
-  'ar-SA': 'العربية',
-  'ms-MY': 'Bahasa Melayu',
-  'pl-PL': 'Polski',
-  'sv-SE': 'Svenska',
-  'th-TH': 'ไทย',
-  'vi-VN': 'Tiếng Việt',
-  'el-GR': 'Ελληνικά',
-  'hi-IN': 'हिंदी',
-};
-
-// Convert possible locale like "en-us" to canonical BCP-47 casing: "en-US"
-const toBCP47 = (tag: string) => {
-  const [lang, region] = tag.split('-');
-  return region ? `${lang.toLowerCase()}-${region.toUpperCase()}` : lang.toLowerCase();
-};
-
-// Map locale to short region tag displayed at right
-const toLangCode = (lang: string) => {
-  const lower = lang.toLowerCase();
-  if (lower.startsWith('zh-hk')) return 'HK';
-  if (lower.startsWith('zh-cn') || lower.startsWith('zh-hans')) return 'CN';// for HK only
-  if (lower.startsWith('zh-sg')) return 'SG';
-  const base = (lower.split('-')[0] || lower).slice(0, 2);
-  return base.toUpperCase();
-};
-
 // Match the currentLang transition duration in CSS
 const FREEZE_MS = 400;
+type LanguageItem = { key: Lang; label: string };
 
 const LanguageModal: React.FC<LanguageProps> = ({ open, onClose, onChange, onSelected }) => {
   const current = useLocale();
   const t: (k: string) => string = useTranslateUI();
   
   const fullLangItems = useMemo(() => 
-    [...FULL_LANGS].map(l => ({ key: l, label: LANG_LABEL_KEYS[l] || l })), 
+    [...FULL_LANGS].map(l => ({ key: l, label: LANG_NATIVE_LABELS[l] || l })),
   []);
   
   const uiOnlyItems = useMemo(() => 
-    [...UI_ONLY_LANGS].map(l => ({ key: l, label: LANG_LABEL_KEYS[l] || l })), 
+    [...UI_ONLY_LANGS].map(l => ({ key: l, label: LANG_NATIVE_LABELS[l] || l })),
   []);
   
   const groupId = useId();
+
+  useEffect(() => {
+    if (!open) return;
+    void preloadAllLanguages();
+  }, [open]);
   
   // freeze last active current lang, avoiding flicker when switching langs
   const [freeze, setFreeze] = useState<{ from: string; currentText: string } | null>(null);
@@ -94,7 +71,7 @@ const LanguageModal: React.FC<LanguageProps> = ({ open, onClose, onChange, onSel
     if (freezeTimerRef.current) window.clearTimeout(freezeTimerRef.current);
   }, []);
 
-  const renderLanguageItem = (it: { key: string; label: string }) => (
+  const renderLanguageItem = (it: LanguageItem) => (
     <button
       key={it.key}
       type="button"
@@ -102,7 +79,7 @@ const LanguageModal: React.FC<LanguageProps> = ({ open, onClose, onChange, onSel
       onClick={() => { void handlePick(it.key); }}
       role="radio"
       aria-checked={current === it.key}
-      aria-label={t(`language.names.${it.key}`) || (LANG_LABEL_KEYS[it.key] || it.key)}
+      aria-label={t(`language.names.${it.key}`) || (LANG_NATIVE_LABELS[it.key] || it.key)}
     >
       <div 
         className={styles.langOrigin}
@@ -113,7 +90,7 @@ const LanguageModal: React.FC<LanguageProps> = ({ open, onClose, onChange, onSel
         {t(`language.names.${it.key}`) || it.label}
       </div>
       <div className={styles.langTag}>
-        {toLangCode(it.key)}
+        {getLangDisplayCode(it.key)}
         <span className={styles.currentLang} lang={toBCP47(it.key)}>
           {freeze && it.key === freeze.from
             ? freeze.currentText

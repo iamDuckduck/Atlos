@@ -40,7 +40,7 @@ const SettingsSection: React.FC<SectionProps> = ({ titleKey, hintKey, children }
         <div className={styles.settingsSection}>
             <div className={styles.sectionHeader}>
                 <span className={styles.sectionTitle}>{t(titleKey)}</span>
-                <span className={styles.sectionHint}>{parse(t(hintKey) || '')}</span>
+                <span className={styles.sectionHint}>{parse(t(hintKey))}</span>
             </div>
             {children}
         </div>

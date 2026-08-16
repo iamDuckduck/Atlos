@@ -1,3 +1,5 @@
+import { DOCS_LOCALES, docsLocale, type DocsLocale } from './docsLink';
+
 export const getAnnouncementApiBase = (): string => {
     const envBase = (import.meta.env.VITE_ANNOUNCEMENT_API_BASE as string | undefined)?.trim();
     if (envBase) return envBase.replace(/\/$/, '');
@@ -38,8 +40,8 @@ const OLD_ANNOUNCEMENT_VERSION_KEY_PREFIX = 'announcement_version';
 const OLD_ANNOUNCEMENT_LAST_READ_DATE_KEY = 'announcement_last_read';
 const OLD_ANNOUNCEMENT_LAST_READ_ID_KEY = 'announcement_last_read_id';
 
-type ApiLocale = 'en' | 'zh-cn' | 'zh-hk' | 'ja' | 'ko';
-const API_LOCALES: ApiLocale[] = ['en', 'zh-cn', 'zh-hk', 'ja', 'ko'];
+type ApiLocale = DocsLocale;
+const API_LOCALES: ApiLocale[] = [...DOCS_LOCALES];
 
 type AnnouncementLocaleCache = {
     latestId?: string | null;
@@ -78,19 +80,6 @@ const parseAnnouncementBodyCache = (raw: string | null): AnnouncementApiItem[] |
     } catch {
         return undefined;
     }
-};
-
-const toApiLocale = (locale?: string): ApiLocale => {
-    const normalized = (locale || '').toLowerCase();
-    if (normalized.startsWith('zh-cn')) return 'zh-cn';
-    if (normalized.startsWith('zh-hk') || normalized.startsWith('zh-tw')) return 'zh-hk';
-    if (normalized.startsWith('ja')) return 'ja';
-    if (normalized.startsWith('ko')) return 'ko';
-    return 'en';
-};
-
-export const getAnnouncementLocaleKey = (locale?: string): ApiLocale => {
-    return toApiLocale(locale);
 };
 
 const normalizeStorageState = (raw: unknown): AnnouncementStorageState => {
@@ -187,7 +176,7 @@ const writeAnnouncementStorageState = (state: AnnouncementStorageState): void =>
 };
 
 export const getAnnouncementLocaleCache = (locale?: string): AnnouncementLocaleCache => {
-    const key = getAnnouncementLocaleKey(locale);
+    const key = docsLocale(locale);
     return readAnnouncementStorageState().locales?.[key] ?? {};
 };
 
@@ -195,7 +184,7 @@ export const setAnnouncementLocaleCache = (
     locale: string | undefined,
     patch: AnnouncementLocaleCache,
 ): void => {
-    const key = getAnnouncementLocaleKey(locale);
+    const key = docsLocale(locale);
     const state = readAnnouncementStorageState();
     const locales = state.locales ?? {};
     locales[key] = {
@@ -295,16 +284,16 @@ const getAnnouncementApiBases = (): string[] => {
     return Array.from(new Set(bases));
 };
 
-const toApiUrl = (base: string, locale: ApiLocale): string => {
+const toApiUrl = (base: string, locale: ApiLocale, version?: string): string => {
     const url = `${base.replace(/\/$/, '')}/api/${locale}/announcements`;
+    if (!version) return url;
+
     const sep = url.includes('?') ? '&' : '?';
-    return `${url}${sep}_=${Date.now()}`;
+    return `${url}${sep}v=${encodeURIComponent(version)}`;
 };
 
 const toLatestApiUrl = (base: string, locale: ApiLocale): string => {
-    const url = `${base.replace(/\/$/, '')}/api/${locale}/announcements/latest`;
-    const sep = url.includes('?') ? '&' : '?';
-    return `${url}${sep}_=${Date.now()}`;
+    return `${base.replace(/\/$/, '')}/api/${locale}/announcements/latest`;
 };
 
 const isAnnouncementArray = (value: unknown): value is AnnouncementApiItem[] => {
@@ -327,7 +316,7 @@ const normalizeAnnouncementLatestMeta = (raw: unknown): AnnouncementLatestMeta |
 };
 
 export const fetchAnnouncementLatestMeta = async (locale?: string): Promise<AnnouncementLatestMeta | null> => {
-    const currentLocale = toApiLocale(locale);
+    const currentLocale = docsLocale(locale);
     const localeCandidates: ApiLocale[] = currentLocale === 'en' ? ['en'] : [currentLocale, 'en'];
     const bases = getAnnouncementApiBases();
 
@@ -337,7 +326,6 @@ export const fetchAnnouncementLatestMeta = async (locale?: string): Promise<Anno
                 const response = await fetch(toLatestApiUrl(base, targetLocale), {
                     method: 'GET',
                     headers: { Accept: 'application/json' },
-                    cache: 'no-store',
                 });
                 if (!response.ok) continue;
 
@@ -355,8 +343,8 @@ export const fetchAnnouncementLatestMeta = async (locale?: string): Promise<Anno
     return null;
 };
 
-export const fetchAnnouncements = async (locale?: string): Promise<AnnouncementApiItem[]> => {
-    const currentLocale = toApiLocale(locale);
+export const fetchAnnouncements = async (locale?: string, version?: string): Promise<AnnouncementApiItem[]> => {
+    const currentLocale = docsLocale(locale);
     const localeCandidates: ApiLocale[] = currentLocale === 'en' ? ['en'] : [currentLocale, 'en'];
     const bases = getAnnouncementApiBases();
     let firstEmpty: AnnouncementApiItem[] | null = null;
@@ -364,10 +352,9 @@ export const fetchAnnouncements = async (locale?: string): Promise<AnnouncementA
     for (const base of bases) {
         for (const targetLocale of localeCandidates) {
             try {
-                const response = await fetch(toApiUrl(base, targetLocale), {
+                const response = await fetch(toApiUrl(base, targetLocale, version), {
                     method: 'GET',
                     headers: { Accept: 'application/json' },
-                    cache: 'no-store',
                 });
                 if (!response.ok) continue;
 

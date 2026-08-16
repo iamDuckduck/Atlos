@@ -65,7 +65,7 @@ export const useAnnouncementFlow = (locale?: string): UseAnnouncementFlowResult 
 
                 let data = cachedAnnouncements;
                 if (!canUseCachedBody) {
-                    data = await fetchAnnouncements(locale);
+                    data = await fetchAnnouncements(locale, remoteVersion);
 
                     const fetchedLatestId = data[0]?.id ?? remoteLatestId;
                     setAnnouncementLocaleCache(locale, {

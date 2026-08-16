@@ -1,48 +1,51 @@
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
-const run = (cmd) => {
-  console.log(`\n> ${cmd}`);
-  execSync(cmd, { stdio: 'inherit' });
+const run = (command, args = [], env = {}) => {
+  console.log(`\n> ${[command, ...args].join(' ')}`);
+  execFileSync(command, args, {
+    stdio: 'inherit',
+    env: { ...process.env, ...env },
+  });
 };
 
 const args = process.argv.slice(2);
-
 const hasFlag = (name) => args.includes(name);
 const isTruthyFlag = (value) =>
   typeof value === 'string' && value !== 'false' && value !== '0';
 
-const argDeploy = hasFlag('--deploy');
-const argSkipSubset = hasFlag('--skip-subset') || hasFlag('--skip-subset-fonts');
-const envDeploy = process.env.npm_config_deploy;
-const envSkipSubsetArg = process.env.npm_config_skip_subset;
-const envSkipSubsetFontsArg = process.env.npm_config_skip_subset_fonts;
-const envSkipSubset = process.env.SKIP_SUBSET_FONTS;
-
-const shouldDeploy = argDeploy || isTruthyFlag(envDeploy);
+const shouldSkipPrepare = hasFlag('--skip-prepare');
+const shouldDeploy = hasFlag('--deploy') || isTruthyFlag(process.env.npm_config_deploy);
 const shouldSkipSubset =
-  argSkipSubset ||
-  isTruthyFlag(envSkipSubsetArg) ||
-  isTruthyFlag(envSkipSubsetFontsArg) ||
-  isTruthyFlag(envSkipSubset);
-
+  hasFlag('--skip-subset')
+  || hasFlag('--skip-subset-fonts')
+  || isTruthyFlag(process.env.npm_config_skip_subset)
+  || isTruthyFlag(process.env.npm_config_skip_subset_fonts)
+  || isTruthyFlag(process.env.SKIP_SUBSET_FONTS);
+const outDir = process.env.BUILD_OUT_DIR || 'dist/oss';
 const passthroughArgs = args.filter(
-  (arg) => !['--deploy', '--skip-subset', '--skip-subset-fonts'].includes(arg),
+  (arg) => !['--deploy', '--skip-prepare', '--skip-subset', '--skip-subset-fonts'].includes(arg),
 );
 
-const prepareCmd = [
-  'node ./scripts/build-prepare.mjs',
-  shouldDeploy ? '--deploy' : '',
-  shouldSkipSubset ? '--skip-subset' : '',
-]
-  .filter(Boolean)
-  .join(' ');
+if (!shouldSkipPrepare) {
+  run('node', [
+    './scripts/build-prepare.mjs',
+    '--skip-seo',
+    ...(shouldDeploy ? ['--deploy'] : []),
+    ...(shouldSkipSubset ? ['--skip-subset'] : []),
+  ]);
+}
 
-const buildCmd = [
-  'cross-env NODE_ENV=production vite build',
-  ...passthroughArgs,
-]
-  .filter(Boolean)
-  .join(' ');
+run('pnpm', ['exec', 'vite', 'build', ...passthroughArgs], {
+  NODE_ENV: 'production',
+  BUILD_TARGET: 'oss',
+  BUILD_OUT_DIR: outDir,
+});
 
-run(prepareCmd);
-run(buildCmd);
+run('node', ['./scripts/build-seo-pages.mjs'], {
+  NODE_ENV: 'production',
+  BUILD_TARGET: 'oss',
+  SEO_PUBLIC_OUT_DIR: outDir,
+  SEO_WRITE_ALL_POINT_FILES: '1',
+  SEO_FORCE_POINT_FILES: '1',
+  SEO_SKIP_IMAGES: '1',
+});

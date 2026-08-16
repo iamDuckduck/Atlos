@@ -3,8 +3,8 @@ import Modal from '@/component/modal/modal';
 import { AccessButton } from '@/component/login/access';
 import { REGION_DICT, SUBREGION_DICT } from '@/data/map';
 import { loadAllMarkers, type IMarkerData } from '@/data/marker';
-import { useTranslateGame, useTranslateUI } from '@/locale';
-import { formatRelativeTime, parseDateLike } from '@/utils/timeFormat';
+import { useLocale, useTranslateGame, useTranslateUI } from '@/locale';
+import { formatAbsoluteTime, formatRelativeTime, parseTimestamp } from '@/utils/timeFormat';
 import ConflictIcon from '@/assets/logos/conflict.svg?react';
 import styles from './conflict.module.scss';
 
@@ -13,6 +13,7 @@ export type SyncConflictSource = {
     remoteSource?: 'official' | 'oemDb';
     updatedAt?: number | string | null;
     pointIds: string[];
+    archiveIds?: string[];
 };
 
 export type SyncConflictChoice = 'a' | 'b' | 'merge';
@@ -23,18 +24,17 @@ interface SyncConflictModalProps {
     sourceB: SyncConflictSource;
     onResolve: (choice: SyncConflictChoice) => void;
     onClose: () => void;
+    archiveLabel?: string;
+    totalLabel?: string;
 }
 
 type SubregionCounts = Record<string, number>;
 
-const formatTime = (value: SyncConflictSource['updatedAt'], fallback: string, agoLabel: string): string => {
-    const date = parseDateLike(value);
+const formatTime = (value: SyncConflictSource['updatedAt'], fallback: string, locale: string): string => {
+    const date = parseTimestamp(value);
     if (!date) return fallback;
-    return formatRelativeTime(date, {
-        precision: 'dateTime',
-        agoDisplay: 'inline',
-        agoLabel,
-    }).label;
+    const absolute = formatAbsoluteTime(date, { locale, precision: 'dateTime' });
+    return `${absolute} (${formatRelativeTime(date, { locale })})`;
 };
 
 const REGION_CODE_MAP: Record<string, string> = {
@@ -102,7 +102,8 @@ const RegionCountTable: React.FC<{
     bLabel: string;
     regionLabel: string;
     tGame: (key: string) => unknown;
-}> = ({ subregions, aCounts, bCounts, aLabel, bLabel, regionLabel, tGame }) => (
+    archiveRow?: { label: string; aCount: number; bCount: number };
+}> = ({ subregions, aCounts, bCounts, aLabel, bLabel, regionLabel, tGame, archiveRow }) => (
     <div className={styles.tableFrame}>
         <div className={styles.regionTable}>
             <div className={styles.regionHeader}>{regionLabel}</div>
@@ -119,6 +120,13 @@ const RegionCountTable: React.FC<{
                     </React.Fragment>
                 );
             })}
+            {archiveRow && (
+                <>
+                    <div className={styles.regionName}>{archiveRow.label}</div>
+                    <div className={styles.regionCount} data-strong={archiveRow.aCount > archiveRow.bCount ? 'true' : undefined}>{archiveRow.aCount}</div>
+                    <div className={styles.regionCount} data-strong={archiveRow.bCount > archiveRow.aCount ? 'true' : undefined}>{archiveRow.bCount}</div>
+                </>
+            )}
         </div>
     </div>
 );
@@ -129,15 +137,19 @@ const SyncConflictModal: React.FC<SyncConflictModalProps> = ({
     sourceB,
     onResolve,
     onClose,
+    archiveLabel,
+    totalLabel,
 }) => {
     const t = useTranslateUI();
     const tGame = useTranslateGame();
+    const locale = useLocale();
     const [markers, setMarkers] = useState<IMarkerData[]>([]);
+    const hasMapPoints = sourceA.pointIds.length > 0 || sourceB.pointIds.length > 0;
 
     useEffect(() => {
-        if (!open) return;
+        if (!open || !hasMapPoints) return;
         void loadAllMarkers().then(setMarkers);
-    }, [open]);
+    }, [hasMapPoints, open]);
 
     const aLabel = sourceLabel(sourceA, t);
     const bLabel = sourceLabel(sourceB, t);
@@ -145,8 +157,18 @@ const SyncConflictModal: React.FC<SyncConflictModalProps> = ({
     const bShortLabel = sourceShortLabel(sourceB, t);
     const aCounts = useMemo(() => countBySubregion(sourceA.pointIds, markers), [markers, sourceA.pointIds]);
     const bCounts = useMemo(() => countBySubregion(sourceB.pointIds, markers), [markers, sourceB.pointIds]);
-    const aHasMorePoints = sourceA.pointIds.length > sourceB.pointIds.length;
-    const bHasMorePoints = sourceB.pointIds.length > sourceA.pointIds.length;
+    const aArchiveIds = sourceA.archiveIds ?? [];
+    const bArchiveIds = sourceB.archiveIds ?? [];
+    const aTotal = sourceA.pointIds.length + aArchiveIds.length;
+    const bTotal = sourceB.pointIds.length + bArchiveIds.length;
+    const aHasMorePoints = aTotal > bTotal;
+    const bHasMorePoints = bTotal > aTotal;
+    const mergedCount = new Set([
+        ...sourceA.pointIds.map((id) => `point:${id}`),
+        ...sourceB.pointIds.map((id) => `point:${id}`),
+        ...aArchiveIds.map((id) => `archive:${id}`),
+        ...bArchiveIds.map((id) => `archive:${id}`),
+    ]).size;
     const subregions = useMemo(() => {
         const keys = new Set([...Object.keys(aCounts), ...Object.keys(bCounts)]);
         return Object.values(REGION_DICT)
@@ -158,7 +180,7 @@ const SyncConflictModal: React.FC<SyncConflictModalProps> = ({
         <Modal
             open={open}
             size="l"
-            title={t('sync.conflict.title') || 'Progress Conflict'}
+            title={t('sync.conflict.title')}
             icon={<ConflictIcon />}
             iconScale={0.85}
             onClose={onClose}
@@ -178,12 +200,12 @@ const SyncConflictModal: React.FC<SyncConflictModalProps> = ({
                                 <div className={styles.lastUpdate}>{formatTime(
                                     source.updatedAt,
                                     'N/A',
-                                    t('idcard.ago'),
+                                    locale,
                                 )}</div>
                             </div>
                             <div className={styles.metric}>
-                                <div className={styles.metricLabel}>{t('sync.conflict.total')}</div>
-                                <div className={styles.totalNum}>{source.pointIds.length}</div>
+                                <div className={styles.metricLabel}>{totalLabel || t('sync.conflict.total')}</div>
+                                <div className={styles.totalNum}>{source.pointIds.length + (source.archiveIds?.length ?? 0)}</div>
                             </div>
                         </section>
                     ))}
@@ -197,21 +219,26 @@ const SyncConflictModal: React.FC<SyncConflictModalProps> = ({
                     bLabel={bShortLabel}
                     regionLabel={t('sync.conflict.region')}
                     tGame={tGame}
+                    archiveRow={aArchiveIds.length > 0 || bArchiveIds.length > 0 ? {
+                        label: archiveLabel || 'Archives',
+                        aCount: aArchiveIds.length,
+                        bCount: bArchiveIds.length,
+                    } : undefined}
                 />
 
                 <div className={styles.actions}>
                     <AccessButton
-                        label={(t('sync.conflict.keepA') || 'Keep {label}').replace('{label}', aShortLabel)}
+                        label={(t('sync.conflict.keepA')).replace('{label}', aShortLabel)}
                         onClick={() => onResolve('a')}
                     />
                     <AccessButton
-                        label={(t('sync.conflict.keepB') || 'Use {label}').replace('{label}', bShortLabel)}
+                        label={(t('sync.conflict.keepB')).replace('{label}', bShortLabel)}
                         onClick={() => onResolve('b')}
                     />
                     <div className={styles.actionWide}>
                         <AccessButton
                             label={(t('sync.conflict.merge'))
-                                .replace('{count}', String(new Set([...sourceA.pointIds, ...sourceB.pointIds]).size))}
+                                .replace('{count}', String(mergedCount))}
                             onClick={() => onResolve('merge')}
                         />
                     </div>

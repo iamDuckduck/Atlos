@@ -1,5 +1,6 @@
 import markerTypeDict from './type.json';
 import markerStats from './stats.json';
+import filesData from '../files.json';
 import { REGION_DICT } from '@/data/map';
 
 export interface IMarkerData {
@@ -197,3 +198,14 @@ export const MARKER_TYPE_TREE: Record<string, IMarkerType[]> = Object.values(MAR
     },
     {},
 );
+
+const archiveOrder = Object.keys(filesData.files.archives);
+const archiveTypes = new Map(
+    (MARKER_TYPE_TREE.archives ?? []).map((typeInfo) => [
+        typeInfo.key,
+        typeInfo,
+    ]),
+);
+MARKER_TYPE_TREE.archives = archiveOrder
+    .map((key) => archiveTypes.get(key))
+    .filter((typeInfo): typeInfo is IMarkerType => Boolean(typeInfo));

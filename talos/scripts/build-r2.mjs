@@ -1,24 +1,51 @@
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
-const run = (cmd) => {
-  console.log(`\n> ${cmd}`);
-  execSync(cmd, { stdio: 'inherit' });
+const run = (command, args = [], env = {}) => {
+  console.log(`\n> ${[command, ...args].join(' ')}`);
+  execFileSync(command, args, {
+    stdio: 'inherit',
+    env: { ...process.env, ...env },
+  });
 };
 
-const argDeploy = process.argv.includes('--deploy');
-const argSkipSubset = process.argv.includes('--skip-subset') || process.argv.includes('--skip-subset-fonts');
-const envDeploy = process.env.npm_config_deploy;
-const shouldDeploy =
-  argDeploy ||
-  (typeof envDeploy === 'string' && envDeploy !== 'false' && envDeploy !== '0');
+const args = process.argv.slice(2);
+const hasFlag = (name) => args.includes(name);
+const isTruthyFlag = (value) =>
+  typeof value === 'string' && value !== 'false' && value !== '0';
 
-const prepareCmd = [
-  'cross-env NODE_ENV=production BUILD_TARGET=r2 node ./scripts/build-prepare.mjs',
-  shouldDeploy ? '--deploy' : '',
-  argSkipSubset ? '--skip-subset' : '',
-]
-  .filter(Boolean)
-  .join(' ');
+const shouldSkipPrepare = hasFlag('--skip-prepare');
+const shouldDeploy = hasFlag('--deploy') || isTruthyFlag(process.env.npm_config_deploy);
+const shouldSkipSubset =
+  hasFlag('--skip-subset')
+  || hasFlag('--skip-subset-fonts')
+  || isTruthyFlag(process.env.npm_config_skip_subset)
+  || isTruthyFlag(process.env.npm_config_skip_subset_fonts)
+  || isTruthyFlag(process.env.SKIP_SUBSET_FONTS);
+const outDir = process.env.BUILD_OUT_DIR || 'dist/r2';
+const passthroughArgs = args.filter(
+  (arg) => !['--deploy', '--skip-prepare', '--skip-subset', '--skip-subset-fonts'].includes(arg),
+);
 
-run(prepareCmd);
-run('cross-env NODE_ENV=production BUILD_TARGET=r2 vite build');
+if (!shouldSkipPrepare) {
+  run('node', [
+    './scripts/build-prepare.mjs',
+    '--skip-seo',
+    ...(shouldDeploy ? ['--deploy'] : []),
+    ...(shouldSkipSubset ? ['--skip-subset'] : []),
+  ], { BUILD_TARGET: 'r2' });
+}
+
+run('pnpm', ['exec', 'vite', 'build', ...passthroughArgs], {
+  NODE_ENV: 'production',
+  BUILD_TARGET: 'r2',
+  BUILD_OUT_DIR: outDir,
+});
+
+run('node', ['./scripts/build-seo-pages.mjs'], {
+  NODE_ENV: 'production',
+  BUILD_TARGET: 'r2',
+  SEO_PUBLIC_OUT_DIR: outDir,
+  SEO_WRITE_ALL_POINT_FILES: '1',
+  SEO_FORCE_POINT_FILES: '1',
+  SEO_SKIP_IMAGES: '1',
+});

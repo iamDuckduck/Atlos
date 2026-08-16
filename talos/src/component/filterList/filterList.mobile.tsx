@@ -49,7 +49,7 @@ const FilterListMobile: React.FC<FilterListMobileProps> = ({ width = '100%', onC
   }, [onContentWidthChange, displayList.length]);
 
   return (
-    <div className={styles.mainFilterList} style={{ width }}>
+    <div className={`${styles.mainFilterList} ${styles.mobile}`} style={{ width }}>
       <div
         ref={containerRef}
         className={[

@@ -2,6 +2,14 @@
 @use '../../styles/curves.scss' as *;
 @use '../../styles/size.scss' as *;
 
+:root, :root[data-theme='light'] {
+    --support-copy-text: #{$grey-1};
+}
+
+:root[data-theme='dark'] {
+    --support-copy-text: #{$light-1};
+}
+
 .supportContainer {
     display: flex;
     flex-direction: column;
@@ -14,7 +22,7 @@
     line-height: 1.25;
     font-family: 'HMSans_EN','HMSans','UD_ShinGo Regular', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
     letter-spacing: -.2px;
-    color: var(--lang-section-text);
+    color: var(--support-copy-text);
     overflow-wrap: break-word;
     hyphens: auto;
     unicode-bidi: plaintext;

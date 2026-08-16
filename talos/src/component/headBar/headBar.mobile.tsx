@@ -8,14 +8,15 @@ import HeadBarMobileFallback from './headBar.mobile.fallback';
 interface HeadBarMobileProps {
     children: React.ReactNode;
     forceExpanded?: boolean | null;
+    compact?: boolean;
 }
 
-const HeadBarMobile: React.FC<HeadBarMobileProps> = ({ children, forceExpanded = null }) => {
+const HeadBarMobile: React.FC<HeadBarMobileProps> = ({ children, forceExpanded = null, compact = false }) => {
     const performanceMode = usePerformanceMode();
     const [isExpanded, setIsExpanded] = useState(false);
     
     // When forceExpanded is set, override internal state
-    const actualExpanded = forceExpanded !== null ? forceExpanded : isExpanded;
+    const actualExpanded = !compact && (forceExpanded !== null ? forceExpanded : isExpanded);
     const childrenArray = React.Children.toArray(children);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -45,7 +46,11 @@ const HeadBarMobile: React.FC<HeadBarMobileProps> = ({ children, forceExpanded =
 
     // Use fallback component in performance mode
     if (performanceMode) {
-        return <HeadBarMobileFallback forceExpanded={forceExpanded}>{children}</HeadBarMobileFallback>;
+        return (
+            <HeadBarMobileFallback forceExpanded={forceExpanded} compact={compact}>
+                {children}
+            </HeadBarMobileFallback>
+        );
     }
 
     return (
@@ -64,7 +69,7 @@ const HeadBarMobile: React.FC<HeadBarMobileProps> = ({ children, forceExpanded =
             border2Transition='none'
             style={{
                 position: 'fixed',
-                top: '1rem',
+                top: 'max(1rem, env(safe-area-inset-top, 0px))',
                 right: '1rem',
                 backgroundColor: 'var(--headbar-bg)',
                 borderRadius: '36px',
@@ -73,16 +78,18 @@ const HeadBarMobile: React.FC<HeadBarMobileProps> = ({ children, forceExpanded =
         >
             <div
                 ref={containerRef}
-                className={`${styles.headbarMobile} ${actualExpanded ? styles.expanded : styles.collapsed}`}
+                className={`${styles.headbarMobile} ${actualExpanded ? styles.expanded : styles.collapsed} ${compact ? styles.visibilityOnly : ''}`}
             >
                 <div className={styles.headbarGrid}>
-                    <button
-                        className={styles.toggleIcon}
-                        onClick={toggleExpand}
-                        disabled={forceExpanded !== null}
-                    >
-                        <CloseIcon />
-                    </button>
+                    {!compact && (
+                        <button
+                            className={styles.toggleIcon}
+                            onClick={toggleExpand}
+                            disabled={forceExpanded !== null}
+                        >
+                            <CloseIcon />
+                        </button>
+                    )}
                     {childrenArray}
                 </div>
             </div>

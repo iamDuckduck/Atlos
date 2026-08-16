@@ -25,6 +25,8 @@ const channel = getArgValue('--channel', 'beta').toLowerCase();
 const skipBuild = hasFlag('--skip-build');
 const outputDirArg = getArgValue('--output-dir', path.resolve(ROOT, 'release-artifacts'));
 const outputDir = path.resolve(ROOT, outputDirArg);
+const defaultDistDir = target === 'org' ? 'dist/r2' : 'dist/oss';
+const distDirArg = getArgValue('--dist-dir', process.env.DIST_DIR || defaultDistDir);
 
 if (!['cn', 'org'].includes(target)) {
   throw new Error(`Unsupported --target: ${target}. Use cn or org.`);
@@ -148,9 +150,9 @@ const build = () => {
 };
 
 const packageDist = async () => {
-  const distDir = path.resolve(ROOT, 'dist');
+  const distDir = path.resolve(ROOT, distDirArg);
   if (!(await fs.pathExists(distDir))) {
-    throw new Error('dist directory does not exist. Build may have failed.');
+    throw new Error(`${path.relative(ROOT, distDir)} directory does not exist. Build may have failed.`);
   }
 
   const workDir = path.resolve(ROOT, '.release-work', `${target}-${channel}-${Date.now()}`);

@@ -2,7 +2,6 @@
 @use '../../styles/curves.scss' as *;
 
 :root, :root[data-theme='light'] {
-    --mark-bg: #{$white-1};
     --mark-text: #{$grey-1};
     --mark-active-bg: #{$white-3};
     --mark-stats-text: #{$dim-1};
@@ -14,7 +13,6 @@
     --mark-completed-separator: #{$primary-accent-5};
 }
 :root[data-theme='dark'] {
-    --mark-bg: #{$grey-1};
     --mark-text: #{$white-1};
     --mark-active-bg: #{$grey-2};
     --mark-stats-text: #{$light-1};
@@ -46,7 +44,7 @@
     position: absolute;
     inset: 0 auto auto 0;
     width: 100%;
-    background-color: var(--mark-bg);
+    background-color: transparent;
     color: var(--mark-text);
     border-radius: 0 2px 2px 0;
     padding: 0.25rem;
@@ -62,7 +60,8 @@
     grid-template-areas:
         'icon Name'
         'icon Num';
-    &.active {
+    &.active,
+    &[data-active='true'] {
         background-color: var(--mark-active-bg);
         color: var(--mark-active-fg);
         box-shadow: 0 3px 4px rgba($black-0, 0.4);
@@ -75,6 +74,17 @@
                 var(--progress-percentage, 0%) 100%,
                 0 100%
             );
+        }
+    }
+    &.active[data-active='false'] {
+        background-color: transparent;
+        color: var(--mark-text);
+        box-shadow: 0 0 3px 1px rgba($black-0, 0);
+        &::after {
+            clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+        }
+        &::before {
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
         }
     }
     &::after {
@@ -101,7 +111,8 @@
         clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
         transition: clip-path 0.3s $standard-curve, background-color 0.35s $moderato-curve;
     }
-    &.active::before {
+    &.active::before,
+    &[data-active='true']::before {
         clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
     &:hover {

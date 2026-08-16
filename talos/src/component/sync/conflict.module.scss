@@ -38,12 +38,14 @@
   padding: .75rem;
   gap: 0.5rem;
   border-radius: 4px;
-  @supports (corner-shape: superellipse(1.5)) {
-      border-radius: 6px;
-      corner-shape: superellipse(1.5);
-  }
   background: var(--source-bg);
   box-shadow: 0 0 8px rgba($black-0, 0.25);
+
+  @supports (corner-shape: superellipse(1.5)) {
+    border-radius: 6px;
+    corner-shape: superellipse(1.5);
+  }
+
   .cardBar {
     height: 6px;
     border-radius: 1.5px;
@@ -59,7 +61,7 @@
     font-size: 1.25rem;
     font-weight: 800;
     line-height: 1;
-    color: var(--source-text)
+    color: var(--source-text);
   }
   .metric {
     display: flex;
@@ -74,7 +76,6 @@
     .lastUpdate {
       color: var(--source-text);
       font-family: 'Fedra Sans Pro', 'UD_ShinGo Regular', 'Noto Sans Arabic', 'Noto Sans Thai', sans-serif;
-      font-weight: 500;
       line-height: 1.2;
       white-space: nowrap;
       letter-spacing: -0.2px;
@@ -96,11 +97,9 @@
 .tableFrame {
   border-top: 4px solid var(--table-text);
   border-bottom: 4px solid var(--table-text);
-  overscroll-behavior: none;
 }
 
 .regionTable {
-  overscroll-behavior: none;
   display: grid;
   grid-template-columns: minmax(10rem, 1.5fr) 1fr 1fr;
   max-height: calc((2rem * 7.5) + 0.2rem);

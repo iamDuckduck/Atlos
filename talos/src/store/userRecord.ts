@@ -5,6 +5,7 @@ import { createConditionalStorage } from '@/utils/storage';
 
 interface IUserRecordStore {
     activePoints: string[];
+    activeArchives: string[];
     updatedAt: number;
 }
 
@@ -12,6 +13,7 @@ export const useUserRecordStore = create<IUserRecordStore>()(
     persist<IUserRecordStore, [], [], Partial<IUserRecordStore>>(
         () => ({
             activePoints: [],
+            activeArchives: [],
             updatedAt: Date.now(),
         }),
         {
@@ -22,20 +24,26 @@ export const useUserRecordStore = create<IUserRecordStore>()(
             )),
             partialize: (state) => ({
                 activePoints: state.activePoints,
+                activeArchives: state.activeArchives,
                 updatedAt: state.updatedAt,
             }),
             merge: (persistedState, currentState) => {
                 const persisted = persistedState as Partial<IUserRecordStore>;
-                // Always restore persisted activePoints when they exist,
+                // Always restore persisted progress when it exists,
                 // regardless of the current preference toggle. The preference
                 // only controls whether *new* writes go to localStorage (via
                 // createConditionalStorage).  We must never discard data from
                 // localStorage during hydration — that would wipe the user's
                 // progress silently if they toggle the setting off and on.
-                if (persisted.activePoints && persisted.activePoints.length > 0) {
+                if (Array.isArray(persisted.activePoints) || Array.isArray(persisted.activeArchives)) {
                     return {
                         ...currentState,
-                        activePoints: persisted.activePoints,
+                        activePoints: Array.isArray(persisted.activePoints)
+                            ? persisted.activePoints
+                            : currentState.activePoints,
+                        activeArchives: Array.isArray(persisted.activeArchives)
+                            ? persisted.activeArchives
+                            : currentState.activeArchives,
                         updatedAt: persisted.updatedAt ?? currentState.updatedAt,
                     };
                 }

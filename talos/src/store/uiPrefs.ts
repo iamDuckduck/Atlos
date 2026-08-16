@@ -6,6 +6,7 @@ type ThemeMode = 'light' | 'dark' | 'auto';
 
 export const SIDEBAR_MIN_WIDTH = 300;
 export const SIDEBAR_DEFAULT_WIDTH = 500;
+export const INTEL_SIDEBAR_WIDTH = 300;
 export const SIDEBAR_THREE_COLUMN_MIN_WIDTH = 400;
 export const SIDEBAR_DESKTOP_MAX_WIDTH = 500;
 export const SIDEBAR_DESKTOPER_MAX_WIDTH = 600;
@@ -27,6 +28,11 @@ interface IUiPrefsStore {
 
   sidebarWidth: number;
   setSidebarWidth: (value: number, maxWidth?: number) => void;
+
+  intelSidebarWidth: number;
+
+  intelCardsExpanded: boolean;
+  setIntelCardsExpanded: (value: boolean) => void;
 
   layoutVersion: number;
   incrementLayoutVersion: () => void;
@@ -127,6 +133,11 @@ export const useUiPrefsStore = create<IUiPrefsStore>()(
       sidebarWidth: SIDEBAR_DEFAULT_WIDTH,
       setSidebarWidth: (value, maxWidth) => set({ sidebarWidth: clampSidebarWidth(value, maxWidth) }),
 
+      intelSidebarWidth: INTEL_SIDEBAR_WIDTH,
+
+      intelCardsExpanded: false,
+      setIntelCardsExpanded: (value) => set({ intelCardsExpanded: value }),
+
       layoutVersion: 0,
       incrementLayoutVersion: () => set((s) => ({ layoutVersion: s.layoutVersion + 1 })),
 
@@ -212,6 +223,7 @@ export const useUiPrefsStore = create<IUiPrefsStore>()(
       partialize: (state) => ({
         sidebarOpen: state.sidebarOpen,
         sidebarWidthV2: state.sidebarWidth,
+        intelCardsExpanded: state.intelCardsExpanded,
         markFilterExpanded: state.markFilterExpanded,
         markFilterOrder: state.markFilterOrder,
         triggerCluster: state.triggerCluster,
@@ -232,7 +244,7 @@ export const useUiPrefsStore = create<IUiPrefsStore>()(
         prefsPerformanceModeEnabled: state.prefsPerformanceModeEnabled,
       }),
       merge: (persistedState, currentState) => {
-        const persisted = persistedState as UiPrefsPersistedState;
+        const persisted = (persistedState ?? {}) as UiPrefsPersistedState;
         const merged = { ...currentState };
         
         // Always restore preference flags
@@ -246,6 +258,7 @@ export const useUiPrefsStore = create<IUiPrefsStore>()(
         if (persisted.prefsLocatorSyncEnabled !== undefined) merged.prefsLocatorSyncEnabled = persisted.prefsLocatorSyncEnabled;
         if (persisted.prefsPerformanceModeEnabled !== undefined) merged.prefsPerformanceModeEnabled = persisted.prefsPerformanceModeEnabled;
         if (persisted.theme !== undefined) merged.theme = persisted.theme;
+        if (persisted.intelCardsExpanded !== undefined) merged.intelCardsExpanded = persisted.intelCardsExpanded;
         
         // Conditionally restore based on preference flags
         if (persisted.prefsSidebarEnabled && persisted.sidebarOpen !== undefined) {
@@ -282,6 +295,9 @@ export const useSidebarOpen = () => useUiPrefsStore((s) => s.sidebarOpen);
 export const useSetSidebarOpen = () => useUiPrefsStore((s) => s.setSidebarOpen);
 export const useSidebarWidth = () => useUiPrefsStore((s) => s.sidebarWidth);
 export const useSetSidebarWidth = () => useUiPrefsStore((s) => s.setSidebarWidth);
+export const useIntelSidebarWidth = () => useUiPrefsStore((s) => s.intelSidebarWidth);
+export const useIntelCardsExpanded = () => useUiPrefsStore((s) => s.intelCardsExpanded);
+export const useSetIntelCardsExpanded = () => useUiPrefsStore((s) => s.setIntelCardsExpanded);
 export const useLayoutVersion = () => useUiPrefsStore((s) => s.layoutVersion);
 export const useIncrementLayoutVersion = () => useUiPrefsStore((s) => s.incrementLayoutVersion);
 export const useMarkFilterExpanded = (key: string) =>

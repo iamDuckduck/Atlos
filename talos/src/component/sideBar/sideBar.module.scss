@@ -89,7 +89,7 @@ $transition-speed: 0.3s;
         color: $grey-1;
         backdrop-filter: blur(35px) brightness(120%);
 
-        box-shadow: 4px 0 8px rgba($black-0, 0.25);
+        box-shadow: 3px 0 4px rgba($black-0, 0.15);
         pointer-events: auto;
         transform: none;
         display: flex;
@@ -127,7 +127,7 @@ $transition-speed: 0.3s;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding-top: 1.5rem;
+            padding-top: var(--sidebar-id-card-padding-top, 1.5rem);
             margin-bottom: 0.5rem;
         }
         .copyright, .socialBar {

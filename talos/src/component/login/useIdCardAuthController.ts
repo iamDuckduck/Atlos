@@ -82,6 +82,9 @@ const hasPendingAuthCode = (): boolean => {
 
 const buildOAuthCallbackUrl = (): string => {
   const callbackUrl = new URL(window.location.href);
+  if (callbackUrl.pathname.endsWith('/intel')) {
+    callbackUrl.pathname = `${callbackUrl.pathname}/`;
+  }
   callbackUrl.searchParams.delete('auth_code');
   callbackUrl.searchParams.delete('error');
   callbackUrl.searchParams.delete('error_description');
@@ -392,6 +395,9 @@ export const useIdCardAuthController = () => {
     try {
       const normalizedEmail = email.trim().toLowerCase();
       const callbackUrl = new URL(window.location.href);
+      if (callbackUrl.pathname.endsWith('/intel')) {
+        callbackUrl.pathname = `${callbackUrl.pathname}/`;
+      }
       callbackUrl.search = '';
       callbackUrl.hash = '';
       await requestPasswordReset(normalizedEmail, callbackUrl.toString());

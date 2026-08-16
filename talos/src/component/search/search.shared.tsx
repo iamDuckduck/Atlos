@@ -13,10 +13,59 @@ import { useMarkerStore } from '@/store/marker.ts';
 import { formatIcuText } from '@/locale/messageFormat';
 import { useAdvancedSearch } from './useAdvancedSearch';
 
-interface SearchSharedProps {
+export interface ExternalSearchProps {
+    value: string;
+    resultCount: number;
+    placeholder: string;
+    onChange: (value: string) => void;
+}
+
+export interface SearchSharedProps {
     width?: number | string;
     mobile?: boolean;
+    external?: ExternalSearchProps;
 }
+
+const ExternalSearchSurface: React.FC<ExternalSearchProps & Pick<SearchSharedProps, 'mobile' | 'width'>> = ({
+    value,
+    resultCount,
+    placeholder,
+    onChange,
+    mobile = false,
+    width = '100%',
+}) => {
+    const hasQuery = value.trim().length > 0;
+    const locale = useLocale();
+    const t = useTranslateUI();
+    const resultsText = formatIcuText({
+        template: t('search.results'),
+        locale,
+        values: { count: resultCount },
+    });
+    return (
+        <div
+            className={`${styles.searchContainer} ${mobile ? styles.mobile : ''}`}
+            style={{ width }}
+        >
+            <form className={styles.searchForm} onSubmit={(event) => event.preventDefault()}>
+                <div className={styles.searchInputWrapper}>
+                    <div className={styles.searchInputRow} data-has-count={hasQuery ? 'true' : 'false'}>
+                        <div className={styles.searchIcon}><SearchIcon className={styles.icon} /></div>
+                        <input
+                            type="text"
+                            data-search-input="true"
+                            className={styles.searchInput}
+                            placeholder={placeholder}
+                            value={value}
+                            onChange={(event) => onChange(event.target.value)}
+                        />
+                        {hasQuery && <span className={styles.searchResultCountInline}>{resultsText}</span>}
+                    </div>
+                </div>
+            </form>
+        </div>
+    );
+};
 
 const REGION_ICON_DICT: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
     Valley_4: Valley4,
@@ -45,7 +94,7 @@ const HighlightText = ({ text, keyword }: { text: string; keyword: string }) => 
     );
 };
 
-const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%', mobile = false }) => {
+const MapSearchShared: React.FC<Omit<SearchSharedProps, 'external'>> = ({ width = '100%', mobile = false }) => {
     const { searchString, setSearchString } = useMarkerStore();
     const activeFilters = useMarkerStore((s) => s.filter);
     const locale = useLocale();
@@ -281,5 +330,9 @@ const SearchShared: React.FC<SearchSharedProps> = ({ width = '100%', mobile = fa
         </div>
     );
 };
+
+const SearchShared: React.FC<SearchSharedProps> = ({ external, ...props }) => (
+    external ? <ExternalSearchSurface {...external} {...props} /> : <MapSearchShared {...props} />
+);
 
 export default SearchShared;

@@ -7,6 +7,7 @@
 @use './cluster';
 @use './pip.scss';
 @use './embed' as *;
+@use './themeTransition';
 
 /* Import Leaflet MarkerCluster styles */
 @import 'leaflet.markercluster/dist/MarkerCluster.css';
@@ -30,12 +31,6 @@
     }
 }
 
-/* Global theme transition variables (scoped) */
-:root {
-    --theme-transition-duration: 350ms;  // use ONLY ms for control continuity
-    --theme-transition-ease: #{$moderato-curve};
-}
-
 html,
 body,
 #root {
@@ -44,18 +39,6 @@ body,
     background-color: var(--map-bg, #{$light-1});
 }
 
-/*
-    Enable default color/background/ transitions only during a theme switch window.
-    These transition can be overrided for UX need.
-    NOTE: Use transition-delay: 0s to ensure no delay interference with local animations.
-*/
-:root[data-theme-switching] .theme-transition-scope,
-:root[data-theme-switching] .theme-transition-scope * {
-    transition-property: color, background-color, border-color, fill, stroke, box-shadow, text-shadow, filter;
-    transition-duration: var(--theme-transition-duration);
-    transition-timing-function: var(--theme-transition-ease);
-    transition-delay: 0s; /* Explicit 0 delay to prevent inheritance issues */
-}
 .app {
     position: relative;
     width: 100vw;

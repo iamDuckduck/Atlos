@@ -344,6 +344,12 @@ export default defineConfig({
     },
     server: {
         proxy: {
+            '/intel': {
+                target: 'http://127.0.0.1:5174',
+                changeOrigin: true,
+                ws: true,
+                rewrite: (requestPath) => requestPath.replace(/^\/intel(?=[?#]|$)/, '/intel/'),
+            },
             '/proxy/skport-auth': {
                 target: 'https://as.gryphline.com',
                 changeOrigin: true,

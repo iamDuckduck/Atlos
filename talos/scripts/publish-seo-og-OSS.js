@@ -33,6 +33,7 @@ const concurrency = Number.isFinite(requestedConcurrency) && requestedConcurrenc
 const verboseSkips = process.env.PUBLISH_VERBOSE_SKIPS !== '0';
 const forceFullVerification = process.env.SEO_OG_FORCE_VERIFY === '1';
 const publishStartedAt = Date.now();
+const OG_CACHE_CONTROL = 'public, max-age=3600, must-revalidate';
 
 console.log(
   `[publish-seo-og-OSS] channel=${deployChannel} prefix=${prefix || '/'} source=${prefixSource}`,
@@ -142,7 +143,7 @@ async function uploadImage(relativePath, { verifyRemote = true, remoteInfoIndex 
       'x-oss-object-acl': 'default',
       'x-oss-forbid-overwrite': 'false',
       'Content-Type': 'image/jpeg',
-      'Cache-Control': 'public, max-age=31536000, immutable',
+      'Cache-Control': OG_CACHE_CONTROL,
     },
   });
   console.log(`${relativePath} uploaded (${(stats.size / 1024).toFixed(2)}KB)`);

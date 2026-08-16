@@ -128,7 +128,8 @@ const seoOgConcurrency = Number.isFinite(requestedSeoOgConcurrency) && requested
   ? requestedSeoOgConcurrency
   : defaultSeoOgConcurrency;
 const SEO_STATE_VERSION = 1;
-const OG_RENDER_SIGNATURE_VERSION = 3;
+const OG_RENDER_SIGNATURE_VERSION = 4;
+const OG_RENDER_RECIPE = 'dim-main-overlay-target-layer-labels-last';
 const FILE_FINGERPRINT_VERSION = 2;
 
 const fileFingerprintCache = new Map();
@@ -632,6 +633,7 @@ async function buildOgSignature(point, sharedFingerprints) {
 
   return hashSignature({
     version: OG_RENDER_SIGNATURE_VERSION,
+    recipe: OG_RENDER_RECIPE,
     target: buildTarget,
     locale: defaultLocale,
     langKey,
@@ -669,6 +671,7 @@ async function buildFallbackOgSignature(point, sharedFingerprints) {
   const iconPath = await resolveIconPath(point.typeInfo);
   return hashSignature({
     version: OG_RENDER_SIGNATURE_VERSION,
+    recipe: OG_RENDER_RECIPE,
     target: buildTarget,
     locale: defaultLocale,
     langKey,

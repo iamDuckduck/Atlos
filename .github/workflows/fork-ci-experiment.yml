@@ -1,4 +1,4 @@
-name: Fork CI experiment - shared runner
+name: Fork CI experiment - Vitest workers
 
 on:
   push:
@@ -35,21 +35,35 @@ jobs:
           retention-days: 1
 
   shared-runner:
-    name: Parallel checks on one runner
+    name: Parallel checks (${{ matrix.label }})
     if: github.repository == 'iamDuckduck/Atlos'
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: default workers
+            artifact_suffix: default
+            main_workers: ''
+          - label: 1 worker
+            artifact_suffix: one-worker
+            main_workers: '1'
+          - label: 2 workers
+            artifact_suffix: two-workers
+            main_workers: '2'
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/fork-ci-setup
       - name: Check in parallel, then build both site targets
         env:
           ATLOS_FORK_SHARED_RUNNER: '1'
+          ATLOS_FORK_MAIN_TEST_WORKERS: ${{ matrix.main_workers }}
         run: pnpm check --build --source-only --skip-subset
       - name: Upload shared-runner artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: shared-runner-source-builds
+          name: shared-runner-source-builds-${{ matrix.artifact_suffix }}
           path: |
             talos/dist/oss/
             talos/dist/r2/

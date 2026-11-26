@@ -96,10 +96,12 @@ export const test = async (runner, app = 'all') => {
     if (app === 'all' || app === 'scripts')
         await runner.run('node', ['--test', './scripts/tasks.spec.mjs', './scripts/closure.spec.mjs', './scripts/package-pages.spec.mjs', './scripts/map-tiles.spec.mjs', './scripts/noclip.test.mjs']);
     if (app === 'all' || app === 'main' || app === 'relink') {
+        const workers = runner.env.ATLOS_FORK_MAIN_TEST_WORKERS;
         await runner.run('pnpm', [
             'exec',
             'vitest',
             'run',
+            ...(workers ? ['--maxWorkers', workers] : []),
             ...(app === 'all'
                 ? []
                 : app === 'main'

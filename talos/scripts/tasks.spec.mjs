@@ -441,6 +441,17 @@ test('fork CI waits for parallel tests after a lint failure and skips both build
     assert.equal(f.calls.some(({ args }) => args.includes('vite')), false);
 });
 
+test('fork CI caps workers only for the main Vitest command', async (t) => {
+    const f = await fixture(t);
+    await runTask(['test'], {
+        ...f,
+        env: { ...f.env, ATLOS_FORK_MAIN_TEST_WORKERS: '2' },
+    });
+    const vitest = f.calls.filter(({ args }) => args.includes('vitest'));
+    assert.deepEqual(vitest[0].args, ['exec', 'vitest', 'run', '--maxWorkers', '2']);
+    assert.equal(vitest.filter(({ args }) => args.includes('--maxWorkers')).length, 1);
+});
+
 test('dry-run performs no commands, writes, packaging, or network publication', async (t) => {
     const f = await fixture(t);
     await runTask(['deploy', '--dry-run'], {

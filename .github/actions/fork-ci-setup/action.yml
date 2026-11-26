@@ -30,6 +30,7 @@ runs:
           ${{ runner.os }}-pnpm-store-
 
     - run: |
+        node -e 'console.log("Runner available CPUs: " + require("node:os").availableParallelism())'
         cp config/config.template.json config/config.json
         cp config/config.r2.template.json config/config.r2.json
         node scripts/noclip.mjs prepare

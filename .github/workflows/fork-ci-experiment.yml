@@ -1,0 +1,77 @@
+name: Fork CI experiment
+
+on:
+  push:
+    branches:
+      - ci-fork-parallel-experiment
+      - ci-fork-parallel-failure
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: talos
+
+jobs:
+  baseline:
+    name: Original flow
+    if: github.repository == 'iamDuckduck/Atlos' && github.ref_name == 'ci-fork-parallel-experiment'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fork-ci-setup
+      - name: Check and build both site targets
+        run: pnpm check --build --source-only --skip-subset
+      - name: Upload baseline artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: baseline-source-builds
+          path: |
+            talos/dist/oss/
+            talos/dist/r2/
+          include-hidden-files: true
+          retention-days: 1
+
+  quality:
+    name: Data checks, TypeScript and lint
+    if: github.repository == 'iamDuckduck/Atlos'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fork-ci-setup
+      - name: Data checks, TypeScript and lint
+        run: node scripts/fork-ci-experiment.mjs quality
+
+  tests:
+    name: Tests
+    if: github.repository == 'iamDuckduck/Atlos'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fork-ci-setup
+      - name: Run all existing test suites
+        run: node scripts/fork-ci-experiment.mjs tests
+
+  parallel-build:
+    name: Build both site targets
+    needs: [quality, tests]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fork-ci-setup
+      - name: Compile both site targets
+        run: pnpm build --target all --source-only --skip-subset
+      - name: Upload parallel-flow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: parallel-source-builds
+          path: |
+            talos/dist/oss/
+            talos/dist/r2/
+          include-hidden-files: true
+          retention-days: 1

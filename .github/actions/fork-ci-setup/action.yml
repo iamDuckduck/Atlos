@@ -1,0 +1,38 @@
+name: Prepare Atlos source check
+description: Reproduce the Build workflow setup for the fork CI experiment
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: "26"
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - run: python -m pip install fonttools brotli
+      shell: bash
+
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 10.5.0
+
+    - run: echo "STORE_PATH=$(pnpm store path --silent)" >> "$GITHUB_ENV"
+      shell: bash
+
+    - uses: actions/cache@v4
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - run: |
+        cp config/config.template.json config/config.json
+        cp config/config.r2.template.json config/config.r2.json
+        node scripts/noclip.mjs prepare
+        pnpm install --frozen-lockfile
+      shell: bash
+      working-directory: talos

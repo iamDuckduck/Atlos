@@ -418,6 +418,29 @@ test('CI check builds all targets after preparing types only once and covers sta
     assert.equal(f.calls.some(isRemote), false);
 });
 
+test('fork CI waits for parallel tests after a lint failure and skips both builds', { timeout: 3000 }, async (t) => {
+    const f = await fixture(t);
+    const userHubStarted = Promise.withResolvers();
+    await assert.rejects(
+        runTask(['check', '--build', '--source-only'], {
+            ...f,
+            env: { ...f.env, ATLOS_FORK_SHARED_RUNNER: '1' },
+            execute: async (command, args, options) => {
+                if (args.includes('./scripts/lint.mjs')) {
+                    await userHubStarted.promise;
+                    throw new Error('injected lint failure');
+                }
+                if (args.includes('apps/user-hub/vitest.config.ts'))
+                    userHubStarted.resolve();
+                await f.execute(command, args, options);
+            },
+        }),
+        /Parallel checks failed:\nTypeScript and lint: injected lint failure/,
+    );
+    assert.ok(f.calls.some(({ args }) => args.includes('apps/user-hub/vitest.config.ts')));
+    assert.equal(f.calls.some(({ args }) => args.includes('vite')), false);
+});
+
 test('dry-run performs no commands, writes, packaging, or network publication', async (t) => {
     const f = await fixture(t);
     await runTask(['deploy', '--dry-run'], {

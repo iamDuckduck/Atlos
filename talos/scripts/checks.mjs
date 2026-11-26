@@ -133,7 +133,32 @@ export const lint = async (runner, fix = false) => {
 export const check = async (runner, prepared = false) => {
     await dataTask(runner, 'check');
     if (!prepared) await prepareTypes(runner);
-    await typeCheck(runner, 'all', false);
-    await lint(runner);
-    await test(runner);
+
+    const quality = async () => {
+        await typeCheck(runner, 'all', false);
+        await lint(runner);
+    };
+    if (runner.env.ATLOS_FORK_SHARED_RUNNER !== '1') {
+        await quality();
+        await test(runner);
+        return;
+    }
+
+    const lanes = [
+        ['TypeScript and lint', quality],
+        ['Tests', () => test(runner)],
+    ];
+    const results = await Promise.allSettled(
+        lanes.map(async ([name, run]) => {
+            await run();
+            console.log(`[check] ${name} passed`);
+        }),
+    );
+    const failures = results.flatMap((result, index) =>
+        result.status === 'rejected'
+            ? [`${lanes[index][0]}: ${result.reason.message}`]
+            : [],
+    );
+    if (failures.length)
+        throw new Error(`Parallel checks failed:\n${failures.join('\n')}`);
 };

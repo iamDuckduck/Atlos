@@ -1,0 +1,98 @@
+name: Fork benchmark - map data and shutdown tests
+
+on:
+  push:
+    branches: [ci-fork-reuse-map-benchmark]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: talos
+
+jobs:
+  build:
+    name: Quality and source build (${{ matrix.variant }})
+    if: github.repository == 'iamDuckduck/Atlos'
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [before, after]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+      - name: Select the implementation being measured
+        env:
+          SOURCE_REV: ${{ matrix.variant == 'before' && 'b45ee5ae3007467bee327a9b7ab647931436d65a' || github.sha }}
+        run: git restore --source="$SOURCE_REV" -- scripts/tasks.mjs scripts/tasks.spec.mjs
+      - uses: ./.github/actions/fork-ci-setup
+      - name: Prepare and validate map data
+        if: matrix.variant == 'before'
+        run: |
+          pnpm data prepare --source-only
+          pnpm data check --source-only
+      - name: TypeScript
+        if: matrix.variant == 'before'
+        run: pnpm type-check
+      - name: Lint
+        if: matrix.variant == 'before'
+        run: pnpm lint
+      - name: Build both sites
+        if: matrix.variant == 'before'
+        run: pnpm build --target all --source-only --skip-subset
+      - name: Validate data, check TypeScript, lint and build both sites
+        if: matrix.variant == 'after'
+        run: node scripts/tasks.mjs ci-build --source-only
+      - name: Upload source build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: map-source-builds-${{ matrix.variant }}-${{ github.run_attempt }}
+          path: |
+            talos/dist/oss/
+            talos/dist/r2/
+          include-hidden-files: true
+          retention-days: 1
+
+  tests:
+    name: All test suites (${{ matrix.variant }})
+    if: github.repository == 'iamDuckduck/Atlos'
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [before, after]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+      - name: Select the implementation being measured
+        env:
+          SOURCE_REV: ${{ matrix.variant == 'before' && 'b45ee5ae3007467bee327a9b7ab647931436d65a' || github.sha }}
+        run: git restore --source="$SOURCE_REV" -- scripts/tasks.mjs scripts/tasks.spec.mjs
+      - uses: ./.github/actions/fork-ci-setup
+      - name: Prepare test data
+        id: prepare
+        run: pnpm data prepare --source-only
+      - name: Script tests
+        run: pnpm test --app scripts
+      - name: Main and Relink tests
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        run: pnpm exec vitest run
+      - name: World tests
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        run: pnpm test --app world
+      - name: Intel tests
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        run: pnpm test --app intel
+      - name: User Hub tests
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        run: pnpm test --app user-hub

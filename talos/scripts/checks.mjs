@@ -1,3 +1,5 @@
+import { appendFile } from 'node:fs/promises';
+
 const scripts = {
     overrides: 'validate-marker-overrides.mjs',
     intel: 'validate-intel-data.mjs',
@@ -88,15 +90,22 @@ export const typeCheck = async (runner, app = 'all', prepare = true) => {
     }
 };
 
-export const test = async (runner, app = 'all') => {
+export const test = async (runner, app = 'all', runSuite = (_name, run) => run()) => {
     if (
         !['all', 'main', 'intel', 'user-hub', 'scripts', 'relink', 'world'].includes(app)
     )
         throw new Error(`Unknown test app: ${app}`);
     if (app === 'all' || app === 'scripts')
-        await runner.run('node', ['--test', './scripts/tasks.spec.mjs', './scripts/closure.spec.mjs', './scripts/package-pages.spec.mjs', './scripts/map-tiles.spec.mjs', './scripts/noclip.test.mjs']);
+        await runSuite('Script tests', () => runner.run('node', [
+            '--test',
+            './scripts/tasks.spec.mjs',
+            './scripts/closure.spec.mjs',
+            './scripts/package-pages.spec.mjs',
+            './scripts/map-tiles.spec.mjs',
+            './scripts/noclip.test.mjs',
+        ]));
     if (app === 'all' || app === 'main' || app === 'relink') {
-        await runner.run('pnpm', [
+        await runSuite('Main and Relink tests', () => runner.run('pnpm', [
             'exec',
             'vitest',
             'run',
@@ -105,25 +114,28 @@ export const test = async (runner, app = 'all') => {
                 : app === 'main'
                   ? ['--exclude', 'oem-relink/**']
                   : ['oem-relink']),
-        ]);
+        ]));
     }
-    if (app === 'all' || app === 'world') await runner.run('pnpm', ['exec', 'vitest', 'run', '--config', 'apps/world/vitest.config.ts']);
+    if (app === 'all' || app === 'world')
+        await runSuite('World tests', () => runner.run('pnpm', [
+            'exec', 'vitest', 'run', '--config', 'apps/world/vitest.config.ts',
+        ]));
     if (app === 'all' || app === 'intel')
-        await runner.run('pnpm', [
+        await runSuite('Intel tests', () => runner.run('pnpm', [
             'exec',
             'vitest',
             'run',
             '--config',
             'apps/intel/vitest.config.ts',
-        ]);
+        ]));
     if (app === 'all' || app === 'user-hub')
-        await runner.run('pnpm', [
+        await runSuite('User Hub tests', () => runner.run('pnpm', [
             'exec',
             'vitest',
             'run',
             '--config',
             'apps/user-hub/vitest.config.ts',
-        ]);
+        ]));
 };
 
 export const lint = async (runner, fix = false) => {
@@ -134,6 +146,39 @@ export const check = async (runner, prepared = false) => {
     await dataTask(runner, 'check');
     if (!prepared) await prepareTypes(runner);
     await typeCheck(runner, 'all', false);
-    await lint(runner);
-    await test(runner);
+
+    if (runner.env.ATLOS_FORK_SEQUENTIAL_REPORT !== '1' || runner.dryRun) {
+        await lint(runner);
+        await test(runner);
+        return;
+    }
+
+    const rows = ['| TypeScript | Passed |'];
+    const failed = [];
+    const reportCheck = async (name, run) => {
+        try {
+            await run();
+            rows.push(`| ${name} | Passed |`);
+        } catch (error) {
+            runner.signal?.throwIfAborted();
+            failed.push(name);
+            rows.push(`| ${name} | Failed |`);
+            console.error(`[check] ${name}: ${error.message}`);
+        }
+    };
+
+    await reportCheck('Lint', () => lint(runner));
+    await test(runner, 'all', reportCheck);
+
+    const report = [
+        '## Sequential check results',
+        '',
+        '| Check | Result |',
+        '| --- | --- |',
+        ...rows,
+    ].join('\n');
+    console.log(report);
+    const summary = runner.env.GITHUB_STEP_SUMMARY;
+    if (summary) await appendFile(summary, `${report}\n\n`, 'utf8');
+    if (failed.length) throw new Error(`Checks failed: ${failed.join(', ')}`);
 };

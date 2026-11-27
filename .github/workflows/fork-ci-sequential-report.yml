@@ -1,0 +1,33 @@
+name: Fork CI - sequential check report
+
+on:
+  push:
+    branches:
+      - ci-fork-sequential-report
+      - ci-fork-sequential-report-failure
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: github.repository == 'iamDuckduck/Atlos'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fork-ci-setup
+      - name: Check in order and report results
+        env:
+          ATLOS_FORK_SEQUENTIAL_REPORT: '1'
+        run: pnpm check --build --source-only --skip-subset
+        working-directory: talos
+      - name: Upload source build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sequential-source-builds-${{ github.run_attempt }}
+          path: |
+            talos/dist/oss/
+            talos/dist/r2/
+          include-hidden-files: true
+          retention-days: 1

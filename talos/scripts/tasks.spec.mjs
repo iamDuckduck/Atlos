@@ -418,6 +418,37 @@ test('CI check builds all targets after preparing types only once and covers sta
     assert.equal(f.calls.some(isRemote), false);
 });
 
+test('fork CI reports lint and test failures in order and skips both builds', async (t) => {
+    t.mock.method(console, 'log', () => {});
+    t.mock.method(console, 'error', () => {});
+    const f = await fixture(t, ({ args }) =>
+        args.includes('./scripts/lint.mjs') || args.includes('apps/intel/vitest.config.ts'),
+    );
+    const summary = path.join(f.root, 'step-summary.md');
+    await assert.rejects(
+        runTask(['check', '--build', '--source-only'], {
+            ...f,
+            env: {
+                ...f.env,
+                ATLOS_FORK_SEQUENTIAL_REPORT: '1',
+                GITHUB_STEP_SUMMARY: summary,
+            },
+        }),
+        /Checks failed: Lint, Intel tests/,
+    );
+    const report = await fs.readFile(summary, 'utf8');
+    assert.deepEqual(report.split('\n').filter((line) => /Passed|Failed/.test(line)), [
+        '| TypeScript | Passed |',
+        '| Lint | Failed |',
+        '| Script tests | Passed |',
+        '| Main and Relink tests | Passed |',
+        '| World tests | Passed |',
+        '| Intel tests | Failed |',
+        '| User Hub tests | Passed |',
+    ]);
+    assert.equal(f.calls.some(({ args }) => args.includes('vite')), false);
+});
+
 test('dry-run performs no commands, writes, packaging, or network publication', async (t) => {
     const f = await fixture(t);
     await runTask(['deploy', '--dry-run'], {

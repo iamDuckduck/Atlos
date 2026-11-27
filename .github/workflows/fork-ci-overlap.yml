@@ -4,11 +4,16 @@ on:
   push:
     branches:
       - ci-fork-overlap
+      - ci-fork-overlap-lean
       - ci-fork-overlap-benchmark
       - ci-fork-overlap-failure
 
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 defaults:
   run:

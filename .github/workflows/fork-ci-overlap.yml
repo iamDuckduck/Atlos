@@ -1,12 +1,8 @@
-name: Fork CI - overlap build and tests
+name: Fork CI - reuse prepared map data
 
 on:
   push:
-    branches:
-      - ci-fork-overlap
-      - ci-fork-overlap-lean
-      - ci-fork-overlap-benchmark
-      - ci-fork-overlap-failure
+    branches: [ci-fork-reuse-map, ci-fork-reuse-map-failure]
 
 permissions:
   contents: read
@@ -28,16 +24,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/fork-ci-setup
-      - name: Prepare and validate map data
-        run: |
-          pnpm data prepare --source-only
-          pnpm data check --source-only
-      - name: TypeScript
-        run: pnpm type-check
-      - name: Lint
-        run: pnpm lint
-      - name: Build both sites
-        run: pnpm build --target all --source-only --skip-subset
+      - name: Validate data, check TypeScript, lint and build both sites
+        run: node scripts/tasks.mjs ci-build --source-only
       - name: Upload source build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -73,25 +61,3 @@ jobs:
       - name: User Hub tests
         if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
         run: pnpm test --app user-hub
-
-  baseline:
-    name: Sequential control
-    if: github.repository == 'iamDuckduck/Atlos' && github.ref_name == 'ci-fork-overlap-benchmark'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/fork-ci-setup
-      - name: Run sequential checks and build both sites
-        env:
-          ATLOS_FORK_SEQUENTIAL_REPORT: '1'
-        run: pnpm check --build --source-only --skip-subset
-      - name: Upload source build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: sequential-source-builds-${{ github.run_attempt }}
-          path: |
-            talos/dist/oss/
-            talos/dist/r2/
-          include-hidden-files: true
-          retention-days: 1

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
-import { test } from 'node:test';
+import { describe, test } from 'node:test';
 import { createRunner, ROOT } from './task-runner.mjs';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
@@ -1095,46 +1095,48 @@ for (const signal of ['SIGINT', 'SIGTERM']) {
     );
 }
 
-test(
-    'cancellation kills unresponsive command trees within the shutdown deadline',
-    { timeout: 15000, skip: process.platform === 'win32' },
-    (t) => interruptCommands(t, 'SIGTERM', true),
-);
+describe('CLI shutdown deadlines', { concurrency: true }, () => {
+    test(
+        'cancellation kills unresponsive command trees within the shutdown deadline',
+        { timeout: 15000, skip: process.platform === 'win32' },
+        (t) => interruptCommands(t, 'SIGTERM', true),
+    );
 
-test(
-    'an uncancellable network operation cannot hold the CLI after cancellation',
-    { timeout: 15000, skip: process.platform === 'win32' },
-    async (t) => {
-        const f = await fixture(t);
-        const harness = path.join(f.root, 'blocked-sdk.mjs');
-        await f.write(
-            harness,
-            `
-        import { runCli } from ${JSON.stringify(new URL('./task-runner.mjs', import.meta.url).href)};
-        runCli(async () => {
-            setInterval(() => {}, 1000);
-            console.log('READY');
-            await new Promise(() => {});
-        });
-    `,
-        );
-        const cli = spawn(process.execPath, [harness], {
-            stdio: ['ignore', 'pipe', 'pipe'],
-        });
-        const closed = once(cli, 'close');
-        t.after(() => cli.kill('SIGKILL'));
-        let output = '';
-        cli.stderr.on('data', (data) => {
-            output += data;
-        });
-        await once(cli.stdout, 'data');
-        cli.kill('SIGTERM');
-        const [code, signal] = await closed;
-        assert.equal(signal, null);
-        assert.equal(code, 143, output);
-        assert.match(output, /Interrupted \(SIGTERM\)/);
-    },
-);
+    test(
+        'an uncancellable network operation cannot hold the CLI after cancellation',
+        { timeout: 15000, skip: process.platform === 'win32' },
+        async (t) => {
+            const f = await fixture(t);
+            const harness = path.join(f.root, 'blocked-sdk.mjs');
+            await f.write(
+                harness,
+                `
+            import { runCli } from ${JSON.stringify(new URL('./task-runner.mjs', import.meta.url).href)};
+            runCli(async () => {
+                setInterval(() => {}, 1000);
+                console.log('READY');
+                await new Promise(() => {});
+            });
+        `,
+            );
+            const cli = spawn(process.execPath, [harness], {
+                stdio: ['ignore', 'pipe', 'pipe'],
+            });
+            const closed = once(cli, 'close');
+            t.after(() => cli.kill('SIGKILL'));
+            let output = '';
+            cli.stderr.on('data', (data) => {
+                output += data;
+            });
+            await once(cli.stdout, 'data');
+            cli.kill('SIGTERM');
+            const [code, signal] = await closed;
+            assert.equal(signal, null);
+            assert.equal(code, 143, output);
+            assert.match(output, /Interrupted \(SIGTERM\)/);
+        },
+    );
+});
 
 
 test('frozen production preview preserves app routes, rejects missing assets and confines resource paths', async (t) => {

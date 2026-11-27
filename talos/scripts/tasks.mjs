@@ -35,6 +35,7 @@ const help = `Usage: pnpm <command> [options]
   og          [--target cn|org|all] [--action build|publish|refresh]
   worker      search|relink check|deploy
   check [--build] / lint / lint:fix / type-check / test
+  node scripts/tasks.mjs ci-build --source-only  (checks and builds both sites; CI runs tests separately)
   type-check [--app main|intel|user-hub|world|relink|search]
   run test    [--app main|intel|user-hub|world|relink|scripts]
   data        prepare|check|overrides|intel|locale|tile-coverage|marker-stats|marker-lookup|marker-diff|search-index|relink-preview|seo
@@ -93,6 +94,7 @@ const schemas = {
     og: ['target', 'channel', 'action'],
     worker: [],
     check: ['source-only', 'build', 'skip-subset', 'skip-subset-fonts'],
+    'ci-build': ['source-only'],
     lint: [],
     'lint:fix': [],
     'type-check': ['app'],
@@ -596,6 +598,13 @@ const sitePipelines = async (options, action) => {
         );
 };
 
+const buildCheckedSites = async (runner, options) => {
+    await fonts(runner);
+    await sitePipelines({ ...options, target: 'all' }, (target) =>
+        buildSite(runner, options, target),
+    );
+};
+
 const executeTask = async (argv, dependencies = {}) => {
     const options = parseTask(argv, dependencies.env);
     if (options.command === 'help') {
@@ -704,15 +713,17 @@ const executeTask = async (argv, dependencies = {}) => {
                 await generateFonts(runner);
             else await dataTask(runner, options.positionals[0]);
             break;
+        case 'ci-build':
+            await dataTask(runner, 'prepare');
+            await dataTask(runner, 'check');
+            await typeCheck(runner, 'all', false);
+            await lint(runner);
+            await buildCheckedSites(runner, options);
+            break;
         case 'check':
             if (options.build) await dataTask(runner, 'prepare');
             await check(runner, options.build);
-            if (options.build) {
-                await fonts(runner);
-                await sitePipelines({ ...options, target: 'all' }, (target) =>
-                    buildSite(runner, options, target),
-                );
-            }
+            if (options.build) await buildCheckedSites(runner, options);
             break;
         case 'type-check':
             await typeCheck(runner, options.app);

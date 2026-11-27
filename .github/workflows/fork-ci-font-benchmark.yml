@@ -1,0 +1,85 @@
+name: Fork benchmark - font tool setup
+
+on:
+  push:
+    branches: [ci-fork-font-benchmark]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: talos
+
+jobs:
+  build:
+    name: Quality and source build (${{ matrix.setup }})
+    if: github.repository == 'iamDuckduck/Atlos'
+    strategy:
+      fail-fast: false
+      matrix:
+        setup: [original, lean]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fork-ci-setup-original
+        if: matrix.setup == 'original'
+      - uses: ./.github/actions/fork-ci-setup
+        if: matrix.setup == 'lean'
+      - name: Prepare and validate map data
+        run: |
+          pnpm data prepare --source-only
+          pnpm data check --source-only
+      - name: TypeScript
+        run: pnpm type-check
+      - name: Lint
+        run: pnpm lint
+      - name: Build both sites
+        run: pnpm build --target all --source-only --skip-subset
+      - name: Upload source build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-builds-${{ matrix.setup }}-${{ github.run_attempt }}
+          path: |
+            talos/dist/oss/
+            talos/dist/r2/
+          include-hidden-files: true
+          retention-days: 1
+
+  tests:
+    name: All test suites (${{ matrix.setup }})
+    if: github.repository == 'iamDuckduck/Atlos'
+    strategy:
+      fail-fast: false
+      matrix:
+        setup: [original, lean]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/fork-ci-setup-original
+        if: matrix.setup == 'original'
+      - uses: ./.github/actions/fork-ci-setup
+        if: matrix.setup == 'lean'
+      - name: Prepare test data
+        id: prepare
+        run: pnpm data prepare --source-only
+      - name: Script tests
+        run: pnpm test --app scripts
+      - name: Main and Relink tests
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        run: pnpm exec vitest run
+      - name: World tests
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        run: pnpm test --app world
+      - name: Intel tests
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        run: pnpm test --app intel
+      - name: User Hub tests
+        if: ${{ !cancelled() && steps.prepare.outcome == 'success' }}
+        run: pnpm test --app user-hub
